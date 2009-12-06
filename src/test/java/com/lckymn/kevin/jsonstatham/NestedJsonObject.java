@@ -14,7 +14,7 @@ import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
  * @version 0.01 (2009-11-28)
  */
 @JsonObject
-public final class SampleJsonObject
+public final class NestedJsonObject
 {
 	@JsonField(name = "id")
 	private Long primaryKey;
@@ -25,7 +25,7 @@ public final class SampleJsonObject
 	@JsonField(name = "address")
 	private Address address;
 
-	@JsonField(name = "date")
+//	@JsonField(name = "date")
 	private Date date;
 
 	/**
