@@ -21,6 +21,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-21)
+ * @version 0.02 (2009-12-07) It is refactored.
  */
 public final class DefaultJsonStatham implements JsonStatham
 {
@@ -90,21 +91,15 @@ public final class DefaultJsonStatham implements JsonStatham
 		}
 		catch (IllegalArgumentException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new UnsupportedOperationException(e);
+			throw new JsonStathamException("Wrong object is passed or it has illegal fields with the @JsonField annotation", e);
 		}
 		catch (JSONException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new UnsupportedOperationException(e);
+			throw new JsonStathamException(e);
 		}
 		catch (IllegalAccessException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new UnsupportedOperationException(e);
+			throw new JsonStathamException(e);
 		}
 	}
 
@@ -128,23 +123,25 @@ public final class DefaultJsonStatham implements JsonStatham
 				continue;
 			}
 			field.setAccessible(true);
-			JsonField jsonField = field.getAnnotation(JsonField.class);
+			String jsonFieldName = field.getAnnotation(JsonField.class)
+					.name();
 			Class<?> fieldType = field.getType();
 
 			if (FIELD_MAP.containsKey(fieldType))
 			{
 				JsonFieldSetter jsonFieldSetter = FIELD_MAP.get(fieldType);
-				jsonFieldSetter.setJsonField(jsonObject, jsonField.name(), field.get(target));
+				jsonFieldSetter.setJsonField(jsonObject, jsonFieldName, field.get(target));
 			}
 			else if (fieldType.isAnnotationPresent(JsonObject.class))
 			{
 				JSONObject returnedJsonObject = createJsonObject(field.get(target));
-				jsonObject.put(jsonField.name(), (null == returnedJsonObject ? JSONObject.NULL : returnedJsonObject));
+				jsonObject.put(jsonFieldName, (null == returnedJsonObject ? JSONObject.NULL : returnedJsonObject));
 			}
 			else
 			{
 				/* unknown type */
-				throw new JsonStathamException("Unknown JSON object is entered.");
+				throw new JsonStathamException("Unknown JSON object is entered.\n" + "[type: " + fieldType + "][value: "
+						+ field.get(target) + "]");
 			}
 		}
 		return jsonObject;
