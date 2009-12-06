@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
+import com.lckymn.kevin.jsonstatham.core.impl.DefaultJsonStatham;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -52,6 +53,7 @@ public class DefaultJsonStathamTest
 	@Before
 	public void setUp() throws Exception
 	{
+		jsonStatham = new DefaultJsonStatham();
 	}
 
 	/**
