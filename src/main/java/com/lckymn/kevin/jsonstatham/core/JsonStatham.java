@@ -22,5 +22,5 @@ public interface JsonStatham
 	 * @throws JsonStathamException
 	 *             TODO: finish it!
 	 */
-	String convertToJson(Object target) throws JsonStathamException;
+	String convertIntoJson(Object target) throws JsonStathamException;
 }

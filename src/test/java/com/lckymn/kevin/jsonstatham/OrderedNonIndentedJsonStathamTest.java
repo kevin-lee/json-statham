@@ -19,7 +19,7 @@ import com.lckymn.kevin.jsonstatham.core.JsonStatham;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-21)
  */
-public class NonIndentedJsonStathamTest
+public class OrderedNonIndentedJsonStathamTest
 {
 	private JsonStatham jsonStatham;
 
@@ -63,7 +63,7 @@ public class NonIndentedJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.DefaultJsonStatham#convertToJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testSimpleJsonObject()
@@ -72,14 +72,14 @@ public class NonIndentedJsonStathamTest
 
 		final String expected = "{\"suburb\":\"" + suburb + "\",\"street\":\"" + street + "\",\"state\":\"" + state + "\",\"postcode\":\""
 				+ postcode + "\",\"city\":\"" + city + "\"}";
-		final String result = jsonStatham.convertToJson(address);
+		final String result = jsonStatham.convertIntoJson(address);
 		System.out.println(result);
 		assertEquals(expected, result);
 
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.DefaultJsonStatham#convertToJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testNestedJsonObject()
@@ -96,7 +96,7 @@ public class NonIndentedJsonStathamTest
 
 		final String expected = "{\"id\":" + id + ",\"address\":{\"suburb\":\"" + suburb + "\",\"street\":\"" + street + "\",\"state\":\""
 				+ state + "\",\"postcode\":\"" + postcode + "\",\"city\":\"" + city + "\"},\"name\":\"" + name + "\"}";
-		final String result = jsonStatham.convertToJson(jsonObject);
+		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertEquals(expected, result);
 	}
