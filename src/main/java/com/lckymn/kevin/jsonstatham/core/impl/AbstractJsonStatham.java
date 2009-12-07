@@ -22,8 +22,9 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-21)
  * @version 0.02 (2009-12-07) It is refactored.
+ * @version 0.03 (2009-12-07) It is redesigned.
  */
-public final class DefaultJsonStatham implements JsonStatham
+public abstract class AbstractJsonStatham implements JsonStatham
 {
 	private static interface JsonFieldSetter
 	{
@@ -58,52 +59,19 @@ public final class DefaultJsonStatham implements JsonStatham
 		FIELD_MAP.put(String.class, JSON_FIELD_SETTER_FOR_OBJECT);
 	}
 
-	private final boolean indented;
-	private final int indentationSize;
+	protected abstract JSONObject newJSONObject();
 
 	/**
-	 * Constructs {@link DefaultJsonStatham} object with indented = false & indentationSize = 0.
+	 * This implementation calls overridable {@link #newJSONObject()} method to get {@link JSONObject} for internal use.
+	 * 
+	 * @param target
+	 *            the given target object to be converted to {@link JSONObject}.
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JSONException
 	 */
-	public DefaultJsonStatham()
-	{
-		this(false, 0);
-	}
-
-	public DefaultJsonStatham(boolean indented, int indentationSize)
-	{
-		this.indented = indented;
-		this.indentationSize = indentationSize;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.lckymn.kevin.jsonstatham.core.JsonStatham#convertToJson(java.lang.Object)
-	 */
-	@Override
-	public String convertToJson(final Object target) throws JsonStathamException
-	{
-		try
-		{
-			AssertIt.isNotNull(target, "The given object is null.");
-			JSONObject jsonObject = createJsonObject(target);
-
-			return (null == jsonObject ? null : (indented ? jsonObject.toString(indentationSize) : jsonObject.toString()));
-		}
-		catch (IllegalArgumentException e)
-		{
-			throw new JsonStathamException("Wrong object is passed or it has illegal fields with the @JsonField annotation", e);
-		}
-		catch (JSONException e)
-		{
-			throw new JsonStathamException(e);
-		}
-		catch (IllegalAccessException e)
-		{
-			throw new JsonStathamException(e);
-		}
-	}
-
-	private JSONObject createJsonObject(Object target) throws IllegalArgumentException, IllegalAccessException, JSONException
+	protected JSONObject createJsonObject(Object target) throws IllegalArgumentException, IllegalAccessException, JSONException
 	{
 		if (null == target)
 		{
@@ -114,7 +82,7 @@ public final class DefaultJsonStatham implements JsonStatham
 		AssertIt.isTrue(targetClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
 				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.");
 
-		JSONObject jsonObject = new JSONObject();
+		JSONObject jsonObject = newJSONObject();
 		for (Field field : targetClass.getDeclaredFields())
 		{
 			if (!field.isAnnotationPresent(JsonField.class))
@@ -126,24 +94,35 @@ public final class DefaultJsonStatham implements JsonStatham
 			String jsonFieldName = field.getAnnotation(JsonField.class)
 					.name();
 			Class<?> fieldType = field.getType();
+			Object fieldValue = field.get(target);
+			if (null == fieldValue)
+			{
+				fieldValue = JSONObject.NULL;
+			}
 
 			if (FIELD_MAP.containsKey(fieldType))
 			{
 				JsonFieldSetter jsonFieldSetter = FIELD_MAP.get(fieldType);
-				jsonFieldSetter.setJsonField(jsonObject, jsonFieldName, field.get(target));
+				jsonFieldSetter.setJsonField(jsonObject, jsonFieldName, fieldValue);
 			}
 			else if (fieldType.isAnnotationPresent(JsonObject.class))
 			{
-				JSONObject returnedJsonObject = createJsonObject(field.get(target));
-				jsonObject.put(jsonFieldName, (null == returnedJsonObject ? JSONObject.NULL : returnedJsonObject));
+				jsonObject.put(jsonFieldName, (JSONObject.NULL.equals(fieldValue) ? fieldValue : createJsonObject(fieldValue)));
 			}
 			else
 			{
 				/* unknown type */
-				throw new JsonStathamException("Unknown JSON object is entered.\n" + "[type: " + fieldType + "][value: "
-						+ field.get(target) + "]");
+				throw new JsonStathamException("Unknown JSON object is entered.\n" + "[type: " + fieldType + "][value: " + fieldValue + "]");
 			}
 		}
 		return jsonObject;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.lckymn.kevin.jsonstatham.core.JsonStatham#convertToJson(java.lang.Object)
+	 */
+	@Override
+	public abstract String convertIntoJson(final Object target) throws JsonStathamException;
+
 }
