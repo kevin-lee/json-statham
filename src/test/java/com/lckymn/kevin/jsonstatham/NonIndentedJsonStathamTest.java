@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
-import com.lckymn.kevin.jsonstatham.core.impl.OrderedNonIndentedJsonStatham;
+import com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -33,6 +34,10 @@ public class NonIndentedJsonStathamTest
 	private static final List<String> cityList = Arrays.asList("Sydney", "Melbourne");
 	private static final List<String> stateList = Arrays.asList("NSW", "VIC");
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
+
+	private List<Address> addressList;
+
+	private Map<String, Address> addressMap;
 
 	private JsonStatham jsonStatham;
 
@@ -64,8 +69,21 @@ public class NonIndentedJsonStathamTest
 	@Before
 	public void setUp() throws Exception
 	{
-		jsonStatham = new OrderedNonIndentedJsonStatham();
+		jsonStatham = new NonIndentedJsonStatham();
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
+
+		addressList = new ArrayList<Address>();
+		for (int i = 0, size = streetList.size(); i < size; i++)
+		{
+			addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
+		}
+
+		addressMap = new LinkedHashMap<String, Address>();
+		for (int i = 0, size = streetList.size(); i < size; i++)
+		{
+			addressMap.put("address" + i, new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
+					postcodeList.get(i)));
+		}
 	}
 
 	/**
@@ -91,24 +109,14 @@ public class NonIndentedJsonStathamTest
 		System.out.println("\nOrderedNonIndentedJsonStathamTest.testNull()");
 		final String expected = "null";
 		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(null);
-		System.out.println("result:\n" + result);
+		System.out.println(result);
 		assertEquals(expected.toString(), result);
 	}
 
-	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractJsonStatham#convertIntoJson(java.lang.Object)} with List as the
-	 * parameter object.
-	 */
-	@Test
-	public void testList()
+	private String getAddressArrayString()
 	{
-		List<Address> addressList = new ArrayList<Address>();
-		for (int i = 0, size = stateList.size(); i < size; i++)
-		{
-			addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
-		}
-
 		final StringBuilder stringBuilder = new StringBuilder("[");
 		for (Address address : addressList)
 		{
@@ -129,28 +137,39 @@ public class NonIndentedJsonStathamTest
 			stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 		}
 		stringBuilder.append("]");
+		return stringBuilder.toString();
+	}
 
-		final String expected = stringBuilder.toString();
-		System.out.println("\nOrderedNonIndentedJsonStathamTest.testList()");
+	@Test
+	public void testArray()
+	{
+		System.out.println("\nNonIndentedJsonStathamTest.testArray()");
+		final String expected = getAddressArrayString();
 		System.out.println("expected:\n" + expected);
-		final String result = jsonStatham.convertIntoJson(addressList);
-		System.out.println("result:\n" + result);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(addressList.toArray(new Address[addressList.size()]));
+		System.out.println(result);
 		assertEquals(expected, result);
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)} with List as the
+	 * parameter object.
 	 */
 	@Test
-	public void testMap()
+	public void testList()
 	{
-		Map<String, Address> addressMap = new LinkedHashMap<String, Address>();
-		for (int i = 0, size = stateList.size(); i < size; i++)
-		{
-			addressMap.put("address" + i, new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
-					postcodeList.get(i)));
-		}
+		final String expected = getAddressArrayString();
+		System.out.println("\nOrderedNonIndentedJsonStathamTest.testList()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(addressList);
+		System.out.println(result);
+		assertEquals(expected, result);
+	}
 
+	private String getAddressMapString()
+	{
 		final StringBuilder stringBuilder = new StringBuilder("{");
 		for (Entry<String, Address> entry : addressMap.entrySet())
 		{
@@ -173,32 +192,57 @@ public class NonIndentedJsonStathamTest
 			stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 		}
 		stringBuilder.append("}");
-
-		final String expected = stringBuilder.toString();
-		System.out.println("\nOrderedNonIndentedJsonStathamTest.testMap()");
-		System.out.println("expected:\n" + expected);
-		final String result = jsonStatham.convertIntoJson(addressMap);
-		System.out.println("result:\n" + result);
-		assertEquals(expected.toString(), result);
+		return stringBuilder.toString();
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)}.
+	 */
+	@Test
+	public void testMap()
+	{
+		final String expected = getAddressMapString();
+		System.out.println("\nOrderedNonIndentedJsonStathamTest.testMap()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(addressMap);
+		System.out.println(result);
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void testNestedMap()
+	{
+		final String expected = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
+		System.out.println("\nNonIndentedJsonStathamTest.testNestedMap()");
+		System.out.println("expected: \n" + expected);
+		Map<String, Object> nestedMap = new HashMap<String, Object>();
+		nestedMap.put("test1", addressMap);
+		nestedMap.put("test2", addressMap);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(nestedMap);
+		System.out.println(result);
+		assertEquals(expected, result);
+	}
+
+	/**
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testSimpleJsonObject()
 	{
 		final String expected = "{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
 				+ cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
-		final String result = jsonStatham.convertIntoJson(address);
 		System.out.println("\nOrderedNonIndentedJsonStathamTest.testSimpleJsonObject()");
 		System.out.println("expected:\n" + expected);
-		System.out.println("actual:\n" + result);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(address);
+		System.out.println(result);
 		assertEquals(expected, result);
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testNestedJsonObject()
@@ -215,10 +259,11 @@ public class NonIndentedJsonStathamTest
 		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
 				+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
 				+ "\",\"postcode\":\"" + postcodeList.get(0) + "\"}}";
-		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println("\nOrderedNonIndentedJsonStathamTest.testNestedJsonObject()");
 		System.out.println("expected:\n" + expected);
-		System.out.println("actual:\n" + result);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
 		assertEquals(expected, result);
 	}
 }
