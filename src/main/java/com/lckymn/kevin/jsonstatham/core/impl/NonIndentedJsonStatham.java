@@ -79,15 +79,22 @@ public class NonIndentedJsonStatham implements JsonStatham
 
 		Set<Class<?>> tempSet = new HashSet<Class<?>>();
 		tempSet.add(int.class);
+		tempSet.add(Integer.TYPE);
 		tempSet.add(Integer.class);
 		tempSet.add(long.class);
+		tempSet.add(Long.TYPE);
 		tempSet.add(Long.class);
 		tempSet.add(BigInteger.class);
 		tempSet.add(float.class);
+		tempSet.add(Float.TYPE);
 		tempSet.add(Float.class);
 		tempSet.add(double.class);
+		tempSet.add(Double.TYPE);
+		tempSet.add(Double.class);
 		tempSet.add(BigDecimal.class);
+		tempSet.add(Number.class);
 		tempSet.add(boolean.class);
+		tempSet.add(Boolean.TYPE);
 		tempSet.add(Boolean.class);
 		tempSet.add(String.class);
 		KNOWN_FIELD_SET = Collections.unmodifiableSet(tempSet);
@@ -136,13 +143,13 @@ public class NonIndentedJsonStatham implements JsonStatham
 			return JSONObject.NULL;
 		}
 
-		Class<?> targetClass = source.getClass();
+		Class<?> sourceClass = source.getClass();
 
-		AssertIt.isTrue(targetClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
+		AssertIt.isTrue(sourceClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
 				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.");
 
 		JSONObject jsonObject = newJSONObject();
-		for (Field field : targetClass.getDeclaredFields())
+		for (Field field : sourceClass.getDeclaredFields())
 		{
 			if (!field.isAnnotationPresent(JsonField.class))
 			{
