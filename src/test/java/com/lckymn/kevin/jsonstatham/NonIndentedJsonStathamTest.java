@@ -4,9 +4,12 @@
 package com.lckymn.kevin.jsonstatham;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -153,8 +156,8 @@ public class NonIndentedJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)} with List as the
-	 * parameter object.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)} with List as
+	 * the parameter object.
 	 */
 	@Test
 	public void testList()
@@ -265,5 +268,50 @@ public class NonIndentedJsonStathamTest
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertEquals(expected, result);
+	}
+
+	@Test(expected = JsonStathamException.class)
+	public void testJsonObjectWithDuplicateKeys() throws IOException
+	{
+		JsonObjectWithDuplicateKeys jsonObjectWithDuplicateKeys = new JsonObjectWithDuplicateKeys();
+		jsonObjectWithDuplicateKeys.setUsername("kevinlee");
+		jsonObjectWithDuplicateKeys.setName("Kevin");
+		jsonObjectWithDuplicateKeys.setFullName("Kevin Lee");
+		jsonObjectWithDuplicateKeys.setEmail("kevin@test.test");
+
+		System.out.println("\nresult: ");
+		String result = "";
+		try
+		{
+			result = jsonStatham.convertIntoJson(jsonObjectWithDuplicateKeys);
+		}
+		catch (JsonStathamException e)
+		{
+			System.out.println(e.getMessage());
+			throw e;
+		}
+		System.out.println(result);
+	}
+
+	@Test
+	public void testComplexJsonObjectWithMethodUse()
+	{
+		ComplexJsonObjectWithMethodUse jsonObject = new ComplexJsonObjectWithMethodUse();
+		jsonObject.setPrimaryKey(Long.valueOf(1));
+		jsonObject.setName("Kevin");
+		jsonObject.setAddress(address);
+		Date date = new Date();
+		jsonObject.setDateWithoutValueAccessor(date);
+		jsonObject.setDate(date);
+
+		final String expected = "{\"id\":1,\"name\":\"Kevin\","
+				+ "\"address\":{\"street\":\"ABC Street\",\"suburb\":\"\",\"city\":\"Sydney\",\"state\":\"NSW\",\"postcode\":\"2000\"},"
+				+ "\"dateWithoutValueAccessor\":\"" + date.toString() + "\"," + "\"date\":\"" + jsonObject.getDateString() + "\"}";
+		System.out.println("\nNonIndentedJsonStathamTest.testComplexJsonObjectWithMethodUse()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, is(expected));
 	}
 }

@@ -4,9 +4,12 @@
 package com.lckymn.kevin.jsonstatham.core.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 import com.lckymn.kevin.common.validation.AssertIt;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
+import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
@@ -42,6 +46,9 @@ public class NonIndentedJsonStatham implements JsonStatham
 
 	private static final Map<Class<?>, KnownTypeProcessor> KNOWN_TYPE_PROCESSOR_MAP;
 	private static final Set<Class<?>> KNOWN_FIELD_SET;
+	
+	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
 	static
 	{
@@ -73,6 +80,15 @@ public class NonIndentedJsonStatham implements JsonStatham
 					IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonMap((Map) source);
+			}
+		});
+		tempMap.put(Date.class, new KnownTypeProcessor()
+		{
+			@Override
+			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+					IllegalAccessException, JSONException
+			{
+				return jsonStatham.createJsonValue(source.toString());
 			}
 		});
 		KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
@@ -148,6 +164,8 @@ public class NonIndentedJsonStatham implements JsonStatham
 		AssertIt.isTrue(sourceClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
 				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.");
 
+		Set<String> fieldNameSet = new HashSet<String>();
+
 		JSONObject jsonObject = newJSONObject();
 		for (Field field : sourceClass.getDeclaredFields())
 		{
@@ -159,7 +177,43 @@ public class NonIndentedJsonStatham implements JsonStatham
 			field.setAccessible(true);
 			String jsonFieldName = field.getAnnotation(JsonField.class)
 					.name();
-			Object fieldValue = field.get(source);
+
+			if (fieldNameSet.contains(jsonFieldName))
+			{
+				throw new JsonStathamException("Json filed name must be unique. [JsonField name: " + jsonFieldName + "] in [field: "
+						+ field + "] is already used in another field.");
+			}
+			fieldNameSet.add(jsonFieldName);
+
+			Object fieldValue = null;
+
+			if (field.isAnnotationPresent(ValueAccessor.class))
+			{
+				String valueAccessorName = field.getAnnotation(ValueAccessor.class)
+						.name();
+				try
+				{
+					Method method = sourceClass.getDeclaredMethod(valueAccessorName, EMPTY_CLASS_ARRAY);
+					method.setAccessible(true);
+					fieldValue = method.invoke(source, EMPTY_OBJECT_ARRAY);
+				}
+				catch (SecurityException e)
+				{
+					throw new JsonStathamException(e);
+				}
+				catch (NoSuchMethodException e)
+				{
+					throw new JsonStathamException("The given ValueAccessor method that is [" + valueAccessorName + "] is not found.", e);
+				}
+				catch (InvocationTargetException e)
+				{
+					throw new JsonStathamException("The given ValueAccessor method [" + valueAccessorName + "] is proper value accessor for JsonField.", e);
+				}
+			}
+			else
+			{
+				fieldValue = field.get(source);
+			}
 			jsonObject.put(jsonFieldName, createJsonValue(fieldValue));
 		}
 		return jsonObject;
@@ -221,10 +275,12 @@ public class NonIndentedJsonStatham implements JsonStatham
 				return JSONObject.NULL.toString();
 			}
 
+			Class<?> sourceClass = source.getClass();
+
 			for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_TYPE_PROCESSOR_MAP.entrySet())
 			{
 				if (entry.getKey()
-						.isAssignableFrom(source.getClass()))
+						.isAssignableFrom(sourceClass))
 				{
 					return entry.getValue()
 							.process(this, source)

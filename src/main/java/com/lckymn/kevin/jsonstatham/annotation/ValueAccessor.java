@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package com.lckymn.kevin.jsonstatham.annotation;
 
 import java.lang.annotation.Documented;
@@ -7,15 +10,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * It indicates that an instance of any classes, annotated with this annotation, is eligible to be used as the target object of the
- * {@link com.lckymn.kevin.jsonstatham.core.JsonStatham JsonStatham}'s methods which convert Java object to JSON.
- * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-11-21)
+ * @version 0.01 (2009-12-20)
  */
 @Documented
-@Target(ElementType.TYPE)
+@Target( { ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JsonObject
+public @interface ValueAccessor
 {
+	String name();
 }

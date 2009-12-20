@@ -3,9 +3,6 @@
  */
 package com.lckymn.kevin.jsonstatham;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -24,9 +21,6 @@ public final class NestedJsonObject
 
 	@JsonField(name = "address")
 	private Address address;
-
-//	@JsonField(name = "date")
-	private Date date;
 
 	/**
 	 * @return the primaryKey
@@ -77,29 +71,6 @@ public final class NestedJsonObject
 	public void setAddress(Address address)
 	{
 		this.address = address;
-	}
-
-	@JsonField(name = "date")
-	public String getDateString()
-	{
-		return new SimpleDateFormat("yyyy-MM-dd").format(date);
-	}
-
-	/**
-	 * @return the date
-	 */
-	public Date getDate()
-	{
-		return date;
-	}
-
-	/**
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(Date date)
-	{
-		this.date = date;
 	}
 
 }
