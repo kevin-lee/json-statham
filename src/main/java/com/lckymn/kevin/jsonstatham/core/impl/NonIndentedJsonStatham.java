@@ -35,6 +35,15 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @version 0.02 (2009-12-07) It is refactored.
  * @version 0.03 (2009-12-07) It is redesigned.
  * @version 0.04 (2009-12-12) It can handle array, List and Map.
+ * @version 0.05 (2009-12-20)
+ *          <p>
+ *          It can handle duplicate {@link JsonField} names. => It throws an exception.
+ *          </p>
+ *          <p>
+ *          It can also handle {@link java.util.Date} type value annotated with {@link JsonField}. => It uses the toString() method of the
+ *          value object, or if the field is also annotated with {@link ValueAccessor} annotation, it uses the method specified with the
+ *          {@link ValueAccessor} annotation in order to get the value.
+ *          </p>
  */
 public class NonIndentedJsonStatham implements JsonStatham
 {
@@ -46,7 +55,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 
 	private static final Map<Class<?>, KnownTypeProcessor> KNOWN_TYPE_PROCESSOR_MAP;
 	private static final Set<Class<?>> KNOWN_FIELD_SET;
-	
+
 	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
@@ -94,22 +103,17 @@ public class NonIndentedJsonStatham implements JsonStatham
 		KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
 
 		Set<Class<?>> tempSet = new HashSet<Class<?>>();
-		tempSet.add(int.class);
 		tempSet.add(Integer.TYPE);
 		tempSet.add(Integer.class);
-		tempSet.add(long.class);
 		tempSet.add(Long.TYPE);
 		tempSet.add(Long.class);
 		tempSet.add(BigInteger.class);
-		tempSet.add(float.class);
 		tempSet.add(Float.TYPE);
 		tempSet.add(Float.class);
-		tempSet.add(double.class);
 		tempSet.add(Double.TYPE);
 		tempSet.add(Double.class);
 		tempSet.add(BigDecimal.class);
 		tempSet.add(Number.class);
-		tempSet.add(boolean.class);
 		tempSet.add(Boolean.TYPE);
 		tempSet.add(Boolean.class);
 		tempSet.add(String.class);
@@ -207,7 +211,8 @@ public class NonIndentedJsonStatham implements JsonStatham
 				}
 				catch (InvocationTargetException e)
 				{
-					throw new JsonStathamException("The given ValueAccessor method [" + valueAccessorName + "] is proper value accessor for JsonField.", e);
+					throw new JsonStathamException("The given ValueAccessor method [" + valueAccessorName
+							+ "] is proper value accessor for JsonField.", e);
 				}
 			}
 			else
@@ -246,7 +251,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 			}
 		}
 
-		if (KNOWN_FIELD_SET.contains(type))
+		if (type.isPrimitive() || KNOWN_FIELD_SET.contains(type))
 		{
 			return value;
 		}
