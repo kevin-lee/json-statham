@@ -53,8 +53,9 @@ public class NonIndentedJsonStatham implements JsonStatham
 				JSONException;
 	}
 
+	private static final Map<Class<?>, KnownTypeProcessor> KNOWN_DATA_STRUCTURES_PROCESSOR_MAP;
 	private static final Map<Class<?>, KnownTypeProcessor> KNOWN_TYPE_PROCESSOR_MAP;
-	private static final Set<Class<?>> KNOWN_FIELD_SET;
+	private static final Set<Class<?>> KNOWN_BASIC_TYPE_SET;
 
 	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
@@ -91,11 +92,14 @@ public class NonIndentedJsonStatham implements JsonStatham
 				return jsonStatham.createJsonMap((Map) source);
 			}
 		});
+		KNOWN_DATA_STRUCTURES_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
+		
+		tempMap = new HashMap<Class<?>, KnownTypeProcessor>();
 		tempMap.put(Date.class, new KnownTypeProcessor()
 		{
 			@Override
 			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
-					IllegalAccessException, JSONException
+			IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonValue(source.toString());
 			}
@@ -117,7 +121,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 		tempSet.add(Boolean.TYPE);
 		tempSet.add(Boolean.class);
 		tempSet.add(String.class);
-		KNOWN_FIELD_SET = Collections.unmodifiableSet(tempSet);
+		KNOWN_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
 	}
 
 	private JSONArray createJsonArray(Object[] array) throws IllegalArgumentException, IllegalAccessException, JSONException
@@ -241,7 +245,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 
 		Class<?> type = value.getClass();
 
-		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_TYPE_PROCESSOR_MAP.entrySet())
+		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_DATA_STRUCTURES_PROCESSOR_MAP.entrySet())
 		{
 			if (entry.getKey()
 					.isAssignableFrom(type))
@@ -250,8 +254,18 @@ public class NonIndentedJsonStatham implements JsonStatham
 						.process(this, value);
 			}
 		}
+		
+		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_TYPE_PROCESSOR_MAP.entrySet())
+		{
+			if (entry.getKey()
+					.isAssignableFrom(type))
+			{
+				return entry.getValue()
+				.process(this, value);
+			}
+		}
 
-		if (type.isPrimitive() || KNOWN_FIELD_SET.contains(type))
+		if (type.isPrimitive() || KNOWN_BASIC_TYPE_SET.contains(type))
 		{
 			return value;
 		}
@@ -282,7 +296,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 
 			Class<?> sourceClass = source.getClass();
 
-			for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_TYPE_PROCESSOR_MAP.entrySet())
+			for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_DATA_STRUCTURES_PROCESSOR_MAP.entrySet())
 			{
 				if (entry.getKey()
 						.isAssignableFrom(sourceClass))

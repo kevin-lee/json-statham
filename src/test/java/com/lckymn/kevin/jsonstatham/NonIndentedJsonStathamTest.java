@@ -252,12 +252,10 @@ public class NonIndentedJsonStathamTest
 	{
 		final long id = 1;
 		final String name = "jsonObject";
-		// final Date date = new Date(2009, 11, 28);
 		NestedJsonObject jsonObject = new NestedJsonObject();
 		jsonObject.setPrimaryKey(Long.valueOf(id));
 		jsonObject.setName(name);
 		jsonObject.setAddress(address);
-		// jsonObject.setDate(date);
 
 		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
 				+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
