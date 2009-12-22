@@ -8,8 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -69,7 +71,12 @@ public class NonIndentedJsonStatham implements JsonStatham
 			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				return jsonStatham.createJsonArray((Object[]) source);
+				JSONArray jsonArray = new JSONArray();
+				for (Object eachElement : (Object[]) source)
+				{
+					jsonArray.put(jsonStatham.createJsonValue(eachElement));
+				}
+				return jsonArray;
 			}
 		});
 		tempMap.put(List.class, new KnownTypeProcessor()
@@ -79,7 +86,12 @@ public class NonIndentedJsonStatham implements JsonStatham
 			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				return jsonStatham.createJsonArray((List<Object>) source);
+				JSONArray jsonArray = new JSONArray();
+				for (Object eachElement : (List<Object>) source)
+				{
+					jsonArray.put(jsonStatham.createJsonValue(eachElement));
+				}
+				return jsonArray;
 			}
 		});
 		tempMap.put(Map.class, new KnownTypeProcessor()
@@ -89,17 +101,22 @@ public class NonIndentedJsonStatham implements JsonStatham
 			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				return jsonStatham.createJsonMap((Map) source);
+				JSONObject jsonObject = jsonStatham.newJSONObject();
+				for (Entry<Object, Object> entry : ((Map<Object, Object>) source).entrySet())
+				{
+					jsonObject.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
+				}
+				return jsonObject;
 			}
 		});
 		KNOWN_DATA_STRUCTURES_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
-		
+
 		tempMap = new HashMap<Class<?>, KnownTypeProcessor>();
 		tempMap.put(Date.class, new KnownTypeProcessor()
 		{
 			@Override
 			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
-			IllegalAccessException, JSONException
+					IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonValue(source.toString());
 			}
@@ -124,57 +141,42 @@ public class NonIndentedJsonStatham implements JsonStatham
 		KNOWN_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
 	}
 
-	private JSONArray createJsonArray(Object[] array) throws IllegalArgumentException, IllegalAccessException, JSONException
-	{
-		JSONArray jsonArray = new JSONArray();
-		for (Object eachElement : array)
-		{
-			jsonArray.put(createJsonValue(eachElement));
-		}
-		return jsonArray;
-	}
-
-	private JSONArray createJsonArray(List<Object> list) throws IllegalArgumentException, IllegalAccessException, JSONException
-	{
-		JSONArray jsonArray = new JSONArray();
-		for (Object eachElement : list)
-		{
-			jsonArray.put(createJsonValue(eachElement));
-		}
-		return jsonArray;
-	}
-
 	private JSONObject newJSONObject()
 	{
 		return new JSONObject(new LinkedHashMap<String, Object>());
 	}
 
-	private JSONObject createJsonMap(Map<Object, Object> map) throws IllegalArgumentException, IllegalAccessException, JSONException
+	private Object createJsonObject(Object sourceObject) throws IllegalArgumentException, IllegalAccessException, JSONException
 	{
-		JSONObject jsonObject = newJSONObject();
-
-		for (Entry<Object, Object> entry : map.entrySet())
-		{
-			jsonObject.put((String) entry.getKey(), createJsonValue(entry.getValue()));
-		}
-		return jsonObject;
-	}
-
-	private Object createJsonObject(Object source) throws IllegalArgumentException, IllegalAccessException, JSONException
-	{
-		if (null == source)
+		if (null == sourceObject)
 		{
 			return JSONObject.NULL;
 		}
 
-		Class<?> sourceClass = source.getClass();
+		Class<?> sourceClass = sourceObject.getClass();
 
 		AssertIt.isTrue(sourceClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
 				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.");
 
-		Set<String> fieldNameSet = new HashSet<String>();
+		Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
+		while (!Object.class.equals(sourceClass))
+		{
+			classStack.push(sourceClass);
+			sourceClass = sourceClass.getSuperclass();
+		}
 
+		Set<String> fieldNameSet = new HashSet<String>();
 		JSONObject jsonObject = newJSONObject();
+		for (Class<?> eachClass : classStack)
+		{
+			extractJsonFields(sourceObject, eachClass, fieldNameSet, jsonObject);
+		}
+		return jsonObject;
+	}
+
+	private void extractJsonFields(Object source, Class<?> sourceClass, Set<String> fieldNameSet, JSONObject jsonObject)
+			throws IllegalAccessException, JSONException
+	{
 		for (Field field : sourceClass.getDeclaredFields())
 		{
 			if (!field.isAnnotationPresent(JsonField.class))
@@ -225,7 +227,6 @@ public class NonIndentedJsonStatham implements JsonStatham
 			}
 			jsonObject.put(jsonFieldName, createJsonValue(fieldValue));
 		}
-		return jsonObject;
 	}
 
 	/**
@@ -254,14 +255,14 @@ public class NonIndentedJsonStatham implements JsonStatham
 						.process(this, value);
 			}
 		}
-		
+
 		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_TYPE_PROCESSOR_MAP.entrySet())
 		{
 			if (entry.getKey()
 					.isAssignableFrom(type))
 			{
 				return entry.getValue()
-				.process(this, value);
+						.process(this, value);
 			}
 		}
 

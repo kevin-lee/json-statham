@@ -46,8 +46,6 @@ public class NonIndentedJsonStathamTest
 
 	private Address address;
 
-	// private static final String dateValue = "2009-11-28";
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -302,10 +300,79 @@ public class NonIndentedJsonStathamTest
 		jsonObject.setDateWithoutValueAccessor(date);
 		jsonObject.setDate(date);
 
-		final String expected = "{\"id\":1,\"name\":\"Kevin\","
-				+ "\"address\":{\"street\":\"ABC Street\",\"suburb\":\"\",\"city\":\"Sydney\",\"state\":\"NSW\",\"postcode\":\"2000\"},"
-				+ "\"dateWithoutValueAccessor\":\"" + date.toString() + "\"," + "\"date\":\"" + jsonObject.getDateString() + "\"}";
+		final String expected = "{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
+				+ address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState()
+				+ "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"dateWithoutValueAccessor\":\"" + date.toString() + "\","
+				+ "\"date\":\"" + jsonObject.getDateString() + "\"}";
 		System.out.println("\nNonIndentedJsonStathamTest.testComplexJsonObjectWithMethodUse()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, is(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithInterfaceInheritance()
+	{
+		final String name = "Kevin Lee";
+		final int number = 99;
+		final String email = "kevinlee@test.test";
+		SomeInterface jsonObject = new SomeImplementingClass(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithInterfaceInheritance()");
+		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, is(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithImplementationInheritance()
+	{
+		final String name = "Kevin";
+		final int number = 5;
+		final String email = "kevin@test.test";
+		SubClass jsonObject = new SubClass(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithImplementationInheritance()");
+		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, is(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass()
+	{
+		final String name = "Kevin";
+		final int number = 11;
+		final String email = "kevin@test.blahblah";
+		SubClass jsonObject = new SecondSubClassWithoutOwnFields(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass()");
+		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, is(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()
+	{
+		final String name = "Mr. Lee";
+		final int number = 999;
+		final String email = "kevin@another.email";
+		final String comment = "Blah blah";
+		SecondSubClassWithOwnFields jsonObject = new SecondSubClassWithOwnFields(name, number, email, address, comment);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()");
+		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":"
+				+ "{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity()
+				+ "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"},\"comment\":\"" + comment
+				+ "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
