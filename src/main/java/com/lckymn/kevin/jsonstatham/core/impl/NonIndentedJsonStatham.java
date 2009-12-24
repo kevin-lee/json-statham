@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
@@ -121,6 +122,17 @@ public class NonIndentedJsonStatham implements JsonStatham
 				return jsonStatham.createJsonValue(source.toString());
 			}
 		});
+		tempMap.put(Calendar.class, new KnownTypeProcessor()
+		{
+			@Override
+			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+					IllegalAccessException, JSONException
+			{
+				return jsonStatham.createJsonValue(((Calendar) source).getTime()
+						.toString());
+			}
+
+		});
 		KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
 
 		Set<Class<?>> tempSet = new HashSet<Class<?>>();
@@ -217,8 +229,10 @@ public class NonIndentedJsonStatham implements JsonStatham
 				}
 				catch (InvocationTargetException e)
 				{
-					throw new JsonStathamException("The given ValueAccessor method [" + valueAccessorName
-							+ "] is proper value accessor for JsonField.", e);
+					throw new JsonStathamException("Value accessor invocation failed.\n"
+							+ "It might be caused by any error happened in the given value accessor method or "
+							+ "The given ValueAccessor method [" + valueAccessorName
+							+ "] is not a proper value accessor for the JsonField [name: " + jsonFieldName + "].", e);
 				}
 			}
 			else

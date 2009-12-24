@@ -9,6 +9,7 @@ import static org.hamcrest.CoreMatchers.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -263,7 +264,7 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertEquals(expected, result);
+		assertThat(result, is(expected));
 	}
 
 	@Test(expected = JsonStathamException.class)
@@ -297,13 +298,18 @@ public class NonIndentedJsonStathamTest
 		jsonObject.setName("Kevin");
 		jsonObject.setAddress(address);
 		Date date = new Date();
-		jsonObject.setDateWithoutValueAccessor(date);
+		Calendar calendar = Calendar.getInstance();
 		jsonObject.setDate(date);
+		jsonObject.setDateWithValueAccessor(date);
+		jsonObject.setCalendar(calendar);
+		jsonObject.setCalendarWithValueAccessor(calendar);
 
 		final String expected = "{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
 				+ address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState()
-				+ "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"dateWithoutValueAccessor\":\"" + date.toString() + "\","
-				+ "\"date\":\"" + jsonObject.getDateString() + "\"}";
+				+ "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
+				+ "\"dateWithValueAccessor\":\"" + jsonObject.getDateString() + "\",\"calendar\":\"" + jsonObject.getCalendar()
+						.getTime()
+						.toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarString() + "\"}";
 		System.out.println("\nNonIndentedJsonStathamTest.testComplexJsonObjectWithMethodUse()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");

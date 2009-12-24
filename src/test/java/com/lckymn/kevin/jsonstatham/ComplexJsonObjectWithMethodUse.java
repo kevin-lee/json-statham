@@ -4,6 +4,7 @@
 package com.lckymn.kevin.jsonstatham;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
@@ -26,12 +27,19 @@ public final class ComplexJsonObjectWithMethodUse
 	@JsonField(name = "address")
 	private Address address;
 
-	@JsonField(name = "dateWithoutValueAccessor")
-	private Date dateWithoutValueAccessor;
-
 	@JsonField(name = "date")
-	@ValueAccessor(name = "getDateString")
 	private Date date;
+
+	@JsonField(name = "dateWithValueAccessor")
+	@ValueAccessor(name = "getDateString")
+	private Date dateWithValueAccessor;
+
+	@JsonField(name = "calendar")
+	private Calendar calendar;
+
+	@JsonField(name = "calendarWithValueAccessor")
+	@ValueAccessor(name = "getCalendarString")
+	private Calendar calendarWithValueAccessor;
 
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -87,31 +95,6 @@ public final class ComplexJsonObjectWithMethodUse
 	}
 
 	/**
-	 * @return the dateWithoutValueAccessor
-	 */
-	public Date getDateWithoutValueAccessor()
-	{
-		return dateWithoutValueAccessor;
-	}
-
-	/**
-	 * @param dateWithoutValueAccessor
-	 *            the dateWithoutValueAccessor to set
-	 */
-	public void setDateWithoutValueAccessor(Date dateWithoutValueAccessor)
-	{
-		this.dateWithoutValueAccessor = dateWithoutValueAccessor;
-	}
-
-	public String getDateString()
-	{
-		synchronized (simpleDateFormat)
-		{
-			return simpleDateFormat.format(date);
-		}
-	}
-
-	/**
 	 * @return the date
 	 */
 	public Date getDate()
@@ -127,4 +110,69 @@ public final class ComplexJsonObjectWithMethodUse
 	{
 		this.date = date;
 	}
+
+	/**
+	 * @return the dateWithValueAccessor
+	 */
+	public Date getDateWithValueAccessor()
+	{
+		return dateWithValueAccessor;
+	}
+
+	/**
+	 * @param dateWithValueAccessor
+	 *            the dateWithValueAccessor to set
+	 */
+	public void setDateWithValueAccessor(Date dateWithValueAccessor)
+	{
+		this.dateWithValueAccessor = dateWithValueAccessor;
+	}
+
+	public String getDateString()
+	{
+		synchronized (simpleDateFormat)
+		{
+			return simpleDateFormat.format(date);
+		}
+	}
+
+	/**
+	 * @return the calendar
+	 */
+	public Calendar getCalendar()
+	{
+		return calendar;
+	}
+
+	/**
+	 * @param calendar
+	 *            the calendar to set
+	 */
+	public void setCalendar(Calendar calendar)
+	{
+		this.calendar = calendar;
+	}
+
+	/**
+	 * @return the calendarWithValueAccessor
+	 */
+	public Calendar getCalendarWithValueAccessor()
+	{
+		return calendarWithValueAccessor;
+	}
+
+	/**
+	 * @param calendarWithValueAccessor
+	 *            the calendarWithValueAccessor to set
+	 */
+	public void setCalendarWithValueAccessor(Calendar calendarWithValueAccessor)
+	{
+		this.calendarWithValueAccessor = calendarWithValueAccessor;
+	}
+
+	public String getCalendarString()
+	{
+		return simpleDateFormat.format(calendarWithValueAccessor.getTime());
+	}
+
 }
