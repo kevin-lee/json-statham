@@ -32,8 +32,7 @@ public final class AssertIt
 
 	public static void isNotEmpty(final String value, final String message)
 	{
-		isNotNull(value, message);
-		if (0 == value.length())
+		if (null == value || 0 == value.length())
 		{
 			throw new IllegalArgumentException(message);
 		}
@@ -41,13 +40,12 @@ public final class AssertIt
 
 	public static void isEmpty(final String value, final String message)
 	{
-		isNull(value, message);
-		if (0 != value.length())
+		if (null != value && 0 != value.length())
 		{
 			throw new IllegalArgumentException(message);
 		}
 	}
-	
+
 	public static void isTrue(final boolean expresion, final String message)
 	{
 		if (!expresion)
