@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham;
+package com.lckymn.kevin.jsonstatham.core.impl;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,14 +18,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import com.lckymn.kevin.jsonstatham.Address;
+import com.lckymn.kevin.jsonstatham.ComplexJsonObjectWithMethodUse;
+import com.lckymn.kevin.jsonstatham.JsonObjectWithDuplicateKeys;
+import com.lckymn.kevin.jsonstatham.NestedJsonObject;
+import com.lckymn.kevin.jsonstatham.SecondSubClassWithOwnFields;
+import com.lckymn.kevin.jsonstatham.SecondSubClassWithoutOwnFields;
+import com.lckymn.kevin.jsonstatham.SomeImplementingClass;
+import com.lckymn.kevin.jsonstatham.SomeInterface;
+import com.lckymn.kevin.jsonstatham.SubClass;
+import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
-import com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -38,6 +51,15 @@ public class NonIndentedJsonStathamTest
 	private static final List<String> cityList = Arrays.asList("Sydney", "Melbourne");
 	private static final List<String> stateList = Arrays.asList("NSW", "VIC");
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
+
+	private static final Answer<JSONObject> ANSWER_FOR_NEW_JSON_OBJECT = new Answer<JSONObject>()
+	{
+		@Override
+		public JSONObject answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+		{
+			return new JSONObject(new LinkedHashMap<String, Object>());
+		}
+	};
 
 	private List<Address> addressList;
 
@@ -71,7 +93,10 @@ public class NonIndentedJsonStathamTest
 	@Before
 	public void setUp() throws Exception
 	{
-		jsonStatham = new NonIndentedJsonStatham();
+		final JSONObjectCreator jsonObjectCreator = mock(JSONObjectCreator.class);
+		when(jsonObjectCreator.newJSONObject()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT);
+
+		jsonStatham = new NonIndentedJsonStatham(jsonObjectCreator);
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
 		addressList = new ArrayList<Address>();

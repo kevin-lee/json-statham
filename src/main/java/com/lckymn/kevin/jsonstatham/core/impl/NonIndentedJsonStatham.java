@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,16 +28,17 @@ import com.lckymn.kevin.common.validation.AssertIt;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
+import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-11-21)
- * @version 0.02 (2009-12-07) It is refactored.
- * @version 0.03 (2009-12-07) It is redesigned.
- * @version 0.04 (2009-12-12) It can handle array, List and Map.
- * @version 0.05 (2009-12-20)
+ * @version 0.0.1 (2009-11-21)
+ * @version 0.0.2 (2009-12-07) It is refactored.
+ * @version 0.0.3 (2009-12-07) It is redesigned.
+ * @version 0.0.4 (2009-12-12) It can handle array, List and Map.
+ * @version 0.0.5 (2009-12-20)
  *          <p>
  *          It can handle duplicate {@link JsonField} names. => It throws an exception.
  *          </p>
@@ -47,6 +47,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          value object, or if the field is also annotated with {@link ValueAccessor} annotation, it uses the method specified with the
  *          {@link ValueAccessor} annotation in order to get the value.
  *          </p>
+ * @version 0.0.6 (2010-02-03) {@link JSONObjectCreator} is added to create a new {@link JSONObject}.
  */
 public class NonIndentedJsonStatham implements JsonStatham
 {
@@ -153,9 +154,16 @@ public class NonIndentedJsonStatham implements JsonStatham
 		KNOWN_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
 	}
 
+	private final JSONObjectCreator jsonObjectCreator;
+
+	public NonIndentedJsonStatham(JSONObjectCreator jsonObjectCreator)
+	{
+		this.jsonObjectCreator = jsonObjectCreator;
+	}
+
 	private JSONObject newJSONObject()
 	{
-		return new JSONObject(new LinkedHashMap<String, Object>());
+		return jsonObjectCreator.newJSONObject();
 	}
 
 	private Object createJsonObject(Object sourceObject) throws IllegalArgumentException, IllegalAccessException, JSONException
