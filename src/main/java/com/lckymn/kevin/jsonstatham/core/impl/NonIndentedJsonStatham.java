@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -81,7 +81,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 				return jsonArray;
 			}
 		});
-		tempMap.put(List.class, new KnownTypeProcessor()
+		tempMap.put(Collection.class, new KnownTypeProcessor()
 		{
 			@SuppressWarnings("unchecked")
 			@Override
@@ -89,7 +89,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 					IllegalAccessException, JSONException
 			{
 				JSONArray jsonArray = new JSONArray();
-				for (Object eachElement : (List<Object>) source)
+				for (Object eachElement : (Collection<Object>) source)
 				{
 					jsonArray.put(jsonStatham.createJsonValue(eachElement));
 				}

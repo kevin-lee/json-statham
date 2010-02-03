@@ -11,11 +11,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.json.JSONObject;
@@ -29,6 +32,9 @@ import org.mockito.stubbing.Answer;
 
 import com.lckymn.kevin.jsonstatham.Address;
 import com.lckymn.kevin.jsonstatham.ComplexJsonObjectWithMethodUse;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingCollection;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingList;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingSet;
 import com.lckymn.kevin.jsonstatham.JsonObjectWithDuplicateKeys;
 import com.lckymn.kevin.jsonstatham.NestedJsonObject;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithOwnFields;
@@ -51,6 +57,7 @@ public class NonIndentedJsonStathamTest
 	private static final List<String> cityList = Arrays.asList("Sydney", "Melbourne");
 	private static final List<String> stateList = Arrays.asList("NSW", "VIC");
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
+	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
 	private static final Answer<JSONObject> ANSWER_FOR_NEW_JSON_OBJECT = new Answer<JSONObject>()
 	{
@@ -289,19 +296,20 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, is(expected));
+		assertThat(result, equalTo(expected));
 	}
 
 	@Test(expected = JsonStathamException.class)
 	public void testJsonObjectWithDuplicateKeys() throws IOException
 	{
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithDuplicateKeys()");
 		JsonObjectWithDuplicateKeys jsonObjectWithDuplicateKeys = new JsonObjectWithDuplicateKeys();
 		jsonObjectWithDuplicateKeys.setUsername("kevinlee");
 		jsonObjectWithDuplicateKeys.setName("Kevin");
 		jsonObjectWithDuplicateKeys.setFullName("Kevin Lee");
 		jsonObjectWithDuplicateKeys.setEmail("kevin@test.test");
 
-		System.out.println("\nresult: ");
+		System.out.println("result: ");
 		String result = "";
 		try
 		{
@@ -340,7 +348,84 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, is(expected));
+		assertThat(result, equalTo(expected));
+	}
+
+	private String getExpectedJsonArray(String name, String value, String setName)
+	{
+		StringBuilder stringBuilder = new StringBuilder("{\"").append(name)
+				.append("\":\"")
+				.append(value)
+				.append("\",\"")
+				.append(setName)
+				.append("\":[");
+		for (String element : SOME_STRING_VALUE_ARRAY)
+		{
+			stringBuilder.append("\"")
+					.append(element)
+					.append("\"")
+					.append(",");
+		}
+		stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+		stringBuilder.append("]}");
+		return stringBuilder.toString();
+	}
+
+	private <V extends Object, T extends Collection<V>> T initialiseCollectionWithStringValues(T t, V... values)
+	{
+		for (V value : values)
+		{
+			t.add(value);
+		}
+		return t;
+	}
+
+	@Test
+	public void testJsonObjectContainingCollection()
+	{
+		final String nameValue = "testJsonWithCollection";
+		Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+
+		JsonObjectContainingCollection jsonObjectContainingCollection = new JsonObjectContainingCollection(nameValue, collection);
+		final String expected = getExpectedJsonArray("name", nameValue, "valueCollection");
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectContainingCollection()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectContainingList()
+	{
+		final String nameValue = "testJsonWithList";
+		List<String> list = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+
+		JsonObjectContainingList jsonObjectContainingList = new JsonObjectContainingList(nameValue, list);
+		final String expected = getExpectedJsonArray("name", nameValue, "valueList");
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectContainingList()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectContainingList);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectContainingSet()
+	{
+		final String nameValue = "testJsonWithSet";
+		Set<String> set = initialiseCollectionWithStringValues(new LinkedHashSet<String>(), SOME_STRING_VALUE_ARRAY);
+
+		JsonObjectContainingSet jsonObjectContainingSet = new JsonObjectContainingSet(nameValue, set);
+		final String expected = getExpectedJsonArray("name", nameValue, "valueSet");
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectContainingSet()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
 	}
 
 	@Test
@@ -356,7 +441,7 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, is(expected));
+		assertThat(result, equalTo(expected));
 	}
 
 	@Test
@@ -372,7 +457,7 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, is(expected));
+		assertThat(result, equalTo(expected));
 	}
 
 	@Test
@@ -388,7 +473,7 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, is(expected));
+		assertThat(result, equalTo(expected));
 	}
 
 	@Test
@@ -408,6 +493,6 @@ public class NonIndentedJsonStathamTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, is(expected));
+		assertThat(result, equalTo(expected));
 	}
 }
