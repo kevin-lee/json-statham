@@ -36,6 +36,7 @@ import com.lckymn.kevin.jsonstatham.JsonObjectContainingCollection;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingList;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingSet;
 import com.lckymn.kevin.jsonstatham.JsonObjectWithDuplicateKeys;
+import com.lckymn.kevin.jsonstatham.JsonObjectWithoutFieldName;
 import com.lckymn.kevin.jsonstatham.NestedJsonObject;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithOwnFields;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithoutOwnFields;
@@ -50,7 +51,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-21)
  */
-public class NonIndentedJsonStathamTest
+public class ReflectionJsonStathamTest
 {
 	private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
 	private static final List<String> suburbList = Arrays.asList("", "Test Suburb");
@@ -103,7 +104,7 @@ public class NonIndentedJsonStathamTest
 		final JSONObjectCreator jsonObjectCreator = mock(JSONObjectCreator.class);
 		when(jsonObjectCreator.newJSONObject()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT);
 
-		jsonStatham = new NonIndentedJsonStatham(jsonObjectCreator);
+		jsonStatham = new ReflectionJsonStatham(jsonObjectCreator);
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
 		addressList = new ArrayList<Address>();
@@ -187,7 +188,7 @@ public class NonIndentedJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)} with List as
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)} with List as
 	 * the parameter object.
 	 */
 	@Test
@@ -230,7 +231,7 @@ public class NonIndentedJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testMap()
@@ -260,7 +261,7 @@ public class NonIndentedJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testSimpleJsonObject()
@@ -276,7 +277,7 @@ public class NonIndentedJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.NonIndentedJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testNestedJsonObject()
@@ -321,6 +322,22 @@ public class NonIndentedJsonStathamTest
 			throw e;
 		}
 		System.out.println(result);
+	}
+
+	@Test
+	public void testJsonObjectWithoutFieldName()
+	{
+		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithoutFieldName()");
+		final int id = 5;
+		final String name = "Kevin Lee";
+		final String address = "123 ABC Street";
+		final JsonObjectWithoutFieldName jsonObjectWithoutFieldName = new JsonObjectWithoutFieldName(id, name, address);
+		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":\"" + address + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectWithoutFieldName);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
 	}
 
 	@Test

@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.lckymn.kevin.common.validation.AssertIt;
+import com.lckymn.kevin.common.validation.ValidateIt;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -48,12 +49,15 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          {@link ValueAccessor} annotation in order to get the value.
  *          </p>
  * @version 0.0.6 (2010-02-03) {@link JSONObjectCreator} is added to create a new {@link JSONObject}.
+ * @version 0.0.7 (2010-02-12) The name is changed from NonIndentedJsonStatham to ReflectionJsonStatham. When the JsonObject is converted
+ *          into JSON, if any fields annotated with @JsonField without the 'name' element explicitly set, it will use the actual field names
+ *          as the JsonField names.
  */
-public class NonIndentedJsonStatham implements JsonStatham
+public class ReflectionJsonStatham implements JsonStatham
 {
 	private static interface KnownTypeProcessor
 	{
-		Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException, IllegalAccessException,
+		Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException, IllegalAccessException,
 				JSONException;
 	}
 
@@ -70,7 +74,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 		tempMap.put(Object[].class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				JSONArray jsonArray = new JSONArray();
@@ -85,7 +89,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				JSONArray jsonArray = new JSONArray();
@@ -100,7 +104,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				JSONObject jsonObject = jsonStatham.newJSONObject();
@@ -117,7 +121,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 		tempMap.put(Date.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonValue(source.toString());
@@ -126,7 +130,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 		tempMap.put(Calendar.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(NonIndentedJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonValue(((Calendar) source).getTime()
@@ -156,7 +160,7 @@ public class NonIndentedJsonStatham implements JsonStatham
 
 	private final JSONObjectCreator jsonObjectCreator;
 
-	public NonIndentedJsonStatham(JSONObjectCreator jsonObjectCreator)
+	public ReflectionJsonStatham(JSONObjectCreator jsonObjectCreator)
 	{
 		this.jsonObjectCreator = jsonObjectCreator;
 	}
@@ -205,11 +209,20 @@ public class NonIndentedJsonStatham implements JsonStatham
 				continue;
 			}
 			field.setAccessible(true);
+
+			/* get field name from the @JsonField annotation */
 			String jsonFieldName = field.getAnnotation(JsonField.class)
 					.name();
 
+			if (ValidateIt.isEmpty(jsonFieldName))
+			{
+				/* no field name is set in the @JsonField annotation so use the actual field name for the JsonObject field. */
+				jsonFieldName = field.getName();
+			}
+
 			if (fieldNameSet.contains(jsonFieldName))
 			{
+				/* [ERROR] duplicate field names found */
 				throw new JsonStathamException("Json filed name must be unique. [JsonField name: " + jsonFieldName + "] in [field: "
 						+ field + "] is already used in another field.");
 			}
