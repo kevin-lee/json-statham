@@ -33,6 +33,8 @@ import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
+import static com.lckymn.kevin.common.string.MessageFormatter.*;
+
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
@@ -52,6 +54,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @version 0.0.7 (2010-02-12) The name is changed from NonIndentedJsonStatham to ReflectionJsonStatham. When the JsonObject is converted
  *          into JSON, if any fields annotated with @JsonField without the 'name' element explicitly set, it will use the actual field names
  *          as the JsonField names.
+ * @version 0.0.8 (2010-03-02) refactoring...
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
@@ -180,7 +183,8 @@ public class ReflectionJsonStatham implements JsonStatham
 		Class<?> sourceClass = sourceObject.getClass();
 
 		AssertIt.isTrue(sourceClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
-				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.");
+				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.\n" + "[class: %s]\n[object: %s]",
+				sourceClass, sourceObject);
 
 		Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
 		while (!Object.class.equals(sourceClass))
@@ -223,8 +227,9 @@ public class ReflectionJsonStatham implements JsonStatham
 			if (fieldNameSet.contains(jsonFieldName))
 			{
 				/* [ERROR] duplicate field names found */
-				throw new JsonStathamException("Json filed name must be unique. [JsonField name: " + jsonFieldName + "] in [field: "
-						+ field + "] is already used in another field.");
+				throw new JsonStathamException(formatMessage(
+						"Json filed name must be unique. [JsonField name: %s] in [field: %s] is already used in another field.",
+						jsonFieldName, field));
 			}
 			fieldNameSet.add(jsonFieldName);
 
@@ -246,14 +251,15 @@ public class ReflectionJsonStatham implements JsonStatham
 				}
 				catch (NoSuchMethodException e)
 				{
-					throw new JsonStathamException("The given ValueAccessor method that is [" + valueAccessorName + "] is not found.", e);
+					throw new JsonStathamException(formatMessage("The given ValueAccessor method that is [%s] is not found.",
+							valueAccessorName), e);
 				}
 				catch (InvocationTargetException e)
 				{
-					throw new JsonStathamException("Value accessor invocation failed.\n"
+					throw new JsonStathamException(formatMessage("Value accessor invocation failed.\n"
 							+ "It might be caused by any error happened in the given value accessor method or "
-							+ "The given ValueAccessor method [" + valueAccessorName
-							+ "] is not a proper value accessor for the JsonField [name: " + jsonFieldName + "].", e);
+							+ "The given ValueAccessor method [%s] is not a proper value accessor for the JsonField [name: %s].",
+							valueAccessorName, jsonFieldName), e);
 				}
 			}
 			else
@@ -312,7 +318,7 @@ public class ReflectionJsonStatham implements JsonStatham
 		else
 		{
 			/* unknown type */
-			throw new JsonStathamException("Unknown JSON object is entered.\n" + "[type: " + type + "][value: " + value + "]");
+			throw new JsonStathamException(formatMessage("Unknown JSON object is entered.\n" + "[type: %s][value: %s]", type, value));
 		}
 	}
 
@@ -346,7 +352,8 @@ public class ReflectionJsonStatham implements JsonStatham
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new JsonStathamException("Wrong object is passed or it has illegal fields with the @JsonField annotation", e);
+			throw new JsonStathamException(formatMessage(
+					"Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation", source), e);
 		}
 		catch (IllegalAccessException e)
 		{

@@ -5,7 +5,7 @@
 	<groupId>com.lckymn.kevin</groupId>
 	<artifactId>json-statham</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>json-statham</name>
 	<url>http://lckymn.com</url>
 	<distributionManagement>
@@ -73,6 +73,13 @@
 			<version>20090211</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.lckymn.kevin</groupId>
+			<artifactId>kevin-common-validation</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
