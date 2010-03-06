@@ -18,5 +18,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValueAccessor
 {
-	String name();
+	String name() default "";
 }

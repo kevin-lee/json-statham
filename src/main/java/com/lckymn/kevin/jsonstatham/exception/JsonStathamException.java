@@ -5,7 +5,7 @@ package com.lckymn.kevin.jsonstatham.exception;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-11-21)
+ * @version 0.0.1 (2009-11-21)
  */
 public class JsonStathamException extends RuntimeException
 {

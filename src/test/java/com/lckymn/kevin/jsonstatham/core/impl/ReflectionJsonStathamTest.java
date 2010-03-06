@@ -8,12 +8,14 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,10 +33,16 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.lckymn.kevin.jsonstatham.Address;
-import com.lckymn.kevin.jsonstatham.ComplexJsonObjectWithMethodUse;
+import com.lckymn.kevin.jsonstatham.ComplexJsonObjectWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingCollection;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingIterable;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingIterator;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingList;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingMapEntrySet;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingSet;
+import com.lckymn.kevin.jsonstatham.JsonObjectPojo;
+import com.lckymn.kevin.jsonstatham.JsonObjectPojoImpl;
+import com.lckymn.kevin.jsonstatham.JsonObjectPojoProxyFactory;
 import com.lckymn.kevin.jsonstatham.JsonObjectWithDuplicateKeys;
 import com.lckymn.kevin.jsonstatham.JsonObjectWithoutFieldName;
 import com.lckymn.kevin.jsonstatham.NestedJsonObject;
@@ -43,13 +51,19 @@ import com.lckymn.kevin.jsonstatham.SecondSubClassWithoutOwnFields;
 import com.lckymn.kevin.jsonstatham.SomeImplementingClass;
 import com.lckymn.kevin.jsonstatham.SomeInterface;
 import com.lckymn.kevin.jsonstatham.SubClass;
+import com.lckymn.kevin.jsonstatham.SubClassWithNoJsonObjectSuperClass;
+import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessor;
+import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithAbstractMethod;
+import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithOverriddenMethod;
+import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithoutItsName;
 import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-11-21)
+ * @version 0.0.1 (2009-11-21)
+ * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
  */
 public class ReflectionJsonStathamTest
 {
@@ -343,7 +357,7 @@ public class ReflectionJsonStathamTest
 	@Test
 	public void testComplexJsonObjectWithMethodUse()
 	{
-		ComplexJsonObjectWithMethodUse jsonObject = new ComplexJsonObjectWithMethodUse();
+		ComplexJsonObjectWithValueAccessor jsonObject = new ComplexJsonObjectWithValueAccessor();
 		jsonObject.setPrimaryKey(Long.valueOf(1));
 		jsonObject.setName("Kevin");
 		jsonObject.setAddress(address);
@@ -383,9 +397,9 @@ public class ReflectionJsonStathamTest
 					.append("\"")
 					.append(",");
 		}
-		stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-		stringBuilder.append("]}");
-		return stringBuilder.toString();
+		return stringBuilder.deleteCharAt(stringBuilder.length() - 1)
+				.append("]}")
+				.toString();
 	}
 
 	private <V extends Object, T extends Collection<V>> T initialiseCollectionWithStringValues(T t, V... values)
@@ -441,6 +455,80 @@ public class ReflectionJsonStathamTest
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectContainingMapEntrySetSet()
+	{
+		final String nameValue = "testJsonObjectContainingMapEntrySetSet";
+
+		JsonObjectContainingMapEntrySet jsonObjectContainingSet = new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
+
+		StringBuilder stringBuilder = new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
+		for (Entry<String, Address> entry : addressMap.entrySet())
+		{
+			Address address = entry.getValue();
+			stringBuilder.append("{\"" + entry.getKey() + "\":")
+					.append("{\"street\":\"")
+					.append(address.getStreet())
+					.append("\",\"suburb\":\"")
+					.append(address.getSuburb())
+					.append("\",\"city\":\"")
+					.append(address.getCity())
+					.append("\",\"state\":\"")
+					.append(address.getState())
+					.append("\",\"postcode\":\"")
+					.append(address.getPostcode())
+					.append("\"}},");
+		}
+		final String expected = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length(), "]}")
+				.toString();
+
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectContainingMapEntrySetSet()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectContainingIterator()
+	{
+		final String nameValue = "testJsonObjectContainingIterator";
+		Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+
+		JsonObjectContainingIterator jsonObjectContainingCollection = new JsonObjectContainingIterator(nameValue, collection.iterator());
+		final String expected = getExpectedJsonArray("name", nameValue, "valueIterator");
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectContainingIterator()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectContainingIterable()
+	{
+		final String nameValue = "testJsonObjectContainingIterable";
+		Iterable<String> iterable = new Iterable<String>()
+		{
+			@Override
+			public Iterator<String> iterator()
+			{
+				return initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY).iterator();
+			}
+		};
+
+		JsonObjectContainingIterable jsonObjectContainingCollection = new JsonObjectContainingIterable(nameValue, iterable);
+		final String expected = getExpectedJsonArray("name", nameValue, "valueIterable");
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectContainingIterator()");
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
 		assertThat(result, equalTo(expected));
 	}
@@ -509,6 +597,108 @@ public class ReflectionJsonStathamTest
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()
+	{
+		final String name = "Kevin";
+		final int number = 5;
+		final String email = "kevin@test.test";
+		SubClassWithNoJsonObjectSuperClass jsonObject = new SubClassWithNoJsonObjectSuperClass(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()");
+		final String expected = "{\"email\":\"" + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithImplementationInheritanceWithValueAccessor()
+	{
+		final String name = "Kevin";
+		final int number = 5;
+		final String email = "kevin@test.test";
+		SubClassWithValueAccessor jsonObject = new SubClassWithValueAccessor(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessor()");
+		final String expected = "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+				+ "\",\"email\":\"My email address is " + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()
+	{
+		final String name = "Kevin";
+		final int number = 5;
+		final String email = "kevin@test.test";
+		SubClassWithValueAccessorWithoutItsName jsonObject = new SubClassWithValueAccessorWithoutItsName(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()");
+		final String expected = "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+				+ "\",\"email\":\"My email address is " + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()
+	{
+		final String name = "Kevin";
+		final int number = 5;
+		final String email = "kevin@test.test";
+		SubClassWithValueAccessorWithAbstractMethod jsonObject = new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()");
+		final String expected = "{\"name\":\"My name is nobody.\",\"number\":\"The number is 100.\",\"email\":\"My email address is "
+				+ email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()
+	{
+		final String name = "Kevin";
+		final int number = 5;
+		final String email = "kevin@test.test";
+		SubClassWithValueAccessorWithOverriddenMethod jsonObject = new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
+		System.out.println("\nNonIndentedJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()");
+		final String expected = "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+				+ "\",\"email\":\"My email address is " + email + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObject);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException
+	{
+		final long id = 999L;
+		final String name = "ProxiedPojo";
+		JsonObjectPojo jsonObjectPojo = JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null), id, name,
+				addressList);
+
+		System.out.println("\nNonIndentedJsonStathamTest.testProxiedJsonObjectPojo()");
+		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(jsonObjectPojo);
 		System.out.println(result);
 		assertThat(result, equalTo(expected));
 	}

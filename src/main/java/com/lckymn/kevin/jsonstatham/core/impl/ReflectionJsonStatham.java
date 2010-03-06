@@ -3,6 +3,8 @@
  */
 package com.lckymn.kevin.jsonstatham.core.impl;
 
+import static com.lckymn.kevin.common.string.MessageFormatter.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -32,8 +35,6 @@ import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
 import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
-
-import static com.lckymn.kevin.common.string.MessageFormatter.*;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -55,6 +56,15 @@ import static com.lckymn.kevin.common.string.MessageFormatter.*;
  *          into JSON, if any fields annotated with @JsonField without the 'name' element explicitly set, it will use the actual field names
  *          as the JsonField names.
  * @version 0.0.8 (2010-03-02) refactoring...
+ * @version 0.0.9 (2010-03-06)
+ *          <ul>
+ *          <li>It can process {@link java.util.Iterator}, {@link java.lang.Iterable} and {@link java.util.Map.Entry}.</li>
+ *          <li>If there is no explicit @ValueAccessor name, it uses the getter name that is get + the field name (e.g. field name: name =>
+ *          getName / field name: id => getId).</li>
+ *          <li>It can handle proxied objects created by javassist.</li>
+ *          <li>It ignores any super classes of the given JSON object if the classes are not annotated with the {@link JsonObject}
+ *          annotation.</li>
+ *          </ul>
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
@@ -103,6 +113,36 @@ public class ReflectionJsonStatham implements JsonStatham
 				return jsonArray;
 			}
 		});
+		tempMap.put(Iterable.class, new KnownTypeProcessor()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+					IllegalAccessException, JSONException
+			{
+				JSONArray jsonArray = new JSONArray();
+				for (Object eachElement : (Iterable<Object>) source)
+				{
+					jsonArray.put(jsonStatham.createJsonValue(eachElement));
+				}
+				return jsonArray;
+			}
+		});
+		tempMap.put(Iterator.class, new KnownTypeProcessor()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+					IllegalAccessException, JSONException
+			{
+				JSONArray jsonArray = new JSONArray();
+				for (Iterator<Object> iterator = (Iterator<Object>) source; iterator.hasNext();)
+				{
+					jsonArray.put(jsonStatham.createJsonValue(iterator.next()));
+				}
+				return jsonArray;
+			}
+		});
 		tempMap.put(Map.class, new KnownTypeProcessor()
 		{
 			@SuppressWarnings("unchecked")
@@ -138,6 +178,19 @@ public class ReflectionJsonStatham implements JsonStatham
 			{
 				return jsonStatham.createJsonValue(((Calendar) source).getTime()
 						.toString());
+			}
+
+		});
+		tempMap.put(Entry.class, new KnownTypeProcessor()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+					IllegalAccessException, JSONException
+			{
+				Entry<Object, Object> entry = (Entry<Object, Object>) source;
+				return jsonStatham.newJSONObject()
+						.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
 			}
 
 		});
@@ -182,16 +235,20 @@ public class ReflectionJsonStatham implements JsonStatham
 
 		Class<?> sourceClass = sourceObject.getClass();
 
-		AssertIt.isTrue(sourceClass.isAnnotationPresent(JsonObject.class), "The target object is not JSON object. "
-				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.\n" + "[class: %s]\n[object: %s]",
-				sourceClass, sourceObject);
-
 		Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
 		while (!Object.class.equals(sourceClass))
 		{
-			classStack.push(sourceClass);
+			if (sourceClass.isAnnotationPresent(JsonObject.class))
+			{
+				/* add if the class is annotated with @JsonObject. Otherwise ignore it as it is not a JSON Object */
+				classStack.push(sourceClass);
+			}
 			sourceClass = sourceClass.getSuperclass();
 		}
+
+		AssertIt.isFalse(classStack.isEmpty(), "The target object is not JSON object. "
+				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.\n" + "[class: %s]\n[object: %s]",
+				sourceClass, sourceObject);
 
 		Set<String> fieldNameSet = new HashSet<String>();
 		JSONObject jsonObject = newJSONObject();
@@ -239,6 +296,16 @@ public class ReflectionJsonStatham implements JsonStatham
 			{
 				String valueAccessorName = field.getAnnotation(ValueAccessor.class)
 						.name();
+
+				if (ValidateIt.isEmpty(valueAccessorName))
+				{
+					/*
+					 * no explicit ValueAccessor name is set so use the getter name that is get + the field name (e.g. field name: name =>
+					 * getName / field name: id => getId).
+					 */
+					valueAccessorName = "get" + Character.toUpperCase(jsonFieldName.charAt(0)) + jsonFieldName.substring(1);
+				}
+
 				try
 				{
 					Method method = sourceClass.getDeclaredMethod(valueAccessorName, EMPTY_CLASS_ARRAY);
@@ -364,5 +431,4 @@ public class ReflectionJsonStatham implements JsonStatham
 			throw new JsonStathamException(e);
 		}
 	}
-
 }

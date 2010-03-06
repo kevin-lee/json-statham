@@ -5,21 +5,24 @@ package com.lckymn.kevin.jsonstatham;
 
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
+import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-12-22)
+ * @version 0.0.1 (2010-03-06)
  */
 @JsonObject
-public abstract class SuperClass
+public abstract class SuperClassWithValueAccessorWithOverriddenMethod
 {
+	@ValueAccessor(name = "name")
 	@JsonField(name = "name")
 	private String name;
 
+	@ValueAccessor(name = "number")
 	@JsonField(name = "number")
 	private int number;
 
-	public SuperClass(String name, int number)
+	public SuperClassWithValueAccessorWithOverriddenMethod(String name, int number)
 	{
 		this.name = name;
 		this.number = number;
@@ -28,7 +31,7 @@ public abstract class SuperClass
 	/**
 	 * @return the name
 	 */
-	public String getName()
+	public String name()
 	{
 		return name;
 	}
@@ -45,9 +48,9 @@ public abstract class SuperClass
 	/**
 	 * @return the number
 	 */
-	public int getNumber()
+	public String number()
 	{
-		return number;
+		return String.valueOf(number);
 	}
 
 	/**
@@ -58,5 +61,4 @@ public abstract class SuperClass
 	{
 		this.number = number;
 	}
-
 }

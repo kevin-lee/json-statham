@@ -4,14 +4,12 @@
 package com.lckymn.kevin.jsonstatham;
 
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
-import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-12-22)
+ * @version 0.0.1 (2010-03-06)
  */
-@JsonObject
-public abstract class SuperClass
+public abstract class SuperClassWithoutJsonObject
 {
 	@JsonField(name = "name")
 	private String name;
@@ -19,7 +17,7 @@ public abstract class SuperClass
 	@JsonField(name = "number")
 	private int number;
 
-	public SuperClass(String name, int number)
+	public SuperClassWithoutJsonObject(String name, int number)
 	{
 		this.name = name;
 		this.number = number;

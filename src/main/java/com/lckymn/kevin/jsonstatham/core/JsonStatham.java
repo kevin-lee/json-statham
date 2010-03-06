@@ -8,7 +8,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-11-21)
+ * @version 0.0.1 (2009-11-21)
  */
 public interface JsonStatham
 {

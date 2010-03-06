@@ -16,7 +16,7 @@ import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
  * @version 0.01 (2009-12-20)
  */
 @JsonObject
-public final class ComplexJsonObjectWithMethodUse
+public final class ComplexJsonObjectWithValueAccessor
 {
 	@JsonField(name = "id")
 	private Long primaryKey;
