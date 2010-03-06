@@ -50,4 +50,40 @@ public final class JsonObjectPojoProxyFactory
 		});
 		return (JsonObjectPojo) proxyFactory.create(new Class[] { Long.class, String.class, Set.class }, new Object[] { null, null, null });
 	}
+
+	public static NestedJsonObjectWithValueAccessor newNestedJsonObjectWithValueAccessor(
+			final NestedJsonObjectWithValueAccessor nestedJsonObjectWithValueAccessor, final Long primaryKey, final String name,
+			final NestedJsonObjectWithValueAccessor parent) throws IllegalArgumentException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException
+	{
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setSuperclass(nestedJsonObjectWithValueAccessor.getClass());
+		proxyFactory.setHandler(new MethodHandler()
+		{
+			@Override
+			public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
+			{
+				final String methodName = thisMethod.getName();
+
+				if ("getPrimaryKey".equals(methodName))
+				{
+					return primaryKey;
+				}
+				else if ("getName".equals(methodName))
+				{
+					return name;
+				}
+				else if ("getParent".equals(methodName))
+				{
+					return parent;
+				}
+				else
+				{
+					return proceed.invoke(self, args);
+				}
+			}
+		});
+		return (NestedJsonObjectWithValueAccessor) proxyFactory.create(new Class[] { Long.class, String.class,
+				NestedJsonObjectWithValueAccessor.class }, new Object[] { null, null, null });
+	}
 }

@@ -46,6 +46,7 @@ import com.lckymn.kevin.jsonstatham.JsonObjectPojoProxyFactory;
 import com.lckymn.kevin.jsonstatham.JsonObjectWithDuplicateKeys;
 import com.lckymn.kevin.jsonstatham.JsonObjectWithoutFieldName;
 import com.lckymn.kevin.jsonstatham.NestedJsonObject;
+import com.lckymn.kevin.jsonstatham.NestedJsonObjectWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithOwnFields;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithoutOwnFields;
 import com.lckymn.kevin.jsonstatham.SomeImplementingClass;
@@ -699,6 +700,31 @@ public class ReflectionJsonStathamTest
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectPojo);
+		System.out.println(result);
+		assertThat(result, equalTo(expected));
+	}
+
+	@Test
+	public void testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		final long primaryKey = 999L;
+		final String name = "ProxiedPojo";
+		final long primaryKey2 = 555L;
+		final String name2 = "ProxiedParent";
+		final long primaryKey3 = 333L;
+		final String name3 = "Not proxied";
+		NestedJsonObjectWithValueAccessor nestedJsonObjectWithValueAccessor = JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
+				new NestedJsonObjectWithValueAccessor(null, null, null), primaryKey, name,
+				JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(new NestedJsonObjectWithValueAccessor(null, null, null),
+						primaryKey2, name2, new NestedJsonObjectWithValueAccessor(primaryKey3, name3, null)));
+
+		System.out.println("\nNonIndentedJsonStathamTest.testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo()");
+		final String expected = "{\"id\":" + primaryKey + ",\"name\":\"" + name + "\",\"parent\":{\"id\":" + primaryKey2 + ",\"name\":\""
+				+ name2 + "\",\"parent\":{\"id\":" + primaryKey3 + ",\"name\":\"" + name3 + "\",\"parent\":null}}}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = jsonStatham.convertIntoJson(nestedJsonObjectWithValueAccessor);
 		System.out.println(result);
 		assertThat(result, equalTo(expected));
 	}

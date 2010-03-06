@@ -65,6 +65,8 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          <li>It ignores any super classes of the given JSON object if the classes are not annotated with the {@link JsonObject}
  *          annotation.</li>
  *          </ul>
+ * @version 0.0.10 (2010-03-07) It does not throw an exception when the given JSON object has a proxied object created by javassist as a
+ *          field value. Instead it tries to find any JSON objects from its super classes.
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
@@ -246,7 +248,7 @@ public class ReflectionJsonStatham implements JsonStatham
 			sourceClass = sourceClass.getSuperclass();
 		}
 
-		AssertIt.isFalse(classStack.isEmpty(), "The target object is not JSON object. "
+		AssertIt.isFalse(classStack.isEmpty(), "The target object is not a JSON object. "
 				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.\n" + "[class: %s]\n[object: %s]",
 				sourceClass, sourceObject);
 
@@ -303,7 +305,8 @@ public class ReflectionJsonStatham implements JsonStatham
 					 * no explicit ValueAccessor name is set so use the getter name that is get + the field name (e.g. field name: name =>
 					 * getName / field name: id => getId).
 					 */
-					valueAccessorName = "get" + Character.toUpperCase(jsonFieldName.charAt(0)) + jsonFieldName.substring(1);
+					String fieldName = field.getName();
+					valueAccessorName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 				}
 
 				try
@@ -378,15 +381,7 @@ public class ReflectionJsonStatham implements JsonStatham
 		{
 			return value;
 		}
-		else if (type.isAnnotationPresent(JsonObject.class))
-		{
-			return createJsonObject(value);
-		}
-		else
-		{
-			/* unknown type */
-			throw new JsonStathamException(formatMessage("Unknown JSON object is entered.\n" + "[type: %s][value: %s]", type, value));
-		}
+		return createJsonObject(value);
 	}
 
 	/*
