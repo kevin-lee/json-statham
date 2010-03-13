@@ -13,10 +13,10 @@ import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2009-12-20)
+ * @version 0.0.1 (2010-03-14)
  */
 @JsonObject
-public final class ComplexJsonObjectWithValueAccessor
+public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 {
 	@JsonField(name = "id")
 	private Long primaryKey;
@@ -24,21 +24,25 @@ public final class ComplexJsonObjectWithValueAccessor
 	@JsonField(name = "name")
 	private String name;
 
+	@ValueAccessor
+	@JsonField(name = "registered")
+	private boolean registered;
+
 	@JsonField(name = "address")
 	private Address address;
 
 	@JsonField(name = "date")
 	private Date date;
 
+	@ValueAccessor
 	@JsonField(name = "dateWithValueAccessor")
-	@ValueAccessor(name = "getDateString")
 	private Date dateWithValueAccessor;
 
 	@JsonField(name = "calendar")
 	private Calendar calendar;
 
+	@ValueAccessor
 	@JsonField(name = "calendarWithValueAccessor")
-	@ValueAccessor(name = "getCalendarString")
 	private Calendar calendarWithValueAccessor;
 
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,6 +79,16 @@ public final class ComplexJsonObjectWithValueAccessor
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public boolean isRegistered()
+	{
+		return registered;
+	}
+
+	public void setRegistered(boolean registered)
+	{
+		this.registered = registered;
 	}
 
 	/**
@@ -114,9 +128,12 @@ public final class ComplexJsonObjectWithValueAccessor
 	/**
 	 * @return the dateWithValueAccessor
 	 */
-	public Date getDateWithValueAccessor()
+	public String getDateWithValueAccessor()
 	{
-		return dateWithValueAccessor;
+		synchronized (simpleDateFormat)
+		{
+			return simpleDateFormat.format(dateWithValueAccessor);
+		}
 	}
 
 	/**
@@ -126,14 +143,6 @@ public final class ComplexJsonObjectWithValueAccessor
 	public void setDateWithValueAccessor(Date dateWithValueAccessor)
 	{
 		this.dateWithValueAccessor = dateWithValueAccessor;
-	}
-
-	public String getDateString()
-	{
-		synchronized (simpleDateFormat)
-		{
-			return simpleDateFormat.format(dateWithValueAccessor);
-		}
 	}
 
 	/**
@@ -156,9 +165,9 @@ public final class ComplexJsonObjectWithValueAccessor
 	/**
 	 * @return the calendarWithValueAccessor
 	 */
-	public Calendar getCalendarWithValueAccessor()
+	public String getCalendarWithValueAccessor()
 	{
-		return calendarWithValueAccessor;
+		return simpleDateFormat.format(calendarWithValueAccessor.getTime());
 	}
 
 	/**
@@ -169,10 +178,4 @@ public final class ComplexJsonObjectWithValueAccessor
 	{
 		this.calendarWithValueAccessor = calendarWithValueAccessor;
 	}
-
-	public String getCalendarString()
-	{
-		return simpleDateFormat.format(calendarWithValueAccessor.getTime());
-	}
-
 }

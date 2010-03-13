@@ -5,7 +5,7 @@
 	<groupId>com.lckymn.kevin</groupId>
 	<artifactId>json-statham</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.6-SNAPSHOT</version>
+	<version>0.0.7-SNAPSHOT</version>
 	<name>json-statham</name>
 	<url>http://lckymn.com</url>
 	<distributionManagement>

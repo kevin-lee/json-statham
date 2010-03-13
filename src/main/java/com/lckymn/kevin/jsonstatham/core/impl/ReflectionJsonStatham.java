@@ -67,6 +67,9 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          </ul>
  * @version 0.0.10 (2010-03-07) It does not throw an exception when the given JSON object has a proxied object created by javassist as a
  *          field value. Instead it tries to find any JSON objects from its super classes.
+ * @version 0.0.11 (2010-03-14) If the {@link ValueAccessor} without its name explicitly set is used on a field and the field type is
+ *          <code>boolean</code> or {@link Boolean}, it tries to get the value by calling isField() method that is "is" + the field name
+ *          instead of "get" + the field name.
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
@@ -303,10 +306,13 @@ public class ReflectionJsonStatham implements JsonStatham
 				{
 					/*
 					 * no explicit ValueAccessor name is set so use the getter name that is get + the field name (e.g. field name: name =>
-					 * getName / field name: id => getId).
+					 * getName / field name: id => getId). If the field type is boolean or Boolean, it is is + the field name (e.g. field:
+					 * boolean assigned => isAssigned).
 					 */
-					String fieldName = field.getName();
-					valueAccessorName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+					final Class<?> fieldType = field.getType();
+					final String fieldName = field.getName();
+					valueAccessorName = ((boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) ? "is" : "get")
+							+ Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 				}
 
 				try
