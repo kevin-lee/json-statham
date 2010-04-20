@@ -70,6 +70,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @version 0.0.11 (2010-03-14) If the {@link ValueAccessor} without its name explicitly set is used on a field and the field type is
  *          <code>boolean</code> or {@link Boolean}, it tries to get the value by calling isField() method that is "is" + the field name
  *          instead of "get" + the field name.
+ * @version 0.0.12 (2010-04-20) refactoring...
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
@@ -92,10 +93,10 @@ public class ReflectionJsonStatham implements JsonStatham
 		tempMap.put(Object[].class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				JSONArray jsonArray = new JSONArray();
+				final JSONArray jsonArray = new JSONArray();
 				for (Object eachElement : (Object[]) source)
 				{
 					jsonArray.put(jsonStatham.createJsonValue(eachElement));
@@ -107,10 +108,10 @@ public class ReflectionJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				JSONArray jsonArray = new JSONArray();
+				final JSONArray jsonArray = new JSONArray();
 				for (Object eachElement : (Collection<Object>) source)
 				{
 					jsonArray.put(jsonStatham.createJsonValue(eachElement));
@@ -122,10 +123,10 @@ public class ReflectionJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				JSONArray jsonArray = new JSONArray();
+				final JSONArray jsonArray = new JSONArray();
 				for (Object eachElement : (Iterable<Object>) source)
 				{
 					jsonArray.put(jsonStatham.createJsonValue(eachElement));
@@ -137,10 +138,10 @@ public class ReflectionJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				JSONArray jsonArray = new JSONArray();
+				final JSONArray jsonArray = new JSONArray();
 				for (Iterator<Object> iterator = (Iterator<Object>) source; iterator.hasNext();)
 				{
 					jsonArray.put(jsonStatham.createJsonValue(iterator.next()));
@@ -152,10 +153,10 @@ public class ReflectionJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				JSONObject jsonObject = jsonStatham.newJSONObject();
+				final JSONObject jsonObject = jsonStatham.newJSONObject();
 				for (Entry<Object, Object> entry : ((Map<Object, Object>) source).entrySet())
 				{
 					jsonObject.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
@@ -169,7 +170,7 @@ public class ReflectionJsonStatham implements JsonStatham
 		tempMap.put(Date.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonValue(source.toString());
@@ -178,7 +179,7 @@ public class ReflectionJsonStatham implements JsonStatham
 		tempMap.put(Calendar.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
 				return jsonStatham.createJsonValue(((Calendar) source).getTime()
@@ -190,10 +191,10 @@ public class ReflectionJsonStatham implements JsonStatham
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JSONException
 			{
-				Entry<Object, Object> entry = (Entry<Object, Object>) source;
+				final Entry<Object, Object> entry = (Entry<Object, Object>) source;
 				return jsonStatham.newJSONObject()
 						.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
 			}
@@ -221,7 +222,7 @@ public class ReflectionJsonStatham implements JsonStatham
 
 	private final JSONObjectCreator jsonObjectCreator;
 
-	public ReflectionJsonStatham(JSONObjectCreator jsonObjectCreator)
+	public ReflectionJsonStatham(final JSONObjectCreator jsonObjectCreator)
 	{
 		this.jsonObjectCreator = jsonObjectCreator;
 	}
@@ -231,7 +232,7 @@ public class ReflectionJsonStatham implements JsonStatham
 		return jsonObjectCreator.newJSONObject();
 	}
 
-	private Object createJsonObject(Object sourceObject) throws IllegalArgumentException, IllegalAccessException, JSONException
+	private Object createJsonObject(final Object sourceObject) throws IllegalArgumentException, IllegalAccessException, JSONException
 	{
 		if (null == sourceObject)
 		{
@@ -240,7 +241,7 @@ public class ReflectionJsonStatham implements JsonStatham
 
 		Class<?> sourceClass = sourceObject.getClass();
 
-		Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
+		final Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
 		while (!Object.class.equals(sourceClass))
 		{
 			if (sourceClass.isAnnotationPresent(JsonObject.class))
@@ -251,12 +252,11 @@ public class ReflectionJsonStatham implements JsonStatham
 			sourceClass = sourceClass.getSuperclass();
 		}
 
-		AssertIt.isFalse(classStack.isEmpty(), "The target object is not a JSON object. "
-				+ "It must be annotated with com.lckymn.kevin.jsonstatham.annotation.JsonObject.\n" + "[class: %s]\n[object: %s]",
-				sourceClass, sourceObject);
+		AssertIt.isFalse(classStack.isEmpty(), "The target object is not a JSON object. " + "It must be annotated with %s.\n"
+				+ "[class: %s]\n[object: %s]", JsonObject.class.getName(), sourceClass, sourceObject);
 
-		Set<String> fieldNameSet = new HashSet<String>();
-		JSONObject jsonObject = newJSONObject();
+		final Set<String> fieldNameSet = new HashSet<String>();
+		final JSONObject jsonObject = newJSONObject();
 		for (Class<?> eachClass : classStack)
 		{
 			extractJsonFields(sourceObject, eachClass, fieldNameSet, jsonObject);
@@ -264,8 +264,8 @@ public class ReflectionJsonStatham implements JsonStatham
 		return jsonObject;
 	}
 
-	private void extractJsonFields(Object source, Class<?> sourceClass, Set<String> fieldNameSet, JSONObject jsonObject)
-			throws IllegalAccessException, JSONException
+	private void extractJsonFields(final Object source, final Class<?> sourceClass, final Set<String> fieldNameSet,
+			final JSONObject jsonObject) throws IllegalAccessException, JSONException
 	{
 		for (Field field : sourceClass.getDeclaredFields())
 		{
@@ -317,7 +317,7 @@ public class ReflectionJsonStatham implements JsonStatham
 
 				try
 				{
-					Method method = sourceClass.getDeclaredMethod(valueAccessorName, EMPTY_CLASS_ARRAY);
+					final Method method = sourceClass.getDeclaredMethod(valueAccessorName, EMPTY_CLASS_ARRAY);
 					method.setAccessible(true);
 					fieldValue = method.invoke(source, EMPTY_OBJECT_ARRAY);
 				}
@@ -354,14 +354,14 @@ public class ReflectionJsonStatham implements JsonStatham
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	protected Object createJsonValue(Object value) throws IllegalArgumentException, IllegalAccessException, JSONException
+	protected Object createJsonValue(final Object value) throws IllegalArgumentException, IllegalAccessException, JSONException
 	{
 		if (null == value)
 		{
 			return JSONObject.NULL;
 		}
 
-		Class<?> type = value.getClass();
+		final Class<?> type = value.getClass();
 
 		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_DATA_STRUCTURES_PROCESSOR_MAP.entrySet())
 		{
@@ -404,7 +404,7 @@ public class ReflectionJsonStatham implements JsonStatham
 				return JSONObject.NULL.toString();
 			}
 
-			Class<?> sourceClass = source.getClass();
+			final Class<?> sourceClass = source.getClass();
 
 			for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_DATA_STRUCTURES_PROCESSOR_MAP.entrySet())
 			{
