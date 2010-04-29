@@ -3,7 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.core.impl;
 
-import static com.lckymn.kevin.common.string.MessageFormatter.*;
+import static com.lckymn.kevin.common.util.Strings.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.lckymn.kevin.common.validation.AssertIt;
-import com.lckymn.kevin.common.validation.ValidateIt;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -280,7 +279,7 @@ public class ReflectionJsonStatham implements JsonStatham
 			String jsonFieldName = field.getAnnotation(JsonField.class)
 					.name();
 
-			if (ValidateIt.isEmpty(jsonFieldName))
+			if (isEmpty(jsonFieldName))
 			{
 				/* no field name is set in the @JsonField annotation so use the actual field name for the JsonObject field. */
 				jsonFieldName = field.getName();
@@ -289,7 +288,7 @@ public class ReflectionJsonStatham implements JsonStatham
 			if (fieldNameSet.contains(jsonFieldName))
 			{
 				/* [ERROR] duplicate field names found */
-				throw new JsonStathamException(formatMessage(
+				throw new JsonStathamException(format(
 						"Json filed name must be unique. [JsonField name: %s] in [field: %s] is already used in another field.",
 						jsonFieldName, field));
 			}
@@ -302,7 +301,7 @@ public class ReflectionJsonStatham implements JsonStatham
 				String valueAccessorName = field.getAnnotation(ValueAccessor.class)
 						.name();
 
-				if (ValidateIt.isEmpty(valueAccessorName))
+				if (isEmpty(valueAccessorName))
 				{
 					/*
 					 * no explicit ValueAccessor name is set so use the getter name that is get + the field name (e.g. field name: name =>
@@ -311,8 +310,9 @@ public class ReflectionJsonStatham implements JsonStatham
 					 */
 					final Class<?> fieldType = field.getType();
 					final String fieldName = field.getName();
-					valueAccessorName = ((boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) ? "is" : "get")
-							+ Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+					valueAccessorName =
+						((boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) ? "is" : "get")
+								+ Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 				}
 
 				try
@@ -327,12 +327,12 @@ public class ReflectionJsonStatham implements JsonStatham
 				}
 				catch (NoSuchMethodException e)
 				{
-					throw new JsonStathamException(formatMessage("The given ValueAccessor method that is [%s] is not found.",
-							valueAccessorName), e);
+					throw new JsonStathamException(format("The given ValueAccessor method that is [%s] is not found.", valueAccessorName),
+							e);
 				}
 				catch (InvocationTargetException e)
 				{
-					throw new JsonStathamException(formatMessage("Value accessor invocation failed.\n"
+					throw new JsonStathamException(format("Value accessor invocation failed.\n"
 							+ "It might be caused by any error happened in the given value accessor method or "
 							+ "The given ValueAccessor method [%s] is not a proper value accessor for the JsonField [name: %s].",
 							valueAccessorName, jsonFieldName), e);
@@ -420,7 +420,7 @@ public class ReflectionJsonStatham implements JsonStatham
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new JsonStathamException(formatMessage(
+			throw new JsonStathamException(format(
 					"Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation", source), e);
 		}
 		catch (IllegalAccessException e)
