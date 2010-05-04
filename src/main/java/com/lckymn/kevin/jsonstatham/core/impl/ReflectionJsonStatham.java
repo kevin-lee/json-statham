@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.core.impl;
 
+import static com.lckymn.kevin.common.util.MessageFormatter.*;
 import static com.lckymn.kevin.common.util.Strings.*;
 
 import java.lang.reflect.Field;
