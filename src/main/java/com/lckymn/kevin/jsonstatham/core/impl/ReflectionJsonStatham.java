@@ -384,7 +384,7 @@ public class ReflectionJsonStatham implements JsonStatham
 			}
 		}
 
-		if (type.isPrimitive() || KNOWN_BASIC_TYPE_SET.contains(type))
+		if (type.isPrimitive() || KNOWN_BASIC_TYPE_SET.contains(type) || type.isEnum())
 		{
 			return value;
 		}
