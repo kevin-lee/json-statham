@@ -71,6 +71,8 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          <code>boolean</code> or {@link Boolean}, it tries to get the value by calling isField() method that is "is" + the field name
  *          instead of "get" + the field name.
  * @version 0.0.12 (2010-04-20) refactoring...
+ * @version 0.0.13 (2010-05-10) It can handle enum type fields (it uses enumType.toString() method to use the returned String as the value
+ *          of the field).
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
