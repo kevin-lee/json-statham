@@ -12,16 +12,18 @@ import java.util.HashMap;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
+import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-02-03)
  */
-public class HashMapJSONObjectCreatorTest
+public class OrgJsonUnorderedJsonObjectConvertibleCreatorTest
 {
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.HashMapJSONObjectCreator#newJSONObject()}.
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonUnorderedJsonObjectConvertibleCreator#newJsonObjectConvertible()}.
 	 * 
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
@@ -31,8 +33,16 @@ public class HashMapJSONObjectCreatorTest
 	@Test
 	public void testNewJSONObject() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
 	{
-		JSONObjectCreator jsonObjectCreator = new HashMapJSONObjectCreator();
-		JSONObject jsonObject = jsonObjectCreator.newJSONObject();
+		JsonObjectConvertibleCreator jsonObjectCreator = new OrgJsonUnorderedJsonObjectConvertibleCreator();
+		JsonObjectConvertible jsonObjectConvertible = jsonObjectCreator.newJsonObjectConvertible();
+
+		Field jsonObjectField = jsonObjectConvertible.getClass()
+				.getDeclaredField("jsonObject");
+		jsonObjectField.setAccessible(true);
+		Object jsonObject = jsonObjectField.get(jsonObjectConvertible);
+		assertThat(jsonObject, notNullValue());
+		assertThat(jsonObject, is(JSONObject.class));
+		assertSame(jsonObject.getClass(), JSONObject.class);
 
 		Field mapField = jsonObject.getClass()
 				.getDeclaredField("map");

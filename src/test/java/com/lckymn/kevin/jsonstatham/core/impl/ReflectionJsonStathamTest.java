@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,6 +37,7 @@ import com.lckymn.kevin.jsonstatham.Address;
 import com.lckymn.kevin.jsonstatham.ComplexJsonObjectWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.ComplexJsonObjectWithValueAccessorWithoutItsName;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingCollection;
+import com.lckymn.kevin.jsonstatham.JsonObjectContainingEnums;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingIterable;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingIterator;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingList;
@@ -50,7 +52,6 @@ import com.lckymn.kevin.jsonstatham.NestedJsonObject;
 import com.lckymn.kevin.jsonstatham.NestedJsonObjectWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithOwnFields;
 import com.lckymn.kevin.jsonstatham.SecondSubClassWithoutOwnFields;
-import com.lckymn.kevin.jsonstatham.JsonObjectContainingEnums;
 import com.lckymn.kevin.jsonstatham.SomeImplementingClass;
 import com.lckymn.kevin.jsonstatham.SomeInterface;
 import com.lckymn.kevin.jsonstatham.SubClass;
@@ -61,7 +62,10 @@ import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithOverriddenMetho
 import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithoutItsName;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingEnums.Access;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingEnums.Role;
-import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
+import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible;
+import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
@@ -80,12 +84,32 @@ public class ReflectionJsonStathamTest
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
 	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
-	private static final Answer<JSONObject> ANSWER_FOR_NEW_JSON_OBJECT = new Answer<JSONObject>()
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObjectConvertible>()
 	{
 		@Override
-		public JSONObject answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+		public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
 		{
-			return new JSONObject(new LinkedHashMap<String, Object>());
+			return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+		}
+	};
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObjectConvertible>()
+	{
+
+		@Override
+		public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+		{
+			return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
+		}
+
+	};
+
+	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE = new Answer<JsonArrayConvertible>()
+	{
+
+		@Override
+		public JsonArrayConvertible answer(InvocationOnMock invocation) throws Throwable
+		{
+			return new OrgJsonJsonArrayConvertible(new JSONArray());
 		}
 	};
 
@@ -121,10 +145,14 @@ public class ReflectionJsonStathamTest
 	@Before
 	public void setUp() throws Exception
 	{
-		final JSONObjectCreator jsonObjectCreator = mock(JSONObjectCreator.class);
-		when(jsonObjectCreator.newJSONObject()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT);
+		final JsonObjectConvertibleCreator jsonObjectCreator = mock(JsonObjectConvertibleCreator.class);
+		when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
+		when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
 
-		jsonStatham = new ReflectionJsonStatham(jsonObjectCreator);
+		final JsonArrayConvertibleCreator jsonArrayCreator = mock(JsonArrayConvertibleCreator.class);
+		when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
+
+		jsonStatham = new ReflectionJsonStatham(jsonObjectCreator, jsonArrayCreator);
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
 		addressList = new ArrayList<Address>();
@@ -286,10 +314,11 @@ public class ReflectionJsonStathamTest
 	@Test
 	public void testAddress()
 	{
+		System.out.println("\nReflectionJsonStathamTest.testAddress()");
+
 		final String expected =
 			"{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0)
 					+ "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
-		System.out.println("\nReflectionJsonStathamTest.testSimpleJsonObject()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(address);
@@ -777,6 +806,7 @@ public class ReflectionJsonStathamTest
 	@Test
 	public void testJsonObjectContainingEnums()
 	{
+		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingEnums()");
 		String expected =
 			"{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN" + "\",\"access\":[]}";
 		System.out.println("expected:\n" + expected);

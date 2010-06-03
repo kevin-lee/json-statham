@@ -13,16 +13,17 @@ import java.util.LinkedHashMap;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import com.lckymn.kevin.jsonstatham.core.JSONObjectCreator;
+import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-02-03)
  */
-public class LinkedHashMapJSONObjectCreatorTest
+public class OrgJsonOrderedJsonObjectConvertibleCreatorTest
 {
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.LinkedHashMapJSONObjectCreator#newJSONObject()}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonOrderedJsonObjectConvertibleCreator#newJsonObjectConvertible()}.
 	 * 
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
@@ -32,17 +33,24 @@ public class LinkedHashMapJSONObjectCreatorTest
 	@Test
 	public void testNewJSONObject() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
 	{
-		JSONObjectCreator jsonObjectCreator = new LinkedHashMapJSONObjectCreator();
-		JSONObject jsonObject = jsonObjectCreator.newJSONObject();
+		JsonObjectConvertibleCreator jsonObjectCreator = new OrgJsonOrderedJsonObjectConvertibleCreator();
+		JsonObjectConvertible jsonObjectConvertible = jsonObjectCreator.newJsonObjectConvertible();
+
+		Field jsonObjectField = jsonObjectConvertible.getClass()
+				.getDeclaredField("jsonObject");
+		jsonObjectField.setAccessible(true);
+		Object jsonObject = jsonObjectField.get(jsonObjectConvertible);
+		assertThat(jsonObject, notNullValue());
+		assertThat(jsonObject, is(instanceOf(JSONObject.class)));
+		assertSame(jsonObject.getClass(), JSONObject.class);
 
 		Field mapField = jsonObject.getClass()
 				.getDeclaredField("map");
 		mapField.setAccessible(true);
 		Object mapObject = mapField.get(jsonObject);
 		assertThat(mapObject, notNullValue());
-		assertThat(mapObject, is(LinkedHashMap.class));
+		assertThat(mapObject, is(instanceOf(LinkedHashMap.class)));
 		assertSame(mapObject.getClass(), LinkedHashMap.class);
 		assertNotSame(mapObject.getClass(), HashMap.class);
 	}
-
 }
