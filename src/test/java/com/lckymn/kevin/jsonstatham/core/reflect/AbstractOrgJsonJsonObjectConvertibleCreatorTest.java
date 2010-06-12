@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.impl;
+package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.reflect.AbstractOrgJsonJsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -20,7 +22,7 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
 {
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractOrgJsonJsonObjectConvertibleCreator#newJsonObjectConvertible()}
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.AbstractOrgJsonJsonObjectConvertibleCreator#newJsonObjectConvertible()}
 	 * .
 	 */
 	@Test
@@ -44,7 +46,7 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
 
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.impl.AbstractOrgJsonJsonObjectConvertibleCreator#nullJsonObjectConvertible()}.
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.AbstractOrgJsonJsonObjectConvertibleCreator#nullJsonObjectConvertible()}.
 	 */
 	@Test
 	public final void testNullJsonObjectConvertible()

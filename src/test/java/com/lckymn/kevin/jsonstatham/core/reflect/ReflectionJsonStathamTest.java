@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.impl;
+package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -67,6 +67,13 @@ import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
+import com.lckymn.kevin.jsonstatham.core.reflect.AbstractOrgJsonJsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertible;
+import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -152,7 +159,9 @@ public class ReflectionJsonStathamTest
 		final JsonArrayConvertibleCreator jsonArrayCreator = mock(JsonArrayConvertibleCreator.class);
 		when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
 
-		jsonStatham = new ReflectionJsonStatham(jsonObjectCreator, jsonArrayCreator);
+		jsonStatham =
+			new ReflectionJsonStatham(jsonObjectCreator, jsonArrayCreator, new KnownDataStructureTypeProcessorDecider(),
+					new KnownObjectReferenceTypeProcessorDecider(), new KnownBasicTypeDecider());
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
 		addressList = new ArrayList<Address>();
@@ -236,7 +245,7 @@ public class ReflectionJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)} with List as
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham#convertIntoJson(java.lang.Object)} with List as
 	 * the parameter object.
 	 */
 	@Test
@@ -279,7 +288,7 @@ public class ReflectionJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testMap()
@@ -309,7 +318,7 @@ public class ReflectionJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testAddress()
@@ -327,7 +336,7 @@ public class ReflectionJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham#convertIntoJson(java.lang.Object)}.
 	 */
 	@Test
 	public void testNestedJsonObject()

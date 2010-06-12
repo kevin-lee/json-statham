@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.impl;
+package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -22,7 +23,7 @@ public class OrgJsonJsonObjectConvertibleTest
 
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonJsonObjectConvertible#OrgJsonJsonObjectConvertible(org.json.JSONObject)}.
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible#OrgJsonJsonObjectConvertible(org.json.JSONObject)}.
 	 */
 	@Test
 	public final void testOrgJsonJsonObjectConvertible()
@@ -35,7 +36,7 @@ public class OrgJsonJsonObjectConvertibleTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonJsonObjectConvertible#put(java.lang.String, java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible#put(java.lang.String, java.lang.Object)}.
 	 * 
 	 * @throws JSONException
 	 */
@@ -77,7 +78,7 @@ public class OrgJsonJsonObjectConvertibleTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonJsonObjectConvertible#put(java.lang.String, java.lang.Object)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible#put(java.lang.String, java.lang.Object)}.
 	 * 
 	 * @throws JSONException
 	 */
@@ -88,7 +89,7 @@ public class OrgJsonJsonObjectConvertibleTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonJsonObjectConvertible#getActualObject()}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible#getActualObject()}.
 	 */
 	@Test
 	public final void testGetActualObject()
@@ -123,7 +124,7 @@ public class OrgJsonJsonObjectConvertibleTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonJsonObjectConvertible#toString()}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible#toString()}.
 	 */
 	@Test
 	public final void testToString()

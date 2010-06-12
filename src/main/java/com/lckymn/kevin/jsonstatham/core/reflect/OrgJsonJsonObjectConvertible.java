@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.impl;
+package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.impl;
+package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonUnorderedJsonObjectConvertibleCreator;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -23,7 +24,7 @@ public class OrgJsonUnorderedJsonObjectConvertibleCreatorTest
 {
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.impl.OrgJsonUnorderedJsonObjectConvertibleCreator#newJsonObjectConvertible()}.
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonUnorderedJsonObjectConvertibleCreator#newJsonObjectConvertible()}.
 	 * 
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException

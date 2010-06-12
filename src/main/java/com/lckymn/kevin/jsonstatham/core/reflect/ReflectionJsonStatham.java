@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.impl;
+package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import static com.lckymn.kevin.common.util.MessageFormatter.*;
 import static com.lckymn.kevin.common.util.Strings.*;
@@ -9,20 +9,10 @@ import static com.lckymn.kevin.common.util.Strings.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayDeque;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import com.lckymn.kevin.common.validation.AssertIt;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
@@ -30,9 +20,12 @@ import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
 import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.JsonConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -77,177 +70,45 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          {@link org.json.JSONObject} and {@link org.json.JSONArray}
  *          <p>
  *          These are replaced by {@link JsonObjectConvertible} and {@link JsonArrayConvertible} respectively.
+ * @version 0.0.15 (2010-06-10) known types are injectable (more extensible design).
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
-	private static interface KnownTypeProcessor
-	{
-		Object process(ReflectionJsonStatham jsonStatham, Object source) throws IllegalArgumentException, IllegalAccessException,
-				JsonStathamException;
-	}
-
-	private static final Map<Class<?>, KnownTypeProcessor> KNOWN_DATA_STRUCTURES_PROCESSOR_MAP;
-	private static final Map<Class<?>, KnownTypeProcessor> KNOWN_TYPE_PROCESSOR_MAP;
-	private static final Set<Class<?>> KNOWN_BASIC_TYPE_SET;
 
 	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-
-	static
-	{
-		Map<Class<?>, KnownTypeProcessor> tempMap = new HashMap<Class<?>, KnownTypeProcessor>();
-		tempMap.put(Object[].class, new KnownTypeProcessor()
-		{
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
-				for (Object eachElement : (Object[]) source)
-				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(eachElement));
-				}
-				return jsonArrayConvertible;
-			}
-		});
-		tempMap.put(Collection.class, new KnownTypeProcessor()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
-				for (Object eachElement : (Collection<Object>) source)
-				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(eachElement));
-				}
-				return jsonArrayConvertible;
-			}
-		});
-		tempMap.put(Iterable.class, new KnownTypeProcessor()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
-				for (Object eachElement : (Iterable<Object>) source)
-				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(eachElement));
-				}
-				return jsonArrayConvertible;
-			}
-		});
-		tempMap.put(Iterator.class, new KnownTypeProcessor()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
-				for (Iterator<Object> iterator = (Iterator<Object>) source; iterator.hasNext();)
-				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(iterator.next()));
-				}
-				return jsonArrayConvertible;
-			}
-		});
-		tempMap.put(Map.class, new KnownTypeProcessor()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonObjectConvertible jsonObjectConvertible = jsonStatham.newJsonObjectConvertible();
-				for (Entry<Object, Object> entry : ((Map<Object, Object>) source).entrySet())
-				{
-					jsonObjectConvertible.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
-				}
-				return jsonObjectConvertible;
-			}
-		});
-		KNOWN_DATA_STRUCTURES_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
-
-		tempMap = new HashMap<Class<?>, KnownTypeProcessor>();
-		tempMap.put(Date.class, new KnownTypeProcessor()
-		{
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				return jsonStatham.createJsonValue(source.toString());
-			}
-		});
-		tempMap.put(Calendar.class, new KnownTypeProcessor()
-		{
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				return jsonStatham.createJsonValue(((Calendar) source).getTime()
-						.toString());
-			}
-
-		});
-		tempMap.put(Entry.class, new KnownTypeProcessor()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final Entry<Object, Object> entry = (Entry<Object, Object>) source;
-				return jsonStatham.newJsonObjectConvertible()
-						.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
-			}
-
-		});
-		KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
-
-		Set<Class<?>> tempSet = new HashSet<Class<?>>();
-		tempSet.add(Integer.TYPE);
-		tempSet.add(Integer.class);
-		tempSet.add(Long.TYPE);
-		tempSet.add(Long.class);
-		tempSet.add(BigInteger.class);
-		tempSet.add(Float.TYPE);
-		tempSet.add(Float.class);
-		tempSet.add(Double.TYPE);
-		tempSet.add(Double.class);
-		tempSet.add(BigDecimal.class);
-		tempSet.add(Number.class);
-		tempSet.add(Boolean.TYPE);
-		tempSet.add(Boolean.class);
-		tempSet.add(String.class);
-		KNOWN_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
-	}
 
 	private final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
 
 	private final JsonArrayConvertibleCreator jsonArrayConvertibleCreator;
 
+	private KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider;
+	private final KnownTypeProcessorDecider[] knownTypeProcessorDeciders;
+
 	public ReflectionJsonStatham(JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-			JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+			JsonArrayConvertibleCreator jsonArrayConvertibleCreator,
+			KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
+			KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider, KnownBasicTypeDecider knownBasicTypeDecider)
 	{
 		this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
 		this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
+		this.knownDataStructureTypeProcessorDecider = knownDataStructureTypeProcessorDecider;
+		this.knownTypeProcessorDeciders =
+			new KnownTypeProcessorDecider[] { knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
+					knownBasicTypeDecider };
 	}
 
-	private JsonObjectConvertible newJsonObjectConvertible()
+	public JsonObjectConvertible newJsonObjectConvertible()
 	{
 		return jsonObjectConvertibleCreator.newJsonObjectConvertible();
 	}
 
-	private JsonObjectConvertible nullJsonObjectConvertible()
+	public JsonObjectConvertible nullJsonObjectConvertible()
 	{
 		return jsonObjectConvertibleCreator.nullJsonObjectConvertible();
 	}
 
-	private JsonArrayConvertible newJsonArrayConvertible()
+	public JsonArrayConvertible newJsonArrayConvertible()
 	{
 		return jsonArrayConvertibleCreator.newJsonArrayConvertible();
 	}
@@ -369,14 +230,20 @@ public class ReflectionJsonStatham implements JsonStatham
 	}
 
 	/**
+	 * Converts the given value into {@link JsonConvertible} object. It can be either {@link JsonObjectConvertible} or
+	 * {@link JsonArrayConvertible}.
+	 * 
 	 * @param value
-	 *            the given target object to be converted to {@link JsonObjectConvertible}.
-	 * @return
+	 *            the given target object to be converted to {@link JsonConvertible} which is either {@link JsonObjectConvertible} or
+	 *            {@link JsonArrayConvertible}.
+	 * @return {@link JsonConvertible} converted from the given value object. It can be either {@link JsonObjectConvertible} or
+	 *         {@link JsonArrayConvertible}. If the given value is the null reference, it returns the object created by
+	 *         {@link #nullJsonObjectConvertible()}.
 	 * @throws JsonStathamException
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	protected Object createJsonValue(final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+	public Object createJsonValue(final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 	{
 		if (null == value)
 		{
@@ -385,30 +252,15 @@ public class ReflectionJsonStatham implements JsonStatham
 
 		final Class<?> type = value.getClass();
 
-		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_DATA_STRUCTURES_PROCESSOR_MAP.entrySet())
+		for (KnownTypeProcessorDecider knowTypeProcessorDecider : knownTypeProcessorDeciders)
 		{
-			if (entry.getKey()
-					.isAssignableFrom(type))
+			final KnownTypeProcessor knownTypeProcessor = knowTypeProcessorDecider.decide(type);
+			if (null != knownTypeProcessor)
 			{
-				return entry.getValue()
-						.process(this, value);
+				return knownTypeProcessor.process(this, value);
 			}
 		}
 
-		for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_TYPE_PROCESSOR_MAP.entrySet())
-		{
-			if (entry.getKey()
-					.isAssignableFrom(type))
-			{
-				return entry.getValue()
-						.process(this, value);
-			}
-		}
-
-		if (type.isPrimitive() || KNOWN_BASIC_TYPE_SET.contains(type) || type.isEnum())
-		{
-			return value;
-		}
 		return createJsonObject(value);
 	}
 
@@ -428,16 +280,13 @@ public class ReflectionJsonStatham implements JsonStatham
 
 			final Class<?> sourceClass = source.getClass();
 
-			for (Entry<Class<?>, KnownTypeProcessor> entry : KNOWN_DATA_STRUCTURES_PROCESSOR_MAP.entrySet())
+			final KnownTypeProcessor knownTypeProcessor = knownDataStructureTypeProcessorDecider.decide(sourceClass);
+			if (null != knownTypeProcessor)
 			{
-				if (entry.getKey()
-						.isAssignableFrom(sourceClass))
-				{
-					return entry.getValue()
-							.process(this, source)
-							.toString();
-				}
+				return knownTypeProcessor.process(this, source)
+						.toString();
 			}
+
 			return createJsonObject(source).toString();
 		}
 		catch (IllegalArgumentException e)

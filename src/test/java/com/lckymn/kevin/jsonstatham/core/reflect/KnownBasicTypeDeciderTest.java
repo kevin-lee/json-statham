@@ -1,0 +1,388 @@
+/**
+ * 
+ */
+package com.lckymn.kevin.jsonstatham.core.reflect;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Test;
+
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
+import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
+
+/**
+ * @author Lee, SeongHyun (Kevin)
+ * @version 0.0.1 (2010-06-10)
+ */
+public class KnownBasicTypeDeciderTest
+{
+
+	private static enum TestEnum
+	{
+		FIRST, SECOND, THIRD;
+	}
+
+	private final int[] ints = { -999, -1, 0, 1, 999, Integer.MIN_VALUE, Integer.MAX_VALUE };
+	private final Integer[] integers =
+		{ Integer.valueOf(-999), Integer.valueOf(-1), Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(999),
+				Integer.valueOf(Integer.MIN_VALUE), Integer.valueOf(Integer.MAX_VALUE) };
+
+	private final long[] longs = { -999L, -1L, 0L, 1L, 999L, Long.MIN_VALUE, Long.MAX_VALUE };
+	private final Long[] longObjects =
+		{ Long.valueOf(-999L), Long.valueOf(-1L), Long.valueOf(0L), Long.valueOf(1L), Long.valueOf(999L), Long.valueOf(Long.MIN_VALUE),
+				Long.valueOf(Long.MAX_VALUE) };
+
+	private final BigInteger[] bigIntegers =
+		{ BigInteger.valueOf(-999L), BigInteger.valueOf(-1L), BigInteger.valueOf(0L), BigInteger.valueOf(1L), BigInteger.valueOf(999L),
+				BigInteger.valueOf(Long.MIN_VALUE), BigInteger.valueOf(Long.MAX_VALUE) };
+
+	private final float[] floats = { -999.55f, -1.5f, 0.0f, 1.5f, 999.55f, Float.MIN_VALUE, Float.MAX_VALUE };
+	private final Float[] floatObjects =
+		{ Float.valueOf(-999.55f), Float.valueOf(-1.5f), Float.valueOf(0.0f), Float.valueOf(1.5f), Float.valueOf(999.55f),
+				Float.valueOf(Float.MIN_VALUE), Float.valueOf(Float.MAX_VALUE) };
+
+	private final double[] doubles = { -999.55D, -1.5D, 0.0D, 1.5D, 999.55D, Double.MIN_VALUE, Double.MAX_VALUE };
+	private final Double[] doubleObjects =
+		{ Double.valueOf(-999.55D), Double.valueOf(-1.5D), Double.valueOf(0.0D), Double.valueOf(1.5D), Double.valueOf(999.55D),
+				Double.valueOf(Double.MIN_VALUE), Double.valueOf(Double.MAX_VALUE) };
+
+	private final BigDecimal[] bigDecimals =
+		{ BigDecimal.valueOf(-999.55D), BigDecimal.valueOf(-1.5D), BigDecimal.valueOf(0.0D), BigDecimal.valueOf(1.5D),
+				BigDecimal.valueOf(999.55D), BigDecimal.valueOf(Double.MIN_VALUE), BigDecimal.valueOf(Double.MAX_VALUE) };
+
+	private final Number[] numbers = { new Number()
+	{
+		private static final long serialVersionUID = -1L;
+
+		@Override
+		public long longValue()
+		{
+			return Long.MIN_VALUE;
+		}
+
+		@Override
+		public int intValue()
+		{
+			return Integer.MIN_VALUE;
+		}
+
+		@Override
+		public float floatValue()
+		{
+			return Float.MIN_VALUE;
+		}
+
+		@Override
+		public double doubleValue()
+		{
+			return Double.MIN_VALUE;
+		}
+	}, new Number()
+	{
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public long longValue()
+		{
+			return Long.MAX_VALUE;
+		}
+
+		@Override
+		public int intValue()
+		{
+			return Integer.MAX_VALUE;
+		}
+
+		@Override
+		public float floatValue()
+		{
+			return Float.MAX_VALUE;
+		}
+
+		@Override
+		public double doubleValue()
+		{
+			return Double.MAX_VALUE;
+		}
+	} };
+
+	private final boolean[] booleans = { true, false };
+	private final Boolean[] booleanObjects = { Boolean.TRUE, Boolean.FALSE };
+
+	private final String[] strings = { "", "Hello", "Kevin", new String("test") };
+
+	/**
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider#KnownBasicTypeDecider()}.
+	 */
+	@Test
+	public final void testKnownBasicTypeDecider()
+	{
+		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownBasicTypeDecider();
+
+		assertThat(knownTypeProcessorDecider.decide(int.class), is(not(nullValue())));
+
+		for (Integer value : integers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(long.class), is(not(nullValue())));
+
+		for (Long value : longObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		for (BigInteger value : bigIntegers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(float.class), is(not(nullValue())));
+
+		for (Float value : floatObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(double.class), is(not(nullValue())));
+
+		for (Double value : doubleObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		for (BigDecimal value : bigDecimals)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		for (Number value : numbers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(boolean.class), is(not(nullValue())));
+
+		for (Boolean value : booleanObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		for (String value : strings)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+
+		for (TestEnum value : TestEnum.values())
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(not(nullValue())));
+		}
+	}
+
+	/**
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider#KnownBasicTypeDecider(com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor, java.util.Set)}
+	 * .
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 * @throws IllegalArgumentException
+	 */
+	@Test
+	public final void testKnownBasicTypeDeciderKnownTypeProcessorSetOfClassOfQ() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
+	{
+		final Set<Class<?>> set = new HashSet<Class<?>>();
+		set.add(Date.class);
+		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownBasicTypeDecider(new KnownTypeProcessor()
+		{
+
+			@Override
+			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, @SuppressWarnings("unused") Object source)
+					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+			{
+				return Boolean.TRUE;
+			}
+		}, set, new KnownBasicTypeDecider.KnownBasicTypeChecker[0]);
+
+		assertThat(knownTypeProcessorDecider.decide(Date.class), is(not(nullValue())));
+		assertThat(knownTypeProcessorDecider.decide(Date.class)
+				.process(null, null), is((Object) Boolean.TRUE));
+
+		assertThat(knownTypeProcessorDecider.decide(int.class), is(nullValue()));
+
+		for (Integer value : integers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(long.class), is(nullValue()));
+
+		for (Long value : longObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		for (BigInteger value : bigIntegers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(float.class), is(nullValue()));
+
+		for (Float value : floatObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(double.class), is(nullValue()));
+
+		for (Double value : doubleObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		for (BigDecimal value : bigDecimals)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		for (Number value : numbers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		assertThat(knownTypeProcessorDecider.decide(boolean.class), is(nullValue()));
+
+		for (Boolean value : booleanObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		for (String value : strings)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+
+		for (TestEnum value : TestEnum.values())
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass()), is(nullValue()));
+		}
+	}
+
+	/**
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider#decide(java.lang.Class)}.
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 * @throws IllegalArgumentException
+	 */
+	@SuppressWarnings("boxing")
+	@Test
+	public final void testDecide() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
+	{
+		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownBasicTypeDecider();
+
+		for (int value : ints)
+		{
+			assertThat(knownTypeProcessorDecider.decide(int.class)
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (Integer value : integers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (long value : longs)
+		{
+			assertThat(knownTypeProcessorDecider.decide(long.class)
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (Long value : longObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (BigInteger value : bigIntegers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (float value : floats)
+		{
+			assertThat(knownTypeProcessorDecider.decide(float.class)
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (Float value : floatObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (double value : doubles)
+		{
+			assertThat(knownTypeProcessorDecider.decide(double.class)
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (Double value : doubleObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (BigDecimal value : bigDecimals)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (Number value : numbers)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (boolean value : booleans)
+		{
+			assertThat(knownTypeProcessorDecider.decide(boolean.class)
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (Boolean value : booleanObjects)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (String value : strings)
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+
+		for (TestEnum value : TestEnum.values())
+		{
+			assertThat(knownTypeProcessorDecider.decide(value.getClass())
+					.process(null, value), equalTo((Object) value));
+		}
+	}
+
+}
