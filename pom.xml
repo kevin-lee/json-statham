@@ -5,7 +5,7 @@
 	<groupId>com.lckymn.kevin</groupId>
 	<artifactId>json-statham</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.14-SNAPSHOT</version>
+	<version>0.0.15-SNAPSHOT</version>
 	<name>json-statham</name>
 	<url>http://lckymn.com</url>
 	<distributionManagement>
@@ -95,6 +95,13 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.lckymn.kevin</groupId>
+			<artifactId>kevin-common-test</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.json</groupId>
@@ -116,6 +123,7 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+
 	</dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

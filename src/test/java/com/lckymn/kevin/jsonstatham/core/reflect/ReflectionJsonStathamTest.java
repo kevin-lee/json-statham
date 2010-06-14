@@ -62,18 +62,13 @@ import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithOverriddenMetho
 import com.lckymn.kevin.jsonstatham.SubClassWithValueAccessorWithoutItsName;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingEnums.Access;
 import com.lckymn.kevin.jsonstatham.JsonObjectContainingEnums.Role;
+import com.lckymn.kevin.jsonstatham.annotation.JsonField;
+import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
-import com.lckymn.kevin.jsonstatham.core.reflect.AbstractOrgJsonJsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertible;
-import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonObjectConvertible;
-import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -114,7 +109,7 @@ public class ReflectionJsonStathamTest
 	{
 
 		@Override
-		public JsonArrayConvertible answer(InvocationOnMock invocation) throws Throwable
+		public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
 		{
 			return new OrgJsonJsonArrayConvertible(new JSONArray());
 		}
@@ -205,6 +200,21 @@ public class ReflectionJsonStathamTest
 		final String result = jsonStatham.convertIntoJson(null);
 		System.out.println(result);
 		assertEquals(expected.toString(), result);
+
+		@JsonObject
+		class TestPojo
+		{
+			@SuppressWarnings("unused")
+			@JsonField
+			private Object object = null;
+		}
+		final String expected2 = "{\"object\":null}";
+		System.out.println("expected:\n" + expected2);
+		System.out.println("actual: ");
+		final String result2 = jsonStatham.convertIntoJson(new TestPojo());
+		System.out.println(result2);
+		assertEquals(expected2.toString(), result2);
+
 	}
 
 	private String getAddressArrayString()
@@ -245,8 +255,8 @@ public class ReflectionJsonStathamTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham#convertIntoJson(java.lang.Object)} with List as
-	 * the parameter object.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham#convertIntoJson(java.lang.Object)} with List
+	 * as the parameter object.
 	 */
 	@Test
 	public void testList()
@@ -774,7 +784,7 @@ public class ReflectionJsonStathamTest
 		final long id = 999L;
 		final String name = "ProxiedPojo";
 		JsonObjectPojo jsonObjectPojo =
-			JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null), id, name, addressList);
+			JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null), Long.valueOf(id), name, addressList);
 
 		System.out.println("\nReflectionJsonStathamTest.testProxiedJsonObjectPojo()");
 		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
@@ -797,9 +807,9 @@ public class ReflectionJsonStathamTest
 		final String name3 = "Not proxied";
 		NestedJsonObjectWithValueAccessor nestedJsonObjectWithValueAccessor =
 			JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(new NestedJsonObjectWithValueAccessor(null, null, null),
-					primaryKey, name, JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
-							new NestedJsonObjectWithValueAccessor(null, null, null), primaryKey2, name2,
-							new NestedJsonObjectWithValueAccessor(primaryKey3, name3, null)));
+					Long.valueOf(primaryKey), name, JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
+							new NestedJsonObjectWithValueAccessor(null, null, null), Long.valueOf(primaryKey2), name2,
+							new NestedJsonObjectWithValueAccessor(Long.valueOf(primaryKey3), name3, null)));
 
 		System.out.println("\nReflectionJsonStathamTest.testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo()");
 		final String expected =

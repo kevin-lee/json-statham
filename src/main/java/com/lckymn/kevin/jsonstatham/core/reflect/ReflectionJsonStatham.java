@@ -71,6 +71,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  *          <p>
  *          These are replaced by {@link JsonObjectConvertible} and {@link JsonArrayConvertible} respectively.
  * @version 0.0.15 (2010-06-10) known types are injectable (more extensible design).
+ * @version 0.0.16 (2010-06-14) refactoring...
  */
 public class ReflectionJsonStatham implements JsonStatham
 {
@@ -82,13 +83,14 @@ public class ReflectionJsonStatham implements JsonStatham
 
 	private final JsonArrayConvertibleCreator jsonArrayConvertibleCreator;
 
-	private KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider;
+	private final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider;
 	private final KnownTypeProcessorDecider[] knownTypeProcessorDeciders;
 
 	public ReflectionJsonStatham(JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
 			JsonArrayConvertibleCreator jsonArrayConvertibleCreator,
 			KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
-			KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider, OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
+			KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider,
+			OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
 	{
 		this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
 		this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
@@ -97,6 +99,30 @@ public class ReflectionJsonStatham implements JsonStatham
 			new KnownTypeProcessorDecider[] { knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
 					oneProcessorForKnownTypeDecider };
 	}
+
+	/**/
+
+	JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
+	{
+		return jsonObjectConvertibleCreator;
+	}
+
+	JsonArrayConvertibleCreator getJsonArrayConvertibleCreator()
+	{
+		return jsonArrayConvertibleCreator;
+	}
+
+	KnownDataStructureTypeProcessorDecider getKnownDataStructureTypeProcessorDecider()
+	{
+		return knownDataStructureTypeProcessorDecider;
+	}
+
+	KnownTypeProcessorDecider[] getKnownTypeProcessorDeciders()
+	{
+		return knownTypeProcessorDeciders;
+	}
+
+	/**/
 
 	public JsonObjectConvertible newJsonObjectConvertible()
 	{
@@ -113,14 +139,20 @@ public class ReflectionJsonStatham implements JsonStatham
 		return jsonArrayConvertibleCreator.newJsonArrayConvertible();
 	}
 
+	/**
+	 * Creates a JSON object which is {@link JsonObjectConvertible} containing all the fields annotated with the {@link JsonField}
+	 * annotation. The value of the given sourceObject must not be a null reference.
+	 * 
+	 * @param sourceObject
+	 *            the given source object to be converted into {@link JsonObjectConvertible}.
+	 * @return The {@link JsonObjectConvertible} object created based on the given sourceObject.
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 */
 	private Object createJsonObject(final Object sourceObject) throws IllegalArgumentException, IllegalAccessException,
 			JsonStathamException
 	{
-		if (null == sourceObject)
-		{
-			return nullJsonObjectConvertible();
-		}
-
 		Class<?> sourceClass = sourceObject.getClass();
 
 		final Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
@@ -278,9 +310,7 @@ public class ReflectionJsonStatham implements JsonStatham
 				return nullJsonObjectConvertible().toString();
 			}
 
-			final Class<?> sourceClass = source.getClass();
-
-			final KnownTypeProcessor knownTypeProcessor = knownDataStructureTypeProcessorDecider.decide(sourceClass);
+			final KnownTypeProcessor knownTypeProcessor = knownDataStructureTypeProcessorDecider.decide(source.getClass());
 			if (null != knownTypeProcessor)
 			{
 				return knownTypeProcessor.process(this, source)
