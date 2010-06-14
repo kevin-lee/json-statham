@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +18,7 @@ import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
@@ -24,7 +26,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
-public class KnownBasicTypeDeciderTest
+public class OneProcessorForKnownTypeDeciderTest
 {
 
 	private static enum TestEnum
@@ -122,12 +124,12 @@ public class KnownBasicTypeDeciderTest
 	private final String[] strings = { "", "Hello", "Kevin", new String("test") };
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider#KnownBasicTypeDecider()}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider()}.
 	 */
 	@Test
 	public final void testKnownBasicTypeDecider()
 	{
-		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownBasicTypeDecider();
+		final KnownTypeProcessorDecider knownTypeProcessorDecider = new OneProcessorForKnownTypeDecider();
 
 		assertThat(knownTypeProcessorDecider.decide(int.class), is(not(nullValue())));
 
@@ -192,7 +194,7 @@ public class KnownBasicTypeDeciderTest
 
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider#KnownBasicTypeDecider(com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor, java.util.Set)}
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider(com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor, java.util.Set)}
 	 * .
 	 * 
 	 * @throws IllegalAccessException
@@ -203,9 +205,11 @@ public class KnownBasicTypeDeciderTest
 	public final void testKnownBasicTypeDeciderKnownTypeProcessorSetOfClassOfQ() throws IllegalArgumentException, JsonStathamException,
 			IllegalAccessException
 	{
-		final Set<Class<?>> set = new HashSet<Class<?>>();
-		set.add(Date.class);
-		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownBasicTypeDecider(new KnownTypeProcessor()
+		final Set<Class<?>> set1 = new HashSet<Class<?>>();
+		set1.add(Date.class);
+		final Set<Class<?>> set2 = new HashSet<Class<?>>();
+		set2.add(Calendar.class);
+		final KnownTypeProcessorDecider knownTypeProcessorDecider = new OneProcessorForKnownTypeDecider(new KnownTypeProcessor()
 		{
 
 			@Override
@@ -214,10 +218,18 @@ public class KnownBasicTypeDeciderTest
 			{
 				return Boolean.TRUE;
 			}
-		}, set, new KnownBasicTypeDecider.KnownBasicTypeChecker[0]);
+		}, set1, set2, new OneProcessorForKnownTypeDecider.SimpleTypeChecker[0]);
 
 		assertThat(knownTypeProcessorDecider.decide(Date.class), is(not(nullValue())));
 		assertThat(knownTypeProcessorDecider.decide(Date.class)
+				.process(null, null), is((Object) Boolean.TRUE));
+		
+		assertThat(knownTypeProcessorDecider.decide(Calendar.class), is(not(nullValue())));
+		assertThat(knownTypeProcessorDecider.decide(Calendar.class)
+				.process(null, null), is((Object) Boolean.TRUE));
+		
+		assertThat(knownTypeProcessorDecider.decide(GregorianCalendar.class), is(not(nullValue())));
+		assertThat(knownTypeProcessorDecider.decide(GregorianCalendar.class)
 				.process(null, null), is((Object) Boolean.TRUE));
 
 		assertThat(knownTypeProcessorDecider.decide(int.class), is(nullValue()));
@@ -282,7 +294,7 @@ public class KnownBasicTypeDeciderTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider#decide(java.lang.Class)}.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider#decide(java.lang.Class)}.
 	 * 
 	 * @throws IllegalAccessException
 	 * @throws JsonStathamException
@@ -292,7 +304,7 @@ public class KnownBasicTypeDeciderTest
 	@Test
 	public final void testDecide() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
-		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownBasicTypeDecider();
+		final KnownTypeProcessorDecider knownTypeProcessorDecider = new OneProcessorForKnownTypeDecider();
 
 		for (int value : ints)
 		{

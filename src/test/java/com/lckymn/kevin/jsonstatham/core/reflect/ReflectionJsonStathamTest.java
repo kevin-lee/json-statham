@@ -68,7 +68,7 @@ import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.JsonStatham;
 import com.lckymn.kevin.jsonstatham.core.reflect.AbstractOrgJsonJsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertible;
@@ -161,7 +161,7 @@ public class ReflectionJsonStathamTest
 
 		jsonStatham =
 			new ReflectionJsonStatham(jsonObjectCreator, jsonArrayCreator, new KnownDataStructureTypeProcessorDecider(),
-					new KnownObjectReferenceTypeProcessorDecider(), new KnownBasicTypeDecider());
+					new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider());
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
 		addressList = new ArrayList<Address>();

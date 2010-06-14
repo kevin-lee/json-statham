@@ -17,16 +17,17 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
-public class KnownBasicTypeDecider implements KnownTypeProcessorDecider
+public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecider
 {
-	public interface KnownBasicTypeChecker
+	public interface SimpleTypeChecker
 	{
 		boolean isKnown(Class<?> type);
 	}
 
 	public static final KnownTypeProcessor DEFAULT_KNOWN_TYPE_PROCESSOR;
 	public static final Set<Class<?>> DAFAULT_KNOWN_BASIC_TYPE_SET;
-	public static final KnownBasicTypeChecker[] DAFAULT_KNOWN_BASIC_TYPE_CHECKERS;
+	public static final Set<Class<?>> DAFAULT_KNOWN_EXTENSIBLE_BASIC_TYPE_SET;
+	public static final SimpleTypeChecker[] DAFAULT_SIMPLE_TYPE_CHECKERS;
 
 	static
 	{
@@ -40,7 +41,7 @@ public class KnownBasicTypeDecider implements KnownTypeProcessorDecider
 			}
 		};
 
-		final Set<Class<?>> tempSet = new HashSet<Class<?>>();
+		Set<Class<?>> tempSet = new HashSet<Class<?>>();
 		tempSet.add(Integer.TYPE);
 		tempSet.add(Integer.class);
 		tempSet.add(Long.TYPE);
@@ -51,13 +52,16 @@ public class KnownBasicTypeDecider implements KnownTypeProcessorDecider
 		tempSet.add(Double.TYPE);
 		tempSet.add(Double.class);
 		tempSet.add(BigDecimal.class);
-		tempSet.add(Number.class);
 		tempSet.add(Boolean.TYPE);
 		tempSet.add(Boolean.class);
 		tempSet.add(String.class);
 		DAFAULT_KNOWN_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
 
-		DAFAULT_KNOWN_BASIC_TYPE_CHECKERS = new KnownBasicTypeChecker[] { new KnownBasicTypeChecker()
+		tempSet = new HashSet<Class<?>>();
+		tempSet.add(Number.class);
+		DAFAULT_KNOWN_EXTENSIBLE_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
+
+		DAFAULT_SIMPLE_TYPE_CHECKERS = new SimpleTypeChecker[] { new SimpleTypeChecker()
 		{
 
 			@Override
@@ -65,7 +69,7 @@ public class KnownBasicTypeDecider implements KnownTypeProcessorDecider
 			{
 				return type.isPrimitive();
 			}
-		}, new KnownBasicTypeChecker()
+		}, new SimpleTypeChecker()
 		{
 
 			@Override
@@ -78,21 +82,24 @@ public class KnownBasicTypeDecider implements KnownTypeProcessorDecider
 
 	private final KnownTypeProcessor knownTypeProcessor;
 	private final Set<Class<?>> knownBasicTypeSet;
-	private final KnownBasicTypeChecker[] knownBasicTypeCheckers;
+	private final Set<Class<?>> knownExtensibleBasicTypeSet;
+	private final SimpleTypeChecker[] simpleTypeCheckers;
 
-	public KnownBasicTypeDecider()
+	public OneProcessorForKnownTypeDecider()
 	{
-		knownTypeProcessor = DEFAULT_KNOWN_TYPE_PROCESSOR;
-		knownBasicTypeSet = DAFAULT_KNOWN_BASIC_TYPE_SET;
-		knownBasicTypeCheckers = DAFAULT_KNOWN_BASIC_TYPE_CHECKERS;
+		this.knownTypeProcessor = DEFAULT_KNOWN_TYPE_PROCESSOR;
+		this.knownBasicTypeSet = DAFAULT_KNOWN_BASIC_TYPE_SET;
+		this.simpleTypeCheckers = DAFAULT_SIMPLE_TYPE_CHECKERS;
+		this.knownExtensibleBasicTypeSet = DAFAULT_KNOWN_EXTENSIBLE_BASIC_TYPE_SET;
 	}
 
-	public KnownBasicTypeDecider(KnownTypeProcessor knownTypeProcessor, Set<Class<?>> knownBasicTypeSet,
-			KnownBasicTypeChecker... knownBasicTypeCheckers)
+	public OneProcessorForKnownTypeDecider(KnownTypeProcessor knownTypeProcessor, Set<Class<?>> knownBasicTypeSet,
+			Set<Class<?>> knownExtensibleBasicTypeSet, SimpleTypeChecker... simpleTypeCheckers)
 	{
 		this.knownTypeProcessor = knownTypeProcessor;
 		this.knownBasicTypeSet = knownBasicTypeSet;
-		this.knownBasicTypeCheckers = knownBasicTypeCheckers;
+		this.knownExtensibleBasicTypeSet = knownExtensibleBasicTypeSet;
+		this.simpleTypeCheckers = simpleTypeCheckers;
 	}
 
 	/*
@@ -102,14 +109,19 @@ public class KnownBasicTypeDecider implements KnownTypeProcessorDecider
 	@Override
 	public KnownTypeProcessor decide(Class<?> type)
 	{
-		for (KnownBasicTypeChecker knownBasicTypeChecker : knownBasicTypeCheckers)
+		for (SimpleTypeChecker simpleTypeChecker : simpleTypeCheckers)
 		{
-			if (knownBasicTypeChecker.isKnown(type))
+			if (simpleTypeChecker.isKnown(type))
 			{
 				return knownTypeProcessor;
 			}
 		}
-		for (Class<?> knownType : knownBasicTypeSet)
+		if (knownBasicTypeSet.contains(type))
+		{
+			return knownTypeProcessor;
+		}
+
+		for (Class<?> knownType : knownExtensibleBasicTypeSet)
 		{
 			if (knownType.isAssignableFrom(type))
 			{

@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
-import com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertibleCreator;
@@ -120,8 +120,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
 			mock(KnownObjectReferenceTypeProcessorDecider.class);
 		when(knownObjectReferenceTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 
-		final KnownBasicTypeDecider knownBasicTypeDecider = mock(KnownBasicTypeDecider.class);
-		when(knownBasicTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
+		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
+		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
@@ -133,7 +133,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
 
 		final ReflectionJsonStatham jsonStatham =
 			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, knownBasicTypeDecider);
+					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
 
 		assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass()), is(not(nullValue())));
 		assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass()), is(not(nullValue())));
@@ -184,8 +184,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
 			mock(KnownObjectReferenceTypeProcessorDecider.class);
 		when(knownObjectReferenceTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 
-		final KnownBasicTypeDecider knownBasicTypeDecider = mock(KnownBasicTypeDecider.class);
-		when(knownBasicTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
+		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
+		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
@@ -197,7 +197,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
 
 		final ReflectionJsonStatham jsonStatham =
 			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, knownBasicTypeDecider);
+					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
 
 		final NavigableSet<String> testSet = new TreeSet<String>();
 		testSet.add("Hello");
@@ -242,8 +242,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
 			mock(KnownObjectReferenceTypeProcessorDecider.class);
 		when(knownObjectReferenceTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 
-		final KnownBasicTypeDecider knownBasicTypeDecider = mock(KnownBasicTypeDecider.class);
-		when(knownBasicTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
+		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
+		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
@@ -255,7 +255,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
 
 		final ReflectionJsonStatham jsonStatham =
 			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, knownBasicTypeDecider);
+					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
 
 		JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
 		for (String each : strings)

@@ -88,14 +88,14 @@ public class ReflectionJsonStatham implements JsonStatham
 	public ReflectionJsonStatham(JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
 			JsonArrayConvertibleCreator jsonArrayConvertibleCreator,
 			KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
-			KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider, KnownBasicTypeDecider knownBasicTypeDecider)
+			KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider, OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
 	{
 		this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
 		this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
 		this.knownDataStructureTypeProcessorDecider = knownDataStructureTypeProcessorDecider;
 		this.knownTypeProcessorDeciders =
 			new KnownTypeProcessorDecider[] { knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
-					knownBasicTypeDecider };
+					oneProcessorForKnownTypeDecider };
 	}
 
 	public JsonObjectConvertible newJsonObjectConvertible()

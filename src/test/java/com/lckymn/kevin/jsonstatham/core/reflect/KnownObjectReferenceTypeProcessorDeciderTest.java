@@ -19,7 +19,7 @@ import org.mockito.Mockito;
 
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.KnownBasicTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertibleCreator;
@@ -122,8 +122,8 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 		final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider =
 			mock(KnownDataStructureTypeProcessorDecider.class);
 		when(knownDataStructureTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
-		final KnownBasicTypeDecider knownBasicTypeDecider = mock(KnownBasicTypeDecider.class);
-		when(knownBasicTypeDecider.decide(String.class)).thenReturn(new KnownTypeProcessor()
+		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
+		when(oneProcessorForKnownTypeDecider.decide(String.class)).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
@@ -135,7 +135,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 
 		final ReflectionJsonStatham reflectionJsonStatham =
 			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-					knownDataStructureTypeProcessorDecider, new KnownObjectReferenceTypeProcessorDecider(), knownBasicTypeDecider);
+					knownDataStructureTypeProcessorDecider, new KnownObjectReferenceTypeProcessorDecider(), oneProcessorForKnownTypeDecider);
 		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownObjectReferenceTypeProcessorDecider();
 
 		assertThat(knownTypeProcessorDecider.decide(DATE.getClass())

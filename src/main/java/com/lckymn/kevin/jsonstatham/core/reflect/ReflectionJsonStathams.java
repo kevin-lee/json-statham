@@ -22,44 +22,44 @@ public final class ReflectionJsonStathams
 			final JsonArrayConvertibleCreator jsonArrayConvertibleCreator,
 			final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
 			final KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider,
-			final KnownBasicTypeDecider knownBasicTypeDecider)
+			final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
 	{
 		return new ReflectionJsonStatham(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator, knownDataStructureTypeProcessorDecider,
-				knownObjectReferenceTypeProcessorDecider, knownBasicTypeDecider);
+				knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
 	}
 
 	public static ReflectionJsonStatham newReflectionJsonStatham(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
 			final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
 	{
 		return newReflectionJsonStatham(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator,
-				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new KnownBasicTypeDecider());
+				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider());
 	}
 
 	public static ReflectionJsonStatham newReflectionJsonStatham(
 			final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
 			final KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider,
-			final KnownBasicTypeDecider knownBasicTypeDecider)
+			final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
 	{
 		return newReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-				knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, knownBasicTypeDecider);
+				knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
 	}
 
 	/**
 	 * Returns ReflectionJsonStatham object created with OrgJsonOrderedJsonObjectConvertibleCreator, OrgJsonJsonArrayConvertibleCreator,
-	 * KnownDataStructureTypeProcessorDecider, KnownObjectReferenceTypeProcessorDecider and KnownBasicTypeDecider.
+	 * KnownDataStructureTypeProcessorDecider, KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
 	 * 
 	 * @return ReflectionJsonStatham object created with OrgJsonOrderedJsonObjectConvertibleCreator, OrgJsonJsonArrayConvertibleCreator,
-	 *         KnownDataStructureTypeProcessorDecider, KnownObjectReferenceTypeProcessorDecider and KnownBasicTypeDecider.
+	 *         KnownDataStructureTypeProcessorDecider, KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
 	 */
 	public static ReflectionJsonStatham newReflectionJsonStatham()
 	{
 		return newReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new KnownBasicTypeDecider());
+				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider());
 	}
 
 	public static ReflectionJsonStatham newUnorderedReflectionJsonStatham()
 	{
 		return newReflectionJsonStatham(new OrgJsonUnorderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new KnownBasicTypeDecider());
+				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider());
 	}
 }
