@@ -216,7 +216,9 @@ public class ReflectionJsonStatham implements JsonStatham
 				String valueAccessorName = field.getAnnotation(ValueAccessor.class)
 						.name();
 
-				if (isEmpty(valueAccessorName))
+				final boolean hasNoAccessorName = isEmpty(valueAccessorName);
+				boolean isFieldBoolean = false;
+				if (hasNoAccessorName)
 				{
 					/*
 					 * no explicit ValueAccessor name is set so use the getter name that is get + the field name (e.g. field name: name =>
@@ -225,9 +227,9 @@ public class ReflectionJsonStatham implements JsonStatham
 					 */
 					final Class<?> fieldType = field.getType();
 					final String fieldName = field.getName();
+					isFieldBoolean = boolean.class.equals(fieldType) || Boolean.class.equals(fieldType);
 					valueAccessorName =
-						((boolean.class.equals(fieldType) || Boolean.class.equals(fieldType)) ? "is" : "get")
-								+ Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+						(isFieldBoolean ? "is" : "get") + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 				}
 
 				try
@@ -242,8 +244,28 @@ public class ReflectionJsonStatham implements JsonStatham
 				}
 				catch (NoSuchMethodException e)
 				{
-					throw new JsonStathamException(format("The given ValueAccessor method that is [%s] is not found.", valueAccessorName),
-							e);
+					if (hasNoAccessorName && isFieldBoolean)
+					{
+						final String anotherValueAccessorName = "get" + valueAccessorName.substring(2);
+						try
+						{
+							final Method method = sourceClass.getDeclaredMethod(anotherValueAccessorName, EMPTY_CLASS_ARRAY);
+							method.setAccessible(true);
+							fieldValue = method.invoke(source, EMPTY_OBJECT_ARRAY);
+						}
+						catch (Exception e1)
+						{
+							/* throw the original exception. */
+							throw new JsonStathamException(format("The given ValueAccessor method that is [%s] is not found."
+									+ " An additional attempt with the method name, [%s] failed as well with the exception [%s].",
+									valueAccessorName, anotherValueAccessorName, e1), e);
+						}
+					}
+					else
+					{
+						throw new JsonStathamException(format("The given ValueAccessor method that is [%s] is not found.",
+								valueAccessorName), e);
+					}
 				}
 				catch (InvocationTargetException e)
 				{

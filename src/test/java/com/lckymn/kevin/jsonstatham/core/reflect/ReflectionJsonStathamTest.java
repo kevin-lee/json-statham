@@ -168,8 +168,8 @@ public class ReflectionJsonStathamTest
 		addressMap = new LinkedHashMap<String, Address>();
 		for (int i = 0, size = streetList.size(); i < size; i++)
 		{
-			addressMap.put("address" + i, new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
-					postcodeList.get(i)));
+			addressMap.put("address" + i,
+					new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
 		}
 	}
 
@@ -446,6 +446,7 @@ public class ReflectionJsonStathamTest
 		jsonObject.setPrimaryKey(Long.valueOf(1));
 		jsonObject.setName("Kevin");
 		jsonObject.setRegistered(true);
+		jsonObject.setEnabled(false);
 		jsonObject.setAddress(address);
 		Date date = new Date();
 		Calendar calendar = Calendar.getInstance();
@@ -455,9 +456,9 @@ public class ReflectionJsonStathamTest
 		jsonObject.setCalendarWithValueAccessor(calendar);
 
 		final String expected =
-			"{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
-					+ address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState()
-					+ "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
+			"{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\"" + address.getStreet()
+					+ "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\""
+					+ address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
 					+ "\"dateWithValueAccessor\":\"" + jsonObject.getDateWithValueAccessor() + "\",\"calendar\":\""
 					+ jsonObject.getCalendar()
 							.getTime()

@@ -28,6 +28,10 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 	@JsonField(name = "registered")
 	private boolean registered;
 
+	@ValueAccessor
+	@JsonField
+	private boolean enabled;
+
 	@JsonField(name = "address")
 	private Address address;
 
@@ -89,6 +93,16 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 	public void setRegistered(boolean registered)
 	{
 		this.registered = registered;
+	}
+
+	public boolean getEnabled()
+	{
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
 	}
 
 	/**
