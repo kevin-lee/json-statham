@@ -5,6 +5,7 @@ package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import static com.lckymn.kevin.common.util.MessageFormatter.*;
 import static com.lckymn.kevin.common.util.Strings.*;
+import static com.lckymn.kevin.common.validation.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,6 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.lckymn.kevin.common.validation.AssertIt;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -100,8 +100,6 @@ public class ReflectionJsonStatham implements JsonStatham
 					oneProcessorForKnownTypeDecider };
 	}
 
-	/**/
-
 	JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
 	{
 		return jsonObjectConvertibleCreator;
@@ -166,7 +164,7 @@ public class ReflectionJsonStatham implements JsonStatham
 			sourceClass = sourceClass.getSuperclass();
 		}
 
-		AssertIt.isFalse(classStack.isEmpty(), "The target object is not a JSON object. " + "It must be annotated with %s.\n"
+		assertFalse(classStack.isEmpty(), "The target object is not a JSON object. " + "It must be annotated with %s.\n"
 				+ "[class: %s]\n[object: %s]", JsonObject.class.getName(), sourceClass, sourceObject);
 
 		final Set<String> fieldNameSet = new HashSet<String>();
