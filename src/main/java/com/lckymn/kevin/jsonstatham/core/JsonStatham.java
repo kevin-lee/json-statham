@@ -9,6 +9,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
+ * @version 0.1.0 (2010-09-08) {@link #convertFromJson(Class, String)} is added.
  */
 public interface JsonStatham
 {
@@ -23,4 +24,20 @@ public interface JsonStatham
 	 *             TODO: finish it!
 	 */
 	String convertIntoJson(Object target) throws JsonStathamException;
+
+	/**
+	 * Returns an object of the given type. It extracts all the data from the given JSON String then creates the given type object based on
+	 * the data.
+	 * 
+	 * @param <T>
+	 *            the type of the object to be created.
+	 * @param type
+	 *            the given type.
+	 * @param json
+	 *            the given JSON String used to create the given type object.
+	 * @return T type object containing the data extracted from the JSON String.
+	 * @throws JsonStathamException
+	 *             TODO: finish it!
+	 */
+	<T> T convertFromJson(Class<T> type, String json) throws JsonStathamException;
 }

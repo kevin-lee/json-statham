@@ -34,7 +34,7 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 		DEFAULT_KNOWN_TYPE_PROCESSOR = new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return source;

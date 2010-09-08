@@ -11,10 +11,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible;
-import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
+import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -31,13 +31,13 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
 		tempMap.put(Array.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+				final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 				for (int i = 0, size = Array.getLength(source); i < size; i++)
 				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(Array.get(source, i)));
+					jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(Array.get(source, i)));
 				}
 				return jsonArrayConvertible;
 			}
@@ -47,13 +47,13 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+				final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 				for (Object eachElement : (Collection<Object>) source)
 				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(eachElement));
+					jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
 				}
 				return jsonArrayConvertible;
 			}
@@ -62,13 +62,13 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+				final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 				for (Object eachElement : (Iterable<Object>) source)
 				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(eachElement));
+					jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
 				}
 				return jsonArrayConvertible;
 			}
@@ -77,13 +77,13 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				final JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+				final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 				for (Iterator<Object> iterator = (Iterator<Object>) source; iterator.hasNext();)
 				{
-					jsonArrayConvertible.put(jsonStatham.createJsonValue(iterator.next()));
+					jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(iterator.next()));
 				}
 				return jsonArrayConvertible;
 			}
@@ -92,13 +92,13 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				final JsonObjectConvertible jsonObjectConvertible = jsonStatham.newJsonObjectConvertible();
+				final JsonObjectConvertible jsonObjectConvertible = reflectionJavaToJsonConverter.newJsonObjectConvertible();
 				for (Entry<Object, Object> entry : ((Map<Object, Object>) source).entrySet())
 				{
-					jsonObjectConvertible.put(String.valueOf(entry.getKey()), jsonStatham.createJsonValue(entry.getValue()));
+					jsonObjectConvertible.put(String.valueOf(entry.getKey()), reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
 				}
 				return jsonObjectConvertible;
 			}

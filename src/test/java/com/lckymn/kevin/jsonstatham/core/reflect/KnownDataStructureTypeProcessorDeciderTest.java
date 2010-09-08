@@ -12,9 +12,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,15 +23,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible;
-import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
-import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
+import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonOrderedJsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
+import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJavaToJsonConverter;
+import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonToJavaConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -42,9 +44,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
 {
 	private static String[] strings = { null, "Kevin", "Lee", "test", "string" };
 	private static int[] ints = { Integer.MIN_VALUE, Integer.MAX_VALUE, 0, -1, 1 };
-	private static Integer[] integers =
-		{ Integer.valueOf(Integer.MIN_VALUE), Integer.valueOf(Integer.MAX_VALUE), Integer.valueOf(0), Integer.valueOf(-1),
-				Integer.valueOf(1) };
+	private static Integer[] integers = { Integer.valueOf(Integer.MIN_VALUE), Integer.valueOf(Integer.MAX_VALUE), Integer.valueOf(0),
+			Integer.valueOf(-1), Integer.valueOf(1) };
 	private static Collection<String> collection1 = Arrays.asList(strings);
 	private static Collection<Integer> collection2 = Arrays.asList(integers);
 	private static Iterable<String> iterable1 = collection1;
@@ -124,16 +125,17 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return source;
 			}
 		});
 
-		final ReflectionJsonStatham jsonStatham =
-			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
+		// final JsonStathamInAction jsonStatham =
+		// new JsonStathamInAction(new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(),
+		// new OrgJsonJsonArrayConvertibleCreator(), knownDataStructureTypeProcessorDecider,
+		// knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider), new ReflectionJsonToJavaConverter());
 
 		assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass()), is(not(nullValue())));
 		assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass()), is(not(nullValue())));
@@ -166,10 +168,10 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
-				JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+				JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 				for (Object each : (NavigableSet<Object>) source)
 				{
 					jsonArrayConvertible.put(each);
@@ -188,29 +190,31 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return source;
 			}
 		});
 
-		final ReflectionJsonStatham jsonStatham =
-			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
+		final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
+			new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
 					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
+		// final JsonStathamInAction jsonStatham = new JsonStathamInAction(reflectionJavaToJsonConverter, new
+		// ReflectionJsonToJavaConverter());
 
 		final NavigableSet<String> testSet = new TreeSet<String>();
 		testSet.add("Hello");
 		testSet.add("Kevin");
 		testSet.add("Lee");
 
-		JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (String each : testSet)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(testSet.getClass())
-				.process(jsonStatham, testSet)
+				.process(reflectionJavaToJsonConverter, testSet)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
 		assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass()), is(nullValue()));
@@ -246,105 +250,107 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return source;
 			}
 		});
 
-		final ReflectionJsonStatham jsonStatham =
-			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
+		final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
+			new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
 					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
+		// final JsonStathamInAction jsonStatham =
+		// new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());
 
-		JsonArrayConvertible jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (String each : strings)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass())
-				.process(jsonStatham, strings)
+				.process(reflectionJavaToJsonConverter, strings)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (int each : ints)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass())
-				.process(jsonStatham, ints)
+				.process(reflectionJavaToJsonConverter, ints)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (Integer each : integers)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(integers.getClass())
-				.process(jsonStatham, integers)
+				.process(reflectionJavaToJsonConverter, integers)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (String each : collection1)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(collection1.getClass())
-				.process(jsonStatham, collection1)
+				.process(reflectionJavaToJsonConverter, collection1)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (Integer each : collection2)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(collection2.getClass())
-				.process(jsonStatham, collection2)
+				.process(reflectionJavaToJsonConverter, collection2)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (String each : iterable1)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(iterable1.getClass())
-				.process(jsonStatham, iterable1)
+				.process(reflectionJavaToJsonConverter, iterable1)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (Integer each : iterable2)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(each));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(each));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(iterable2.getClass())
-				.process(jsonStatham, iterable2)
+				.process(reflectionJavaToJsonConverter, iterable2)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (Iterator<String> it = iterable1.iterator(); it.hasNext();)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(it.next()));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(it.next()));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(iterator1.getClass())
-				.process(jsonStatham, iterator1)
+				.process(reflectionJavaToJsonConverter, iterator1)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		jsonArrayConvertible = jsonStatham.newJsonArrayConvertible();
+		jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
 		for (Iterator<Integer> it = iterable2.iterator(); it.hasNext();)
 		{
-			jsonArrayConvertible.put(jsonStatham.createJsonValue(it.next()));
+			jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(it.next()));
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(iterator2.getClass())
-				.process(jsonStatham, iterator2)
+				.process(reflectionJavaToJsonConverter, iterator2)
 				.toString(), equalTo(jsonArrayConvertible.toString()));
 
-		final JsonObjectConvertible jsonObjectConvertible = jsonStatham.newJsonObjectConvertible();
+		final JsonObjectConvertible jsonObjectConvertible = reflectionJavaToJsonConverter.newJsonObjectConvertible();
 		for (Entry<Long, String> entry : map.entrySet())
 		{
 			jsonObjectConvertible.put(String.valueOf(entry.getKey()), entry.getValue());
 		}
 		assertThat(knownDataStructureTypeProcessorDecider.decide(map.getClass())
-				.process(jsonStatham, map)
+				.process(reflectionJavaToJsonConverter, map)
 				.toString(), equalTo(jsonObjectConvertible.toString()));
 	}
 }

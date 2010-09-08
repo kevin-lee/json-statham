@@ -4,8 +4,10 @@
 package com.lckymn.kevin.jsonstatham.core.reflect;
 
 import com.lckymn.kevin.common.util.CommonConstants;
-import com.lckymn.kevin.jsonstatham.core.JsonArrayConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.JsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectConvertibleCreator;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -18,34 +20,30 @@ public final class ReflectionJsonStathams
 		throw new IllegalStateException(getClass() + CommonConstants.CANNOT_BE_INSTANTIATED);
 	}
 
-	public static ReflectionJsonStatham newReflectionJsonStatham(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-			final JsonArrayConvertibleCreator jsonArrayConvertibleCreator,
-			final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
-			final KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider,
-			final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
+	public static JsonStathamInAction newJsonStathamInAction(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+			final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter)
 	{
-		return new ReflectionJsonStatham(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator, knownDataStructureTypeProcessorDecider,
-				knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
+		return new JsonStathamInAction(reflectionJavaToJsonConverter, reflectionJsonToJavaConverter);
 	}
 
 	/**
-	 * Returns ReflectionJsonStatham object created with OrgJsonOrderedJsonObjectConvertibleCreator, OrgJsonJsonArrayConvertibleCreator,
+	 * Returns JsonStathamInAction object created with ReflectionJavaToJsonConverter and ReflectionJsonToJavaConverter. The
+	 * ReflectionJavaToJsonConverter object is created with OrgJsonOrderedJsonObjectConvertibleCreator, OrgJsonJsonArrayConvertibleCreator,
 	 * KnownDataStructureTypeProcessorDecider, KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
 	 * 
-	 * @return ReflectionJsonStatham object created with OrgJsonOrderedJsonObjectConvertibleCreator, OrgJsonJsonArrayConvertibleCreator,
-	 *         KnownDataStructureTypeProcessorDecider, KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
+	 * @return JsonStathamInAction object created with ReflectionJavaToJsonConverter and ReflectionJsonToJavaConverter.
 	 */
-	public static ReflectionJsonStatham newReflectionJsonStatham()
+	public static JsonStathamInAction newReflectionJsonStathamInAction()
 	{
-		return newReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
-				new OneProcessorForKnownTypeDecider());
+		return newJsonStathamInAction(new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(),
+				new OrgJsonJsonArrayConvertibleCreator(), new KnownDataStructureTypeProcessorDecider(),
+				new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()), new ReflectionJsonToJavaConverter());
 	}
 
-	public static ReflectionJsonStatham newUnorderedReflectionJsonStatham()
+	public static JsonStathamInAction newUnorderedReflectionJsonStathamInAction()
 	{
-		return newReflectionJsonStatham(new OrgJsonUnorderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
-				new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
-				new OneProcessorForKnownTypeDecider());
+		return newJsonStathamInAction(new ReflectionJavaToJsonConverter(new OrgJsonUnorderedJsonObjectConvertibleCreator(),
+				new OrgJsonJsonArrayConvertibleCreator(), new KnownDataStructureTypeProcessorDecider(),
+				new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()), new ReflectionJsonToJavaConverter());
 	}
 }

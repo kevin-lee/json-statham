@@ -19,7 +19,7 @@ import org.junit.Test;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
+import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -213,7 +213,7 @@ public class OneProcessorForKnownTypeDeciderTest
 		{
 
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, @SuppressWarnings("unused") Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, @SuppressWarnings("unused") Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return Boolean.TRUE;

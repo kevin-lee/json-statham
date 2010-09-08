@@ -28,19 +28,19 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 		tempMap.put(Date.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				return jsonStatham.createJsonValue(source.toString());
+				return reflectionJavaToJsonConverter.createJsonValue(source.toString());
 			}
 		});
 		tempMap.put(Calendar.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
-				return jsonStatham.createJsonValue(((Calendar) source).getTime()
+				return reflectionJavaToJsonConverter.createJsonValue(((Calendar) source).getTime()
 						.toString());
 			}
 
@@ -49,12 +49,12 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 		{
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object process(final ReflectionJsonStatham jsonStatham, final Object source) throws IllegalArgumentException,
+			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{
 				final Entry<Object, Object> entry = (Entry<Object, Object>) source;
-				return jsonStatham.newJsonObjectConvertible()
-						.put((String) entry.getKey(), jsonStatham.createJsonValue(entry.getValue()));
+				return reflectionJavaToJsonConverter.newJsonObjectConvertible()
+						.put((String) entry.getKey(), reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
 			}
 
 		});

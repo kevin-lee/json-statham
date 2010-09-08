@@ -19,12 +19,12 @@ import org.mockito.Mockito;
 
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownObjectReferenceTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonJsonArrayConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.reflect.OrgJsonOrderedJsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStatham;
+import com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -87,7 +87,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 		map.put(TestClass.class, new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				final TestClass testClassObject = (TestClass) source;
@@ -126,31 +126,33 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 		when(oneProcessorForKnownTypeDecider.decide(String.class)).thenReturn(new KnownTypeProcessor()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJsonStatham jsonStatham, Object source)
+			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
 					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return source;
 			}
 		});
 
-		final ReflectionJsonStatham reflectionJsonStatham =
-			new ReflectionJsonStatham(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
+		final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
+			new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(), new OrgJsonJsonArrayConvertibleCreator(),
 					knownDataStructureTypeProcessorDecider, new KnownObjectReferenceTypeProcessorDecider(), oneProcessorForKnownTypeDecider);
+		// final JsonStathamInAction jsonStathamInAction =
+		// new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());
 		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownObjectReferenceTypeProcessorDecider();
 
 		assertThat(knownTypeProcessorDecider.decide(DATE.getClass())
-				.process(reflectionJsonStatham, DATE), equalTo(reflectionJsonStatham.createJsonValue(DATE.toString())));
+				.process(reflectionJavaToJsonConverter, DATE), equalTo(reflectionJavaToJsonConverter.createJsonValue(DATE.toString())));
 
 		assertThat(knownTypeProcessorDecider.decide(CALENDAR.getClass())
-				.process(reflectionJsonStatham, CALENDAR), equalTo(reflectionJsonStatham.createJsonValue(CALENDAR.getTime()
+				.process(reflectionJavaToJsonConverter, CALENDAR), equalTo(reflectionJavaToJsonConverter.createJsonValue(CALENDAR.getTime()
 				.toString())));
 
 		for (Entry<String, String> entry : MAP.entrySet())
 		{
 			assertThat(knownTypeProcessorDecider.decide(entry.getClass())
-					.process(reflectionJsonStatham, entry)
-					.toString(), equalTo(reflectionJsonStatham.newJsonObjectConvertible()
-					.put(entry.getKey(), reflectionJsonStatham.createJsonValue(entry.getValue()))
+					.process(reflectionJavaToJsonConverter, entry)
+					.toString(), equalTo(reflectionJavaToJsonConverter.newJsonObjectConvertible()
+					.put(entry.getKey(), reflectionJavaToJsonConverter.createJsonValue(entry.getValue()))
 					.toString()));
 		}
 
