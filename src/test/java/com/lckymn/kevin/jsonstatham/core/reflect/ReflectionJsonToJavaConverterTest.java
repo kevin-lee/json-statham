@@ -81,202 +81,202 @@ import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithoutItsName
  */
 public class ReflectionJsonToJavaConverterTest
 {
-//	private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
-//	private static final List<String> suburbList = Arrays.asList("", "Test Suburb");
-//	private static final List<String> cityList = Arrays.asList("Sydney", "Melbourne");
-//	private static final List<String> stateList = Arrays.asList("NSW", "VIC");
-//	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
-//	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
-//
-//	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
-//		new Answer<JsonObjectConvertible>()
-//		{
-//			@Override
-//			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
-//					throws Throwable
-//			{
-//				return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
-//			}
-//		};
-//
-//	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING =
-//		new Answer<JsonObjectConvertible>()
-//		{
-//			@Override
-//			public JsonObjectConvertible answer(InvocationOnMock invocation) throws Throwable
-//			{
-//				try
-//				{
-//					return new OrgJsonJsonObjectConvertible(new JSONObject((String) invocation.getArguments()[0]));
-//				}
-//				catch (Exception e)
-//				{
-//					throw new JsonStathamException(e);
-//				}
-//			}
-//
-//		};
-//
-//	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
-//		new Answer<JsonObjectConvertible>()
-//		{
-//
-//			@Override
-//			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
-//					throws Throwable
-//			{
-//				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
-//				return new JsonObjectConvertible()
-//				{
-//					@Override
-//					public String[] getNames()
-//					{
-//						throw new JsonStathamException(
-//								"The getNames method in NullJsonObjectConvertible cannot be used.");
-//					}
-//
-//					@Override
-//					public Object get(@SuppressWarnings("unused") String name)
-//					{
-//						throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
-//					}
-//
-//					@Override
-//					public Object getActualObject()
-//					{
-//						return JSONObject.NULL;
-//					}
-//
-//					@Override
-//					public JsonObjectConvertible put(@SuppressWarnings("unused") String name,
-//							@SuppressWarnings("unused") Object value) throws JsonStathamException
-//					{
-//						throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
-//					}
-//
-//					@Override
-//					public String toString()
-//					{
-//						return JSONObject.NULL.toString();
-//					}
-//				};
-//			}
-//
-//		};
-//
-//	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
-//		new Answer<JsonArrayConvertible>()
-//		{
-//
-//			@Override
-//			public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
-//					throws Throwable
-//			{
-//				return new OrgJsonJsonArrayConvertible(new JSONArray());
-//			}
-//		};
-//
-//	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING =
-//		new Answer<JsonArrayConvertible>()
-//		{
-//			@Override
-//			public JsonArrayConvertible answer(InvocationOnMock invocation) throws Throwable
-//			{
-//				return new OrgJsonJsonArrayConvertible(new JSONArray((String) invocation.getArguments()[0]));
-//			}
-//		};
-//
-//	private List<Address> addressList;
-//
-//	private Map<String, Address> addressMap;
-//
-//	private ReflectionJsonToJavaConverter reflectionJsonToJavaConverter;
-//
-//	private Address address;
-//
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@BeforeClass
-//	public static void setUpBeforeClass() throws Exception
-//	{
-//		System.out.println("### ReflectionJsonToJavaConverterTest starts ###");
-//	}
-//
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@AfterClass
-//	public static void tearDownAfterClass() throws Exception
-//	{
-//		System.out.println("### ReflectionJsonToJavaConverterTest ###");
-//	}
-//
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@Before
-//	public void setUp() throws Exception
-//	{
-//		final JsonObjectConvertibleCreator jsonObjectConvertibleCreator = mock(JsonObjectConvertibleCreator.class);
-//		when(jsonObjectConvertibleCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
-//		when(jsonObjectConvertibleCreator.newJsonObjectConvertible(anyString())).thenAnswer(
-//				ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
-//		when(jsonObjectConvertibleCreator.nullJsonObjectConvertible()).thenAnswer(
-//				ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
-//
-//		final JsonArrayConvertibleCreator jsonArrayConvertibleCreator = mock(JsonArrayConvertibleCreator.class);
-//		when(jsonArrayConvertibleCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
-//		when(jsonArrayConvertibleCreator.newJsonArrayConvertible(anyString())).thenAnswer(
-//				ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
-//
-//		reflectionJsonToJavaConverter =
-//			new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
-//		address =
-//			new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
-//
-//		addressList = new ArrayList<Address>();
-//		for (int i = 0, size = streetList.size(); i < size; i++)
-//		{
-//			addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
-//					postcodeList.get(i)));
-//		}
-//
-//		addressMap = new LinkedHashMap<String, Address>();
-//		for (int i = 0, size = streetList.size(); i < size; i++)
-//		{
-//			addressMap.put(
-//					"address" + i,
-//					new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
-//							postcodeList.get(i)));
-//		}
-//	}
-//
-//	/**
-//	 * @throws java.lang.Exception
-//	 */
-//	@After
-//	public void tearDown() throws Exception
-//	{
-//	}
-//
-//	@Test(expected = JsonStathamException.class)
-//	public final void testConvertFromJsonWithIllegalJson() throws JsonStathamException, IllegalArgumentException,
-//			InstantiationException, IllegalAccessException, InvocationTargetException
-//	{
-//		reflectionJsonToJavaConverter.convertFromJson(Object.class, "{\"some\",\"value\",\"This is not JSON\"}");
-//	}
-//
-//	@Test(expected = IllegalArgumentException.class)
-//	public void testUnknownType() throws JsonStathamException, IllegalArgumentException, InstantiationException,
-//			IllegalAccessException, InvocationTargetException
-//	{
-//		class UnknownType
-//		{
-//		}
-//		reflectionJsonToJavaConverter.convertFromJson(UnknownType.class, "{}");
-//	}
-//
+	private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
+	private static final List<String> suburbList = Arrays.asList("", "Test Suburb");
+	private static final List<String> cityList = Arrays.asList("Sydney", "Melbourne");
+	private static final List<String> stateList = Arrays.asList("NSW", "VIC");
+	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
+	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
+
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
+		new Answer<JsonObjectConvertible>()
+		{
+			@Override
+			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
+					throws Throwable
+			{
+				return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+			}
+		};
+
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING =
+		new Answer<JsonObjectConvertible>()
+		{
+			@Override
+			public JsonObjectConvertible answer(InvocationOnMock invocation) throws Throwable
+			{
+				try
+				{
+					return new OrgJsonJsonObjectConvertible(new JSONObject((String) invocation.getArguments()[0]));
+				}
+				catch (Exception e)
+				{
+					throw new JsonStathamException(e);
+				}
+			}
+
+		};
+
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
+		new Answer<JsonObjectConvertible>()
+		{
+
+			@Override
+			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
+					throws Throwable
+			{
+				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
+				return new JsonObjectConvertible()
+				{
+					@Override
+					public String[] getNames()
+					{
+						throw new JsonStathamException(
+								"The getNames method in NullJsonObjectConvertible cannot be used.");
+					}
+
+					@Override
+					public Object get(@SuppressWarnings("unused") String name)
+					{
+						throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
+					}
+
+					@Override
+					public Object getActualObject()
+					{
+						return JSONObject.NULL;
+					}
+
+					@Override
+					public JsonObjectConvertible put(@SuppressWarnings("unused") String name,
+							@SuppressWarnings("unused") Object value) throws JsonStathamException
+					{
+						throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
+					}
+
+					@Override
+					public String toString()
+					{
+						return JSONObject.NULL.toString();
+					}
+				};
+			}
+
+		};
+
+	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
+		new Answer<JsonArrayConvertible>()
+		{
+
+			@Override
+			public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
+					throws Throwable
+			{
+				return new OrgJsonJsonArrayConvertible(new JSONArray());
+			}
+		};
+
+	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING =
+		new Answer<JsonArrayConvertible>()
+		{
+			@Override
+			public JsonArrayConvertible answer(InvocationOnMock invocation) throws Throwable
+			{
+				return new OrgJsonJsonArrayConvertible(new JSONArray((String) invocation.getArguments()[0]));
+			}
+		};
+
+	private List<Address> addressList;
+
+	private Map<String, Address> addressMap;
+
+	private ReflectionJsonToJavaConverter reflectionJsonToJavaConverter;
+
+	private Address address;
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception
+	{
+		System.out.println("### ReflectionJsonToJavaConverterTest starts ###");
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception
+	{
+		System.out.println("### ReflectionJsonToJavaConverterTest ###");
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception
+	{
+		final JsonObjectConvertibleCreator jsonObjectConvertibleCreator = mock(JsonObjectConvertibleCreator.class);
+		when(jsonObjectConvertibleCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
+		when(jsonObjectConvertibleCreator.newJsonObjectConvertible(anyString())).thenAnswer(
+				ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
+		when(jsonObjectConvertibleCreator.nullJsonObjectConvertible()).thenAnswer(
+				ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
+
+		final JsonArrayConvertibleCreator jsonArrayConvertibleCreator = mock(JsonArrayConvertibleCreator.class);
+		when(jsonArrayConvertibleCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
+		when(jsonArrayConvertibleCreator.newJsonArrayConvertible(anyString())).thenAnswer(
+				ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
+
+		reflectionJsonToJavaConverter =
+			new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
+		address =
+			new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
+
+		addressList = new ArrayList<Address>();
+		for (int i = 0, size = streetList.size(); i < size; i++)
+		{
+			addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
+					postcodeList.get(i)));
+		}
+
+		addressMap = new LinkedHashMap<String, Address>();
+		for (int i = 0, size = streetList.size(); i < size; i++)
+		{
+			addressMap.put(
+					"address" + i,
+					new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
+							postcodeList.get(i)));
+		}
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception
+	{
+	}
+
+	@Test(expected = JsonStathamException.class)
+	public final void testConvertFromJsonWithIllegalJson() throws JsonStathamException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		reflectionJsonToJavaConverter.convertFromJson(Object.class, "{\"some\",\"value\",\"This is not JSON\"}");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUnknownType() throws JsonStathamException, IllegalArgumentException, InstantiationException,
+			IllegalAccessException, InvocationTargetException
+	{
+		class UnknownType
+		{
+		}
+		reflectionJsonToJavaConverter.convertFromJson(UnknownType.class, "{}");
+	}
+
 //	@Test
 //	public void testNull() throws JsonStathamException, IllegalArgumentException, InstantiationException,
 //			IllegalAccessException, InvocationTargetException
