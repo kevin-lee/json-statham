@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -58,6 +59,31 @@ public final class JsonObjectContainingEnums
 		this.passed = passed;
 		this.role = role;
 		this.access = access;
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, number, passed, role, access);
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public boolean equals(Object jsonObjectContainingEnums)
+	{
+		if (this == jsonObjectContainingEnums)
+		{
+			return true;
+		}
+		if (!(jsonObjectContainingEnums instanceof JsonObjectContainingEnums))
+		{
+			return false;
+		}
+		final JsonObjectContainingEnums that = (JsonObjectContainingEnums) jsonObjectContainingEnums;
+		return Objects.equals(this.name, that.name) && Objects.equals(this.number, that.number)
+				&& Objects.equals(this.passed, that.passed) && Objects.equals(this.role, that.role)
+				&& Objects.equals(this.access, that.access);
 	}
 
 }

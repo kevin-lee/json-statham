@@ -17,8 +17,8 @@ import java.util.Map.Entry;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.reflect.KnownDataStructureTypeProcessorDecider;
@@ -44,16 +44,16 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 	@Test
 	public final void testKnownObjectReferenceTypeProcessorDecider()
 	{
-		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownObjectReferenceTypeProcessorDecider();
-		assertThat(knownTypeProcessorDecider.decide(DATE.getClass()), is(not(nullValue())));
-		assertThat(knownTypeProcessorDecider.decide(CALENDAR.getClass()), is(not(nullValue())));
+		final KnownTypeProcessorDeciderForJavaToJson knownTypeProcessorDeciderForJavaToJson = new KnownObjectReferenceTypeProcessorDecider();
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(DATE.getClass()), is(not(nullValue())));
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(CALENDAR.getClass()), is(not(nullValue())));
 
 		for (Entry<String, String> entry : MAP.entrySet())
 		{
-			assertThat(knownTypeProcessorDecider.decide(entry.getClass()), is(not(nullValue())));
+			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(entry.getClass()), is(not(nullValue())));
 		}
 
-		assertThat(knownTypeProcessorDecider.decide(new ArrayList<String>().getClass()), is(nullValue()));
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(new ArrayList<String>().getClass()), is(nullValue()));
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 
 		final TestClass testClass = new TestClass(Long.valueOf(999L), "Kevin");
 
-		final Map<Class<?>, KnownTypeProcessor> map = new HashMap<Class<?>, KnownTypeProcessor>();
-		map.put(TestClass.class, new KnownTypeProcessor()
+		final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> map = new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
+		map.put(TestClass.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
@@ -94,18 +94,18 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 				return "id: " + testClassObject.id + " | name: " + testClassObject.name;
 			}
 		});
-		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownObjectReferenceTypeProcessorDecider(map);
+		final KnownTypeProcessorDeciderForJavaToJson knownTypeProcessorDeciderForJavaToJson = new KnownObjectReferenceTypeProcessorDecider(map);
 
-		assertThat(knownTypeProcessorDecider.decide(testClass.getClass()), is(not(nullValue())));
-		assertThat(knownTypeProcessorDecider.decide(testClass.getClass())
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(testClass.getClass()), is(not(nullValue())));
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(testClass.getClass())
 				.process(null, testClass), equalTo((Object) ("id: " + testClass.id + " | name: " + testClass.name)));
 
-		assertThat(knownTypeProcessorDecider.decide(DATE.getClass()), is(nullValue()));
-		assertThat(knownTypeProcessorDecider.decide(CALENDAR.getClass()), is(nullValue()));
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(DATE.getClass()), is(nullValue()));
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(CALENDAR.getClass()), is(nullValue()));
 
 		for (Entry<String, String> entry : MAP.entrySet())
 		{
-			assertThat(knownTypeProcessorDecider.decide(entry.getClass()), is(nullValue()));
+			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(entry.getClass()), is(nullValue()));
 		}
 	}
 
@@ -123,7 +123,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 			mock(KnownDataStructureTypeProcessorDecider.class);
 		when(knownDataStructureTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
-		when(oneProcessorForKnownTypeDecider.decide(String.class)).thenReturn(new KnownTypeProcessor()
+		when(oneProcessorForKnownTypeDecider.decide(String.class)).thenReturn(new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
@@ -138,24 +138,24 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
 					knownDataStructureTypeProcessorDecider, new KnownObjectReferenceTypeProcessorDecider(), oneProcessorForKnownTypeDecider);
 		// final JsonStathamInAction jsonStathamInAction =
 		// new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());
-		final KnownTypeProcessorDecider knownTypeProcessorDecider = new KnownObjectReferenceTypeProcessorDecider();
+		final KnownTypeProcessorDeciderForJavaToJson knownTypeProcessorDeciderForJavaToJson = new KnownObjectReferenceTypeProcessorDecider();
 
-		assertThat(knownTypeProcessorDecider.decide(DATE.getClass())
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(DATE.getClass())
 				.process(reflectionJavaToJsonConverter, DATE), equalTo(reflectionJavaToJsonConverter.createJsonValue(DATE.toString())));
 
-		assertThat(knownTypeProcessorDecider.decide(CALENDAR.getClass())
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(CALENDAR.getClass())
 				.process(reflectionJavaToJsonConverter, CALENDAR), equalTo(reflectionJavaToJsonConverter.createJsonValue(CALENDAR.getTime()
 				.toString())));
 
 		for (Entry<String, String> entry : MAP.entrySet())
 		{
-			assertThat(knownTypeProcessorDecider.decide(entry.getClass())
+			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(entry.getClass())
 					.process(reflectionJavaToJsonConverter, entry)
 					.toString(), equalTo(reflectionJavaToJsonConverter.newJsonObjectConvertible()
 					.put(entry.getKey(), reflectionJavaToJsonConverter.createJsonValue(entry.getValue()))
 					.toString()));
 		}
 
-		assertThat(knownTypeProcessorDecider.decide(new ArrayList<String>().getClass()), is(nullValue()));
+		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(new ArrayList<String>().getClass()), is(nullValue()));
 	}
 }

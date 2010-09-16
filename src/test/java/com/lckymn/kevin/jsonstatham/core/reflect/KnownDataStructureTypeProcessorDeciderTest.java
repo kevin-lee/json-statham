@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
@@ -122,7 +122,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		when(knownObjectReferenceTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 
 		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
-		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
+		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
@@ -163,8 +163,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
 	public final void testKnownDataStructureTypeProcessorDeciderMapOfClassOfQKnownTypeProcessor() throws IllegalArgumentException,
 			JsonStathamException, IllegalAccessException
 	{
-		final Map<Class<?>, KnownTypeProcessor> knownDataStructuresProcessorMap = new HashMap<Class<?>, KnownTypeProcessor>();
-		knownDataStructuresProcessorMap.put(NavigableSet.class, new KnownTypeProcessor()
+		final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownDataStructuresProcessorMap = new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
+		knownDataStructuresProcessorMap.put(NavigableSet.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@SuppressWarnings("unchecked")
 			@Override
@@ -187,7 +187,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		when(knownObjectReferenceTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 
 		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
-		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
+		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
@@ -247,7 +247,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
 		when(knownObjectReferenceTypeProcessorDecider.decide(Mockito.any(Class.class))).thenReturn(null);
 
 		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
-		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessor()
+		when(oneProcessorForKnownTypeDecider.decide(Mockito.any(Class.class))).thenReturn(new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)

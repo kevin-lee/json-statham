@@ -5,6 +5,7 @@ package com.lckymn.kevin.jsonstatham.json;
 
 import java.util.Collection;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -18,7 +19,7 @@ public class JsonObjectContainingCollection
 	@JsonField(name = "name")
 	private final String name;
 
-	@JsonField(name = "valueCollection")
+	@JsonField(name = "valueCollection", genericInfo = { String.class })
 	private final Collection<String> collection;
 
 	public JsonObjectContainingCollection(String name, Collection<String> collection)
@@ -26,4 +27,26 @@ public class JsonObjectContainingCollection
 		this.name = name;
 		this.collection = collection;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, collection);
+	}
+
+	@Override
+	public boolean equals(Object jsonObjectContainingCollection)
+	{
+		if (this == jsonObjectContainingCollection)
+		{
+			return true;
+		}
+		if (!(jsonObjectContainingCollection instanceof JsonObjectContainingCollection))
+		{
+			return false;
+		}
+		final JsonObjectContainingCollection that = (JsonObjectContainingCollection) jsonObjectContainingCollection;
+		return Objects.equals(this.name, that.name) && Objects.equals(this.collection, that.collection);
+	}
+
 }

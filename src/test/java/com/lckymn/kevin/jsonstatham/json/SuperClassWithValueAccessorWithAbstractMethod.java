@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -54,5 +55,29 @@ public abstract class SuperClassWithValueAccessorWithAbstractMethod
 	public void setNumber(int number)
 	{
 		this.number = number;
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, number);
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public boolean equals(Object superClassWithValueAccessorWithAbstractMethod)
+	{
+		if (this == superClassWithValueAccessorWithAbstractMethod)
+		{
+			return true;
+		}
+		if (!(superClassWithValueAccessorWithAbstractMethod instanceof SuperClassWithValueAccessorWithAbstractMethod))
+		{
+			return false;
+		}
+		final SuperClassWithValueAccessorWithAbstractMethod that =
+			(SuperClassWithValueAccessorWithAbstractMethod) superClassWithValueAccessorWithAbstractMethod;
+		return Objects.equals(this.name, that.name) && Objects.equals(this.number, that.number);
 	}
 }

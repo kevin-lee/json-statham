@@ -4,6 +4,9 @@
 package com.lckymn.kevin.jsonstatham.core.convertible;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+
+import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 
 /**
@@ -21,6 +24,19 @@ public final class OrgJsonJsonArrayConvertibleCreator implements JsonArrayConver
 	public JsonArrayConvertible newJsonArrayConvertible()
 	{
 		return new OrgJsonJsonArrayConvertible(new JSONArray());
+	}
+
+	@Override
+	public JsonArrayConvertible newJsonArrayConvertible(String jsonString)
+	{
+		try
+		{
+			return new OrgJsonJsonArrayConvertible(new JSONArray(jsonString));
+		}
+		catch (JSONException e)
+		{
+			throw new JsonStathamException(e);
+		}
 	}
 
 }

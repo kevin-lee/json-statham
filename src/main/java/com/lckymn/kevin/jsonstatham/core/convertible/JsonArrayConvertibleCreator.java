@@ -10,4 +10,6 @@ package com.lckymn.kevin.jsonstatham.core.convertible;
 public interface JsonArrayConvertibleCreator
 {
 	JsonArrayConvertible newJsonArrayConvertible();
+
+	JsonArrayConvertible newJsonArrayConvertible(String jsonString);
 }

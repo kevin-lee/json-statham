@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -59,4 +60,26 @@ public abstract class SuperClass
 		this.number = number;
 	}
 
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, number);
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public boolean equals(Object superClass)
+	{
+		if (this == superClass)
+		{
+			return true;
+		}
+		if (!(superClass instanceof SuperClass))
+		{
+			return false;
+		}
+		final SuperClass that = (SuperClass) superClass;
+		return Objects.equals(this.name, that.getName()) && Objects.equals(this.number, that.getNumber());
+	}
 }

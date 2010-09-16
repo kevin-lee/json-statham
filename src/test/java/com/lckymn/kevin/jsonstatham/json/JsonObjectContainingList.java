@@ -5,6 +5,7 @@ package com.lckymn.kevin.jsonstatham.json;
 
 import java.util.List;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -25,5 +26,26 @@ public class JsonObjectContainingList
 	{
 		this.name = name;
 		this.list = list;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, list);
+	}
+
+	@Override
+	public boolean equals(Object jsonObjectContainingList)
+	{
+		if (this == jsonObjectContainingList)
+		{
+			return true;
+		}
+		if (!(jsonObjectContainingList instanceof JsonObjectContainingList))
+		{
+			return false;
+		}
+		final JsonObjectContainingList that = (JsonObjectContainingList) jsonObjectContainingList;
+		return Objects.equals(this.name, that.name) && Objects.equals(this.list, that.list);
 	}
 }

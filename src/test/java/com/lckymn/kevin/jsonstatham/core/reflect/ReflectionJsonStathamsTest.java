@@ -17,7 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
@@ -83,12 +83,15 @@ public class ReflectionJsonStathamsTest
 			mock(KnownDataStructureTypeProcessorDecider.class);
 		final KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider =
 			mock(KnownObjectReferenceTypeProcessorDecider.class);
-		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
+		final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider =
+			mock(OneProcessorForKnownTypeDecider.class);
 
 		final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
 			new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator,
-					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
-		final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter = new ReflectionJsonToJavaConverter();
+					knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
+					oneProcessorForKnownTypeDecider);
+		final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
+			new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
 
 		final JsonStathamInAction jsonStathamInAction =
 			ReflectionJsonStathams.newJsonStathamInAction(reflectionJavaToJsonConverter, reflectionJsonToJavaConverter);
@@ -109,13 +112,14 @@ public class ReflectionJsonStathamsTest
 				equalTo(jsonArrayConvertibleCreator));
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
 				equalTo(knownDataStructureTypeProcessorDecider));
-		assertTrue(Arrays.deepEquals(new KnownTypeProcessorDecider[] { knownDataStructureTypeProcessorDecider,
+		assertTrue(Arrays.deepEquals(new KnownTypeProcessorDeciderForJavaToJson[] { knownDataStructureTypeProcessorDecider,
 				knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider },
 				reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownTypeProcessorDeciders()));
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStathams#newReflectionJsonStathamInAction()}.
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStathams#newReflectionJsonStathamInAction()}.
 	 */
 	@Test
 	public final void testNewJsonStathamInAction()
@@ -139,7 +143,7 @@ public class ReflectionJsonStathamsTest
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
 				is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));
 
-		final KnownTypeProcessorDecider[] knownTypeProcessorDeciders =
+		final KnownTypeProcessorDeciderForJavaToJson[] knownTypeProcessorDeciders =
 			reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownTypeProcessorDeciders();
 		assertEquals(3, knownTypeProcessorDeciders.length);
 		assertThat(knownTypeProcessorDeciders[0], is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));
@@ -149,12 +153,15 @@ public class ReflectionJsonStathamsTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStathams#newUnorderedReflectionJsonStathamInAction()}.
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonStathams#newUnorderedReflectionJsonStathamInAction()}
+	 * .
 	 */
 	@Test
 	public final void testNewUnorderedReflectionJsonStathamInAction()
 	{
-		final JsonStathamInAction jsonStathamInAction = ReflectionJsonStathams.newUnorderedReflectionJsonStathamInAction();
+		final JsonStathamInAction jsonStathamInAction =
+			ReflectionJsonStathams.newUnorderedReflectionJsonStathamInAction();
 
 		assertThat(jsonStathamInAction.getJavaToJsonConverter(), is(instanceOf(ReflectionJavaToJsonConverter.class)));
 		assertThat(jsonStathamInAction.getJsonToJavaConverter(), is(instanceOf(ReflectionJsonToJavaConverter.class)));
@@ -173,7 +180,7 @@ public class ReflectionJsonStathamsTest
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
 				is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));
 
-		final KnownTypeProcessorDecider[] knownTypeProcessorDeciders =
+		final KnownTypeProcessorDeciderForJavaToJson[] knownTypeProcessorDeciders =
 			reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownTypeProcessorDeciders();
 		assertEquals(3, knownTypeProcessorDeciders.length);
 		assertThat(knownTypeProcessorDeciders[0], is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));

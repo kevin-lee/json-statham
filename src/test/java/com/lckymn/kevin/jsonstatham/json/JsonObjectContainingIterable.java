@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -23,5 +24,26 @@ public class JsonObjectContainingIterable
 	{
 		this.name = name;
 		this.iterable = iterable;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, iterable);
+	}
+
+	@Override
+	public boolean equals(Object jsonObjectContainingIterable)
+	{
+		if (this == jsonObjectContainingIterable)
+		{
+			return true;
+		}
+		if (!(jsonObjectContainingIterable instanceof JsonObjectContainingIterable))
+		{
+			return false;
+		}
+		JsonObjectContainingIterable that = (JsonObjectContainingIterable) jsonObjectContainingIterable;
+		return Objects.equals(this.name, that.name) && Objects.equals(this.iterable, that.iterable);
 	}
 }

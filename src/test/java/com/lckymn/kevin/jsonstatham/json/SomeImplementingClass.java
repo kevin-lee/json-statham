@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -86,4 +87,27 @@ public class SomeImplementingClass implements SomeInterface
 		this.email = email;
 	}
 
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, number, email);
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public boolean equals(Object someImplementingClass)
+	{
+		if (this == someImplementingClass)
+		{
+			return true;
+		}
+		if (!(someImplementingClass instanceof SomeImplementingClass))
+		{
+			return false;
+		}
+		final SomeImplementingClass that = (SomeImplementingClass) someImplementingClass;
+		return Objects.equals(this.name, that.getName()) && Objects.equals(this.number, that.getNumber())
+				&& Objects.equals(this.email, that.getEmail());
+	}
 }

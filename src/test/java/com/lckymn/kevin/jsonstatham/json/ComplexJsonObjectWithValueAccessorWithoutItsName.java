@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -192,4 +193,36 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 	{
 		this.calendarWithValueAccessor = calendarWithValueAccessor;
 	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(primaryKey, name, registered, enabled, address, date, dateWithValueAccessor, calendar,
+				calendarWithValueAccessor);
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public boolean equals(Object complexJsonObjectWithValueAccessorWithoutItsName)
+	{
+		if (this == complexJsonObjectWithValueAccessorWithoutItsName)
+		{
+			return true;
+		}
+		if (!(complexJsonObjectWithValueAccessorWithoutItsName instanceof ComplexJsonObjectWithValueAccessorWithoutItsName))
+		{
+			return false;
+		}
+		final ComplexJsonObjectWithValueAccessorWithoutItsName that =
+			(ComplexJsonObjectWithValueAccessorWithoutItsName) complexJsonObjectWithValueAccessorWithoutItsName;
+		return Objects.equals(this.primaryKey, that.getPrimaryKey()) && Objects.equals(this.name, that.getName())
+				&& Objects.equals(this.registered, that.isRegistered())
+				&& Objects.equals(this.enabled, that.getEnabled()) && Objects.equals(this.address, that.getAddress())
+				&& Objects.equals(this.date, that.getDate())
+				&& Objects.equals(this.dateWithValueAccessor, that.getDateWithValueAccessor())
+				&& Objects.equals(this.calendar, that.getCalendar())
+				&& Objects.equals(this.calendarWithValueAccessor, that.getCalendarWithValueAccessor());
+	}
+
 }

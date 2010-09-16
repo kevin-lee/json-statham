@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -84,4 +85,25 @@ public final class NestedJsonObject
 		this.address = address;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(primaryKey, name, address);
+	}
+
+	@Override
+	public boolean equals(Object nestedJsonObject)
+	{
+		if (this == nestedJsonObject)
+		{
+			return true;
+		}
+		if (!(nestedJsonObject instanceof NestedJsonObject))
+		{
+			return false;
+		}
+		final NestedJsonObject that = (NestedJsonObject) nestedJsonObject;
+		return Objects.equals(this.primaryKey, that.getPrimaryKey()) && Objects.equals(this.name, that.getName())
+				&& Objects.equals(this.address, that.getAddress());
+	}
 }

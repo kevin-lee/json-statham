@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -93,4 +94,25 @@ public final class JsonObjectWithDuplicateKeys
 		this.email = email;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(username, fullName, name, email);
+	}
+
+	@Override
+	public boolean equals(Object jsonObjectWithDuplicateKeys)
+	{
+		if (this == jsonObjectWithDuplicateKeys)
+		{
+			return true;
+		}
+		if (!(jsonObjectWithDuplicateKeys instanceof JsonObjectWithDuplicateKeys))
+		{
+			return false;
+		}
+		final JsonObjectWithDuplicateKeys that = (JsonObjectWithDuplicateKeys) jsonObjectWithDuplicateKeys;
+		return Objects.equals(this.username, that.getUsername()) && Objects.equals(this.fullName, that.getFullName())
+				&& Objects.equals(this.name, that.getName()) && Objects.equals(this.email, that.getEmail());
+	}
 }

@@ -14,11 +14,33 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  */
 public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
 {
+	private static final String[] EMPTY_NAMES = new String[0];
+
 	private final JSONObject jsonObject;
 
 	public OrgJsonJsonObjectConvertible(JSONObject jsonObject)
 	{
 		this.jsonObject = jsonObject;
+	}
+
+	@Override
+	public String[] getNames()
+	{
+		final String[] names = JSONObject.getNames(jsonObject);
+		return (null == names ? EMPTY_NAMES : names);
+	}
+
+	@Override
+	public Object get(String name) throws JsonStathamException
+	{
+		try
+		{
+			return jsonObject.get(name);
+		}
+		catch (JSONException e)
+		{
+			throw new JsonStathamException(e);
+		}
 	}
 
 	/*

@@ -11,6 +11,10 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  */
 public interface JsonObjectConvertible extends JsonConvertible
 {
+	String[] getNames();
+	
+	Object get(String name);
+	
 	JsonObjectConvertible put(String name, Object value) throws JsonStathamException;
 
 	@Override

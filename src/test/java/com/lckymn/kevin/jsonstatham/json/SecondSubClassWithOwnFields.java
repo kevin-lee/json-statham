@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -60,4 +61,26 @@ public class SecondSubClassWithOwnFields extends SubClass
 		this.comment = comment;
 	}
 
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(getName(), getNumber(), getEmail(), address, comment);
+	}
+
+	@Override
+	public boolean equals(Object secondSubClassWithOwnFields)
+	{
+		if (this == secondSubClassWithOwnFields)
+		{
+			return true;
+		}
+		if (!(secondSubClassWithOwnFields instanceof SecondSubClassWithOwnFields))
+		{
+			return false;
+		}
+		final SecondSubClassWithOwnFields that = (SecondSubClassWithOwnFields) secondSubClassWithOwnFields;
+		return super.equals(secondSubClassWithOwnFields) && Objects.equals(this.address, that.getAddress())
+				&& Objects.equals(this.comment, that.getComment());
+	}
 }

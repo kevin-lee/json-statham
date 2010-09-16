@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -126,4 +127,26 @@ public class Address
 		this.postcode = postcode;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(street, suburb, city, state, postcode);
+	}
+
+	@Override
+	public boolean equals(Object address)
+	{
+		if (this == address)
+		{
+			return true;
+		}
+		if (!(address instanceof Address))
+		{
+			return false;
+		}
+		final Address that = (Address) address;
+		return Objects.equals(this.street, that.getStreet()) && Objects.equals(this.suburb, that.getSuburb())
+				&& Objects.equals(this.city, that.getCity()) && Objects.equals(this.state, that.getState())
+				&& Objects.equals(this.postcode, that.getPostcode());
+	}
 }

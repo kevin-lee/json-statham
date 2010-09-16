@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -29,7 +30,7 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
 	{
 		return "My name is nobody.";
 	}
-	
+
 	@Override
 	public String number()
 	{
@@ -53,4 +54,25 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
 		this.email = email;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode() + Objects.hash(email);
+	}
+
+	@Override
+	public boolean equals(Object subClassWithValueAccessorWithAbstractMethod)
+	{
+		if (this == subClassWithValueAccessorWithAbstractMethod)
+		{
+			return true;
+		}
+		if (!(subClassWithValueAccessorWithAbstractMethod instanceof SubClassWithValueAccessorWithAbstractMethod))
+		{
+			return false;
+		}
+		final SubClassWithValueAccessorWithAbstractMethod that =
+			(SubClassWithValueAccessorWithAbstractMethod) subClassWithValueAccessorWithAbstractMethod;
+		return super.equals(subClassWithValueAccessorWithAbstractMethod) && Objects.equals(this.email, that.email);
+	}
 }

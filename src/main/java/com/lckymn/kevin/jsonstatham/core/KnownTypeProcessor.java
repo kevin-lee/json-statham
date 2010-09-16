@@ -3,11 +3,10 @@
  */
 package com.lckymn.kevin.jsonstatham.core;
 
-import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
-public interface KnownTypeProcessor
+public interface KnownTypeProcessor<T>
 {
-	Object process(ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source) throws IllegalArgumentException,
-			IllegalAccessException, JsonStathamException;
+	Object process(T processor, Object source) throws IllegalArgumentException, IllegalAccessException,
+			JsonStathamException;
 }

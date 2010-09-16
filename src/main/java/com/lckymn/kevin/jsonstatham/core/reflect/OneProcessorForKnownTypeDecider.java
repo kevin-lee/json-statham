@@ -9,33 +9,30 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
+import com.lckymn.kevin.jsonstatham.core.SimpleKnownTypeChecker;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
-public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecider
+public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDeciderForJavaToJson
 {
-	public interface SimpleTypeChecker
-	{
-		boolean isKnown(Class<?> type);
-	}
-
-	public static final KnownTypeProcessor DEFAULT_KNOWN_TYPE_PROCESSOR;
+	public static final KnownTypeProcessorWithReflectionJavaToJsonConverter DEFAULT_KNOWN_TYPE_PROCESSOR;
 	public static final Set<Class<?>> DAFAULT_KNOWN_BASIC_TYPE_SET;
 	public static final Set<Class<?>> DAFAULT_KNOWN_EXTENSIBLE_BASIC_TYPE_SET;
-	public static final SimpleTypeChecker[] DAFAULT_SIMPLE_TYPE_CHECKERS;
+	public static final SimpleKnownTypeChecker[] DAFAULT_SIMPLE_TYPE_CHECKERS;
 
 	static
 	{
-		DEFAULT_KNOWN_TYPE_PROCESSOR = new KnownTypeProcessor()
+		DEFAULT_KNOWN_TYPE_PROCESSOR = new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
-			public Object process(@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Object source)
-					throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+			public Object process(
+					@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+					Object source) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
 				return source;
 			}
@@ -61,7 +58,7 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 		tempSet.add(Number.class);
 		DAFAULT_KNOWN_EXTENSIBLE_BASIC_TYPE_SET = Collections.unmodifiableSet(tempSet);
 
-		DAFAULT_SIMPLE_TYPE_CHECKERS = new SimpleTypeChecker[] { new SimpleTypeChecker()
+		DAFAULT_SIMPLE_TYPE_CHECKERS = new SimpleKnownTypeChecker[] { new SimpleKnownTypeChecker()
 		{
 
 			@Override
@@ -69,7 +66,7 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 			{
 				return type.isPrimitive();
 			}
-		}, new SimpleTypeChecker()
+		}, new SimpleKnownTypeChecker()
 		{
 
 			@Override
@@ -80,52 +77,54 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 		} };
 	}
 
-	private final KnownTypeProcessor knownTypeProcessor;
+	private final KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter;
 	private final Set<Class<?>> knownBasicTypeSet;
 	private final Set<Class<?>> knownExtensibleBasicTypeSet;
-	private final SimpleTypeChecker[] simpleTypeCheckers;
+	private final SimpleKnownTypeChecker[] simpleKnownTypeCheckers;
 
 	public OneProcessorForKnownTypeDecider()
 	{
-		this.knownTypeProcessor = DEFAULT_KNOWN_TYPE_PROCESSOR;
+		this.knownTypeProcessorWithReflectionJavaToJsonConverter = DEFAULT_KNOWN_TYPE_PROCESSOR;
 		this.knownBasicTypeSet = DAFAULT_KNOWN_BASIC_TYPE_SET;
-		this.simpleTypeCheckers = DAFAULT_SIMPLE_TYPE_CHECKERS;
+		this.simpleKnownTypeCheckers = DAFAULT_SIMPLE_TYPE_CHECKERS;
 		this.knownExtensibleBasicTypeSet = DAFAULT_KNOWN_EXTENSIBLE_BASIC_TYPE_SET;
 	}
 
-	public OneProcessorForKnownTypeDecider(KnownTypeProcessor knownTypeProcessor, Set<Class<?>> knownBasicTypeSet,
-			Set<Class<?>> knownExtensibleBasicTypeSet, SimpleTypeChecker... simpleTypeCheckers)
+	public OneProcessorForKnownTypeDecider(
+			KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter,
+			Set<Class<?>> knownBasicTypeSet, Set<Class<?>> knownExtensibleBasicTypeSet,
+			SimpleKnownTypeChecker... simpleTypeCheckers)
 	{
-		this.knownTypeProcessor = knownTypeProcessor;
+		this.knownTypeProcessorWithReflectionJavaToJsonConverter = knownTypeProcessorWithReflectionJavaToJsonConverter;
 		this.knownBasicTypeSet = knownBasicTypeSet;
 		this.knownExtensibleBasicTypeSet = knownExtensibleBasicTypeSet;
-		this.simpleTypeCheckers = simpleTypeCheckers;
+		this.simpleKnownTypeCheckers = simpleTypeCheckers;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider#getKnownTypeProcessor(java.lang.Object)
+	 * @see com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
 	 */
 	@Override
-	public KnownTypeProcessor decide(Class<?> type)
+	public KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<?> type)
 	{
-		for (SimpleTypeChecker simpleTypeChecker : simpleTypeCheckers)
+		for (SimpleKnownTypeChecker simpleKnownTypeChecker : simpleKnownTypeCheckers)
 		{
-			if (simpleTypeChecker.isKnown(type))
+			if (simpleKnownTypeChecker.isKnown(type))
 			{
-				return knownTypeProcessor;
+				return knownTypeProcessorWithReflectionJavaToJsonConverter;
 			}
 		}
 		if (knownBasicTypeSet.contains(type))
 		{
-			return knownTypeProcessor;
+			return knownTypeProcessorWithReflectionJavaToJsonConverter;
 		}
 
 		for (Class<?> knownType : knownExtensibleBasicTypeSet)
 		{
 			if (knownType.isAssignableFrom(type))
 			{
-				return knownTypeProcessor;
+				return knownTypeProcessorWithReflectionJavaToJsonConverter;
 			}
 		}
 		return null;

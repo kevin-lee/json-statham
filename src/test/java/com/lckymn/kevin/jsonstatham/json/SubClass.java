@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -39,4 +40,25 @@ public class SubClass extends SuperClass
 		this.email = email;
 	}
 
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(getName(), getNumber(), email);
+	}
+
+	@Override
+	public boolean equals(Object subClass)
+	{
+		if (this == subClass)
+		{
+			return true;
+		}
+		if (!(subClass instanceof SubClass))
+		{
+			return false;
+		}
+		final SubClass that = (SubClass) subClass;
+		return super.equals(subClass) && Objects.equals(this.email, that.getEmail());
+	}
 }

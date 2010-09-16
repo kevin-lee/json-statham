@@ -1,5 +1,6 @@
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -24,5 +25,28 @@ public class JsonObjectWithoutFieldName
 		this.id = id;
 		this.name = name;
 		this.address = address;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(id, name, address);
+	}
+
+	@SuppressWarnings("boxing")
+	@Override
+	public boolean equals(Object jsonObjectWithoutFieldName)
+	{
+		if (this == jsonObjectWithoutFieldName)
+		{
+			return true;
+		}
+		if (!(jsonObjectWithoutFieldName instanceof JsonObjectWithoutFieldName))
+		{
+			return false;
+		}
+		final JsonObjectWithoutFieldName that = (JsonObjectWithoutFieldName) jsonObjectWithoutFieldName;
+		return Objects.equals(this.id, that.id) && Objects.equals(this.name, that.name)
+				&& Objects.equals(this.address, that.address);
 	}
 }

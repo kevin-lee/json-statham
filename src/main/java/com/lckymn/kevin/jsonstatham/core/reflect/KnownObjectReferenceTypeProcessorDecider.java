@@ -10,22 +10,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessor;
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
-public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProcessorDecider
+public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProcessorDeciderForJavaToJson
 {
-	public static final Map<Class<?>, KnownTypeProcessor> DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
+	public static final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
 
 	static
 	{
-		final Map<Class<?>, KnownTypeProcessor> tempMap = new HashMap<Class<?>, KnownTypeProcessor>();
-		tempMap.put(Date.class, new KnownTypeProcessor()
+		final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> tempMap = new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
+		tempMap.put(Date.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
@@ -34,7 +34,7 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 				return reflectionJavaToJsonConverter.createJsonValue(source.toString());
 			}
 		});
-		tempMap.put(Calendar.class, new KnownTypeProcessor()
+		tempMap.put(Calendar.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
 			public Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Object source) throws IllegalArgumentException,
@@ -45,7 +45,7 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 			}
 
 		});
-		tempMap.put(Entry.class, new KnownTypeProcessor()
+		tempMap.put(Entry.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@SuppressWarnings("unchecked")
 			@Override
@@ -61,26 +61,26 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 		DEFAULT_KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
 	}
 
-	private final Map<Class<?>, KnownTypeProcessor> knownTypeProcessorMap;
+	private final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownTypeProcessorMap;
 
 	public KnownObjectReferenceTypeProcessorDecider()
 	{
 		knownTypeProcessorMap = DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
 	}
 
-	public KnownObjectReferenceTypeProcessorDecider(Map<Class<?>, KnownTypeProcessor> knownTypeProcessorMap)
+	public KnownObjectReferenceTypeProcessorDecider(Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownTypeProcessorMap)
 	{
 		this.knownTypeProcessorMap = Collections.unmodifiableMap(knownTypeProcessorMap);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDecider#getKnownTypeProcessor(java.lang.Object)
+	 * @see com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
 	 */
 	@Override
-	public KnownTypeProcessor decide(Class<?> type)
+	public KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<?> type)
 	{
-		for (Entry<Class<?>, KnownTypeProcessor> entry : knownTypeProcessorMap.entrySet())
+		for (Entry<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> entry : knownTypeProcessorMap.entrySet())
 		{
 			if (entry.getKey()
 					.isAssignableFrom(type))

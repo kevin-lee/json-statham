@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -39,5 +40,26 @@ public class SubClassWithValueAccessor extends SuperClassWithValueAccessor
 	public void setEmail(String email)
 	{
 		this.email = email;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name(), number(), email);
+	}
+
+	@Override
+	public boolean equals(Object subClassWithValueAccessor)
+	{
+		if (this == subClassWithValueAccessor)
+		{
+			return true;
+		}
+		if (!(subClassWithValueAccessor instanceof SubClassWithValueAccessor))
+		{
+			return false;
+		}
+		final SubClassWithValueAccessor that = (SubClassWithValueAccessor) subClassWithValueAccessor;
+		return super.equals(subClassWithValueAccessor) && Objects.equals(this.email, that.email);
 	}
 }

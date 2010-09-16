@@ -5,6 +5,7 @@ package com.lckymn.kevin.jsonstatham.json;
 
 import java.util.Iterator;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -25,5 +26,26 @@ public class JsonObjectContainingIterator
 	{
 		this.name = name;
 		this.iterator = iterator;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(name, iterator);
+	}
+
+	@Override
+	public boolean equals(Object jsonObjectContainingIterator)
+	{
+		if (this == jsonObjectContainingIterator)
+		{
+			return true;
+		}
+		if (!(jsonObjectContainingIterator instanceof JsonObjectContainingIterator))
+		{
+			return false;
+		}
+		final JsonObjectContainingIterator that = (JsonObjectContainingIterator) jsonObjectContainingIterator;
+		return Objects.equals(this.name, that.name) && Objects.equals(this.iterator, that.iterator);
 	}
 }

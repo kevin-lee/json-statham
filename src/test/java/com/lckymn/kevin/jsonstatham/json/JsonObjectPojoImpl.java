@@ -6,6 +6,7 @@ package com.lckymn.kevin.jsonstatham.json;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -40,21 +41,40 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
 	public Long getId()
 	{
 		System.out.println("yeah!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-//		throw new UnsupportedOperationException();
 		return null;
 	}
 
 	@Override
 	public String getName()
 	{
-//		throw new UnsupportedOperationException();
 		return null;
 	}
 
 	@Override
 	public Iterator<Address> getAddresses()
 	{
-//		throw new UnsupportedOperationException();
 		return null;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(id, name, addressSet);
+	}
+
+	@Override
+	public boolean equals(Object jsonObjectPojoImpl)
+	{
+		if (this == jsonObjectPojoImpl)
+		{
+			return true;
+		}
+		if (!(jsonObjectPojoImpl instanceof JsonObjectPojoImpl))
+		{
+			return false;
+		}
+		final JsonObjectPojoImpl that = (JsonObjectPojoImpl) jsonObjectPojoImpl;
+		return Objects.equals(this.id, that.id) && Objects.equals(this.name, that.name)
+				&& Objects.equals(this.addressSet, that.addressSet);
 	}
 }

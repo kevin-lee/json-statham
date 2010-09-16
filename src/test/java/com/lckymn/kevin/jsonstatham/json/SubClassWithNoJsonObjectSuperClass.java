@@ -3,6 +3,7 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -39,4 +40,26 @@ public class SubClassWithNoJsonObjectSuperClass extends SuperClassWithoutJsonObj
 		this.email = email;
 	}
 
+	@SuppressWarnings("boxing")
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(getName(), getNumber(), email);
+	}
+
+	@Override
+	public boolean equals(Object subClassWithNoJsonObjectSuperClass)
+	{
+		if (this == subClassWithNoJsonObjectSuperClass)
+		{
+			return true;
+		}
+		if (!(subClassWithNoJsonObjectSuperClass instanceof SubClassWithNoJsonObjectSuperClass))
+		{
+			return false;
+		}
+		final SubClassWithNoJsonObjectSuperClass that =
+			(SubClassWithNoJsonObjectSuperClass) subClassWithNoJsonObjectSuperClass;
+		return super.equals(subClassWithNoJsonObjectSuperClass) && Objects.equals(this.email, that.getEmail());
+	}
 }

@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,9 +35,6 @@ import org.mockito.stubbing.Answer;
 
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
-import com.lckymn.kevin.jsonstatham.core.JsonStatham;
-import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
-import com.lckymn.kevin.jsonstatham.core.convertible.AbstractOrgJsonJsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
@@ -55,6 +52,8 @@ import com.lckymn.kevin.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.json.ComplexJsonObjectWithValueAccessorWithoutItsName;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingCollection;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingEnums;
+import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingEnums.Access;
+import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingEnums.Role;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingIterable;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingIterator;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingList;
@@ -77,8 +76,6 @@ import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithAbstractMethod;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMethod;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
-import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingEnums.Access;
-import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingEnums.Role;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -95,55 +92,74 @@ public class JsonStathamInActionTest
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
 	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
-	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObjectConvertible>()
-	{
-		@Override
-		public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
+		new Answer<JsonObjectConvertible>()
 		{
-			return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
-		}
-	};
-	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObjectConvertible>()
-	{
-
-		@Override
-		public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
-		{
-			// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
-			return new JsonObjectConvertible()
+			@Override
+			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
+					throws Throwable
 			{
-				@Override
-				public Object getActualObject()
-				{
-					return JSONObject.NULL;
-				}
-
-				@Override
-				public JsonObjectConvertible put(@SuppressWarnings("unused") String name, @SuppressWarnings("unused") Object value)
-						throws JsonStathamException
-				{
-					throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
-				}
-
-				@Override
-				public String toString()
-				{
-					return JSONObject.NULL.toString();
-				}
-			};
-		}
-
-	};
-
-	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE = new Answer<JsonArrayConvertible>()
-	{
-
-		@Override
-		public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+				return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+			}
+		};
+	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
+		new Answer<JsonObjectConvertible>()
 		{
-			return new OrgJsonJsonArrayConvertible(new JSONArray());
-		}
-	};
+
+			@Override
+			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
+					throws Throwable
+			{
+				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
+				return new JsonObjectConvertible()
+				{
+					@Override
+					public String[] getNames()
+					{
+						throw new JsonStathamException(
+								"The getNames method in NullJsonObjectConvertible cannot be used.");
+					}
+
+					@Override
+					public Object get(@SuppressWarnings("unused") String name)
+					{
+						throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
+					}
+
+					@Override
+					public Object getActualObject()
+					{
+						return JSONObject.NULL;
+					}
+
+					@Override
+					public JsonObjectConvertible put(@SuppressWarnings("unused") String name,
+							@SuppressWarnings("unused") Object value) throws JsonStathamException
+					{
+						throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
+					}
+
+					@Override
+					public String toString()
+					{
+						return JSONObject.NULL.toString();
+					}
+				};
+			}
+
+		};
+
+	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
+		new Answer<JsonArrayConvertible>()
+		{
+
+			@Override
+			public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
+					throws Throwable
+			{
+				return new OrgJsonJsonArrayConvertible(new JSONArray());
+			}
+		};
 
 	private List<Address> addressList;
 
@@ -159,7 +175,7 @@ public class JsonStathamInActionTest
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		System.out.println("### ReflectionJsonStathamTest starts ###");
+		System.out.println("###  JsonStathamInActionTest starts ###");
 	}
 
 	/**
@@ -168,7 +184,7 @@ public class JsonStathamInActionTest
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception
 	{
-		System.out.println("\n### ReflectionJsonStathamTest ends ###");
+		System.out.println("\n### JsonStathamInActionTest ends ###");
 	}
 
 	/**
@@ -177,30 +193,36 @@ public class JsonStathamInActionTest
 	@Before
 	public void setUp() throws Exception
 	{
-		final JsonObjectConvertibleCreator jsonObjectCreator = mock(JsonObjectConvertibleCreator.class);
-		when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
-		when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
+		final JsonObjectConvertibleCreator jsonObjectConvertibleCreator = mock(JsonObjectConvertibleCreator.class);
+		when(jsonObjectConvertibleCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
+		when(jsonObjectConvertibleCreator.nullJsonObjectConvertible()).thenAnswer(
+				ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
 
-		final JsonArrayConvertibleCreator jsonArrayCreator = mock(JsonArrayConvertibleCreator.class);
-		when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
+		final JsonArrayConvertibleCreator jsonArrayConvertibleCreator = mock(JsonArrayConvertibleCreator.class);
+		when(jsonArrayConvertibleCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
 
 		jsonStatham =
-			new JsonStathamInAction(new ReflectionJavaToJsonConverter(jsonObjectCreator, jsonArrayCreator,
-					new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
-					new OneProcessorForKnownTypeDecider()), new ReflectionJsonToJavaConverter());
-		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
+			new JsonStathamInAction(new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator,
+					jsonArrayConvertibleCreator, new KnownDataStructureTypeProcessorDecider(),
+					new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()),
+					new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator));
+		address =
+			new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
 		addressList = new ArrayList<Address>();
 		for (int i = 0, size = streetList.size(); i < size; i++)
 		{
-			addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
+			addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
+					postcodeList.get(i)));
 		}
 
 		addressMap = new LinkedHashMap<String, Address>();
 		for (int i = 0, size = streetList.size(); i < size; i++)
 		{
-			addressMap.put("address" + i,
-					new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
+			addressMap.put(
+					"address" + i,
+					new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
+							postcodeList.get(i)));
 		}
 	}
 
@@ -235,9 +257,14 @@ public class JsonStathamInActionTest
 		assertThat(result1_1, is(equalTo(expected.toString())));
 
 		/* test convertFromJson */
-//		final Object result1_2 = jsonStatham.convertFromJson(null, expected);
-//		assertThat(result1_2, is(nullValue()));
+		// final Object result1_2 = jsonStatham.convertFromJson(null, expected);
+		// assertThat(result1_2, is(nullValue()));
+	}
 
+	@Test
+	public void testJsonHavingNullValue()
+	{
+		System.out.println("\nJsonStathamInActionTest.testJsonHavingNullValue()");
 		@JsonObject
 		class TestPojo
 		{
@@ -282,7 +309,36 @@ public class JsonStathamInActionTest
 	@Test
 	public void testArray()
 	{
-		System.out.println("\nReflectionJsonStathamTest.testArray()");
+		System.out.println("\nJsonStathamInActionTest.testArray()");
+
+		final String expectedIntArray = "[1,2,3,4,5,8,23,56]";
+		System.out.println("\nexpected:\n" + expectedIntArray);
+		System.out.println("actual: ");
+		final String resultIntArray = jsonStatham.convertIntoJson(new int[] { 1, 2, 3, 4, 5, 8, 23, 56 });
+		System.out.println(resultIntArray);
+		assertThat(resultIntArray, is(equalTo(expectedIntArray)));
+
+		final String expectedDoubleArray = "[1.2,2.6,3.3,4.8,5.234,8.567,23.48754,56.0547]";
+		System.out.println("\nexpected:\n" + expectedDoubleArray);
+		System.out.println("actual: ");
+		final String resultDoubleArray =
+			jsonStatham.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 });
+		System.out.println(resultDoubleArray);
+		assertThat(resultDoubleArray, is(equalTo(expectedDoubleArray)));
+
+		final String expectedBooleanArray = "[true,false,false,true,false,true,false,true,true]";
+		System.out.println("\nexpected:\n" + expectedBooleanArray);
+		System.out.println("actual: ");
+		final String resultBooleanArray =
+			jsonStatham.convertIntoJson(new boolean[] { true, false, false, true, false, true, false, true, true });
+		System.out.println(resultBooleanArray);
+		assertThat(resultBooleanArray, is(equalTo(expectedBooleanArray)));
+	}
+
+	@Test
+	public void testArrayHavingPojo()
+	{
+		System.out.println("\nJsonStathamInActionTest.testArrayHavingPojo()");
 		final String expected = getAddressArrayString();
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
@@ -292,8 +348,8 @@ public class JsonStathamInActionTest
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)} with List as the
-	 * parameter object.
+	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}
+	 * with List as the parameter object.
 	 */
 	@Test
 	public void testList()
@@ -373,8 +429,9 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testAddress()");
 
 		final String expected =
-			"{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0)
-					+ "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
+			"{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
+					+ cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
+					+ postcodeList.get(0) + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(address);
@@ -396,15 +453,15 @@ public class JsonStathamInActionTest
 		jsonObject.setAddress(address);
 
 		final String expected =
-			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\""
-					+ suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
-					+ postcodeList.get(0) + "\"}}";
+			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}}";
 		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test(expected = JsonStathamException.class)
@@ -444,7 +501,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectWithoutFieldName);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -462,24 +519,27 @@ public class JsonStathamInActionTest
 		jsonObject.setCalendarWithValueAccessor(calendar);
 
 		final String expected =
-			"{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb()
-					+ "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\""
-					+ address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\"," + "\"dateWithValueAccessor\":\""
-					+ jsonObject.getDateString() + "\",\"calendar\":\"" + jsonObject.getCalendar()
+			"{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
+					+ address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\""
+					+ address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\""
+					+ date.toString() + "\"," + "\"dateWithValueAccessor\":\"" + jsonObject.getDateString()
+					+ "\",\"calendar\":\"" + jsonObject.getCalendar()
 							.getTime()
-							.toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarString() + "\"}";
+							.toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarString()
+					+ "\"}";
 		System.out.println("\nReflectionJsonStathamTest.testComplexJsonObjectWithMethodUse()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testComplexJsonObjectWithValueAccessorWithoutItsName()
 	{
-		ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject = new ComplexJsonObjectWithValueAccessorWithoutItsName();
+		ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject =
+			new ComplexJsonObjectWithValueAccessorWithoutItsName();
 		jsonObject.setPrimaryKey(Long.valueOf(1));
 		jsonObject.setName("Kevin");
 		jsonObject.setRegistered(true);
@@ -493,19 +553,21 @@ public class JsonStathamInActionTest
 		jsonObject.setCalendarWithValueAccessor(calendar);
 
 		final String expected =
-			"{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\"" + address.getStreet()
-					+ "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\""
-					+ address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
+			"{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\""
+					+ address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\""
+					+ address.getCity() + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\""
+					+ address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
 					+ "\"dateWithValueAccessor\":\"" + jsonObject.getDateWithValueAccessor() + "\",\"calendar\":\""
 					+ jsonObject.getCalendar()
 							.getTime()
-							.toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarWithValueAccessor() + "\"}";
+							.toString() + "\",\"calendarWithValueAccessor\":\""
+					+ jsonObject.getCalendarWithValueAccessor() + "\"}";
 		System.out.println("\nReflectionJsonStathamTest.testComplexJsonObjectWithValueAccessorWithoutItsName()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	private String getExpectedJsonArray(String name, String value, String setName)
@@ -541,16 +603,18 @@ public class JsonStathamInActionTest
 	public void testJsonObjectContainingCollection()
 	{
 		final String nameValue = "testJsonWithCollection";
-		Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+		Collection<String> collection =
+			initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
-		JsonObjectContainingCollection jsonObjectContainingCollection = new JsonObjectContainingCollection(nameValue, collection);
+		JsonObjectContainingCollection jsonObjectContainingCollection =
+			new JsonObjectContainingCollection(nameValue, collection);
 		final String expected = getExpectedJsonArray("name", nameValue, "valueCollection");
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingCollection()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -566,7 +630,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingList);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -582,7 +646,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -590,9 +654,11 @@ public class JsonStathamInActionTest
 	{
 		final String nameValue = "testJsonObjectContainingMapEntrySetSet";
 
-		JsonObjectContainingMapEntrySet jsonObjectContainingSet = new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
+		JsonObjectContainingMapEntrySet jsonObjectContainingSet =
+			new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
 
-		StringBuilder stringBuilder = new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
+		StringBuilder stringBuilder =
+			new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
 		for (Entry<String, Address> entry : addressMap.entrySet())
 		{
 			Address address = entry.getValue();
@@ -617,23 +683,25 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectContainingIterator()
 	{
 		final String nameValue = "testJsonObjectContainingIterator";
-		Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+		Collection<String> collection =
+			initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
-		JsonObjectContainingIterator jsonObjectContainingCollection = new JsonObjectContainingIterator(nameValue, collection.iterator());
+		JsonObjectContainingIterator jsonObjectContainingCollection =
+			new JsonObjectContainingIterator(nameValue, collection.iterator());
 		final String expected = getExpectedJsonArray("name", nameValue, "valueIterator");
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingIterator()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -649,14 +717,15 @@ public class JsonStathamInActionTest
 			}
 		};
 
-		JsonObjectContainingIterable jsonObjectContainingCollection = new JsonObjectContainingIterable(nameValue, iterable);
+		JsonObjectContainingIterable jsonObjectContainingCollection =
+			new JsonObjectContainingIterable(nameValue, iterable);
 		final String expected = getExpectedJsonArray("name", nameValue, "valueIterable");
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingIterator()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -672,7 +741,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -688,7 +757,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -704,7 +773,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -717,15 +786,15 @@ public class JsonStathamInActionTest
 		SecondSubClassWithOwnFields jsonObject = new SecondSubClassWithOwnFields(name, number, email, address, comment);
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()");
 		final String expected =
-			"{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":" + "{\"street\":\""
-					+ address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity()
-					+ "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"},\"comment\":\""
-					+ comment + "\"}";
+			"{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":"
+					+ "{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb()
+					+ "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState()
+					+ "\",\"postcode\":\"" + address.getPostcode() + "\"},\"comment\":\"" + comment + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -741,7 +810,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -753,13 +822,13 @@ public class JsonStathamInActionTest
 		SubClassWithValueAccessor jsonObject = new SubClassWithValueAccessor(name, number, email);
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessor()");
 		final String expected =
-			"{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number + "\",\"email\":\"My email address is " + email
-					+ "\"}";
+			"{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+					+ "\",\"email\":\"My email address is " + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -768,16 +837,17 @@ public class JsonStathamInActionTest
 		final String name = "Kevin";
 		final int number = 5;
 		final String email = "kevin@test.test";
-		SubClassWithValueAccessorWithoutItsName jsonObject = new SubClassWithValueAccessorWithoutItsName(name, number, email);
+		SubClassWithValueAccessorWithoutItsName jsonObject =
+			new SubClassWithValueAccessorWithoutItsName(name, number, email);
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()");
 		final String expected =
-			"{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number + "\",\"email\":\"My email address is " + email
-					+ "\"}";
+			"{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+					+ "\",\"email\":\"My email address is " + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -786,15 +856,17 @@ public class JsonStathamInActionTest
 		final String name = "Kevin";
 		final int number = 5;
 		final String email = "kevin@test.test";
-		SubClassWithValueAccessorWithAbstractMethod jsonObject = new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
+		SubClassWithValueAccessorWithAbstractMethod jsonObject =
+			new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()");
 		final String expected =
-			"{\"name\":\"My name is nobody.\",\"number\":\"The number is 100.\",\"email\":\"My email address is " + email + "\"}";
+			"{\"name\":\"My name is nobody.\",\"number\":\"The number is 100.\",\"email\":\"My email address is "
+					+ email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -803,39 +875,42 @@ public class JsonStathamInActionTest
 		final String name = "Kevin";
 		final int number = 5;
 		final String email = "kevin@test.test";
-		SubClassWithValueAccessorWithOverriddenMethod jsonObject = new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
+		SubClassWithValueAccessorWithOverriddenMethod jsonObject =
+			new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()");
 		final String expected =
-			"{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number + "\",\"email\":\"My email address is " + email
-					+ "\"}";
+			"{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+					+ "\",\"email\":\"My email address is " + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObject);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, InvocationTargetException
+	public void testProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
 	{
 		final long id = 999L;
 		final String name = "ProxiedPojo";
 		JsonObjectPojo jsonObjectPojo =
-			JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null), Long.valueOf(id), name, addressList);
+			JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null), Long.valueOf(id),
+					name, addressList);
 
 		System.out.println("\nReflectionJsonStathamTest.testProxiedJsonObjectPojo()");
-		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
+		final String expected =
+			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(jsonObjectPojo);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException,
-			InstantiationException, IllegalAccessException, InvocationTargetException
+	public void testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo() throws IllegalArgumentException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
 	{
 		final long primaryKey = 999L;
 		final String name = "ProxiedPojo";
@@ -844,20 +919,21 @@ public class JsonStathamInActionTest
 		final long primaryKey3 = 333L;
 		final String name3 = "Not proxied";
 		NestedJsonObjectWithValueAccessor nestedJsonObjectWithValueAccessor =
-			JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(new NestedJsonObjectWithValueAccessor(null, null, null),
-					Long.valueOf(primaryKey), name, JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
+			JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(new NestedJsonObjectWithValueAccessor(null,
+					null, null), Long.valueOf(primaryKey), name,
+					JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
 							new NestedJsonObjectWithValueAccessor(null, null, null), Long.valueOf(primaryKey2), name2,
 							new NestedJsonObjectWithValueAccessor(Long.valueOf(primaryKey3), name3, null)));
 
 		System.out.println("\nReflectionJsonStathamTest.testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo()");
 		final String expected =
-			"{\"id\":" + primaryKey + ",\"name\":\"" + name + "\",\"parent\":{\"id\":" + primaryKey2 + ",\"name\":\"" + name2
-					+ "\",\"parent\":{\"id\":" + primaryKey3 + ",\"name\":\"" + name3 + "\",\"parent\":null}}}";
+			"{\"id\":" + primaryKey + ",\"name\":\"" + name + "\",\"parent\":{\"id\":" + primaryKey2 + ",\"name\":\""
+					+ name2 + "\",\"parent\":{\"id\":" + primaryKey3 + ",\"name\":\"" + name3 + "\",\"parent\":null}}}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = jsonStatham.convertIntoJson(nestedJsonObjectWithValueAccessor);
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -865,31 +941,41 @@ public class JsonStathamInActionTest
 	{
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingEnums()");
 		String expected =
-			"{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN" + "\",\"access\":[]}";
+			"{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN"
+					+ "\",\"access\":[]}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		String result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 
 		expected =
 			"{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
 					+ "\",\"access\":[\"Access to blog\",\"Access to email\"]}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.EMAIL));
+		result =
+			jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
+					Access.EMAIL));
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 
 		expected =
-			"{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
+			"{\"name\":\""
+					+ "Kevin"
+					+ "\",\"number\":"
+					+ 1
+					+ ",\"passed\":"
+					+ true
+					+ ",\"role\":\""
+					+ "MEMBER"
 					+ "\",\"access\":[\"Access to blog\",\"Access to wiki\",\"Access to email\",\"Access to twitter\"]}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		result =
-			jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.WIKI,
-					Access.EMAIL, Access.TWITTER));
+			jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
+					Access.WIKI, Access.EMAIL, Access.TWITTER));
 		System.out.println(result);
-		assertThat(result, equalTo(expected));
+		assertThat(result, is(equalTo(expected)));
 	}
 }

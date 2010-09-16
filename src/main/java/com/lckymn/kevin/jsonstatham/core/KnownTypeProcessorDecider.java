@@ -7,7 +7,7 @@ package com.lckymn.kevin.jsonstatham.core;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
-public interface KnownTypeProcessorDecider
+public interface KnownTypeProcessorDecider<P>
 {
-	KnownTypeProcessor decide(Class<?> type);
+	P decide(Class<?> type);
 }

@@ -14,9 +14,11 @@ import java.lang.annotation.Target;
  * @version 0.01 (2009-11-21)
  */
 @Documented
-@Target( { ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonField
 {
 	String name() default "";
+
+	Class<?>[] genericInfo() default { Object.class };
 }

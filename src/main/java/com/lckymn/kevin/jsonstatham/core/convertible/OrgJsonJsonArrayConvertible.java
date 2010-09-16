@@ -4,11 +4,14 @@
 package com.lckymn.kevin.jsonstatham.core.convertible;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
+import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
+ * @version 0.0.2 (2010-09-13)
  */
 public final class OrgJsonJsonArrayConvertible implements JsonArrayConvertible
 {
@@ -17,6 +20,19 @@ public final class OrgJsonJsonArrayConvertible implements JsonArrayConvertible
 	public OrgJsonJsonArrayConvertible(JSONArray jsonArray)
 	{
 		this.jsonArray = jsonArray;
+	}
+
+	@Override
+	public Object get(int index)
+	{
+		try
+		{
+			return jsonArray.get(index);
+		}
+		catch (JSONException e)
+		{
+			throw new JsonStathamException(e);
+		}
 	}
 
 	/*
@@ -35,6 +51,12 @@ public final class OrgJsonJsonArrayConvertible implements JsonArrayConvertible
 			jsonArray.put(value);
 		}
 		return this;
+	}
+
+	@Override
+	public int length()
+	{
+		return jsonArray.length();
 	}
 
 	@Override
