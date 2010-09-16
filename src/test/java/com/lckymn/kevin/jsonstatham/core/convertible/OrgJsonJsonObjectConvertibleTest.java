@@ -6,6 +6,8 @@ package com.lckymn.kevin.jsonstatham.core.convertible;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.LinkedHashMap;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -18,6 +20,8 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  */
 public class OrgJsonJsonObjectConvertibleTest
 {
+	private static final String[] NAMES = { "surnname", "givenName", "number", "email", "someKey" };
+	private static final Object[] VALUES = { "Lee", "Kevin", 1, "kevin@some.email.com", 12.50 };
 
 	/**
 	 * Test method for
@@ -37,13 +41,30 @@ public class OrgJsonJsonObjectConvertibleTest
 	@Test
 	public void testGetNames()
 	{
+		final JSONObject jsonObject = new JSONObject(new LinkedHashMap<String, Object>());
+		final JsonObjectConvertible jsonObjectConvertible = new OrgJsonJsonObjectConvertible(jsonObject);
 
+		for (int i = 0, size = NAMES.length; i < size; i++)
+		{
+			jsonObjectConvertible.put(NAMES[i], VALUES[i]);
+		}
+		assertThat(jsonObjectConvertible.getNames(), is(equalTo(NAMES)));
 	}
 
 	@Test
 	public void testGet()
 	{
+		final JSONObject jsonObject = new JSONObject();
+		final JsonObjectConvertible jsonObjectConvertible = new OrgJsonJsonObjectConvertible(jsonObject);
 
+		for (int i = 0, size = NAMES.length; i < size; i++)
+		{
+			jsonObjectConvertible.put(NAMES[i], VALUES[i]);
+		}
+		for (int i = 0, size = NAMES.length; i < size; i++)
+		{
+			assertThat(jsonObjectConvertible.get(NAMES[i]), is(equalTo(VALUES[i])));
+		}
 	}
 
 	/**

@@ -3,12 +3,14 @@
  */
 package com.lckymn.kevin.jsonstatham.core.convertible;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import java.util.LinkedHashMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 /**
@@ -17,46 +19,21 @@ import org.junit.Test;
  */
 public class OrgJsonJsonArrayConvertibleTest
 {
+	private static final Object[] VALUES = { "Lee", "Kevin", 1, "kevin@some.email.com", 12.50 };
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
-	{
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception
-	{
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception
-	{
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception
-	{
-	}
-
-	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#OrgJsonJsonArrayConvertible(org.json.JSONArray)}.
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#OrgJsonJsonArrayConvertible(org.json.JSONArray)}
+	 * .
 	 */
 	@Test
 	public final void testOrgJsonJsonArrayConvertible()
 	{
-		fail("Not yet implemented");
+		final JSONArray jsonArray = new JSONArray();
+		final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+		assertThat(jsonArrayConvertible.getActualObject(), is(instanceOf(JSONArray.class)));
+		assertThat(((JSONArray) jsonArrayConvertible.getActualObject()), is(jsonArray));
+		assertThat(((JSONArray) jsonArrayConvertible.getActualObject()), equalTo(jsonArray));
 	}
 
 	/**
@@ -65,34 +42,91 @@ public class OrgJsonJsonArrayConvertibleTest
 	@Test
 	public final void testGet()
 	{
-		fail("Not yet implemented");
+		final JSONArray jsonArray = new JSONArray();
+		for (int i = 0, size = VALUES.length; i < size; i++)
+		{
+			jsonArray.put(VALUES[i]);
+		}
+		final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+		for (int i = 0, size = VALUES.length; i < size; i++)
+		{
+			assertThat(jsonArrayConvertible.get(i), is(equalTo(VALUES[i])));
+		}
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#put(java.lang.Object)}.
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#put(java.lang.Object)}.
+	 * 
+	 * @throws JSONException
 	 */
 	@Test
-	public final void testPut()
+	public final void testPut() throws JSONException
 	{
-		fail("Not yet implemented");
+		final JSONArray jsonArray = new JSONArray();
+		final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+		for (int i = 0, size = VALUES.length; i < size; i++)
+		{
+			jsonArrayConvertible.put(VALUES[i]);
+		}
+		for (int i = 0, size = VALUES.length; i < size; i++)
+		{
+			assertThat(jsonArray.get(i), is(equalTo(VALUES[i])));
+		}
+
+		final JSONArray jsonArray2 = new JSONArray();
+		final JsonArrayConvertible jsonArrayConvertible2 = new OrgJsonJsonArrayConvertible(jsonArray2);
+		final Object[] valueObjects =
+			{
+					new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>())).put("first",
+							"test1")
+							.put("second", "test2")
+							.put("third", "test3"), new OrgJsonJsonArrayConvertible(new JSONArray()).put("test")
+							.put("value"), "Kevin", 1234, 9864L, 1.0F, 10.456D, true };
+		for (int i = 0, size = valueObjects.length; i < size; i++)
+		{
+			jsonArrayConvertible2.put(valueObjects[i]);
+		}
+		for (int i = 0, size = valueObjects.length; i < size; i++)
+		{
+			final Object object = valueObjects[i];
+			if (object instanceof JsonConvertible)
+			{
+				assertThat(jsonArray2.get(i), is(equalTo(((JsonConvertible) object).getActualObject())));
+			}
+			else
+			{
+				assertThat(jsonArray2.get(i), is(equalTo(valueObjects[i])));
+			}
+		}
 	}
 
 	/**
 	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#length()}.
 	 */
+	@SuppressWarnings("boxing")
 	@Test
 	public final void testLength()
 	{
-		fail("Not yet implemented");
+		final JSONArray jsonArray = new JSONArray();
+		final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+		for (int i = 0, size = VALUES.length; i < size; i++)
+		{
+			jsonArrayConvertible.put(VALUES[i]);
+		}
+		assertThat(jsonArrayConvertible.length(), is(equalTo(VALUES.length)));
 	}
 
 	/**
-	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#getActualObject()}.
+	 * Test method for
+	 * {@link com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#getActualObject()}.
 	 */
 	@Test
 	public final void testGetActualObject()
 	{
-		fail("Not yet implemented");
+		final JSONArray jsonArray = new JSONArray();
+		final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+		assertThat(jsonArrayConvertible.getActualObject(), is(equalTo((Object) jsonArray)));
 	}
 
 	/**
@@ -101,7 +135,13 @@ public class OrgJsonJsonArrayConvertibleTest
 	@Test
 	public final void testToString()
 	{
-		fail("Not yet implemented");
+		final JSONArray jsonArray = new JSONArray();
+		final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+		for (int i = 0, size = VALUES.length; i < size; i++)
+		{
+			jsonArrayConvertible.put(VALUES[i]);
+		}
+		assertThat(jsonArrayConvertible.toString(), is(equalTo(jsonArray.toString())));
 	}
 
 }
