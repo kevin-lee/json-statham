@@ -6,6 +6,7 @@ package com.lckymn.kevin.jsonstatham.json;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.lckymn.kevin.common.util.Objects;
@@ -25,6 +26,7 @@ public final class JsonObjectPojoProxyFactory
 	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setSuperclass(jsonObjectPojo.getClass());
+		final Set<Address> addressSet = new HashSet<Address>(addressCollection);
 		proxyFactory.setHandler(new MethodHandler()
 		{
 			@SuppressWarnings("boxing")
@@ -45,9 +47,13 @@ public final class JsonObjectPojoProxyFactory
 				{
 					return addressCollection.iterator();
 				}
+				else if ("getAddressSet".equals(methodName))
+				{
+					return addressSet;
+				}
 				else if ("hashCode".equals(methodName))
 				{
-					return Objects.hash(id, name, addressCollection);
+					return Objects.hash(id, name, addressSet);
 				}
 				else if ("equals".equals(methodName))
 				{
@@ -62,7 +68,15 @@ public final class JsonObjectPojoProxyFactory
 					}
 					final JsonObjectPojo that = (JsonObjectPojo) jsonObjectPojo;
 					return Objects.equals(id, that.getId()) && Objects.equals(name, that.getName())
-							&& Objects.equals(addressCollection, that.getAddresses());
+							&& Objects.equals(addressSet, that.getAddressSet());
+				}
+				else if ("toString".equals(methodName))
+				{
+					return Objects.toStringBuilder(jsonObjectPojo)
+							.add("id", id)
+							.add("name", name)
+							.add("addresses", addressSet)
+							.toString();
 				}
 				else
 				{

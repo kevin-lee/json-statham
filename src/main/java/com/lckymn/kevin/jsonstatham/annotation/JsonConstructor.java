@@ -11,12 +11,11 @@ import java.lang.annotation.Target;
 
 /**
  * @author Lee, SeongHyun (Kevin)
- * @version 0.01 (2009-11-21)
+ * @version 0.0.1 (2010-09-18)
  */
 @Documented
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.CONSTRUCTOR })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JsonField
+public @interface JsonConstructor
 {
-	String name() default "";
 }

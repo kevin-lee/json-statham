@@ -19,7 +19,7 @@ public class JsonObjectContainingCollection
 	@JsonField(name = "name")
 	private final String name;
 
-	@JsonField(name = "valueCollection", genericInfo = { String.class })
+	@JsonField(name = "valueCollection")
 	private final Collection<String> collection;
 
 	public JsonObjectContainingCollection(String name, Collection<String> collection)

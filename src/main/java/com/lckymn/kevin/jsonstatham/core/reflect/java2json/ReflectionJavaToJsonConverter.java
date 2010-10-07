@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.reflect;
+package com.lckymn.kevin.jsonstatham.core.reflect.java2json;
 
 import static com.lckymn.kevin.common.util.MessageFormatter.*;
 import static com.lckymn.kevin.common.util.Strings.*;
@@ -19,8 +19,8 @@ import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
 import com.lckymn.kevin.jsonstatham.core.JavaToJsonConverter;
-import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
+import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonConvertible;
@@ -58,22 +58,22 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 					knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider };
 	}
 
-	JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
+	public JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
 	{
 		return jsonObjectConvertibleCreator;
 	}
 
-	JsonArrayConvertibleCreator getJsonArrayConvertibleCreator()
+	public JsonArrayConvertibleCreator getJsonArrayConvertibleCreator()
 	{
 		return jsonArrayConvertibleCreator;
 	}
 
-	KnownDataStructureTypeProcessorDecider getKnownDataStructureTypeProcessorDecider()
+	public KnownDataStructureTypeProcessorDecider getKnownDataStructureTypeProcessorDecider()
 	{
 		return knownDataStructureTypeProcessorDecider;
 	}
 
-	KnownTypeProcessorDeciderForJavaToJson[] getKnownTypeProcessorDeciders()
+	public KnownTypeProcessorDeciderForJavaToJson[] getKnownTypeProcessorDeciders()
 	{
 		return knownTypeProcessorDeciderForJavaToJsons;
 	}
@@ -273,13 +273,13 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 
 		for (KnownTypeProcessorDeciderForJavaToJson knowTypeProcessorDecider : knownTypeProcessorDeciderForJavaToJsons)
 		{
-			final KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter = knowTypeProcessorDecider.decide(type);
+			final KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter =
+				knowTypeProcessorDecider.decide(type);
 			if (null != knownTypeProcessorWithReflectionJavaToJsonConverter)
 			{
-				return knownTypeProcessorWithReflectionJavaToJsonConverter.process(this, value);
+				return knownTypeProcessorWithReflectionJavaToJsonConverter.process(this, type, value);
 			}
 		}
-
 		return createJsonObject(value);
 	}
 
@@ -296,10 +296,12 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 			return nullJsonObjectConvertible().toString();
 		}
 
-		final KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter = knownDataStructureTypeProcessorDecider.decide(source.getClass());
+		final Class<?> sourceType = source.getClass();
+		final KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter =
+			knownDataStructureTypeProcessorDecider.decide(sourceType);
 		if (null != knownTypeProcessorWithReflectionJavaToJsonConverter)
 		{
-			return knownTypeProcessorWithReflectionJavaToJsonConverter.process(this, source)
+			return knownTypeProcessorWithReflectionJavaToJsonConverter.process(this, sourceType, source)
 					.toString();
 		}
 

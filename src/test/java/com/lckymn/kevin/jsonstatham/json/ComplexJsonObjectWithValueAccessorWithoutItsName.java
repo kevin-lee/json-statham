@@ -140,6 +140,11 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 		this.date = date;
 	}
 
+	public Date dateWithValueAccessor()
+	{
+		return dateWithValueAccessor;
+	}
+	
 	/**
 	 * @return the dateWithValueAccessor
 	 */
@@ -177,6 +182,11 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 		this.calendar = calendar;
 	}
 
+	public Calendar calendarWithValueAccessor()
+	{
+		return calendarWithValueAccessor;
+	}
+	
 	/**
 	 * @return the calendarWithValueAccessor
 	 */
@@ -219,10 +229,25 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 		return Objects.equals(this.primaryKey, that.getPrimaryKey()) && Objects.equals(this.name, that.getName())
 				&& Objects.equals(this.registered, that.isRegistered())
 				&& Objects.equals(this.enabled, that.getEnabled()) && Objects.equals(this.address, that.getAddress())
-				&& Objects.equals(this.date, that.getDate())
-				&& Objects.equals(this.dateWithValueAccessor, that.getDateWithValueAccessor())
-				&& Objects.equals(this.calendar, that.getCalendar())
-				&& Objects.equals(this.calendarWithValueAccessor, that.getCalendarWithValueAccessor());
+				&& Objects.equals(this.date, that.date)
+				&& Objects.equals(this.dateWithValueAccessor, that.dateWithValueAccessor)
+				&& Objects.equals(this.calendar, that.calendar)
+				&& Objects.equals(this.calendarWithValueAccessor, that.calendarWithValueAccessor);
 	}
 
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("id", primaryKey)
+				.add("name", name)
+				.add("registered", registered)
+				.add("enabled", enabled)
+				.add("address", address)
+				.add("date", date)
+				.add("dateWithValueAccessor", dateWithValueAccessor)
+				.add("calendar", calendar)
+				.add("calendarWithValueAccessor", calendarWithValueAccessor)
+				.toString();
+	}
 }

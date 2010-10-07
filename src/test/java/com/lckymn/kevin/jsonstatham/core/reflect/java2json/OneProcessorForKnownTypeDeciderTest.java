@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.reflect;
+package com.lckymn.kevin.jsonstatham.core.reflect.java2json;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -19,6 +19,8 @@ import org.junit.Test;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.core.SimpleKnownTypeChecker;
+import com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
+import com.lckymn.kevin.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -123,7 +125,8 @@ public class OneProcessorForKnownTypeDeciderTest
 
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider()}.
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider()}
+	 * .
 	 */
 	@Test
 	public final void testKnownBasicTypeDecider()
@@ -194,7 +197,7 @@ public class OneProcessorForKnownTypeDeciderTest
 
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider(com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter, java.util.Set)}
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider(com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter, java.util.Set)}
 	 * .
 	 * 
 	 * @throws IllegalAccessException
@@ -214,10 +217,10 @@ public class OneProcessorForKnownTypeDeciderTest
 			{
 
 				@Override
-				public Object process(
-						@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-						@SuppressWarnings("unused") Object source) throws IllegalArgumentException,
-						IllegalAccessException, JsonStathamException
+				public <T> Object process(
+						@SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+						final Class<T> valueType, @SuppressWarnings("unused") final Object value)
+						throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 				{
 					return Boolean.TRUE;
 				}
@@ -225,15 +228,15 @@ public class OneProcessorForKnownTypeDeciderTest
 
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Date.class), is(not(nullValue())));
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Date.class)
-				.process(null, null), is((Object) Boolean.TRUE));
+				.process(null, null, null), is((Object) Boolean.TRUE));
 
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Calendar.class), is(not(nullValue())));
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Calendar.class)
-				.process(null, null), is((Object) Boolean.TRUE));
+				.process(null, null, null), is((Object) Boolean.TRUE));
 
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(GregorianCalendar.class), is(not(nullValue())));
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(GregorianCalendar.class)
-				.process(null, null), is((Object) Boolean.TRUE));
+				.process(null, null, null), is((Object) Boolean.TRUE));
 
 		assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class), is(nullValue()));
 
@@ -298,7 +301,8 @@ public class OneProcessorForKnownTypeDeciderTest
 
 	/**
 	 * Test method for
-	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.OneProcessorForKnownTypeDecider#decide(java.lang.Class)}.
+	 * {@link com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#decide(java.lang.Class)}
+	 * .
 	 * 
 	 * @throws IllegalAccessException
 	 * @throws JsonStathamException
@@ -314,91 +318,91 @@ public class OneProcessorForKnownTypeDeciderTest
 		for (int value : ints)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class)
-					.process(null, value), equalTo((Object) value));
+					.process(null, int.class, value), equalTo((Object) value));
 		}
 
 		for (Integer value : integers)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (long value : longs)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(long.class)
-					.process(null, value), equalTo((Object) value));
+					.process(null, long.class, value), equalTo((Object) value));
 		}
 
 		for (Long value : longObjects)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, Long.class, value), equalTo((Object) value));
 		}
 
 		for (BigInteger value : bigIntegers)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (float value : floats)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(float.class)
-					.process(null, value), equalTo((Object) value));
+					.process(null, float.class, value), equalTo((Object) value));
 		}
 
 		for (Float value : floatObjects)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (double value : doubles)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(double.class)
-					.process(null, value), equalTo((Object) value));
+					.process(null, double.class, value), equalTo((Object) value));
 		}
 
 		for (Double value : doubleObjects)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (BigDecimal value : bigDecimals)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (Number value : numbers)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (boolean value : booleans)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(boolean.class)
-					.process(null, value), equalTo((Object) value));
+					.process(null, boolean.class, value), equalTo((Object) value));
 		}
 
 		for (Boolean value : booleanObjects)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (String value : strings)
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 
 		for (TestEnum value : TestEnum.values())
 		{
 			assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-					.process(null, value), equalTo((Object) value));
+					.process(null, value.getClass(), value), equalTo((Object) value));
 		}
 	}
 

@@ -75,4 +75,13 @@ public class SubClassWithValueAccessorWithOverriddenMethod extends SuperClassWit
 			(SubClassWithValueAccessorWithOverriddenMethod) subClassWithValueAccessorWithOverriddenMethod;
 		return super.equals(subClassWithValueAccessorWithOverriddenMethod) && Objects.equals(this.email, that.email);
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.addValue(super.toString())
+				.add("email", email)
+				.toString();
+	}
 }

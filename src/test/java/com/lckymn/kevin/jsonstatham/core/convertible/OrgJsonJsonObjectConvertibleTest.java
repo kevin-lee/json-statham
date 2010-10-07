@@ -21,6 +21,8 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 public class OrgJsonJsonObjectConvertibleTest
 {
 	private static final String[] NAMES = { "surnname", "givenName", "number", "email", "someKey" };
+
+	@SuppressWarnings("boxing")
 	private static final Object[] VALUES = { "Lee", "Kevin", 1, "kevin@some.email.com", 12.50 };
 
 	/**

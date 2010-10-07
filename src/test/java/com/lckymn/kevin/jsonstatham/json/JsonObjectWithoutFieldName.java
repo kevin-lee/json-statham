@@ -49,4 +49,14 @@ public class JsonObjectWithoutFieldName
 		return Objects.equals(this.id, that.id) && Objects.equals(this.name, that.name)
 				&& Objects.equals(this.address, that.address);
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("id", id)
+				.add("name", name)
+				.add("address", address)
+				.toString();
+	}
 }

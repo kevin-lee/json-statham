@@ -4,6 +4,7 @@
 package com.lckymn.kevin.jsonstatham.json;
 
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -16,4 +17,6 @@ public interface JsonObjectPojo
 	String getName();
 	
 	Iterator<Address> getAddresses();
+	
+	Set<Address> getAddressSet();
 }

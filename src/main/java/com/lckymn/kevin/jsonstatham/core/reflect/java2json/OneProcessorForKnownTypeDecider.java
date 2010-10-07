@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core.reflect;
+package com.lckymn.kevin.jsonstatham.core.reflect.java2json;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,11 +30,12 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 		DEFAULT_KNOWN_TYPE_PROCESSOR = new KnownTypeProcessorWithReflectionJavaToJsonConverter()
 		{
 			@Override
-			public Object process(
+			public <T> Object process(
 					@SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					Object source) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+					@SuppressWarnings("unused") Class<T> valueType, Object value) throws IllegalArgumentException,
+					IllegalAccessException, JsonStathamException
 			{
-				return source;
+				return value;
 			}
 		};
 
@@ -60,7 +61,6 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 
 		DAFAULT_SIMPLE_TYPE_CHECKERS = new SimpleKnownTypeChecker[] { new SimpleKnownTypeChecker()
 		{
-
 			@Override
 			public boolean isKnown(Class<?> type)
 			{
@@ -68,7 +68,6 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 			}
 		}, new SimpleKnownTypeChecker()
 		{
-
 			@Override
 			public boolean isKnown(Class<?> type)
 			{
@@ -103,10 +102,11 @@ public class OneProcessorForKnownTypeDecider implements KnownTypeProcessorDecide
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
+	 * @see
+	 * com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
 	 */
 	@Override
-	public KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<?> type)
+	public <T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<T> type)
 	{
 		for (SimpleKnownTypeChecker simpleKnownTypeChecker : simpleKnownTypeCheckers)
 		{

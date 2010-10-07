@@ -86,4 +86,13 @@ public abstract class SuperClassWithValueAccessorWithOverriddenMethod
 			(SuperClassWithValueAccessorWithOverriddenMethod) superClassWithValueAccessorWithOverriddenMethod;
 		return Objects.equals(this.name, that.name) && Objects.equals(this.number, that.number);
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("name", name)
+				.add("number", number)
+				.toString();
+	}
 }

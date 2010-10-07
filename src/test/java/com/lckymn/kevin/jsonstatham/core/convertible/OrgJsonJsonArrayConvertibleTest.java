@@ -19,6 +19,7 @@ import org.junit.Test;
  */
 public class OrgJsonJsonArrayConvertibleTest
 {
+	@SuppressWarnings("boxing")
 	private static final Object[] VALUES = { "Lee", "Kevin", 1, "kevin@some.email.com", 12.50 };
 
 	/**
@@ -76,6 +77,8 @@ public class OrgJsonJsonArrayConvertibleTest
 
 		final JSONArray jsonArray2 = new JSONArray();
 		final JsonArrayConvertible jsonArrayConvertible2 = new OrgJsonJsonArrayConvertible(jsonArray2);
+
+		@SuppressWarnings("boxing")
 		final Object[] valueObjects =
 			{
 					new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>())).put("first",

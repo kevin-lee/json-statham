@@ -3,13 +3,15 @@
  */
 package com.lckymn.kevin.jsonstatham.core;
 
-import com.lckymn.kevin.jsonstatham.core.reflect.ReflectionJsonToJavaConverter;
+import java.lang.reflect.Type;
+
+import com.lckymn.kevin.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
-public interface KnownTypeProcessorWithReflectionJsonToJavaConverter extends
-		KnownTypeProcessor<ReflectionJsonToJavaConverter>
+public interface KnownTypeProcessorWithReflectionJsonToJavaConverter<VT extends Type> extends
+		KnownTypeProcessorForJsonToJava<ReflectionJsonToJavaConverter, VT>
 {
 	@Override
-	Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Object source)
+	<T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, VT valueType, Object value)
 			throws IllegalArgumentException, IllegalAccessException, JsonStathamException;
 }

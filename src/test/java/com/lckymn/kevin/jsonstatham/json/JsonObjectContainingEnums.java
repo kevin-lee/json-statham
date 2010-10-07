@@ -29,11 +29,10 @@ public final class JsonObjectContainingEnums
 		{
 			this.value = value;
 		}
-
-		@Override
-		public String toString()
+		
+		public String value()
 		{
-			return this.value;
+			return value;
 		}
 	}
 
@@ -83,7 +82,7 @@ public final class JsonObjectContainingEnums
 		final JsonObjectContainingEnums that = (JsonObjectContainingEnums) jsonObjectContainingEnums;
 		return Objects.equals(this.name, that.name) && Objects.equals(this.number, that.number)
 				&& Objects.equals(this.passed, that.passed) && Objects.equals(this.role, that.role)
-				&& Objects.equals(this.access, that.access);
+				&& Objects.deepEquals(this.access, that.access);
 	}
 
 }

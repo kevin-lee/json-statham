@@ -63,4 +63,13 @@ public class SubClassWithValueAccessorWithoutItsName extends SuperClassWithValue
 			(SubClassWithValueAccessorWithoutItsName) subClassWithValueAccessorWithoutItsName;
 		return super.equals(subClassWithValueAccessorWithoutItsName) && Objects.equals(this.email, that.email);
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.addValue(super.toString())
+				.add("email", email)
+				.toString();
+	}
 }

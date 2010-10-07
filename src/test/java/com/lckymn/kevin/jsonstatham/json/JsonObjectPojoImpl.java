@@ -3,7 +3,11 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.lckymn.kevin.common.util.Objects;
@@ -40,20 +44,25 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
 	@Override
 	public Long getId()
 	{
-		System.out.println("yeah!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-		return null;
+		return id;
 	}
 
 	@Override
 	public String getName()
 	{
-		return null;
+		return name;
 	}
 
 	@Override
 	public Iterator<Address> getAddresses()
 	{
-		return null;
+		return addressSet.iterator();
+	}
+
+	@Override
+	public Set<Address> getAddressSet()
+	{
+		return addressSet;
 	}
 
 	@Override
@@ -74,7 +83,17 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
 			return false;
 		}
 		final JsonObjectPojoImpl that = (JsonObjectPojoImpl) jsonObjectPojoImpl;
-		return Objects.equals(this.id, that.id) && Objects.equals(this.name, that.name)
-				&& Objects.equals(this.addressSet, that.addressSet);
+		return Objects.equals(this.id, that.getId()) && Objects.equals(this.name, that.getName())
+				&& Objects.equals(this.addressSet, that.getAddressSet());
+	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("id", id)
+				.add("name", name)
+				.add("addresses", addressSet)
+				.toString();
 	}
 }

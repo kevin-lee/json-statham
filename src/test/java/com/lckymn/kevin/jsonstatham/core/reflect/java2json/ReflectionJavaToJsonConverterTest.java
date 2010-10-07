@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.core;
+package com.lckymn.kevin.jsonstatham.core.reflect.java2json;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -41,11 +41,6 @@ import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
-import com.lckymn.kevin.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
-import com.lckymn.kevin.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
-import com.lckymn.kevin.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 import com.lckymn.kevin.jsonstatham.json.Address;
 import com.lckymn.kevin.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
@@ -83,7 +78,7 @@ import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithoutItsName
  * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
  * @version 0.0.3 (2010-05-10) test case for testing enum type fields is added.
  */
-public class JsonStathamInActionTest
+public class ReflectionJavaToJsonConverterTest
 {
 	private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
 	private static final List<String> suburbList = Arrays.asList("", "Test Suburb");
@@ -165,7 +160,7 @@ public class JsonStathamInActionTest
 
 	private Map<String, Address> addressMap;
 
-	private JsonStatham jsonStatham;
+	private ReflectionJavaToJsonConverter reflectionJavaToJsonConverter;
 
 	private Address address;
 
@@ -201,11 +196,10 @@ public class JsonStathamInActionTest
 		final JsonArrayConvertibleCreator jsonArrayConvertibleCreator = mock(JsonArrayConvertibleCreator.class);
 		when(jsonArrayConvertibleCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
 
-		jsonStatham =
-			new JsonStathamInAction(new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator,
-					jsonArrayConvertibleCreator, new KnownDataStructureTypeProcessorDecider(),
-					new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()),
-					new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator));
+		reflectionJavaToJsonConverter =
+			new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator,
+					new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
+					new OneProcessorForKnownTypeDecider());
 		address =
 			new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
@@ -234,17 +228,17 @@ public class JsonStathamInActionTest
 	{
 	}
 
-	@Test(expected = JsonStathamException.class)
-	public void testUnknownType()
+	@Test(expected = IllegalArgumentException.class)
+	public void testUnknownType() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		class UnknownType
 		{
 		}
-		jsonStatham.convertIntoJson(new UnknownType());
+		reflectionJavaToJsonConverter.convertIntoJson(new UnknownType());
 	}
 
 	@Test
-	public void testNull()
+	public void testNull() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		System.out.println("\nReflectionJsonStathamTest.testNull()");
 		final String expected = "null";
@@ -252,7 +246,7 @@ public class JsonStathamInActionTest
 		System.out.println("actual: ");
 
 		/* test convertIntoJson */
-		final String result1_1 = jsonStatham.convertIntoJson(null);
+		final String result1_1 = reflectionJavaToJsonConverter.convertIntoJson(null);
 		System.out.println(result1_1);
 		assertThat(result1_1, is(equalTo(expected.toString())));
 
@@ -262,7 +256,7 @@ public class JsonStathamInActionTest
 	}
 
 	@Test
-	public void testJsonHavingNullValue()
+	public void testJsonHavingNullValue() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		System.out.println("\nJsonStathamInActionTest.testJsonHavingNullValue()");
 		@JsonObject
@@ -275,7 +269,7 @@ public class JsonStathamInActionTest
 		final String expected2 = "{\"object\":null}";
 		System.out.println("expected:\n" + expected2);
 		System.out.println("actual: ");
-		final String result2 = jsonStatham.convertIntoJson(new TestPojo());
+		final String result2 = reflectionJavaToJsonConverter.convertIntoJson(new TestPojo());
 		System.out.println(result2);
 		assertEquals(expected2.toString(), result2);
 
@@ -307,14 +301,15 @@ public class JsonStathamInActionTest
 	}
 
 	@Test
-	public void testArray()
+	public void testArray() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		System.out.println("\nJsonStathamInActionTest.testArray()");
 
 		final String expectedIntArray = "[1,2,3,4,5,8,23,56]";
 		System.out.println("\nexpected:\n" + expectedIntArray);
 		System.out.println("actual: ");
-		final String resultIntArray = jsonStatham.convertIntoJson(new int[] { 1, 2, 3, 4, 5, 8, 23, 56 });
+		final String resultIntArray =
+			reflectionJavaToJsonConverter.convertIntoJson(new int[] { 1, 2, 3, 4, 5, 8, 23, 56 });
 		System.out.println(resultIntArray);
 		assertThat(resultIntArray, is(equalTo(expectedIntArray)));
 
@@ -322,7 +317,8 @@ public class JsonStathamInActionTest
 		System.out.println("\nexpected:\n" + expectedDoubleArray);
 		System.out.println("actual: ");
 		final String resultDoubleArray =
-			jsonStatham.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 });
+			reflectionJavaToJsonConverter.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754,
+					56.0547 });
 		System.out.println(resultDoubleArray);
 		assertThat(resultDoubleArray, is(equalTo(expectedDoubleArray)));
 
@@ -330,19 +326,21 @@ public class JsonStathamInActionTest
 		System.out.println("\nexpected:\n" + expectedBooleanArray);
 		System.out.println("actual: ");
 		final String resultBooleanArray =
-			jsonStatham.convertIntoJson(new boolean[] { true, false, false, true, false, true, false, true, true });
+			reflectionJavaToJsonConverter.convertIntoJson(new boolean[] { true, false, false, true, false, true, false,
+					true, true });
 		System.out.println(resultBooleanArray);
 		assertThat(resultBooleanArray, is(equalTo(expectedBooleanArray)));
 	}
 
 	@Test
-	public void testArrayHavingPojo()
+	public void testArrayHavingPojo() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		System.out.println("\nJsonStathamInActionTest.testArrayHavingPojo()");
 		final String expected = getAddressArrayString();
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(addressList.toArray(new Address[addressList.size()]));
+		final String result =
+			reflectionJavaToJsonConverter.convertIntoJson(addressList.toArray(new Address[addressList.size()]));
 		System.out.println(result);
 		assertEquals(expected, result);
 	}
@@ -350,15 +348,19 @@ public class JsonStathamInActionTest
 	/**
 	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}
 	 * with List as the parameter object.
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 * @throws IllegalArgumentException
 	 */
 	@Test
-	public void testList()
+	public void testList() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String expected = getAddressArrayString();
 		System.out.println("\nReflectionJsonStathamTest.testList()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(addressList);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(addressList);
 		System.out.println(result);
 		assertEquals(expected, result);
 	}
@@ -392,21 +394,25 @@ public class JsonStathamInActionTest
 
 	/**
 	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 * @throws IllegalArgumentException
 	 */
 	@Test
-	public void testMap()
+	public void testMap() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String expected = getAddressMapString();
 		System.out.println("\nReflectionJsonStathamTest.testMap()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(addressMap);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(addressMap);
 		System.out.println(result);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testNestedMap()
+	public void testNestedMap() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String expected = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
 		System.out.println("\nReflectionJsonStathamTest.testNestedMap()");
@@ -415,16 +421,20 @@ public class JsonStathamInActionTest
 		nestedMap.put("test1", addressMap);
 		nestedMap.put("test2", addressMap);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(nestedMap);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(nestedMap);
 		System.out.println(result);
 		assertEquals(expected, result);
 	}
 
 	/**
 	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 * @throws IllegalArgumentException
 	 */
 	@Test
-	public void testAddress()
+	public void testAddress() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		System.out.println("\nReflectionJsonStathamTest.testAddress()");
 
@@ -434,16 +444,20 @@ public class JsonStathamInActionTest
 					+ postcodeList.get(0) + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(address);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(address);
 		System.out.println(result);
 		assertEquals(expected, result);
 	}
 
 	/**
 	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
+	 * 
+	 * @throws IllegalAccessException
+	 * @throws JsonStathamException
+	 * @throws IllegalArgumentException
 	 */
 	@Test
-	public void testNestedJsonObject()
+	public void testNestedJsonObject() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final long id = 1;
 		final String name = "jsonObject";
@@ -459,13 +473,13 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test(expected = JsonStathamException.class)
-	public void testJsonObjectWithDuplicateKeys() throws IOException
+	public void testJsonObjectWithDuplicateKeys() throws IOException, IllegalArgumentException, IllegalAccessException
 	{
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithDuplicateKeys()");
 		JsonObjectWithDuplicateKeys jsonObjectWithDuplicateKeys = new JsonObjectWithDuplicateKeys();
@@ -478,7 +492,7 @@ public class JsonStathamInActionTest
 		String result = "";
 		try
 		{
-			result = jsonStatham.convertIntoJson(jsonObjectWithDuplicateKeys);
+			result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectWithDuplicateKeys);
 		}
 		catch (JsonStathamException e)
 		{
@@ -489,7 +503,8 @@ public class JsonStathamInActionTest
 	}
 
 	@Test
-	public void testJsonObjectWithoutFieldName()
+	public void testJsonObjectWithoutFieldName() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithoutFieldName()");
 		final int id = 5;
@@ -499,13 +514,14 @@ public class JsonStathamInActionTest
 		final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":\"" + address + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectWithoutFieldName);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectWithoutFieldName);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testComplexJsonObjectWithMethodUse()
+	public void testComplexJsonObjectWithMethodUse() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		ComplexJsonObjectWithValueAccessor jsonObject = new ComplexJsonObjectWithValueAccessor();
 		jsonObject.setPrimaryKey(Long.valueOf(1));
@@ -530,13 +546,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testComplexJsonObjectWithMethodUse()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testComplexJsonObjectWithValueAccessorWithoutItsName()
+	public void testComplexJsonObjectWithValueAccessorWithoutItsName() throws IllegalArgumentException,
+			JsonStathamException, IllegalAccessException
 	{
 		ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject =
 			new ComplexJsonObjectWithValueAccessorWithoutItsName();
@@ -565,7 +582,7 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testComplexJsonObjectWithValueAccessorWithoutItsName()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
@@ -600,7 +617,8 @@ public class JsonStathamInActionTest
 	}
 
 	@Test
-	public void testJsonObjectContainingCollection()
+	public void testJsonObjectContainingCollection() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String nameValue = "testJsonWithCollection";
 		Collection<String> collection =
@@ -612,13 +630,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingCollection()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectContainingList()
+	public void testJsonObjectContainingList() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String nameValue = "testJsonWithList";
 		List<String> list = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
@@ -628,13 +647,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingList()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectContainingList);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingList);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectContainingSet()
+	public void testJsonObjectContainingSet() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String nameValue = "testJsonWithSet";
 		Set<String> set = initialiseCollectionWithStringValues(new LinkedHashSet<String>(), SOME_STRING_VALUE_ARRAY);
@@ -644,13 +664,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingSet()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingSet);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectContainingMapEntrySetSet()
+	public void testJsonObjectContainingMapEntrySetSet() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String nameValue = "testJsonObjectContainingMapEntrySetSet";
 
@@ -681,13 +702,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingMapEntrySetSet()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingSet);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectContainingIterator()
+	public void testJsonObjectContainingIterator() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String nameValue = "testJsonObjectContainingIterator";
 		Collection<String> collection =
@@ -699,13 +721,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingIterator()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectContainingIterable()
+	public void testJsonObjectContainingIterable() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String nameValue = "testJsonObjectContainingIterable";
 		Iterable<String> iterable = new Iterable<String>()
@@ -723,13 +746,14 @@ public class JsonStathamInActionTest
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingIterator()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingCollection);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectWithInterfaceInheritance()
+	public void testJsonObjectWithInterfaceInheritance() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String name = "Kevin Lee";
 		final int number = 99;
@@ -739,13 +763,14 @@ public class JsonStathamInActionTest
 		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectWithImplementationInheritance()
+	public void testJsonObjectWithImplementationInheritance() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 5;
@@ -755,13 +780,14 @@ public class JsonStathamInActionTest
 		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass()
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 11;
@@ -771,13 +797,14 @@ public class JsonStathamInActionTest
 		final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String name = "Mr. Lee";
 		final int number = 999;
@@ -792,13 +819,14 @@ public class JsonStathamInActionTest
 					+ "\",\"postcode\":\"" + address.getPostcode() + "\"},\"comment\":\"" + comment + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 5;
@@ -808,13 +836,14 @@ public class JsonStathamInActionTest
 		final String expected = "{\"email\":\"" + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectWithImplementationInheritanceWithValueAccessor()
+	public void testJsonObjectWithImplementationInheritanceWithValueAccessor() throws IllegalArgumentException,
+			JsonStathamException, IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 5;
@@ -826,13 +855,14 @@ public class JsonStathamInActionTest
 					+ "\",\"email\":\"My email address is " + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 5;
@@ -845,13 +875,14 @@ public class JsonStathamInActionTest
 					+ "\",\"email\":\"My email address is " + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 5;
@@ -864,13 +895,14 @@ public class JsonStathamInActionTest
 					+ email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
 	public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String name = "Kevin";
 		final int number = 5;
@@ -883,7 +915,7 @@ public class JsonStathamInActionTest
 					+ "\",\"email\":\"My email address is " + email + "\"}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObject);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
@@ -903,7 +935,7 @@ public class JsonStathamInActionTest
 			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(jsonObjectPojo);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectPojo);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
@@ -931,13 +963,14 @@ public class JsonStathamInActionTest
 					+ name2 + "\",\"parent\":{\"id\":" + primaryKey3 + ",\"name\":\"" + name3 + "\",\"parent\":null}}}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		final String result = jsonStatham.convertIntoJson(nestedJsonObjectWithValueAccessor);
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(nestedJsonObjectWithValueAccessor);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
-	public void testJsonObjectContainingEnums()
+	public void testJsonObjectContainingEnums() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
 	{
 		System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingEnums()");
 		String expected =
@@ -945,7 +978,9 @@ public class JsonStathamInActionTest
 					+ "\",\"access\":[]}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
-		String result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
+		String result =
+			reflectionJavaToJsonConverter.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true,
+					Role.SYSTEM_ADMIN));
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 
@@ -955,8 +990,8 @@ public class JsonStathamInActionTest
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		result =
-			jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
-					Access.EMAIL));
+			reflectionJavaToJsonConverter.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER,
+					Access.BLOG, Access.EMAIL));
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 
@@ -973,8 +1008,8 @@ public class JsonStathamInActionTest
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		result =
-			jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
-					Access.WIKI, Access.EMAIL, Access.TWITTER));
+			reflectionJavaToJsonConverter.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER,
+					Access.BLOG, Access.WIKI, Access.EMAIL, Access.TWITTER));
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}

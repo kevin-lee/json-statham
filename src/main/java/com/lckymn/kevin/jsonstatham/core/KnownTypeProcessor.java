@@ -5,8 +5,8 @@ package com.lckymn.kevin.jsonstatham.core;
 
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
-public interface KnownTypeProcessor<T>
+public interface KnownTypeProcessor<P>
 {
-	Object process(T processor, Object source) throws IllegalArgumentException, IllegalAccessException,
+	<T> Object process(P processor, Class<T> valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 			JsonStathamException;
 }

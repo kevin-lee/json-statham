@@ -202,4 +202,18 @@ public final class ComplexJsonObjectWithValueAccessor
 				&& Objects.equals(this.calendar, that.getCalendar())
 				&& Objects.equals(this.calendarWithValueAccessor, that.getCalendarWithValueAccessor());
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("id", primaryKey)
+				.add("name", name)
+				.add("address", address)
+				.add("date", date)
+				.add("dateWithValueAccessor", dateWithValueAccessor)
+				.add("calendar", calendar)
+				.add("calendarWithValueAccessor", calendarWithValueAccessor)
+				.toString();
+	}
 }

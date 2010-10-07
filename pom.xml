@@ -112,14 +112,14 @@
 		<dependency>
 			<groupId>com.lckymn.kevin</groupId>
 			<artifactId>kevin-common-util</artifactId>
-			<version>0.0.5-SNAPSHOT</version>
+			<version>0.0.7-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.lckymn.kevin</groupId>
 			<artifactId>kevin-common-validation</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.10-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -127,7 +127,7 @@
 		<dependency>
 			<groupId>com.lckymn.kevin</groupId>
 			<artifactId>kevin-common-asm</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

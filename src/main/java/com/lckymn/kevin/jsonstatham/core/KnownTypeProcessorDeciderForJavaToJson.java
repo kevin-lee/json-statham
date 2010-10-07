@@ -10,5 +10,6 @@ package com.lckymn.kevin.jsonstatham.core;
 public interface KnownTypeProcessorDeciderForJavaToJson extends
 		KnownTypeProcessorDecider<KnownTypeProcessorWithReflectionJavaToJsonConverter>
 {
-	KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<?> type);
+	@Override
+	<T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<T> type);
 }

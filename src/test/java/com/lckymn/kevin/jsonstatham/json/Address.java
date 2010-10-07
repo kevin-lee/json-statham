@@ -149,4 +149,16 @@ public class Address
 				&& Objects.equals(this.city, that.getCity()) && Objects.equals(this.state, that.getState())
 				&& Objects.equals(this.postcode, that.getPostcode());
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("street", street)
+				.add("suburb", suburb)
+				.add("city", city)
+				.add("state", state)
+				.add("postcode", postcode)
+				.toString();
+	}
 }
