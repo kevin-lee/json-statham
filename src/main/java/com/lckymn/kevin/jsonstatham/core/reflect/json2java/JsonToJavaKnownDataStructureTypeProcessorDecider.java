@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 
 import org.json.JSONArray;
 
-import com.lckymn.kevin.common.reflect.Generics;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
@@ -63,13 +62,6 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 							value));
 				}
 
-				// if (JSONArray.class.isAssignableFrom(value.getClass()))
-				// {
-				// System.out.println("It's JSONArray1111111");
-				// return reflectionJsonToJavaConverter.createFromJsonArray(valueType,
-				// new OrgJsonJsonArrayConvertible((JSONArray) value));
-				// }
-
 				final Class<?> targetClass = valueType;
 				final int length = jsonArrayConvertible.length();
 				try
@@ -77,7 +69,6 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					if (targetClass.isArray())
 					{
 						final Class<?> componentType = targetClass.getComponentType();
-						System.out.println("componentType: " + componentType);
 						final Object array = Array.newInstance(componentType, length);
 						for (int i = 0; i < length; i++)
 						{
@@ -126,47 +117,12 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 				{
 					if (Collection.class.isAssignableFrom(fieldType))
 					{
-						System.out.println("!!!!!!!!!!!!!!!!!!!!!!Collection valueType: " + fieldType);
-						// final Type elementType = Generics.getGenericInfo(genericType);
-						// if (elementType instanceof Class)
-						// {
-						// final Class<?> elementTypeClass = (Class<?>) elementType;
 						@SuppressWarnings({ "unchecked", "rawtypes" })
 						final Collection<?> collection =
 							reflectionJsonToJavaConverter.createCollectionWithValues(
 									valueType.getActualTypeArguments()[0], (Class<Collection>) fieldType, value);
 						return collection;
-						// }
-						// newArrayList(elementType)
 					}
-					// else if (Iterable.class.isAssignableFrom(fieldType))
-					// {
-					// System.out.println("[Iterable]");
-					// final Type elementType = Generics.getGenericInfo(genericType);
-					// if (elementType instanceof Class)
-					// {
-					// Class<?> elementTypeClass = (Class<?>) elementType;
-					// @SuppressWarnings("unchecked")
-					// Collection<?> collection =
-					// reflectionJsonToJavaConverter.createCollectionWithValues(List.class, elementTypeClass,
-					// value);
-					// return collection;
-					// }
-					// }
-					// else if (Iterator.class.isAssignableFrom(fieldType))
-					// {
-					// System.out.println("[Iterator]");
-					// final Type elementType = Generics.getGenericInfo(genericType);
-					// if (elementType instanceof Class)
-					// {
-					// Class<?> elementTypeClass = (Class<?>) elementType;
-					// @SuppressWarnings("unchecked")
-					// final Collection<?> collection =
-					// reflectionJsonToJavaConverter.createCollectionWithValues(List.class, elementTypeClass,
-					// value);
-					// return collection.iterator();
-					// }
-					// }
 				}
 				catch (Exception e)
 				{
@@ -183,8 +139,6 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
-				// Class<?> genericValueType = Generics.extractFromParameterizedType(valueType, 1);
-				System.out.println("valueType: " + valueType);
 				return reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(
 						valueType.getActualTypeArguments()[1], value);
 			}
@@ -197,18 +151,11 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
-				System.out.println("[Iterable]");
-				// final Type elementType = Generics.getGenericInfo(valueType);
-				// if (elementType instanceof Class)
-				// {
-				// Class<?> elementTypeClass = (Class<?>) elementType;
 				@SuppressWarnings("unchecked")
 				Collection<?> collection =
 					reflectionJsonToJavaConverter.createCollectionWithValues(valueType.getActualTypeArguments()[0],
 							List.class, value);
 				return collection;
-				// }
-				// throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
 			}
 		});
 
@@ -219,18 +166,11 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
-				System.out.println("[Iterator]");
-				// final Type elementType = Generics.getGenericInfo(valueType);
-				// if (elementType instanceof Class)
-				// {
-				// Class<?> elementTypeClass = (Class<?>) elementType;
 				@SuppressWarnings("unchecked")
 				final Collection<?> collection =
 					reflectionJsonToJavaConverter.createCollectionWithValues(valueType.getActualTypeArguments()[0],
 							List.class, value);
 				return collection.iterator();
-				// }
-				// throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
 			}
 		});
 
@@ -241,9 +181,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
-				// Class<?> genericValueType = Generics.extractFromParameterizedType(valueType, 1);
-				System.out.println("valueType: " + valueType);
-				Map<String, Object> map =
+				final Map<String, Object> map =
 					reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(valueType.getActualTypeArguments()[1],
 							value);
 				for (Entry<String, Object> entry : map.entrySet())
@@ -275,7 +213,6 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			type instanceof Class ? (Class<?>) type
 					: type instanceof ParameterizedType ? (Class<?>) ((ParameterizedType) type).getRawType() : null;
 
-		System.out.println("classType: " + classType);
 		if (null == classType)
 		{
 			return null;

@@ -212,7 +212,7 @@ public class ReflectionJsonToJavaConverterTest
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception
 	{
-		System.out.println("### ReflectionJsonToJavaConverterTest ###");
+		System.out.println("### ReflectionJsonToJavaConverterTest finishes ###");
 	}
 
 	/**
