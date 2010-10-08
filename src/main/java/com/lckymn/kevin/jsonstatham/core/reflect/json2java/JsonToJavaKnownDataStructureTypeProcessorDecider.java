@@ -100,7 +100,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 									jsonArrayConvertible.get(i)));
 						}
 						@SuppressWarnings("unchecked")
-						T t = (T) list;
+						final T t = (T) list;
 						return t;
 					}
 				}
@@ -121,23 +121,22 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
-				final Type genericType = valueType;
 				final Class<?> fieldType = (Class<?>) valueType.getRawType();
 				try
 				{
 					if (Collection.class.isAssignableFrom(fieldType))
 					{
 						System.out.println("!!!!!!!!!!!!!!!!!!!!!!Collection valueType: " + fieldType);
-						final Type elementType = Generics.getGenericInfo(genericType);
-						if (elementType instanceof Class)
-						{
-							final Class<?> elementTypeClass = (Class<?>) elementType;
-							@SuppressWarnings({ "unchecked", "rawtypes" })
-							Collection<?> collection =
-								reflectionJsonToJavaConverter.createCollectionWithValues((Class<Collection>) fieldType,
-										elementTypeClass, value);
-							return collection;
-						}
+						// final Type elementType = Generics.getGenericInfo(genericType);
+						// if (elementType instanceof Class)
+						// {
+						// final Class<?> elementTypeClass = (Class<?>) elementType;
+						@SuppressWarnings({ "unchecked", "rawtypes" })
+						final Collection<?> collection =
+							reflectionJsonToJavaConverter.createCollectionWithValues(
+									valueType.getActualTypeArguments()[0], (Class<Collection>) fieldType, value);
+						return collection;
+						// }
 						// newArrayList(elementType)
 					}
 					// else if (Iterable.class.isAssignableFrom(fieldType))
@@ -177,56 +176,81 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			}
 		});
 
-		map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>()
+		map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
 		{
 			@Override
-			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Type valueType,
-					Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+					JsonStathamException
 			{
-				Class<?> genericValueType = Generics.extractFromParameterizedType(valueType, 1);
-				System.out.println("valueType: " + genericValueType);
-				return reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(genericValueType, value);
+				// Class<?> genericValueType = Generics.extractFromParameterizedType(valueType, 1);
+				System.out.println("valueType: " + valueType);
+				return reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(
+						valueType.getActualTypeArguments()[1], value);
 			}
 		});
 
-		map.put(Iterable.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>()
+		map.put(Iterable.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
 		{
-
 			@Override
-			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Type valueType,
-					Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+					JsonStathamException
 			{
 				System.out.println("[Iterable]");
-				final Type elementType = Generics.getGenericInfo(valueType);
-				if (elementType instanceof Class)
-				{
-					Class<?> elementTypeClass = (Class<?>) elementType;
-					@SuppressWarnings("unchecked")
-					Collection<?> collection =
-						reflectionJsonToJavaConverter.createCollectionWithValues(List.class, elementTypeClass, value);
-					return collection;
-				}
-				throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
+				// final Type elementType = Generics.getGenericInfo(valueType);
+				// if (elementType instanceof Class)
+				// {
+				// Class<?> elementTypeClass = (Class<?>) elementType;
+				@SuppressWarnings("unchecked")
+				Collection<?> collection =
+					reflectionJsonToJavaConverter.createCollectionWithValues(valueType.getActualTypeArguments()[0],
+							List.class, value);
+				return collection;
+				// }
+				// throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
 			}
 		});
 
-		map.put(Iterator.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>()
+		map.put(Iterator.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
 		{
 			@Override
-			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Type valueType,
-					Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+					JsonStathamException
 			{
 				System.out.println("[Iterator]");
-				final Type elementType = Generics.getGenericInfo(valueType);
-				if (elementType instanceof Class)
+				// final Type elementType = Generics.getGenericInfo(valueType);
+				// if (elementType instanceof Class)
+				// {
+				// Class<?> elementTypeClass = (Class<?>) elementType;
+				@SuppressWarnings("unchecked")
+				final Collection<?> collection =
+					reflectionJsonToJavaConverter.createCollectionWithValues(valueType.getActualTypeArguments()[0],
+							List.class, value);
+				return collection.iterator();
+				// }
+				// throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
+			}
+		});
+
+		map.put(Entry.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
+		{
+			@Override
+			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+					JsonStathamException
+			{
+				// Class<?> genericValueType = Generics.extractFromParameterizedType(valueType, 1);
+				System.out.println("valueType: " + valueType);
+				Map<String, Object> map =
+					reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(valueType.getActualTypeArguments()[1],
+							value);
+				for (Entry<String, Object> entry : map.entrySet())
 				{
-					Class<?> elementTypeClass = (Class<?>) elementType;
-					@SuppressWarnings("unchecked")
-					final Collection<?> collection =
-						reflectionJsonToJavaConverter.createCollectionWithValues(List.class, elementTypeClass, value);
-					return collection.iterator();
+					return entry;
 				}
-				throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
+				return null;
 			}
 		});
 

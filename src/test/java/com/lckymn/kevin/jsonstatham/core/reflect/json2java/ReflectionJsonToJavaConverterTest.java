@@ -76,6 +76,7 @@ import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithAbstractMethod;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMethod;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
+import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonPojoHavingMap;
 
 /**
@@ -266,6 +267,7 @@ public class ReflectionJsonToJavaConverterTest
 	public final void testConvertFromJsonWithIllegalJson() throws JsonStathamException, IllegalArgumentException,
 			InstantiationException, IllegalAccessException, InvocationTargetException
 	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testConvertFromJsonWithIllegalJson()");
 		reflectionJsonToJavaConverter.convertFromJson(Object.class, "{\"some\",\"value\",\"This is not JSON\"}");
 	}
 
@@ -273,6 +275,7 @@ public class ReflectionJsonToJavaConverterTest
 	public void testUnknownType() throws JsonStathamException, IllegalArgumentException, InstantiationException,
 			IllegalAccessException, InvocationTargetException
 	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testUnknownType().UnknownType.testUnknownType()");
 		class UnknownType
 		{
 		}
@@ -298,6 +301,7 @@ public class ReflectionJsonToJavaConverterTest
 	public void testLocalJsonClass() throws Exception
 	{
 		System.out.println("\nReflectionJsonToJavaConverterTest.testLocalJsonClass().TestPojo.testLocalJsonClass()");
+		@SuppressWarnings("hiding")
 		@JsonObject
 		class TestPojo
 		{
@@ -484,7 +488,6 @@ public class ReflectionJsonToJavaConverterTest
 		System.out.println("json:\n" + json);
 		System.out.println("java: ");
 
-		@SuppressWarnings("unchecked")
 		final List<Address> result = reflectionJsonToJavaConverter.convertFromJson(new TypeHolder<List<Address>>()
 		{
 		}, json);
@@ -536,25 +539,25 @@ public class ReflectionJsonToJavaConverterTest
 		assertThat(result, is(equalTo(addressMap)));
 	}
 
-	// @Test
-	// public void testNestedMap() throws JsonStathamException, IllegalArgumentException, InstantiationException,
-	// IllegalAccessException, InvocationTargetException
-	// {
-	// System.out.println("\nReflectionJsonToJavaConverterTest.testNestedMap()");
-	// final String json = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
-	// System.out.println("json: \n" + json);
-	// final Map<String, Map<String, Address>> nestedMap = new HashMap<String, Map<String, Address>>();
-	// nestedMap.put("test1", addressMap);
-	// nestedMap.put("test2", addressMap);
-	// System.out.println("java: ");
-	//
-	// final Map<String, Map<String, Address>> result =
-	// reflectionJsonToJavaConverter.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>()
-	// {
-	// }, json);
-	// System.out.println(result);
-	// assertThat(result, is(equalTo(nestedMap)));
-	// }
+	@Test
+	public void testNestedMap() throws JsonStathamException, IllegalArgumentException, InstantiationException,
+			IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testNestedMap()");
+		final String json = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
+		System.out.println("json: \n" + json);
+		final Map<String, Map<String, Address>> nestedMap = new HashMap<String, Map<String, Address>>();
+		nestedMap.put("test1", addressMap);
+		nestedMap.put("test2", addressMap);
+		System.out.println("java: ");
+
+		final Map<String, Map<String, Address>> result =
+			reflectionJsonToJavaConverter.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>()
+			{
+			}, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(nestedMap)));
+	}
 
 	@Test
 	public void testAddress() throws JsonStathamException, IllegalArgumentException, InstantiationException,
@@ -639,6 +642,7 @@ public class ReflectionJsonToJavaConverterTest
 		assertThat(result, is(equalTo(jsonObjectWithoutFieldName)));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testComplexJsonObjectWithMethodUse() throws JsonStathamException, IllegalArgumentException,
 			InstantiationException, IllegalAccessException, InvocationTargetException
@@ -807,45 +811,57 @@ public class ReflectionJsonToJavaConverterTest
 		assertThat(result, is(equalTo(jsonObjectContainingSet)));
 	}
 
-	// @Test
-	// public void testJsonObjectContainingMapEntrySetSet() throws JsonStathamException, IllegalArgumentException,
-	// InstantiationException, IllegalAccessException, InvocationTargetException
-	// {
-	// System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectContainingMapEntrySetSet()");
-	// final String nameValue = "testJsonObjectContainingMapEntrySetSet";
-	//
-	// final JsonObjectContainingMapEntrySet jsonObjectContainingSet =
-	// new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
-	//
-	// final StringBuilder stringBuilder =
-	// new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
-	// for (Entry<String, Address> entry : addressMap.entrySet())
-	// {
-	// Address address = entry.getValue();
-	// stringBuilder.append("{\"" + entry.getKey() + "\":")
-	// .append("{\"street\":\"")
-	// .append(address.getStreet())
-	// .append("\",\"suburb\":\"")
-	// .append(address.getSuburb())
-	// .append("\",\"city\":\"")
-	// .append(address.getCity())
-	// .append("\",\"state\":\"")
-	// .append(address.getState())
-	// .append("\",\"postcode\":\"")
-	// .append(address.getPostcode())
-	// .append("\"}},");
-	// }
-	// final String json = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length(), "]}")
-	// .toString();
-	//
-	// System.out.println("json:\n" + json);
-	// System.out.println("java: ");
-	// final JsonObjectContainingMapEntrySet result =
-	// reflectionJsonToJavaConverter.convertFromJson(JsonObjectContainingMapEntrySet.class, json);
-	// System.out.println(result);
-	// assertThat(result, is(equalTo(jsonObjectContainingSet)));
-	// }
+	@Test
+	public void testJsonObjectContainingMapEntrySetSet() throws JsonStathamException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectContainingMapEntrySetSet()");
+		final String nameValue = "testJsonObjectContainingMapEntrySetSet";
 
+		final JsonObjectContainingMapEntrySet jsonObjectContainingSet =
+			new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
+
+		final StringBuilder stringBuilder =
+			new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
+		for (Entry<String, Address> entry : addressMap.entrySet())
+		{
+			Address address = entry.getValue();
+			stringBuilder.append("{\"" + entry.getKey() + "\":")
+					.append("{\"street\":\"")
+					.append(address.getStreet())
+					.append("\",\"suburb\":\"")
+					.append(address.getSuburb())
+					.append("\",\"city\":\"")
+					.append(address.getCity())
+					.append("\",\"state\":\"")
+					.append(address.getState())
+					.append("\",\"postcode\":\"")
+					.append(address.getPostcode())
+					.append("\"}},");
+		}
+		final String json = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length(), "]}")
+				.toString();
+
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+		final JsonObjectContainingMapEntrySet result =
+			reflectionJsonToJavaConverter.convertFromJson(JsonObjectContainingMapEntrySet.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(jsonObjectContainingSet)));
+
+		final String json2 = "{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[]}";
+		final JsonObjectContainingMapEntrySet jsonObjectContainingSet2 =
+			new JsonObjectContainingMapEntrySet(nameValue, new HashSet<Entry<String, Address>>());
+		System.out.println("json:\n" + json2);
+		System.out.println("java: ");
+		final JsonObjectContainingMapEntrySet result2 =
+			reflectionJsonToJavaConverter.convertFromJson(JsonObjectContainingMapEntrySet.class, json2);
+		System.out.println(result2);
+		assertThat(result2, is(equalTo(jsonObjectContainingSet2)));
+
+	}
+
+	@SuppressWarnings("boxing")
 	@Test
 	public final void testJsonPojoHavingMap() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			InstantiationException, IllegalAccessException, InvocationTargetException
@@ -906,6 +922,40 @@ public class ReflectionJsonToJavaConverterTest
 			reflectionJsonToJavaConverter.convertFromJson(JsonObjectContainingIterable.class, json);
 		System.out.println(result);
 		assertThat(result, is(equalTo(jsonObjectContainingCollection)));
+	}
+
+	@Test
+	public void testJsonObjectContainingNestedGenericTypes() throws ArrayIndexOutOfBoundsException,
+			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectContainingNestedGenericTypes()");
+		final List<Address> listOfAddress = new ArrayList<Address>();
+		final List<List<Address>> listOfListOfAddress = new ArrayList<List<Address>>();
+		final List<List<List<Address>>> listOfListOfListOfAddress = new ArrayList<List<List<Address>>>();
+		listOfAddress.add(new Address("ABC St", "ZZZ", "Sydney", "NSW", "2000"));
+		listOfListOfAddress.add(listOfAddress);
+		listOfListOfListOfAddress.add(listOfListOfAddress);
+		final List<Address> listOfAddress2 = new ArrayList<Address>();
+		final List<List<Address>> listOfListOfAddress2 = new ArrayList<List<Address>>();
+		listOfAddress2.add(new Address("123 Street", "AAA", "Melbourne", "VIC", "3000"));
+		listOfListOfAddress2.add(listOfAddress2);
+		listOfListOfListOfAddress.add(listOfListOfAddress2);
+		final List<Address> listOfAddress3 = new ArrayList<Address>();
+		final List<List<Address>> listOfListOfAddress3 = new ArrayList<List<Address>>();
+		listOfAddress3.add(new Address("Some Street", "LLL", "Brisbane", "QL", "4000"));
+		listOfListOfAddress3.add(listOfAddress3);
+		listOfListOfListOfAddress.add(listOfListOfAddress3);
+		final JsonObjectHavingNestedGenericTypes jsonObjectHavingNestedGenericTypes =
+			new JsonObjectHavingNestedGenericTypes(listOfListOfListOfAddress);
+		// System.out.println(ReflectionJsonStathams.newReflectionJsonStathamInAction().convertIntoJson(jsonObjectHavingNestedGenericTypes));
+		final String json =
+			"{\"listOfListOfListOfAddress\":[[[{\"street\":\"ABC St\",\"suburb\":\"ZZZ\",\"city\":\"Sydney\",\"state\":\"NSW\",\"postcode\":\"2000\"}]],[[{\"street\":\"123 Street\",\"suburb\":\"AAA\",\"city\":\"Melbourne\",\"state\":\"VIC\",\"postcode\":\"3000\"}]],[[{\"street\":\"Some Street\",\"suburb\":\"LLL\",\"city\":\"Brisbane\",\"state\":\"QL\",\"postcode\":\"4000\"}]]]}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+		final JsonObjectHavingNestedGenericTypes result =
+			reflectionJsonToJavaConverter.convertFromJson(JsonObjectHavingNestedGenericTypes.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(jsonObjectHavingNestedGenericTypes)));
 	}
 
 	@Test

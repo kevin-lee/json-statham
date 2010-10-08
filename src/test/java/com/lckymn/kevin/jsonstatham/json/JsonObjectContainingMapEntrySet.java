@@ -49,4 +49,13 @@ public class JsonObjectContainingMapEntrySet
 		final JsonObjectContainingMapEntrySet that = (JsonObjectContainingMapEntrySet) jsonObjectContainingMapEntrySet;
 		return Objects.equals(this.name, that.name) && Objects.equals(this.mapEntrySet, that.mapEntrySet);
 	}
+
+	@Override
+	public String toString()
+	{
+		return Objects.toStringBuilder(this)
+				.add("name", name)
+				.add("valueMapEntrySet", mapEntrySet)
+				.toString();
+	}
 }

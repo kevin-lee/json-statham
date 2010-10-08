@@ -3,10 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.core;
 
-import static com.lckymn.kevin.common.util.MessageFormatter.*;
-
 import java.lang.reflect.InvocationTargetException;
 
+import com.lckymn.kevin.common.reflect.TypeHolder;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -62,6 +61,7 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  * @version 0.0.15 (2010-06-10) known types are injectable (more extensible design).
  * @version 0.0.16 (2010-06-14) refactoring...
  * @version 0.1.0 (2010-09-08) {@link #convertFromJson(Class, String)} is added.
+ * @version 0.1.0 (2010-10-09) {@link #convertFromJson(TypeHolder, String)} is added.
  */
 public class JsonStathamInAction implements JsonStatham
 {
@@ -114,6 +114,35 @@ public class JsonStathamInAction implements JsonStatham
 		try
 		{
 			return jsonToJavaConverter.convertFromJson(type, json);
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (InstantiationException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (JsonStathamException e)
+		{
+			throw e;
+		}
+	}
+
+	@Override
+	public <T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException
+	{
+		try
+		{
+			return jsonToJavaConverter.convertFromJson(typeHolder, jsonString);
 		}
 		catch (IllegalArgumentException e)
 		{
