@@ -57,6 +57,7 @@ import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingEnums.Role;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingIterable;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingIterator;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingList;
+import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingMapEntrySet;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingSet;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectPojo;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectPojoImpl;
@@ -70,6 +71,7 @@ import com.lckymn.kevin.jsonstatham.json.SecondSubClassWithoutOwnFields;
 import com.lckymn.kevin.jsonstatham.json.SomeImplementingClass;
 import com.lckymn.kevin.jsonstatham.json.SomeInterface;
 import com.lckymn.kevin.jsonstatham.json.SubClass;
+import com.lckymn.kevin.jsonstatham.json.SubClassWithNoJsonObjectSuperClass;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithAbstractMethod;
 import com.lckymn.kevin.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMethod;
@@ -126,7 +128,6 @@ public class ReflectionJsonToJavaConverterTest
 			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
 			{
-				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
 				return new JsonObjectConvertible()
 				{
 					@Override
@@ -654,13 +655,6 @@ public class ReflectionJsonToJavaConverterTest
 		jsonObject.setDateWithValueAccessor(date2);
 
 		final Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		// calendar.set(Calendar.YEAR, 2010);
-		// calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
-		// calendar.set(Calendar.DAY_OF_MONTH, 27);
-		// calendar.set(Calendar.HOUR, 0);
-		// calendar.set(Calendar.MINUTE, 0);
-		// calendar.set(Calendar.SECOND, 0);
 		calendar.setTime(new Date(2010, 9, 27, 0, 0, 0));
 		calendar.getTimeInMillis();
 		jsonObject.setCalendar(calendar);
@@ -699,6 +693,7 @@ public class ReflectionJsonToJavaConverterTest
 		jsonObject.setRegistered(true);
 		jsonObject.setEnabled(false);
 		jsonObject.setAddress(address);
+		@SuppressWarnings("deprecation")
 		final Date date = new Date(2010, 9, 27);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -990,24 +985,21 @@ public class ReflectionJsonToJavaConverterTest
 		assertThat(result, is(equalTo(jsonObject)));
 	}
 
-	// @Test
-	// public void testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass() throws JsonStathamException,
-	// IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
-	// {
-	// System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()");
-	// final String name = "Kevin";
-	// final int number = 5;
-	// final String email = "kevin@test.test";
-	// final SubClassWithNoJsonObjectSuperClass jsonObject =
-	// new SubClassWithNoJsonObjectSuperClass(name, number, email);
-	// final String json = "{\"email\":\"" + email + "\"}";
-	// System.out.println("json:\n" + json);
-	// System.out.println("java: ");
-	// final SubClassWithNoJsonObjectSuperClass result =
-	// reflectionJsonToJavaConverter.convertFromJson(SubClassWithNoJsonObjectSuperClass.class, json);
-	// System.out.println(result);
-	// assertThat(result, is(equalTo(jsonObject)));
-	// }
+	@Test
+	public void testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass() throws JsonStathamException,
+			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()");
+		final String email = "kevin@test.test";
+		final SubClassWithNoJsonObjectSuperClass jsonObject = new SubClassWithNoJsonObjectSuperClass(null, 0, email);
+		final String json = "{\"email\":\"" + email + "\"}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+		final SubClassWithNoJsonObjectSuperClass result =
+			reflectionJsonToJavaConverter.convertFromJson(SubClassWithNoJsonObjectSuperClass.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(jsonObject)));
+	}
 
 	@Test
 	public void testJsonObjectWithImplementationInheritanceWithValueAccessor() throws JsonStathamException,
