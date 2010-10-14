@@ -313,10 +313,14 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 					argList.add(resolveFieldValue(field, field.getType(),
 							jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
 				}
+				/* It is annotated with @JsonConstructor so it should be used even if it is a private constructor. */
+				constructor.setAccessible(true);
 				return constructor.newInstance(argList.toArray());
 			}
-
-			return null;
+			/*
+			 * No constructors annotated with @JsonConstructor are usable with the given parameters so try with the
+			 * other ones which means do nothing here in this if block
+			 */
 		}
 
 		/* matching with all the json field */
@@ -791,7 +795,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				Array.set(array, i, resolveElement(componentType, jsonArrayConvertible.get(i)));
 			}
 			@SuppressWarnings("unchecked")
-			T t = (T) array;
+			final T t = (T) array;
 			return t;
 		}
 		else if (Collection.class.isAssignableFrom(targetClass))
@@ -802,7 +806,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				list.add(resolveElement(Object.class, jsonArrayConvertible.get(i)));
 			}
 			@SuppressWarnings("unchecked")
-			T t = (T) list;
+			final T t = (T) list;
 			return t;
 		}
 		throw new JsonStathamException(format("Unknown type [class: %s] [JsonArrayConvertible: %s]", targetClass,
@@ -845,7 +849,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			if (Collection.class.isAssignableFrom(typeClass))
 			{
 				@SuppressWarnings("unchecked")
-				T t =
+				final T t =
 					(T) createCollectionWithValues(parameterizedType.getActualTypeArguments()[0],
 							(Class<Collection<T>>) typeClass,
 							jsonArrayConvertibleCreator.newJsonArrayConvertible(jsonString));
@@ -854,7 +858,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			if (Map.class.isAssignableFrom(typeClass))
 			{
 				@SuppressWarnings("unchecked")
-				T t =
+				final T t =
 					(T) createHashMapWithKeysAndValues(parameterizedType.getActualTypeArguments()[1],
 							jsonObjectConvertibleCreator.newJsonObjectConvertible(jsonString));
 				return t;

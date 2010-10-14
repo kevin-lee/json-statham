@@ -48,6 +48,8 @@ import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 import com.lckymn.kevin.jsonstatham.json.Address;
+import com.lckymn.kevin.jsonstatham.json.AddressWithJsonConstructor;
+import com.lckymn.kevin.jsonstatham.json.AddressWithPrivateConstructorAndJsonConstructor;
 import com.lckymn.kevin.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
 import com.lckymn.kevin.jsonstatham.json.ComplexJsonObjectWithValueAccessorWithoutItsName;
 import com.lckymn.kevin.jsonstatham.json.JsonObjectContainingCollection;
@@ -572,6 +574,48 @@ public class ReflectionJsonToJavaConverterTest
 		System.out.println("json:\n" + json);
 		System.out.println("java: ");
 		final Address result = reflectionJsonToJavaConverter.convertFromJson(Address.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(address)));
+	}
+
+	@Test
+	public void testJsonObjectWithJsonConstructor() throws JsonStathamException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testAddress()");
+
+		final AddressWithJsonConstructor address =
+			new AddressWithJsonConstructor(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0),
+					postcodeList.get(0));
+		final String json =
+			"{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
+					+ cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
+					+ postcodeList.get(0) + "\"}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+		final AddressWithJsonConstructor result =
+			reflectionJsonToJavaConverter.convertFromJson(AddressWithJsonConstructor.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(address)));
+	}
+
+	@Test
+	public void testJsonObjectWithPrivateConstructorAndJsonConstructor() throws JsonStathamException,
+			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testAddress()");
+
+		final AddressWithPrivateConstructorAndJsonConstructor address =
+			AddressWithPrivateConstructorAndJsonConstructor.newAddressWithPrivateConstructorAndJsonConstructor(
+					streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
+		final String json =
+			"{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
+					+ cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
+					+ postcodeList.get(0) + "\"}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+		final AddressWithPrivateConstructorAndJsonConstructor result =
+			reflectionJsonToJavaConverter.convertFromJson(AddressWithPrivateConstructorAndJsonConstructor.class, json);
 		System.out.println(result);
 		assertThat(result, is(equalTo(address)));
 	}
