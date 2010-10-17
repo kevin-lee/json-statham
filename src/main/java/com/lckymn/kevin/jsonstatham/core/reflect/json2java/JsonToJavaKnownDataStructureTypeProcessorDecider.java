@@ -132,15 +132,15 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			}
 		});
 
-		map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
+		map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>()
 		{
 			@Override
-			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
+			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Type valueType,
+					Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
-				return reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(
-						valueType.getActualTypeArguments()[1], value);
+				return valueType instanceof ParameterizedType ? reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(
+						((ParameterizedType) valueType).getActualTypeArguments()[1], value)
+						: reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(valueType, value);
 			}
 		});
 

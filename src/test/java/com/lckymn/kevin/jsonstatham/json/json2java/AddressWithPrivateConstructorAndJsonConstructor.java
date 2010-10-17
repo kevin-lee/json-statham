@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.lckymn.kevin.jsonstatham.json;
+package com.lckymn.kevin.jsonstatham.json.json2java;
 
 import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;

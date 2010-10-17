@@ -88,8 +88,7 @@ public class ReflectionJavaToJsonConverterTest
 	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
 	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObjectConvertible>()
-		{
+		new Answer<JsonObjectConvertible>() {
 			@Override
 			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
@@ -98,16 +97,14 @@ public class ReflectionJavaToJsonConverterTest
 			}
 		};
 	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObjectConvertible>()
-		{
+		new Answer<JsonObjectConvertible>() {
 
 			@Override
 			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
 			{
 				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
-				return new JsonObjectConvertible()
-				{
+				return new JsonObjectConvertible() {
 					@Override
 					public String[] getNames()
 					{
@@ -145,8 +142,7 @@ public class ReflectionJavaToJsonConverterTest
 		};
 
 	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
-		new Answer<JsonArrayConvertible>()
-		{
+		new Answer<JsonArrayConvertible>() {
 
 			@Override
 			public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
@@ -345,6 +341,39 @@ public class ReflectionJavaToJsonConverterTest
 		assertEquals(expected, result);
 	}
 
+	@Test
+	public void testArray2() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
+	{
+		System.out.println("\nReflectionJavaToJsonConverterTest.testArray2()");
+
+		final List<String> stringList = Arrays.asList("aaa", "bbb", "ccc");
+		final String expected =
+			"[\"" + stringList.get(0) + "\",\"" + stringList.get(1) + "\",\"" + stringList.get(2) + "\"]";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result =
+			reflectionJavaToJsonConverter.convertIntoJson(new String[] { stringList.get(0), stringList.get(1),
+					stringList.get(2) });
+		System.out.println(result);
+		assertThat(result, is(equalTo(expected)));
+	}
+
+	@Test
+	public void testCollection() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
+	{
+		System.out.println("\nReflectionJavaToJsonConverterTest.testCollection()");
+		final List<String> stringList = Arrays.asList("aaa", "bbb", "ccc");
+		final String expected =
+			"[\"" + stringList.get(0) + "\",\"" + stringList.get(1) + "\",\"" + stringList.get(2) + "\"]";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final String result =
+			reflectionJavaToJsonConverter.convertIntoJson(Arrays.asList(stringList.get(0), stringList.get(1),
+					stringList.get(2)));
+		System.out.println(result);
+		assertThat(result, is(equalTo(expected)));
+	}
+
 	/**
 	 * Test method for {@link com.lckymn.kevin.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}
 	 * with List as the parameter object.
@@ -412,18 +441,73 @@ public class ReflectionJavaToJsonConverterTest
 	}
 
 	@Test
+	public void testMap2() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
+	{
+		System.out.println("\nReflectionJavaToJsonConverterTest.testMap2()");
+		final List<String> surnames = new ArrayList<String>();
+		final List<String> givenNames = new ArrayList<String>();
+		surnames.add("Lee");
+		givenNames.add("Kevin");
+		surnames.add("Kent");
+		givenNames.add("Clark");
+		surnames.add("Wayne");
+		givenNames.add("Bruce");
+		final String expected =
+			"{\"" + surnames.get(0) + "\":\"" + givenNames.get(0) + "\",\"" + surnames.get(1) + "\":\""
+					+ givenNames.get(1) + "\",\"" + surnames.get(2) + "\":\"" + givenNames.get(2) + "\"}";
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final Map<String, String> surnameToGivenNameMap = new LinkedHashMap<String, String>();
+		surnameToGivenNameMap.put("Lee", "Kevin");
+		surnameToGivenNameMap.put("Kent", "Clark");
+		surnameToGivenNameMap.put("Wayne", "Bruce");
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(surnameToGivenNameMap);
+		System.out.println(result);
+		assertThat(result, is(equalTo(expected)));
+
+	}
+
+	@Test
 	public void testNestedMap() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
 	{
 		final String expected = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
 		System.out.println("\nReflectionJsonStathamTest.testNestedMap()");
 		System.out.println("expected: \n" + expected);
-		Map<String, Object> nestedMap = new HashMap<String, Object>();
+		Map<String, Map<String, Address>> nestedMap = new HashMap<String, Map<String, Address>>();
 		nestedMap.put("test1", addressMap);
 		nestedMap.put("test2", addressMap);
 		System.out.println("actual: ");
 		final String result = reflectionJavaToJsonConverter.convertIntoJson(nestedMap);
 		System.out.println(result);
 		assertEquals(expected, result);
+	}
+
+	@SuppressWarnings({ "boxing", "unchecked" })
+	@Test
+	public void testMapHavingNestedLists() throws IllegalArgumentException, JsonStathamException,
+			IllegalAccessException
+	{
+		System.out.println("\nReflectionJavaToJsonConverterTest.testMapHavingNestedLists()");
+		/* @formatter:off */
+		final String expected = 
+			"{\"Kevin\":[[1,2,3,4,5,6,7,8,9,10],[11,12,13,14,15,16,17,18,19,20],[21,22,23,24,25,26,27,28,29,30]]," +
+			 "\"Lee\":[[100,200,300,400,500,600,700,800,900,1000],[1100,1200,1300,1400,1500,1600,1700,1800,1900,11000]]}";
+		/* @formatter:on */
+		System.out.println("expected:\n" + expected);
+		System.out.println("actual: ");
+		final Map<String, List<List<Integer>>> map = new LinkedHashMap<String, List<List<Integer>>>();
+		/* @formatter:off */
+		map.put("Kevin",
+			Arrays.asList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+						  Arrays.asList(11, 12, 13, 14, 15, 16, 17, 18, 19, 20),
+						  Arrays.asList(21, 22, 23, 24, 25, 26, 27, 28, 29, 30)));
+		map.put("Lee",
+			Arrays.asList(Arrays.asList(100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
+						  Arrays.asList(1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 11000)));
+		/* @formatter:on */
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(map);
+		System.out.println(result);
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	/**
@@ -731,8 +815,7 @@ public class ReflectionJavaToJsonConverterTest
 			IllegalAccessException
 	{
 		final String nameValue = "testJsonObjectContainingIterable";
-		Iterable<String> iterable = new Iterable<String>()
-		{
+		Iterable<String> iterable = new Iterable<String>() {
 			@Override
 			public Iterator<String> iterator()
 			{
@@ -996,14 +1079,7 @@ public class ReflectionJavaToJsonConverterTest
 		assertThat(result, is(equalTo(expected)));
 
 		expected =
-			"{\"name\":\""
-					+ "Kevin"
-					+ "\",\"number\":"
-					+ 1
-					+ ",\"passed\":"
-					+ true
-					+ ",\"role\":\""
-					+ "MEMBER"
+			"{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
 					+ "\",\"access\":[\"BLOG\",\"WIKI\",\"EMAIL\",\"TWITTER\"]}";
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
@@ -1013,4 +1089,5 @@ public class ReflectionJavaToJsonConverterTest
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
 	}
+
 }

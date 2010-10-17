@@ -218,6 +218,16 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	{
 		try
 		{
+			final KnownTypeProcessorWithReflectionJsonToJavaConverter<Type> knownTypeProcessorWithReflectionJsonToJavaConverter =
+				jsonToJavaKnownDataStructureTypeProcessorDecider.decide(targetClass);
+			if (null != knownTypeProcessorWithReflectionJsonToJavaConverter)
+			{
+				@SuppressWarnings("unchecked")
+				final T result =
+					(T) knownTypeProcessorWithReflectionJsonToJavaConverter.process(this, targetClass,
+							jsonObjectConvertible);
+				return result;
+			}
 			return createFromJsonObject0(targetClass, jsonObjectConvertible);
 		}
 		catch (IllegalArgumentException e)
@@ -238,12 +248,12 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		}
 	}
 
-	private static class ConstructorAndParamsPair<T, R> implements Pair<Constructor<T>, R>
+	private static class ConstructorAndParamsPair<T, P> implements Pair<Constructor<T>, P>
 	{
 		private final Constructor<T> constructor;
-		private final R params;
+		private final P params;
 
-		public ConstructorAndParamsPair(Constructor<T> constructor, R paramNames)
+		public ConstructorAndParamsPair(Constructor<T> constructor, P paramNames)
 		{
 			this.constructor = constructor;
 			this.params = paramNames;
@@ -256,7 +266,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		}
 
 		@Override
-		public R getRight()
+		public P getRight()
 		{
 			return params;
 		}
@@ -288,21 +298,40 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 		if (!constructorMapWithJsonConstructorAnnotation.isEmpty())
 		{
+			/*
+			 * not empty so use it first!
+			 */
 			for (final Constructor<T> constructor : constructorMapWithJsonConstructorAnnotation.keySet())
 			{
 				/* remove all the constructors with the annotation from the constructor map. */
 				constructorMap.remove(constructor);
 			}
-			/* not empty so use it first! */
-			// matching with all the json field
+
+			/*
+			 * First, find the constructor with all the parameters matched with all the JSON field.
+			 */
 			final Pair<Constructor<T>, String[]> constructorEntry =
 				findMatchingConstructor(constructorMapWithJsonConstructorAnnotation,
 						jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
-
-			// if constructorEntry is null try with any available constructors.
-			final Constructor<T> constructor = constructorEntry.getLeft();
-			if (null != constructor)
+			if (null == constructorEntry || null == constructorEntry.getLeft())
 			{
+				/*
+				 * if there is no matching one, try to find the one annotated with @JsonConstructor having the fewest
+				 * number of non-matching parameters and the greatest number of matching parameters.
+				 */
+				final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
+					findConstructorWithMaxMatchingMinNonMatchingParams(constructorMapWithJsonConstructorAnnotation,
+							jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
+				if (null != constructorToParamsPair)
+				{
+					return constructorToParamsPair.getLeft()
+							.newInstance(constructorToParamsPair.getRight()
+									.toArray());
+				}
+			}
+			else
+			{
+				final Constructor<T> constructor = constructorEntry.getLeft();
 				final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
 					jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
 				final List<Object> argList = new ArrayList<Object>();
@@ -350,7 +379,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 		// find constructor with minimum matching params.
 		final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
-			findMatchingConstructorWithMinimumParams(constructorMap,
+			findConstructorWithMaxMatchingMinNonMatchingParams(constructorMap,
 					jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
 
 		if (null != constructorToParamsPair)
@@ -631,7 +660,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		return null;
 	}
 
-	public <T> Pair<Constructor<T>, List<Object>> findMatchingConstructorWithMinimumParams(
+	public <T> Pair<Constructor<T>, List<Object>> findConstructorWithMaxMatchingMinNonMatchingParams(
 			final Map<Constructor<T>, String[]> constructorMap,
 			final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair,
 			final JsonObjectConvertible jsonObjectConvertible) throws JsonStathamException, IllegalArgumentException,
