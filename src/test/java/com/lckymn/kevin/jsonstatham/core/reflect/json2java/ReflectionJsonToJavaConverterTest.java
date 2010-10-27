@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,6 +81,7 @@ import com.lckymn.kevin.jsonstatham.json.json2java.AddressWithJsonConstructor;
 import com.lckymn.kevin.jsonstatham.json.json2java.AddressWithPrivateConstructorAndJsonConstructor;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectWithJsonConstructorWithSomeNotMatchingParams;
+import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonPojoHavingMap;
 
 /**
@@ -655,6 +657,25 @@ public class ReflectionJsonToJavaConverterTest
 		System.out.println(result);
 		assertThat(result, is(equalTo(map)));
 	}
+
+//	@Test
+//	public void testJsonObjectWithSetImplementation() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+//			InstantiationException, IllegalAccessException, InvocationTargetException
+//	{
+//		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithSetImplementation()");
+//		final String json = getAddressArrayString();
+//		System.out.println("json:\n" + json);
+//		System.out.println("java: ");
+//
+//		final JsonObjectWithSetImplementation jsonObjectWithSetImplementation =
+//			new JsonObjectWithSetImplementation(new LinkedHashSet<Address>(addressList));
+//
+//		final JsonObjectWithSetImplementation result =
+//			reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithSetImplementation.class, json);
+//		System.out.println(result);
+//		assertThat(result, is(equalTo(jsonObjectWithSetImplementation)));
+//
+//	}
 
 	@Test
 	public void testAddress() throws JsonStathamException, IllegalArgumentException, InstantiationException,
