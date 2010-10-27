@@ -18,7 +18,7 @@ import com.lckymn.kevin.jsonstatham.json.Address;
 @JsonObject
 public class JsonObjectWithSetImplementation
 {
-	@JsonField
+	@JsonField(name = "address")
 	private final LinkedHashSet<Address> addressLinkedHashSet;
 
 	@JsonConstructor
@@ -58,7 +58,7 @@ public class JsonObjectWithSetImplementation
 	public String toString()
 	{
 		return Objects.toStringBuilder(this)
-				.add("addressLinkedHashSet", addressLinkedHashSet)
+				.add("addresses", addressLinkedHashSet)
 				.toString();
 	}
 }

@@ -489,8 +489,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
 	}
 
-	public <V> Map<String, Object> createHashMapWithKeysAndValues(final Type type, final Object value)
-			throws IllegalAccessException
+	public <V, M extends Map<String, Object>> Map<String, Object> createHashMapWithKeysAndValues(
+			final Class<M> mapType, final Type valueType, final Object value) throws IllegalAccessException
 	{
 		JSONObject jsonObject = null;
 		if (JsonObjectConvertible.class.isAssignableFrom(value.getClass()))
@@ -503,14 +503,14 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		}
 		if (null != jsonObject)
 		{
-			if (type instanceof ParameterizedType)
+			if (valueType instanceof ParameterizedType)
 			{
-				final Map<String, Object> map = new HashMap<String, Object>();
+				final Map<String, Object> map = newMap(mapType);
 				for (String name : JSONObject.getNames(jsonObject))
 				{
 					try
 					{
-						map.put(name, resolveTypeAndValue(type, null, jsonObject.get(name)));
+						map.put(name, resolveTypeAndValue(valueType, null, jsonObject.get(name)));
 					}
 					catch (JSONException e)
 					{
@@ -522,14 +522,14 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 			}
 
-			if (type instanceof Class)
+			if (valueType instanceof Class)
 			{
-				final Map<String, Object> map = new HashMap<String, Object>();
+				final Map<String, Object> map = newMap(mapType);
 				for (String name : JSONObject.getNames(jsonObject))
 				{
 					try
 					{
-						final Class<?> typeClass = (Class<?>) type;
+						final Class<?> typeClass = (Class<?>) valueType;
 						map.put(name, resolveElement(typeClass, jsonObject.get(name)));
 					}
 					catch (JSONException e)
@@ -541,26 +541,49 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				return map;
 			}
 		}
-		throw new JsonStathamException(format("Unknown type: [class: %s][value: %s]", type, value));
+		throw new JsonStathamException(format("Unknown type: [class: %s][value: %s]", valueType, value));
 	}
 
-	public <E, C extends Collection<E>> Collection<?> createCollectionWithValues(Type type, Class<C> collectionClass,
-			Object value) throws IllegalAccessException
+	private <E, M extends Map<String, E>> Map<String, E> newMap(Class<M> mapClass)
 	{
-		JSONArray jsonArray = null;
-		if (JsonArrayConvertible.class.isAssignableFrom(value.getClass()))
+		try
 		{
-			jsonArray = (JSONArray) ((JsonArrayConvertible) value).getActualObject();
+			if (Map.class.isAssignableFrom(mapClass))
+			{
+				return mapClass.isInterface() ? new HashMap<String, E>() : mapClass.newInstance();
+			}
+
 		}
-		if (JSONArray.class.isAssignableFrom(value.getClass()))
+		catch (Exception e)
 		{
-			jsonArray = (JSONArray) value;
+			throw new JsonStathamException(format("The given collectionClass [class: %s] cannot be instantiated.",
+					mapClass), e);
 		}
+		return new HashMap<String, E>();
+	}
+
+	public <E, C extends Collection<E>> Collection<?> createCollectionWithValues(Class<C> collectionClass,
+			Type valueType, Object value) throws IllegalAccessException
+	{
+		/* @formatter:off */
+		final JSONArray jsonArray =
+			/* JsonArrayConvertible. */
+			JsonArrayConvertible.class.isAssignableFrom(value.getClass()) ?
+			(JSONArray) ((JsonArrayConvertible) value).getActualObject() :
+
+			/* JSONArray. */
+			JSONArray.class.isAssignableFrom(value.getClass()) ? 
+			(JSONArray) value :
+
+			/* Neither JsonArrayConvertible nor JSONArray  */
+			null;
+		/* @formatter:on */
+
 		if (null != jsonArray)
 		{
-			if (type instanceof ParameterizedType)
+			if (valueType instanceof ParameterizedType)
 			{
-				final ParameterizedType parameterizedType = (ParameterizedType) type;
+				final ParameterizedType parameterizedType = (ParameterizedType) valueType;
 				final Collection<E> collection = newCollection(collectionClass);
 				for (int i = 0, size = jsonArray.length(); i < size; i++)
 				{
@@ -569,7 +592,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 						final Type rawType = parameterizedType.getRawType();
 						@SuppressWarnings("unchecked")
 						final Class<E> rawClass = (Class<E>) rawType;
-						collection.add(rawClass.cast(resolveTypeAndValue(type, null, jsonArray.get(i))));
+						collection.add(rawClass.cast(resolveTypeAndValue(valueType, null, jsonArray.get(i))));
 					}
 					catch (JSONException e)
 					{
@@ -578,7 +601,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				}
 				return collection;
 			}
-			if (type instanceof Class)
+			if (valueType instanceof Class)
 			{
 				final Collection<E> collection = newCollection(collectionClass);
 
@@ -587,7 +610,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 					try
 					{
 						@SuppressWarnings("unchecked")
-						final Class<E> elementType = (Class<E>) type;
+						final Class<E> elementType = (Class<E>) valueType;
 						collection.add(elementType.cast(resolveElement(elementType, jsonArray.get(i))));
 					}
 					catch (JSONException e)
@@ -604,20 +627,24 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	private <E, C extends Collection<E>> Collection<E> newCollection(Class<C> collectionClass)
 	{
-		Collection<E> collection = null;
-		if (List.class.isAssignableFrom(collectionClass))
+		try
 		{
-			collection = new ArrayList<E>();
+			if (List.class.isAssignableFrom(collectionClass))
+			{
+				return collectionClass.isInterface() ? new ArrayList<E>() : collectionClass.newInstance();
+			}
+
+			if (Set.class.isAssignableFrom(collectionClass))
+			{
+				return collectionClass.isInterface() ? new HashSet<E>() : collectionClass.newInstance();
+			}
 		}
-		else if (Set.class.isAssignableFrom(collectionClass))
+		catch (Exception e)
 		{
-			collection = new HashSet<E>();
+			throw new JsonStathamException(format("The given collectionClass [class: %s] cannot be instantiated.",
+					collectionClass), e);
 		}
-		else
-		{
-			collection = new ArrayList<E>();
-		}
-		return collection;
+		return new ArrayList<E>();
 	}
 
 	public <T> ConstructorAndParamsPair<T, String[]> findMatchingConstructor(
@@ -812,7 +839,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	}
 
 	public <T, E> T createFromJsonArray(final Class<T> targetClass, final JsonArrayConvertible jsonArrayConvertible)
-			throws IllegalArgumentException, JsonStathamException, IllegalAccessException
+			throws IllegalArgumentException, JsonStathamException, IllegalAccessException, InstantiationException
 	{
 		final int length = jsonArrayConvertible.length();
 		if (targetClass.isArray())
@@ -829,6 +856,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		}
 		else if (Collection.class.isAssignableFrom(targetClass))
 		{
+			// @SuppressWarnings("unchecked")
+			// final List<Object> list = (List<Object>) (targetClass.isInterface() ? new ArrayList<Object>() :
+			// targetClass.newInstance());
 			final List<Object> list = new ArrayList<Object>();
 			for (int i = 0; i < length; i++)
 			{
@@ -879,8 +909,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			{
 				@SuppressWarnings("unchecked")
 				final T t =
-					(T) createCollectionWithValues(parameterizedType.getActualTypeArguments()[0],
-							(Class<Collection<T>>) typeClass,
+					(T) createCollectionWithValues((Class<Collection<T>>) typeClass,
+							parameterizedType.getActualTypeArguments()[0],
 							jsonArrayConvertibleCreator.newJsonArrayConvertible(jsonString));
 				return t;
 			}
@@ -888,7 +918,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			{
 				@SuppressWarnings("unchecked")
 				final T t =
-					(T) createHashMapWithKeysAndValues(parameterizedType.getActualTypeArguments()[1],
+					(T) createHashMapWithKeysAndValues((Class<Map<String, Object>>) typeClass,
+							parameterizedType.getActualTypeArguments()[1],
 							jsonObjectConvertibleCreator.newJsonObjectConvertible(jsonString));
 				return t;
 			}

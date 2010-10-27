@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -81,6 +82,8 @@ import com.lckymn.kevin.jsonstatham.json.json2java.AddressWithJsonConstructor;
 import com.lckymn.kevin.jsonstatham.json.json2java.AddressWithPrivateConstructorAndJsonConstructor;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectWithJsonConstructorWithSomeNotMatchingParams;
+import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectWithListImplementation;
+import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import com.lckymn.kevin.jsonstatham.json.json2java.JsonPojoHavingMap;
 
@@ -539,6 +542,21 @@ public class ReflectionJsonToJavaConverterTest
 		assertThat(result, is(equalTo(addressList)));
 	}
 
+	@Test
+	public void testSet() throws JsonStathamException, IllegalArgumentException, InstantiationException,
+			IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testSet()");
+		final String json = getAddressArrayString();
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+
+		final Set<Address> result =
+			reflectionJsonToJavaConverter.convertFromJson(new TypeHolder<LinkedHashSet<Address>>() {}, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo((Set<Address>) new LinkedHashSet<Address>(addressList))));
+	}
+
 	private String getAddressMapString()
 	{
 		final StringBuilder stringBuilder = new StringBuilder("{");
@@ -658,24 +676,62 @@ public class ReflectionJsonToJavaConverterTest
 		assertThat(result, is(equalTo(map)));
 	}
 
-//	@Test
-//	public void testJsonObjectWithSetImplementation() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-//			InstantiationException, IllegalAccessException, InvocationTargetException
-//	{
-//		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithSetImplementation()");
-//		final String json = getAddressArrayString();
-//		System.out.println("json:\n" + json);
-//		System.out.println("java: ");
-//
-//		final JsonObjectWithSetImplementation jsonObjectWithSetImplementation =
-//			new JsonObjectWithSetImplementation(new LinkedHashSet<Address>(addressList));
-//
-//		final JsonObjectWithSetImplementation result =
-//			reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithSetImplementation.class, json);
-//		System.out.println(result);
-//		assertThat(result, is(equalTo(jsonObjectWithSetImplementation)));
-//
-//	}
+	@Test
+	public void testJsonObjectWithListImplementation() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithListImplementation()");
+		final String json = "{\"address\":" + getAddressArrayString() + "}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+
+		final JsonObjectWithListImplementation jsonObjectWithListImplementation =
+			new JsonObjectWithListImplementation(new LinkedList<Address>(addressList));
+
+		final JsonObjectWithListImplementation result =
+			reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithListImplementation.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(jsonObjectWithListImplementation)));
+
+	}
+
+	@Test
+	public void testJsonObjectWithSetImplementation() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithSetImplementation()");
+		final String json = "{\"address\":" + getAddressArrayString() + "}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+
+		final JsonObjectWithSetImplementation jsonObjectWithSetImplementation =
+			new JsonObjectWithSetImplementation(new LinkedHashSet<Address>(addressList));
+
+		final JsonObjectWithSetImplementation result =
+			reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithSetImplementation.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(jsonObjectWithSetImplementation)));
+
+	}
+
+	@Test
+	public void testJsonObjectWithMapImplementation() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectWithMapImplementation()");
+		final String json = "{\"address\":" + getAddressMapString() + "}";
+		System.out.println("json:\n" + json);
+		System.out.println("java: ");
+
+		final JsonObjectWithMapImplementation jsonObjectWithMapImplementation =
+			new JsonObjectWithMapImplementation(new LinkedHashMap<String, Address>(addressMap));
+
+		final JsonObjectWithMapImplementation result =
+			reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithMapImplementation.class, json);
+		System.out.println(result);
+		assertThat(result, is(equalTo(jsonObjectWithMapImplementation)));
+
+	}
 
 	@Test
 	public void testAddress() throws JsonStathamException, IllegalArgumentException, InstantiationException,

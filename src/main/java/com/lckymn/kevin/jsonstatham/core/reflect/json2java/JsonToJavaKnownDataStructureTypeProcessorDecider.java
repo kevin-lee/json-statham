@@ -39,8 +39,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 		final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<? extends Type>> map =
 			new LinkedHashMap<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<? extends Type>>();
 
-		map.put(Array.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>()
-		{
+		map.put(Array.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
 			@Override
 			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
 					Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
@@ -104,8 +103,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			}
 		});
 
-		map.put(Collection.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
-		{
+		map.put(Collection.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
 
 			@Override
 			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
@@ -119,8 +117,8 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 					{
 						@SuppressWarnings({ "unchecked", "rawtypes" })
 						final Collection<?> collection =
-							reflectionJsonToJavaConverter.createCollectionWithValues(
-									valueType.getActualTypeArguments()[0], (Class<Collection>) fieldType, value);
+							reflectionJsonToJavaConverter.createCollectionWithValues((Class<Collection>) fieldType,
+									valueType.getActualTypeArguments()[0], value);
 						return collection;
 					}
 				}
@@ -132,20 +130,32 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			}
 		});
 
-		map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>()
-		{
+		map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>() {
 			@Override
 			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Type valueType,
 					Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
 			{
-				return valueType instanceof ParameterizedType ? reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(
-						((ParameterizedType) valueType).getActualTypeArguments()[1], value)
-						: reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(valueType, value);
+				if (valueType instanceof ParameterizedType)
+				{
+					final ParameterizedType parameterizedType = (ParameterizedType) valueType;
+					@SuppressWarnings("unchecked")
+					final Class<Map<String, Object>> mapType =
+						(Class<Map<String, Object>>) parameterizedType.getRawType();
+					return reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(mapType,
+							((ParameterizedType) valueType).getActualTypeArguments()[1], value);
+				}
+				@SuppressWarnings("unchecked")
+				final Class<Map<String, Object>> mapType = (Class<Map<String, Object>>) valueType;
+				return reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(mapType, value.getClass(), value);
+				// return valueType instanceof ParameterizedType ?
+				// reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(
+				// ((ParameterizedType) valueType).getActualTypeArguments()[1], value)
+				// : reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(valueType, value);
+				// throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", fieldType, value));
 			}
 		});
 
-		map.put(Iterable.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
-		{
+		map.put(Iterable.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
 			@Override
 			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
@@ -153,14 +163,13 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			{
 				@SuppressWarnings("unchecked")
 				Collection<?> collection =
-					reflectionJsonToJavaConverter.createCollectionWithValues(valueType.getActualTypeArguments()[0],
-							List.class, value);
+					reflectionJsonToJavaConverter.createCollectionWithValues(List.class,
+							valueType.getActualTypeArguments()[0], value);
 				return collection;
 			}
 		});
 
-		map.put(Iterator.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
-		{
+		map.put(Iterator.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
 			@Override
 			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
@@ -168,22 +177,23 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 			{
 				@SuppressWarnings("unchecked")
 				final Collection<?> collection =
-					reflectionJsonToJavaConverter.createCollectionWithValues(valueType.getActualTypeArguments()[0],
-							List.class, value);
+					reflectionJsonToJavaConverter.createCollectionWithValues(List.class,
+							valueType.getActualTypeArguments()[0], value);
 				return collection.iterator();
 			}
 		});
 
-		map.put(Entry.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>()
-		{
+		map.put(Entry.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
 			@Override
 			public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
 					ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
+				@SuppressWarnings("unchecked")
+				final Class<Map<String, Object>> mapType = (Class<Map<String, Object>>) valueType.getRawType();
 				final Map<String, Object> map =
-					reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(valueType.getActualTypeArguments()[1],
-							value);
+					reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(mapType,
+							valueType.getActualTypeArguments()[1], value);
 				for (Entry<String, Object> entry : map.entrySet())
 				{
 					return entry;

@@ -11,5 +11,6 @@ public interface JsonConvertible
 {
 	Object getActualObject();
 
+	@Override
 	String toString();
 }
