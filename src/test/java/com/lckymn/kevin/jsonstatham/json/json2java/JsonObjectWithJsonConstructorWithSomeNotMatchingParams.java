@@ -3,9 +3,11 @@
  */
 package com.lckymn.kevin.jsonstatham.json.json2java;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.Map;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
@@ -52,31 +54,30 @@ public class JsonObjectWithJsonConstructorWithSomeNotMatchingParams
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, uri, parameterMap);
+		return hash(name, uri, parameterMap);
 	}
 
 	@Override
 	public boolean equals(Object address)
 	{
-		if (this == address)
+		if (areIdentical(this, address))
 		{
 			return true;
 		}
-		if (!(address instanceof JsonObjectWithJsonConstructorWithSomeNotMatchingParams))
-		{
-			return false;
-		}
 		final JsonObjectWithJsonConstructorWithSomeNotMatchingParams that =
-			(JsonObjectWithJsonConstructorWithSomeNotMatchingParams) address;
-		return Objects.equals(this.name, that.getName()) && Objects.equals(this.uri, that.getUri())
-				&& Objects.equals(this.parameterMap, that.getParameterMap());
+			castIfInstanceOf(JsonObjectWithJsonConstructorWithSomeNotMatchingParams.class, address);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.getName()), 
+					equal(this.uri, that.getUri()),
+					equal(this.parameterMap, that.getParameterMap()));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("name", name)
+		return toStringBuilder(this).add("name", name)
 				.add("uri", uri)
 				.add("parameterMap", parameterMap)
 				.toString();

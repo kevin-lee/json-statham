@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -63,35 +65,32 @@ public abstract class SuperClassWithValueAccessorWithoutItsName
 		this.number = number;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, number);
+		return hash(hash(name), number);
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public boolean equals(Object superClassWithValueAccessorWithoutItsName)
 	{
-		if (this == superClassWithValueAccessorWithoutItsName)
+		if (areIdentical(this, superClassWithValueAccessorWithoutItsName))
 		{
 			return true;
 		}
-		if (!(superClassWithValueAccessorWithoutItsName instanceof SuperClassWithValueAccessorWithoutItsName))
-		{
-			return false;
-		}
 		final SuperClassWithValueAccessorWithoutItsName that =
-			(SuperClassWithValueAccessorWithoutItsName) superClassWithValueAccessorWithoutItsName;
-		return Objects.equals(this.name, that.name) && Objects.equals(this.number, that.number);
+			castIfInstanceOf(SuperClassWithValueAccessorWithoutItsName.class, superClassWithValueAccessorWithoutItsName);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					equal(this.number, that.number));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("name", name)
+		return toStringBuilder(this).add("name", name)
 				.add("number", number)
 				.toString();
 	}

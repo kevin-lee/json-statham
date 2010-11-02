@@ -3,9 +3,10 @@
  */
 package com.lckymn.kevin.jsonstatham.json.json2java;
 
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.LinkedHashSet;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
@@ -35,30 +36,25 @@ public class JsonObjectWithSetImplementation
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(addressLinkedHashSet);
+		return hash(addressLinkedHashSet);
 	}
 
 	@Override
-	public boolean equals(Object JsonObjectWithSetImplementation)
+	public boolean equals(Object jsonObjectWithSetImplementation)
 	{
-		if (this == JsonObjectWithSetImplementation)
+		if (areIdentical(this, jsonObjectWithSetImplementation))
 		{
 			return true;
 		}
-		if (!(JsonObjectWithSetImplementation instanceof JsonObjectWithSetImplementation))
-		{
-			return false;
-		}
-		final JsonObjectWithSetImplementation that = (JsonObjectWithSetImplementation) JsonObjectWithSetImplementation;
-		return this.addressLinkedHashSet == that.getAddressLinkedHashSet()
-				|| (null != this.addressLinkedHashSet && this.addressLinkedHashSet.equals(that.getAddressLinkedHashSet()));
+		final JsonObjectWithSetImplementation that =
+			castIfInstanceOf(JsonObjectWithSetImplementation.class, jsonObjectWithSetImplementation);
+		return isNotNull(that) && equal(this.addressLinkedHashSet, that.getAddressLinkedHashSet());
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("addresses", addressLinkedHashSet)
+		return toStringBuilder(this).add("addresses", addressLinkedHashSet)
 				.toString();
 	}
 }

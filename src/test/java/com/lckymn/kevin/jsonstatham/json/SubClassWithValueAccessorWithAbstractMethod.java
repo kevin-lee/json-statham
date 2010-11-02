@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -57,22 +59,23 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode() + Objects.hash(email);
+		return hash(super.hashCode(), email);
 	}
 
 	@Override
 	public boolean equals(Object subClassWithValueAccessorWithAbstractMethod)
 	{
-		if (this == subClassWithValueAccessorWithAbstractMethod)
+		if (areIdentical(this, subClassWithValueAccessorWithAbstractMethod))
 		{
 			return true;
 		}
-		if (!(subClassWithValueAccessorWithAbstractMethod instanceof SubClassWithValueAccessorWithAbstractMethod))
-		{
-			return false;
-		}
 		final SubClassWithValueAccessorWithAbstractMethod that =
-			(SubClassWithValueAccessorWithAbstractMethod) subClassWithValueAccessorWithAbstractMethod;
-		return super.equals(subClassWithValueAccessorWithAbstractMethod) && Objects.equals(this.email, that.email);
+			castIfInstanceOf(SubClassWithValueAccessorWithAbstractMethod.class,
+					subClassWithValueAccessorWithAbstractMethod);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(super.equals(subClassWithValueAccessorWithAbstractMethod), 
+					equal(this.email, that.email));
+		/* @formatter:on */
 	}
 }

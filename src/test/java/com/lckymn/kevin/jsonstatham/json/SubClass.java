@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -40,25 +42,33 @@ public class SubClass extends SuperClass
 		this.email = email;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(getName(), getNumber(), email);
+		return hash(hash(hash(getName()), getNumber()), email);
 	}
 
 	@Override
 	public boolean equals(Object subClass)
 	{
-		if (this == subClass)
+		if (areIdentical(this, subClass))
 		{
 			return true;
 		}
-		if (!(subClass instanceof SubClass))
-		{
-			return false;
-		}
-		final SubClass that = (SubClass) subClass;
-		return super.equals(subClass) && Objects.equals(this.email, that.getEmail());
+		final SubClass that = castIfInstanceOf(SubClass.class, subClass);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(super.equals(subClass), 
+					equal(this.email, that.getEmail()));
+		/* @formatter:on */
+	}
+
+	@Override
+	public String toString()
+	{
+		return toStringBuilder(this).value(super.toString())
+				.newLine()
+				.add("email", email)
+				.toString();
 	}
 }

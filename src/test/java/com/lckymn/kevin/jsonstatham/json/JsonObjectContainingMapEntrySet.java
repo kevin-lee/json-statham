@@ -3,10 +3,12 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import java.util.Set;
-import java.util.Map.Entry;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
 
-import com.lckymn.kevin.common.util.Objects;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -32,29 +34,29 @@ public class JsonObjectContainingMapEntrySet
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, mapEntrySet);
+		return hash(name, mapEntrySet);
 	}
 
 	@Override
 	public boolean equals(Object jsonObjectContainingMapEntrySet)
 	{
-		if (this == jsonObjectContainingMapEntrySet)
+		if (areIdentical(this, jsonObjectContainingMapEntrySet))
 		{
 			return true;
 		}
-		if (!(jsonObjectContainingMapEntrySet instanceof JsonObjectContainingMapEntrySet))
-		{
-			return false;
-		}
-		final JsonObjectContainingMapEntrySet that = (JsonObjectContainingMapEntrySet) jsonObjectContainingMapEntrySet;
-		return Objects.equals(this.name, that.name) && Objects.equals(this.mapEntrySet, that.mapEntrySet);
+		final JsonObjectContainingMapEntrySet that =
+			castIfInstanceOf(JsonObjectContainingMapEntrySet.class, jsonObjectContainingMapEntrySet);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					equal(this.mapEntrySet, that.mapEntrySet));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("name", name)
+		return toStringBuilder(this).add("name", name)
 				.add("valueMapEntrySet", mapEntrySet)
 				.toString();
 	}

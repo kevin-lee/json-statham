@@ -1,6 +1,8 @@
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -30,31 +32,30 @@ public class JsonObjectWithoutFieldName
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(id, name, address);
+		return hashObjects(hash(id), name, address);
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public boolean equals(Object jsonObjectWithoutFieldName)
 	{
-		if (this == jsonObjectWithoutFieldName)
+		if (areIdentical(this, jsonObjectWithoutFieldName))
 		{
 			return true;
 		}
-		if (!(jsonObjectWithoutFieldName instanceof JsonObjectWithoutFieldName))
-		{
-			return false;
-		}
-		final JsonObjectWithoutFieldName that = (JsonObjectWithoutFieldName) jsonObjectWithoutFieldName;
-		return Objects.equals(this.id, that.id) && Objects.equals(this.name, that.name)
-				&& Objects.equals(this.address, that.address);
+		final JsonObjectWithoutFieldName that =
+			castIfInstanceOf(JsonObjectWithoutFieldName.class, jsonObjectWithoutFieldName);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.id, that.id), 
+					equal(this.name, that.name), 
+					equal(this.address, that.address));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("id", id)
+		return toStringBuilder(this).add("id", id)
 				.add("name", name)
 				.add("address", address)
 				.toString();

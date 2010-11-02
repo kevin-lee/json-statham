@@ -4,6 +4,7 @@
 package com.lckymn.kevin.jsonstatham.core.reflect.json2java;
 
 import static com.lckymn.kevin.common.util.MessageFormatter.*;
+import static com.lckymn.kevin.common.util.Objects.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -39,7 +40,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.lckymn.kevin.common.reflect.TypeHolder;
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
@@ -313,7 +313,7 @@ public class ReflectionJsonToJavaConverterTest
 			@Override
 			public int hashCode()
 			{
-				return Objects.hash(object);
+				return hash(object);
 			}
 
 			@Override
@@ -328,7 +328,7 @@ public class ReflectionJsonToJavaConverterTest
 					return false;
 				}
 				final TestPojo that = (TestPojo) testPojo;
-				return Objects.equals(this.object, that.object);
+				return equal(this.object, that.object);
 			}
 		}
 		final String json = "{\"object\":null}";
@@ -354,7 +354,7 @@ public class ReflectionJsonToJavaConverterTest
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(object);
+			return hash(object);
 		}
 
 		@Override
@@ -369,7 +369,7 @@ public class ReflectionJsonToJavaConverterTest
 				return false;
 			}
 			final TestPojo that = (TestPojo) testPojo;
-			return Objects.equals(this.object, that.object);
+			return equal(this.object, that.object);
 		}
 	}
 
@@ -496,7 +496,7 @@ public class ReflectionJsonToJavaConverterTest
 		{
 			System.out.println(word);
 		}
-		assertTrue(Objects.deepEquals(array, result));
+		assertTrue(deepEqual(array, result));
 	}
 
 	@Test

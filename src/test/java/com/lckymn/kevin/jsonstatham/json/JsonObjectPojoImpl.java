@@ -3,14 +3,12 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -68,30 +66,29 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(id, name, addressSet);
+		return hash(id, name, addressSet);
 	}
 
 	@Override
 	public boolean equals(Object jsonObjectPojoImpl)
 	{
-		if (this == jsonObjectPojoImpl)
+		if (areIdentical(this, jsonObjectPojoImpl))
 		{
 			return true;
 		}
-		if (!(jsonObjectPojoImpl instanceof JsonObjectPojoImpl))
-		{
-			return false;
-		}
-		final JsonObjectPojoImpl that = (JsonObjectPojoImpl) jsonObjectPojoImpl;
-		return Objects.equals(this.id, that.getId()) && Objects.equals(this.name, that.getName())
-				&& Objects.equals(this.addressSet, that.getAddressSet());
+		final JsonObjectPojoImpl that = castIfInstanceOf(JsonObjectPojoImpl.class, jsonObjectPojoImpl);
+		/* @formatter:off */
+		return isNotNull(that)	&& 
+				and(equal(this.id, that.getId()), 
+					equal(this.name, that.getName()),
+					equal(this.addressSet, that.getAddressSet()));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("id", id)
+		return toStringBuilder(this).add("id", id)
 				.add("name", name)
 				.add("addresses", addressSet)
 				.toString();

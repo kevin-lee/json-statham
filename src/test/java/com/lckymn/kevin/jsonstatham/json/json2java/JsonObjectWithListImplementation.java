@@ -3,9 +3,10 @@
  */
 package com.lckymn.kevin.jsonstatham.json.json2java;
 
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.LinkedList;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
@@ -35,31 +36,25 @@ public class JsonObjectWithListImplementation
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(addressLinkedList);
+		return hash(addressLinkedList);
 	}
 
 	@Override
 	public boolean equals(Object JsonObjectWithSetImplementation)
 	{
-		if (this == JsonObjectWithSetImplementation)
+		if (areIdentical(this, JsonObjectWithSetImplementation))
 		{
 			return true;
 		}
-		if (!(JsonObjectWithSetImplementation instanceof JsonObjectWithListImplementation))
-		{
-			return false;
-		}
 		final JsonObjectWithListImplementation that =
-			(JsonObjectWithListImplementation) JsonObjectWithSetImplementation;
-		return this.addressLinkedList == that.getAddressLinkedList()
-				|| (null != this.addressLinkedList && this.addressLinkedList.equals(that.getAddressLinkedList()));
+			castIfInstanceOf(JsonObjectWithListImplementation.class, JsonObjectWithSetImplementation);
+		return isNotNull(that) && equal(this.addressLinkedList, that.getAddressLinkedList());
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("addresses", addressLinkedList)
+		return toStringBuilder(this).add("addresses", addressLinkedList)
 				.toString();
 	}
 }

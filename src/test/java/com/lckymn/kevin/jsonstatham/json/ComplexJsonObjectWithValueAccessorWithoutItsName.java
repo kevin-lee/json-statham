@@ -3,11 +3,13 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -144,7 +146,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 	{
 		return dateWithValueAccessor;
 	}
-	
+
 	/**
 	 * @return the dateWithValueAccessor
 	 */
@@ -186,7 +188,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 	{
 		return calendarWithValueAccessor;
 	}
-	
+
 	/**
 	 * @return the calendarWithValueAccessor
 	 */
@@ -204,42 +206,46 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
 		this.calendarWithValueAccessor = calendarWithValueAccessor;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(primaryKey, name, registered, enabled, address, date, dateWithValueAccessor, calendar,
-				calendarWithValueAccessor);
+		/* @formatter:off */
+		return hashObjects(
+					hashBooleans(
+						hash(primaryKey, name), 
+					registered, enabled), 
+				address, date, dateWithValueAccessor, calendar, calendarWithValueAccessor);
+		/* @formatter:on */
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public boolean equals(Object complexJsonObjectWithValueAccessorWithoutItsName)
 	{
-		if (this == complexJsonObjectWithValueAccessorWithoutItsName)
+		if (areIdentical(this, complexJsonObjectWithValueAccessorWithoutItsName))
 		{
 			return true;
 		}
-		if (!(complexJsonObjectWithValueAccessorWithoutItsName instanceof ComplexJsonObjectWithValueAccessorWithoutItsName))
-		{
-			return false;
-		}
 		final ComplexJsonObjectWithValueAccessorWithoutItsName that =
-			(ComplexJsonObjectWithValueAccessorWithoutItsName) complexJsonObjectWithValueAccessorWithoutItsName;
-		return Objects.equals(this.primaryKey, that.getPrimaryKey()) && Objects.equals(this.name, that.getName())
-				&& Objects.equals(this.registered, that.isRegistered())
-				&& Objects.equals(this.enabled, that.getEnabled()) && Objects.equals(this.address, that.getAddress())
-				&& Objects.equals(this.date, that.date)
-				&& Objects.equals(this.dateWithValueAccessor, that.dateWithValueAccessor)
-				&& Objects.equals(this.calendar, that.calendar)
-				&& Objects.equals(this.calendarWithValueAccessor, that.calendarWithValueAccessor);
+			castIfInstanceOf(ComplexJsonObjectWithValueAccessorWithoutItsName.class,
+					complexJsonObjectWithValueAccessorWithoutItsName);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.primaryKey, that.getPrimaryKey()),
+					equal(this.name, that.getName()), 
+					equal(this.registered, that.isRegistered()), 
+					equal(this.enabled, that.getEnabled()), 
+					equal(this.address, that.getAddress()), 
+					equal(this.date, that.date), 
+					equal(this.dateWithValueAccessor, that.dateWithValueAccessor), 
+					equal(this.calendar, that.calendar), 
+					equal(this.calendarWithValueAccessor, that.calendarWithValueAccessor));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("id", primaryKey)
+		return toStringBuilder(this).add("id", primaryKey)
 				.add("name", name)
 				.add("registered", registered)
 				.add("enabled", enabled)

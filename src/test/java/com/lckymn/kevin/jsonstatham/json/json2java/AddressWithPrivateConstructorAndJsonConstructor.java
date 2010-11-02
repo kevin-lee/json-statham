@@ -3,6 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json.json2java;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
@@ -135,26 +138,26 @@ public class AddressWithPrivateConstructorAndJsonConstructor
 	@Override
 	public boolean equals(Object address)
 	{
-		if (this == address)
+		if (areIdentical(this, address))
 		{
 			return true;
 		}
-		if (!(address instanceof AddressWithPrivateConstructorAndJsonConstructor))
-		{
-			return false;
-		}
 		final AddressWithPrivateConstructorAndJsonConstructor that =
-			(AddressWithPrivateConstructorAndJsonConstructor) address;
-		return Objects.equals(this.street, that.getStreet()) && Objects.equals(this.suburb, that.getSuburb())
-				&& Objects.equals(this.city, that.getCity()) && Objects.equals(this.state, that.getState())
-				&& Objects.equals(this.postcode, that.getPostcode());
+			castIfInstanceOf(AddressWithPrivateConstructorAndJsonConstructor.class, address);
+		/* @formatter:off */
+		return isNotNull(that) &&
+				and(equal(this.street, that.getStreet()), 
+					equal(this.suburb, that.getSuburb()),
+					equal(this.city, that.getCity()), 
+					equal(this.state, that.getState()),
+					equal(this.postcode, that.getPostcode()));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("street", street)
+		return toStringBuilder(this).add("street", street)
 				.add("suburb", suburb)
 				.add("city", city)
 				.add("state", state)

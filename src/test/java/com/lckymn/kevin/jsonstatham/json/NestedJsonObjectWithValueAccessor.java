@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -67,23 +69,23 @@ public class NestedJsonObjectWithValueAccessor
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(primaryKey, name, parent);
+		return hash(primaryKey, name, parent);
 	}
 
 	@Override
 	public boolean equals(Object nestedJsonObjectWithValueAccessor)
 	{
-		if (this == nestedJsonObjectWithValueAccessor)
+		if (areIdentical(this, nestedJsonObjectWithValueAccessor))
 		{
 			return true;
 		}
-		if (!(nestedJsonObjectWithValueAccessor instanceof NestedJsonObjectWithValueAccessor))
-		{
-			return false;
-		}
 		final NestedJsonObjectWithValueAccessor that =
-			(NestedJsonObjectWithValueAccessor) nestedJsonObjectWithValueAccessor;
-		return Objects.equals(this.primaryKey, that.getPrimaryKey()) && Objects.equals(this.name, that.getName())
-				&& Objects.equals(this.parent, that.getParent());
+			castIfInstanceOf(NestedJsonObjectWithValueAccessor.class, nestedJsonObjectWithValueAccessor);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.primaryKey, that.getPrimaryKey()), 
+					equal(this.name, that.getName()),
+					equal(this.parent, that.getParent()));
+		/* @formatter:on */
 	}
 }

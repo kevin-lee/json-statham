@@ -3,16 +3,19 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.lckymn.kevin.common.util.Objects;
-
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
+
+import com.lckymn.kevin.common.reflect.Classes;
 
 /**
  * @author Lee, SeongHyun (Kevin)
@@ -27,9 +30,7 @@ public final class JsonObjectPojoProxyFactory
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setSuperclass(jsonObjectPojo.getClass());
 		final Set<Address> addressSet = new HashSet<Address>(addressCollection);
-		proxyFactory.setHandler(new MethodHandler()
-		{
-			@SuppressWarnings("boxing")
+		proxyFactory.setHandler(new MethodHandler() {
 			@Override
 			public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
 			{
@@ -53,27 +54,26 @@ public final class JsonObjectPojoProxyFactory
 				}
 				else if ("hashCode".equals(methodName))
 				{
-					return Objects.hash(id, name, addressSet);
+					return Integer.valueOf(hash(id, name, addressSet));
 				}
 				else if ("equals".equals(methodName))
 				{
 					final Object jsonObjectPojo = args[0];
-					if (self == jsonObjectPojo)
+					if (areIdentical(self, jsonObjectPojo))
 					{
-						return true;
+						return Boolean.TRUE;
 					}
-					if (!(jsonObjectPojo instanceof JsonObjectPojo))
-					{
-						return false;
-					}
-					final JsonObjectPojo that = (JsonObjectPojo) jsonObjectPojo;
-					return Objects.equals(id, that.getId()) && Objects.equals(name, that.getName())
-							&& Objects.equals(addressSet, that.getAddressSet());
+					final JsonObjectPojo that = castIfInstanceOf(JsonObjectPojo.class, jsonObjectPojo);
+					/* @formatter:off */
+					return Boolean.valueOf(isNotNull(that) && 
+											and(equal(id, that.getId()), 
+												equal(name, that.getName()),
+												equal(addressSet, that.getAddressSet())));
+					/* @formatter:on */
 				}
 				else if ("toString".equals(methodName))
 				{
-					return Objects.toStringBuilder(jsonObjectPojo)
-							.add("id", id)
+					return toStringBuilder(jsonObjectPojo).add("id", id)
 							.add("name", name)
 							.add("addresses", addressSet)
 							.toString();
@@ -95,9 +95,7 @@ public final class JsonObjectPojoProxyFactory
 	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setSuperclass(nestedJsonObjectWithValueAccessor.getClass());
-		proxyFactory.setHandler(new MethodHandler()
-		{
-			@SuppressWarnings("boxing")
+		proxyFactory.setHandler(new MethodHandler() {
 			@Override
 			public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
 			{
@@ -117,23 +115,23 @@ public final class JsonObjectPojoProxyFactory
 				}
 				else if ("hashCode".equals(methodName))
 				{
-					return Objects.hash(primaryKey, name, parent);
+					return Integer.valueOf(hash(hash(hash(primaryKey), name), parent));
 				}
 				else if ("equals".equals(methodName))
 				{
 					final Object nestedJsonObjectWithValueAccessor = args[0];
-					if (self == nestedJsonObjectWithValueAccessor)
+					if (areIdentical(self, nestedJsonObjectWithValueAccessor))
 					{
-						return true;
-					}
-					if (!(nestedJsonObjectWithValueAccessor instanceof NestedJsonObjectWithValueAccessor))
-					{
-						return false;
+						return Boolean.TRUE;
 					}
 					final NestedJsonObjectWithValueAccessor that =
-						(NestedJsonObjectWithValueAccessor) nestedJsonObjectWithValueAccessor;
-					return Objects.equals(primaryKey, that.getPrimaryKey()) && Objects.equals(name, that.getName())
-							&& Objects.equals(parent, that.getParent());
+						castIfInstanceOf(NestedJsonObjectWithValueAccessor.class, nestedJsonObjectWithValueAccessor);
+					/* @formatter:off */
+					return Boolean.valueOf(isNotNull(that) && 
+											and(equal(primaryKey, that.getPrimaryKey()), 
+												equal(name, that.getName()),
+												equal(parent, that.getParent())));
+					/* @formatter:on */
 				}
 				else
 				{
@@ -141,7 +139,8 @@ public final class JsonObjectPojoProxyFactory
 				}
 			}
 		});
-		return (NestedJsonObjectWithValueAccessor) proxyFactory.create(new Class[] { Long.class, String.class,
-				NestedJsonObjectWithValueAccessor.class }, new Object[] { null, null, null });
+		return (NestedJsonObjectWithValueAccessor) proxyFactory.create(
+				Classes.classArrayOf(Long.class, String.class, NestedJsonObjectWithValueAccessor.class),
+				Classes.objectArrayOf(null, null, null));
 	}
 }

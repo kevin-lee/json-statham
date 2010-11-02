@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json.json2java;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
@@ -29,7 +31,6 @@ public class AddressWithJsonConstructor
 
 	@JsonField(name = "postcode")
 	private String postcode;
-
 
 	@JsonConstructor
 	public AddressWithJsonConstructor(String street, String suburb, String city, String state, String postcode)
@@ -129,31 +130,31 @@ public class AddressWithJsonConstructor
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(street, suburb, city, state, postcode);
+		return hash(street, suburb, city, state, postcode);
 	}
 
 	@Override
 	public boolean equals(Object address)
 	{
-		if (this == address)
+		if (areIdentical(this, address))
 		{
 			return true;
 		}
-		if (!(address instanceof AddressWithJsonConstructor))
-		{
-			return false;
-		}
-		final AddressWithJsonConstructor that = (AddressWithJsonConstructor) address;
-		return Objects.equals(this.street, that.getStreet()) && Objects.equals(this.suburb, that.getSuburb())
-				&& Objects.equals(this.city, that.getCity()) && Objects.equals(this.state, that.getState())
-				&& Objects.equals(this.postcode, that.getPostcode());
+		final AddressWithJsonConstructor that = castIfInstanceOf(AddressWithJsonConstructor.class, address);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.street, that.getStreet()), 
+					equal(this.suburb, that.getSuburb()),
+					equal(this.city, that.getCity()), 
+					equal(this.state, that.getState()),
+					equal(this.postcode, that.getPostcode()));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("street", street)
+		return toStringBuilder(this).add("street", street)
 				.add("suburb", suburb)
 				.add("city", city)
 				.add("state", state)

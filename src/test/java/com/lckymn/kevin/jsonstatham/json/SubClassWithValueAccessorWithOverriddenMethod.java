@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -57,30 +59,31 @@ public class SubClassWithValueAccessorWithOverriddenMethod extends SuperClassWit
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode() + Objects.hash(email);
+		return hash(super.hashCode(), email);
 	}
 
 	@Override
 	public boolean equals(Object subClassWithValueAccessorWithOverriddenMethod)
 	{
-		if (this == subClassWithValueAccessorWithOverriddenMethod)
+		if (areIdentical(this, subClassWithValueAccessorWithOverriddenMethod))
 		{
 			return true;
 		}
-		if (!(subClassWithValueAccessorWithOverriddenMethod instanceof SubClassWithValueAccessorWithOverriddenMethod))
-		{
-			return false;
-		}
 		final SubClassWithValueAccessorWithOverriddenMethod that =
-			(SubClassWithValueAccessorWithOverriddenMethod) subClassWithValueAccessorWithOverriddenMethod;
-		return super.equals(subClassWithValueAccessorWithOverriddenMethod) && Objects.equals(this.email, that.email);
+			castIfInstanceOf(SubClassWithValueAccessorWithOverriddenMethod.class,
+					subClassWithValueAccessorWithOverriddenMethod);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(super.equals(subClassWithValueAccessorWithOverriddenMethod), 
+					equal(this.email, that.email));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.addValue(super.toString())
+		return toStringBuilder(this).value(super.toString())
+				.newLine()
 				.add("email", email)
 				.toString();
 	}

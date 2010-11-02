@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -45,30 +47,30 @@ public class SubClassWithValueAccessorWithoutItsName extends SuperClassWithValue
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode() + Objects.hash(email);
+		return hash(super.hashCode(), email);
 	}
 
 	@Override
 	public boolean equals(Object subClassWithValueAccessorWithoutItsName)
 	{
-		if (this == subClassWithValueAccessorWithoutItsName)
+		if (areIdentical(this, subClassWithValueAccessorWithoutItsName))
 		{
 			return true;
 		}
-		if (!(subClassWithValueAccessorWithoutItsName instanceof SubClassWithValueAccessorWithoutItsName))
-		{
-			return false;
-		}
 		final SubClassWithValueAccessorWithoutItsName that =
-			(SubClassWithValueAccessorWithoutItsName) subClassWithValueAccessorWithoutItsName;
-		return super.equals(subClassWithValueAccessorWithoutItsName) && Objects.equals(this.email, that.email);
+			castIfInstanceOf(getClass(), subClassWithValueAccessorWithoutItsName);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(super.equals(subClassWithValueAccessorWithoutItsName), 
+					equal(this.email, that.email));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.addValue(super.toString())
+		return toStringBuilder(this).value(super.toString())
+				.newLine()
 				.add("email", email)
 				.toString();
 	}

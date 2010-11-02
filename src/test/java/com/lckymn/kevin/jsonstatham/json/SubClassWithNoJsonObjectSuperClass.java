@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -40,26 +42,25 @@ public class SubClassWithNoJsonObjectSuperClass extends SuperClassWithoutJsonObj
 		this.email = email;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(getName(), getNumber(), email);
+		return hash(hash(hash(getName()), getNumber()), email);
 	}
 
 	@Override
 	public boolean equals(Object subClassWithNoJsonObjectSuperClass)
 	{
-		if (this == subClassWithNoJsonObjectSuperClass)
+		if (areIdentical(this, subClassWithNoJsonObjectSuperClass))
 		{
 			return true;
 		}
-		if (!(subClassWithNoJsonObjectSuperClass instanceof SubClassWithNoJsonObjectSuperClass))
-		{
-			return false;
-		}
 		final SubClassWithNoJsonObjectSuperClass that =
-			(SubClassWithNoJsonObjectSuperClass) subClassWithNoJsonObjectSuperClass;
-		return super.equals(subClassWithNoJsonObjectSuperClass) && Objects.equals(this.email, that.getEmail());
+			castIfInstanceOf(SubClassWithNoJsonObjectSuperClass.class, subClassWithNoJsonObjectSuperClass);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(super.equals(subClassWithNoJsonObjectSuperClass), 
+					equal(this.email, that.getEmail()));
+		/* @formatter:on */
 	}
 }

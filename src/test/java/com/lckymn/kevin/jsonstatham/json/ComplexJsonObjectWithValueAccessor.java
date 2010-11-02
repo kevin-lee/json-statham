@@ -3,11 +3,13 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Objects.*;
+import static com.lckymn.kevin.common.util.Conditions.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -179,35 +181,34 @@ public final class ComplexJsonObjectWithValueAccessor
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(primaryKey, name, address, date, dateWithValueAccessor, calendar, calendarWithValueAccessor);
+		return hash(primaryKey, name, address, date, dateWithValueAccessor, calendar, calendarWithValueAccessor);
 	}
 
 	@Override
 	public boolean equals(Object complexJsonObjectWithValueAccessor)
 	{
-		if (this == complexJsonObjectWithValueAccessor)
+		if (areIdentical(this, complexJsonObjectWithValueAccessor))
 		{
 			return true;
 		}
-		if (!(complexJsonObjectWithValueAccessor instanceof ComplexJsonObjectWithValueAccessor))
-		{
-			return false;
-		}
 		final ComplexJsonObjectWithValueAccessor that =
-			(ComplexJsonObjectWithValueAccessor) complexJsonObjectWithValueAccessor;
-
-		return Objects.equals(this.primaryKey, that.getPrimaryKey()) && Objects.equals(this.name, that.getName())
-				&& Objects.equals(this.address, that.getAddress()) && Objects.equals(this.date, that.getDate())
-				&& Objects.equals(this.dateWithValueAccessor, that.getDateWithValueAccessor())
-				&& Objects.equals(this.calendar, that.getCalendar())
-				&& Objects.equals(this.calendarWithValueAccessor, that.getCalendarWithValueAccessor());
+			castIfInstanceOf(ComplexJsonObjectWithValueAccessor.class, complexJsonObjectWithValueAccessor);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.primaryKey, that.getPrimaryKey()), 
+					equal(this.name, that.getName()), 
+					equal(this.address, that.getAddress()), 
+					equal(this.date, that.getDate()), 
+					equal(this.dateWithValueAccessor, that.getDateWithValueAccessor()),
+					equal(this.calendar, that.getCalendar()),
+					equal(this.calendarWithValueAccessor, that.getCalendarWithValueAccessor()));
+		/* @formatter:on */
 	}
 
 	@Override
 	public String toString()
 	{
-		return Objects.toStringBuilder(this)
-				.add("id", primaryKey)
+		return toStringBuilder(this).add("id", primaryKey)
 				.add("name", name)
 				.add("address", address)
 				.add("date", date)

@@ -3,9 +3,11 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.Set;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -31,21 +33,29 @@ public class JsonObjectContainingSet
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, set);
+		return hash(name, set);
 	}
 
 	@Override
 	public boolean equals(Object jsonObjectContainingSet)
 	{
-		if (this == jsonObjectContainingSet)
+		if (areIdentical(this, jsonObjectContainingSet))
 		{
 			return true;
 		}
-		if (!(jsonObjectContainingSet instanceof JsonObjectContainingSet))
-		{
-			return false;
-		}
-		final JsonObjectContainingSet that = (JsonObjectContainingSet) jsonObjectContainingSet;
-		return Objects.equals(this.name, that.name) && Objects.equals(this.set, that.set);
+		final JsonObjectContainingSet that = castIfInstanceOf(JsonObjectContainingSet.class, jsonObjectContainingSet);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					equal(this.set, that.set));
+		/* @formatter:on */
+	}
+
+	@Override
+	public String toString()
+	{
+		return toStringBuilder(this).add("name", name)
+				.add("valueSet", set)
+				.toString();
 	}
 }

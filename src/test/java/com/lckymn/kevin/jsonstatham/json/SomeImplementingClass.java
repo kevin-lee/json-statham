@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Objects.*;
+import static com.lckymn.kevin.common.util.Conditions.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -87,27 +89,25 @@ public class SomeImplementingClass implements SomeInterface
 		this.email = email;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, number, email);
+		return hash(hash(hash(name), number), email);
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public boolean equals(Object someImplementingClass)
 	{
-		if (this == someImplementingClass)
+		if (areIdentical(this, someImplementingClass))
 		{
 			return true;
 		}
-		if (!(someImplementingClass instanceof SomeImplementingClass))
-		{
-			return false;
-		}
-		final SomeImplementingClass that = (SomeImplementingClass) someImplementingClass;
-		return Objects.equals(this.name, that.getName()) && Objects.equals(this.number, that.getNumber())
-				&& Objects.equals(this.email, that.getEmail());
+		final SomeImplementingClass that = castIfInstanceOf(SomeImplementingClass.class, someImplementingClass);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.getName()), 
+					equal(this.number, that.getNumber()),
+					equal(this.email, that.getEmail()));
+		/* @formatter:on */
 	}
 }

@@ -4,6 +4,7 @@
 package com.lckymn.kevin.jsonstatham.core;
 
 import static com.lckymn.kevin.common.util.MessageFormatter.*;
+import static com.lckymn.kevin.common.util.Objects.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -38,7 +39,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.lckymn.kevin.common.reflect.TypeHolder;
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
@@ -101,8 +101,7 @@ public class JsonStathamInActionTest
 	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
 	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObjectConvertible>()
-		{
+		new Answer<JsonObjectConvertible>() {
 			@Override
 			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
@@ -112,8 +111,7 @@ public class JsonStathamInActionTest
 		};
 
 	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING =
-		new Answer<JsonObjectConvertible>()
-		{
+		new Answer<JsonObjectConvertible>() {
 			@Override
 			public JsonObjectConvertible answer(InvocationOnMock invocation) throws Throwable
 			{
@@ -130,15 +128,13 @@ public class JsonStathamInActionTest
 		};
 
 	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObjectConvertible>()
-		{
+		new Answer<JsonObjectConvertible>() {
 
 			@Override
 			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
 			{
-				return new JsonObjectConvertible()
-				{
+				return new JsonObjectConvertible() {
 					@Override
 					public String[] getNames()
 					{
@@ -176,8 +172,7 @@ public class JsonStathamInActionTest
 		};
 
 	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
-		new Answer<JsonArrayConvertible>()
-		{
+		new Answer<JsonArrayConvertible>() {
 
 			@Override
 			public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
@@ -188,8 +183,7 @@ public class JsonStathamInActionTest
 		};
 
 	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING =
-		new Answer<JsonArrayConvertible>()
-		{
+		new Answer<JsonArrayConvertible>() {
 			@Override
 			public JsonArrayConvertible answer(InvocationOnMock invocation) throws Throwable
 			{
@@ -745,8 +739,7 @@ public class JsonStathamInActionTest
 	public void testJsonObjectContainingIterable()
 	{
 		final String nameValue = "testJsonObjectContainingIterable";
-		Iterable<String> iterable = new Iterable<String>()
-		{
+		Iterable<String> iterable = new Iterable<String>() {
 			@Override
 			public Iterator<String> iterator()
 			{
@@ -1054,7 +1047,7 @@ public class JsonStathamInActionTest
 			@Override
 			public int hashCode()
 			{
-				return Objects.hash(object);
+				return hash(object);
 			}
 
 			@Override
@@ -1069,7 +1062,7 @@ public class JsonStathamInActionTest
 					return false;
 				}
 				final TestPojo that = (TestPojo) testPojo;
-				return Objects.equals(this.object, that.object);
+				return equal(this.object, that.object);
 			}
 		}
 		final String json = "{\"object\":null}";
@@ -1095,7 +1088,7 @@ public class JsonStathamInActionTest
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(object);
+			return hash(object);
 		}
 
 		@Override
@@ -1110,7 +1103,7 @@ public class JsonStathamInActionTest
 				return false;
 			}
 			final TestPojo that = (TestPojo) testPojo;
-			return Objects.equals(this.object, that.object);
+			return equal(this.object, that.object);
 		}
 	}
 
@@ -1200,9 +1193,7 @@ public class JsonStathamInActionTest
 		System.out.println("json:\n" + json);
 		System.out.println("java: ");
 
-		final List<Address> result = jsonStatham.convertFromJson(new TypeHolder<List<Address>>()
-		{
-		}, json);
+		final List<Address> result = jsonStatham.convertFromJson(new TypeHolder<List<Address>>() {}, json);
 		System.out.println(result);
 		assertThat(result, is(equalTo(addressList)));
 	}
@@ -1215,9 +1206,8 @@ public class JsonStathamInActionTest
 		System.out.println("json:\n" + json);
 		System.out.println("java: ");
 
-		final Map<String, Address> result = jsonStatham.convertFromJson(new TypeHolder<Map<String, Address>>()
-		{
-		}, json);
+		final Map<String, Address> result =
+			jsonStatham.convertFromJson(new TypeHolder<Map<String, Address>>() {}, json);
 		System.out.println(result);
 		assertThat(result, is(equalTo(addressMap)));
 	}
@@ -1234,9 +1224,7 @@ public class JsonStathamInActionTest
 		System.out.println("java: ");
 
 		final Map<String, Map<String, Address>> result =
-			jsonStatham.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>()
-			{
-			}, json);
+			jsonStatham.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>() {}, json);
 		System.out.println(result);
 		assertThat(result, is(equalTo(nestedMap)));
 	}
@@ -1542,8 +1530,7 @@ public class JsonStathamInActionTest
 	{
 		System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingIterable()");
 		final String nameValue = "testJsonObjectContainingIterable";
-		final Iterable<String> iterable = new Iterable<String>()
-		{
+		final Iterable<String> iterable = new Iterable<String>() {
 			@Override
 			public Iterator<String> iterator()
 			{

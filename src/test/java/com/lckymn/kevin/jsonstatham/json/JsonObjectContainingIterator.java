@@ -3,9 +3,11 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.Iterator;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -41,22 +43,23 @@ public class JsonObjectContainingIterator
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, iterator);
+		return hash(name, iterator);
 	}
 
 	@Override
 	public boolean equals(Object jsonObjectContainingIterator)
 	{
-		if (this == jsonObjectContainingIterator)
+		if (areIdentical(this, jsonObjectContainingIterator))
 		{
 			return true;
 		}
-		if (!(jsonObjectContainingIterator instanceof JsonObjectContainingIterator))
-		{
-			return false;
-		}
-		final JsonObjectContainingIterator that = (JsonObjectContainingIterator) jsonObjectContainingIterator;
-		return Objects.equals(this.name, that.name) && iteratorEquals(this.iterator, that.iterator);
+		final JsonObjectContainingIterator that =
+			castIfInstanceOf(JsonObjectContainingIterator.class, jsonObjectContainingIterator);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					iteratorEquals(this.iterator, that.iterator));
+		/* @formatter:on */
 	}
 
 	private boolean iteratorEquals(Iterator<String> iterator1, Iterator<String> iterator2)

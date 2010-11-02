@@ -3,9 +3,11 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.Collection;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -31,22 +33,30 @@ public class JsonObjectContainingCollection
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, collection);
+		return hash(name, collection);
 	}
 
 	@Override
 	public boolean equals(Object jsonObjectContainingCollection)
 	{
-		if (this == jsonObjectContainingCollection)
+		if (areIdentical(this, jsonObjectContainingCollection))
 		{
 			return true;
 		}
-		if (!(jsonObjectContainingCollection instanceof JsonObjectContainingCollection))
-		{
-			return false;
-		}
-		final JsonObjectContainingCollection that = (JsonObjectContainingCollection) jsonObjectContainingCollection;
-		return Objects.equals(this.name, that.name) && Objects.equals(this.collection, that.collection);
+		final JsonObjectContainingCollection that =
+			castIfInstanceOf(JsonObjectContainingCollection.class, jsonObjectContainingCollection);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					equal(this.collection, that.collection));
+		/* @formatter:on */
 	}
 
+	@Override
+	public String toString()
+	{
+		return toStringBuilder(this).add("name", name)
+				.add("valueCollection", collection)
+				.toString();
+	}
 }

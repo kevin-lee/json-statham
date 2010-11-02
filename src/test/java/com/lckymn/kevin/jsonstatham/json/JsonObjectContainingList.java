@@ -3,9 +3,11 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import java.util.List;
 
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -31,21 +33,22 @@ public class JsonObjectContainingList
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, list);
+		return hash(name, list);
 	}
 
 	@Override
 	public boolean equals(Object jsonObjectContainingList)
 	{
-		if (this == jsonObjectContainingList)
+		if (areIdentical(this, jsonObjectContainingList))
 		{
 			return true;
 		}
-		if (!(jsonObjectContainingList instanceof JsonObjectContainingList))
-		{
-			return false;
-		}
-		final JsonObjectContainingList that = (JsonObjectContainingList) jsonObjectContainingList;
-		return Objects.equals(this.name, that.name) && Objects.equals(this.list, that.list);
+		final JsonObjectContainingList that =
+			castIfInstanceOf(JsonObjectContainingList.class, jsonObjectContainingList);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					equal(this.list, that.list));
+		/* @formatter:on */
 	}
 }

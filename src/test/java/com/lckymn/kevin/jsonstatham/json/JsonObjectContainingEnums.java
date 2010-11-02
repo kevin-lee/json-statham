@@ -3,7 +3,9 @@
  */
 package com.lckymn.kevin.jsonstatham.json;
 
-import com.lckymn.kevin.common.util.Objects;
+import static com.lckymn.kevin.common.util.Conditions.*;
+import static com.lckymn.kevin.common.util.Objects.*;
+
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 
@@ -29,7 +31,7 @@ public final class JsonObjectContainingEnums
 		{
 			this.value = value;
 		}
-		
+
 		public String value()
 		{
 			return value;
@@ -60,29 +62,40 @@ public final class JsonObjectContainingEnums
 		this.access = access;
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(name, number, passed, role, access);
+		return hash(hash(hash(hash(hash(name), number), passed), role), access);
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public boolean equals(Object jsonObjectContainingEnums)
 	{
-		if (this == jsonObjectContainingEnums)
+		if (areIdentical(this, jsonObjectContainingEnums))
 		{
 			return true;
 		}
-		if (!(jsonObjectContainingEnums instanceof JsonObjectContainingEnums))
-		{
-			return false;
-		}
-		final JsonObjectContainingEnums that = (JsonObjectContainingEnums) jsonObjectContainingEnums;
-		return Objects.equals(this.name, that.name) && Objects.equals(this.number, that.number)
-				&& Objects.equals(this.passed, that.passed) && Objects.equals(this.role, that.role)
-				&& Objects.deepEquals(this.access, that.access);
+		final JsonObjectContainingEnums that =
+			castIfInstanceOf(JsonObjectContainingEnums.class, jsonObjectContainingEnums);
+		/* @formatter:off */
+		return isNotNull(that) && 
+				and(equal(this.name, that.name), 
+					equal(this.number, that.number), 
+					equal(this.passed, that.passed), 
+					equal(this.role, that.role), 
+					deepEqual(this.access, that.access));
+		/* @formatter:on */
+	}
+
+	@Override
+	public String toString()
+	{
+		return toStringBuilder(this).add("name", name)
+				.add("number", number)
+				.add("passed", passed)
+				.add("role", role)
+				.add("access", access)
+				.toString();
 	}
 
 }
