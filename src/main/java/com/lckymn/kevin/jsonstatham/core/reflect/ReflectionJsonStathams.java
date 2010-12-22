@@ -22,7 +22,6 @@ public final class ReflectionJsonStathams
 {
 	private ReflectionJsonStathams()
 	{
-		throw new IllegalStateException(getClass() + CommonConstants.CANNOT_BE_INSTANTIATED);
 	}
 
 	public static JsonStathamInAction newJsonStathamInAction(

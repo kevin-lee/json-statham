@@ -4,7 +4,9 @@
 package com.lckymn.kevin.jsonstatham.core.reflect.json2java;
 
 import static com.lckymn.kevin.common.reflect.Classes.*;
+import static com.lckymn.kevin.common.reflect.Primitives.*;
 import static com.lckymn.kevin.common.util.MessageFormatter.*;
+import static com.lckymn.kevin.common.util.Objects.*;
 import static com.lckymn.kevin.common.util.Strings.*;
 import static com.lckymn.kevin.common.validation.Assertions.*;
 
@@ -26,14 +28,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.lckymn.kevin.common.asm.analysis.AsmMethodAndConstructorAnalyser;
 import com.lckymn.kevin.common.asm.analysis.ConstructorAnalyser;
 import com.lckymn.kevin.common.reflect.TypeHolder;
 import com.lckymn.kevin.common.type.Pair;
-import com.lckymn.kevin.common.util.Objects;
 import com.lckymn.kevin.jsonstatham.annotation.JsonConstructor;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
@@ -43,12 +43,14 @@ import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-08)
+ * @version 0.0.2 (2010-12-23) refactored...
  */
 public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 {
@@ -85,8 +87,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	private static class JsonFieldNameAndFieldPair implements Pair<String, Field>
 	{
-		private final String jsonFieldName;
-		private final Field field;
+		final String jsonFieldName;
+		final Field field;
 
 		public JsonFieldNameAndFieldPair(String jsonFieldName, Field field)
 		{
@@ -109,8 +111,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		@Override
 		public String toString()
 		{
-			return Objects.toStringBuilder(this)
-					.add("jsonFieldName", jsonFieldName)
+			return toStringBuilder(this).add("jsonFieldName", jsonFieldName)
 					.add("field", field.getName())
 					.toString();
 		}
@@ -119,8 +120,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	private static class JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair implements
 			Pair<Map<String, Field>, Map<String, JsonFieldNameAndFieldPair>>
 	{
-		private final Map<String, Field> jsonFieldNameToFieldMap;
-		private final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap;
+		final Map<String, Field> jsonFieldNameToFieldMap;
+		final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap;
 
 		public JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair(
 				Map<String, Field> jsonFieldNameToFieldMap,
@@ -145,15 +146,18 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		@Override
 		public String toString()
 		{
-			return Objects.toStringBuilder(this)
+			/* @formatter:off */
+			return toStringBuilder(this)
 					.add("jsonFieldNameToFieldMap", jsonFieldNameToFieldMap)
 					.add("fieldNameToJsonFieldNameAndFieldPairMap", fieldNameToJsonFieldNameAndFieldPairMap)
 					.toString();
+			/* @formatter:on */
 		}
 	}
 
-	private void extractJsonFieldNames(final Class<?> sourceClass,
-			JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
+	private void extractJsonFieldNames(
+			final Class<?> sourceClass,
+			final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
 	{
 		for (Field field : sourceClass.getDeclaredFields())
 		{
@@ -178,8 +182,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				jsonFieldName = fieldName;
 			}
 
-			if (jsonFieldNameToFieldNameAndFieldPairMap.getLeft()
-					.containsKey(jsonFieldName))
+			// if (jsonFieldNameToFieldNameAndFieldPairMap.getLeft()
+			if (jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.containsKey(jsonFieldName))
 			{
 				/* [ERROR] duplicate field names found */
 				throw new JsonStathamException(
@@ -187,10 +191,11 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 								jsonFieldName, field));
 			}
 
-			jsonFieldNameToFieldNameAndFieldPairMap.getLeft()
-					.put(jsonFieldName, field);
-			jsonFieldNameToFieldNameAndFieldPairMap.getRight()
-					.put(fieldName, new JsonFieldNameAndFieldPair(jsonFieldName, field));
+			// jsonFieldNameToFieldNameAndFieldPairMap.getLeft()
+			jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.put(jsonFieldName, field);
+			// jsonFieldNameToFieldNameAndFieldPairMap.getRight()
+			jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap.put(fieldName,
+					new JsonFieldNameAndFieldPair(jsonFieldName, field));
 		}
 	}
 
@@ -250,8 +255,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	private static class ConstructorAndParamsPair<T, P> implements Pair<Constructor<T>, P>
 	{
-		private final Constructor<T> constructor;
-		private final P params;
+		final Constructor<T> constructor;
+		final P params;
 
 		public ConstructorAndParamsPair(Constructor<T> constructor, P paramNames)
 		{
@@ -310,23 +315,27 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			/*
 			 * First, find the constructor with all the parameters matched with all the JSON field.
 			 */
-			final Pair<Constructor<T>, String[]> constructorEntry =
+			// final Pair<Constructor<T>, String[]> constructorEntry =
+			final ConstructorAndParamsPair<T, String[]> constructorEntry =
 				findMatchingConstructor(constructorMapWithJsonConstructorAnnotation,
 						jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
-			if (null == constructorEntry || null == constructorEntry.getLeft())
+			// if (null == constructorEntry || null == constructorEntry.getLeft())
+			if (null == constructorEntry || null == constructorEntry.constructor)
 			{
 				/*
 				 * if there is no matching one, try to find the one annotated with @JsonConstructor having the fewest
 				 * number of non-matching parameters and the greatest number of matching parameters.
 				 */
-				final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
+				// final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
+				final ConstructorAndParamsPair<T, List<Object>> constructorToParamsPair =
 					findConstructorWithMaxMatchingMinNonMatchingParams(constructorMapWithJsonConstructorAnnotation,
 							jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
 				if (null != constructorToParamsPair)
 				{
-					return constructorToParamsPair.getLeft()
-							.newInstance(constructorToParamsPair.getRight()
-									.toArray());
+					// return constructorToParamsPair.getLeft()
+					// .newInstance(constructorToParamsPair.getRight()
+					// .toArray());
+					return constructorToParamsPair.constructor.newInstance(constructorToParamsPair.params.toArray());
 				}
 			}
 			else
@@ -338,7 +347,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				for (String fieldName : constructorEntry.getRight())
 				{
 					final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
-					final Field field = jsonFieldNameAndFieldPair.getRight();
+					// final Field field = jsonFieldNameAndFieldPair.getRight();
+					final Field field = jsonFieldNameAndFieldPair.field;
 					argList.add(resolveFieldValue(field, field.getType(),
 							jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
 				}
@@ -367,7 +377,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				for (String fieldName : constructorEntry.getRight())
 				{
 					final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
-					final Field field = jsonFieldNameAndFieldPair.getRight();
+					// final Field field = jsonFieldNameAndFieldPair.getRight();
+					final Field field = jsonFieldNameAndFieldPair.field;
 					final Object arg =
 						resolveFieldValue(field, field.getType(),
 								jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft()));
@@ -492,51 +503,37 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	public <V, M extends Map<String, Object>> Map<String, Object> createHashMapWithKeysAndValues(
 			final Class<M> mapType, final Type valueType, final Object value) throws IllegalAccessException
 	{
-		JSONObject jsonObject = null;
-		if (JsonObjectConvertible.class.isAssignableFrom(value.getClass()))
-		{
-			jsonObject = (JSONObject) ((JsonObjectConvertible) value).getActualObject();
-		}
-		if (JSONObject.class.isAssignableFrom(value.getClass()))
-		{
-			jsonObject = (JSONObject) value;
-		}
+		/* @formatter:off */
+		final JsonObjectConvertible jsonObject = 
+			JsonObjectConvertible.class.isAssignableFrom(value.getClass()) ?
+				/* JsonObjectConvertible */
+				(JsonObjectConvertible) value : 
+			JSONObject.class.isAssignableFrom(value.getClass()) ?
+				/* JSONObject */
+				new OrgJsonJsonObjectConvertible((JSONObject) value) :
+				/* unknown */
+				null;
+		/* @formatter:on */
+
 		if (null != jsonObject)
 		{
 			if (valueType instanceof ParameterizedType)
 			{
 				final Map<String, Object> map = newMap(mapType);
-				for (String name : JSONObject.getNames(jsonObject))
+				for (String name : jsonObject.getNames())
 				{
-					try
-					{
-						map.put(name, resolveTypeAndValue(valueType, null, jsonObject.get(name)));
-					}
-					catch (JSONException e)
-					{
-						e.printStackTrace();
-						throw new JsonStathamException(e);
-					}
+					map.put(name, resolveTypeAndValue(valueType, null, jsonObject.get(name)));
 				}
 				return map;
-
 			}
 
 			if (valueType instanceof Class)
 			{
 				final Map<String, Object> map = newMap(mapType);
-				for (String name : JSONObject.getNames(jsonObject))
+				for (String name : jsonObject.getNames())
 				{
-					try
-					{
-						final Class<?> typeClass = (Class<?>) valueType;
-						map.put(name, resolveElement(typeClass, jsonObject.get(name)));
-					}
-					catch (JSONException e)
-					{
-						e.printStackTrace();
-						throw new JsonStathamException(e);
-					}
+					final Class<?> typeClass = (Class<?>) valueType;
+					map.put(name, resolveElement(typeClass, jsonObject.get(name)));
 				}
 				return map;
 			}
@@ -566,14 +563,14 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			Type valueType, Object value) throws IllegalAccessException
 	{
 		/* @formatter:off */
-		final JSONArray jsonArray =
+		final JsonArrayConvertible jsonArray =
 			/* JsonArrayConvertible. */
 			JsonArrayConvertible.class.isAssignableFrom(value.getClass()) ?
-			(JSONArray) ((JsonArrayConvertible) value).getActualObject() :
+			(JsonArrayConvertible) value :
 
 			/* JSONArray. */
 			JSONArray.class.isAssignableFrom(value.getClass()) ? 
-			(JSONArray) value :
+			new OrgJsonJsonArrayConvertible((JSONArray) value) :
 
 			/* Neither JsonArrayConvertible nor JSONArray  */
 			null;
@@ -587,17 +584,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				final Collection<E> collection = newCollection(collectionClass);
 				for (int i = 0, size = jsonArray.length(); i < size; i++)
 				{
-					try
-					{
-						final Type rawType = parameterizedType.getRawType();
-						@SuppressWarnings("unchecked")
-						final Class<E> rawClass = (Class<E>) rawType;
-						collection.add(rawClass.cast(resolveTypeAndValue(valueType, null, jsonArray.get(i))));
-					}
-					catch (JSONException e)
-					{
-						throw new JsonStathamException(e);
-					}
+					final Type rawType = parameterizedType.getRawType();
+					@SuppressWarnings("unchecked")
+					final Class<E> rawClass = (Class<E>) rawType;
+					collection.add(rawClass.cast(resolveTypeAndValue(valueType, null, jsonArray.get(i))));
 				}
 				return collection;
 			}
@@ -607,16 +597,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 				for (int i = 0, size = jsonArray.length(); i < size; i++)
 				{
-					try
-					{
-						@SuppressWarnings("unchecked")
-						final Class<E> elementType = (Class<E>) valueType;
-						collection.add(elementType.cast(resolveElement(elementType, jsonArray.get(i))));
-					}
-					catch (JSONException e)
-					{
-						throw new JsonStathamException(e);
-					}
+					@SuppressWarnings("unchecked")
+					final Class<E> elementType = (Class<E>) valueType;
+					collection.add(elementType.cast(resolveElement(elementType, jsonArray.get(i))));
 				}
 				return collection;
 			}
@@ -648,11 +631,12 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	}
 
 	public <T> ConstructorAndParamsPair<T, String[]> findMatchingConstructor(
-			Map<Constructor<T>, String[]> constructorMap,
-			JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
+			final Map<Constructor<T>, String[]> constructorMap,
+			final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
 	{
 		final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
-			jsonFieldNameToFieldNameAndFieldPairMap.getRight();
+		// jsonFieldNameToFieldNameAndFieldPairMap.getRight();
+			jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap;
 		final int fieldSize = fieldNameToFieldMap.size();
 		for (Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
 		{
@@ -687,7 +671,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		return null;
 	}
 
-	public <T> Pair<Constructor<T>, List<Object>> findConstructorWithMaxMatchingMinNonMatchingParams(
+	public <T> ConstructorAndParamsPair<T, List<Object>> findConstructorWithMaxMatchingMinNonMatchingParams(
 			final Map<Constructor<T>, String[]> constructorMap,
 			final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair,
 			final JsonObjectConvertible jsonObjectConvertible) throws JsonStathamException, IllegalArgumentException,
@@ -695,7 +679,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	{
 		final List<Object> paramValues = new ArrayList<Object>();
 		final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap =
-			jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
+		// jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
+			jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.fieldNameToJsonFieldNameAndFieldPairMap;
 
 		final int fieldSize = fieldNameToJsonFieldNameAndFieldPairMap.size();
 		int max = 0;
@@ -723,7 +708,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 					final String paramName = paramNames[i];
 					final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair =
 						fieldNameToJsonFieldNameAndFieldPairMap.get(paramName);
-					final Field field = jsonFieldNameAndFieldPair.getRight();
+					// final Field field = jsonFieldNameAndFieldPair.getRight();
+					final Field field = jsonFieldNameAndFieldPair.field;
 					if (paramTypes[i].equals(field.getType()))
 					{
 						paramValues.add(resolveFieldValue(field, field.getType(),
@@ -756,11 +742,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				}
 				else
 				{
-					final Field field = jsonFieldNameAndFieldPair.getRight();
+					// final Field field = jsonFieldNameAndFieldPair.getRight();
+					final Field field = jsonFieldNameAndFieldPair.field;
 					if (paramTypes[i].equals(field.getType()))
 					{
 						paramValues.add(resolveFieldValue(field, field.getType(),
-								jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
+						// jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
+								jsonObjectConvertible.get(jsonFieldNameAndFieldPair.jsonFieldName)));
 					}
 					else
 					{
@@ -773,42 +761,33 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		return null;
 	}
 
+	/**
+	 * <p>
+	 * <a href="http://java.sun.com/docs/books/jls/second_edition/html/typesValues.doc.html#96595">4.5.5 Initial Values
+	 * of Variables</a>
+	 * </p>
+	 * <ul>
+	 * <li>Each class variable, instance variable, or array component is initialized with a default value when it is
+	 * created (§15.9, §15.10):
+	 * <ul>
+	 * <li>For type byte, the default value is zero, that is, the value of (byte)0.</li>
+	 * <li>For type short, the default value is zero, that is, the value of (short)0.</li>
+	 * <li>For type int, the default value is zero, that is, 0.</li>
+	 * <li>For type long, the default value is zero, that is, 0L.</li>
+	 * <li>For type float, the default value is positive zero, that is, 0.0f.</li>
+	 * <li>For type double, the default value is positive zero, that is, 0.0d.</li>
+	 * <li>For type char, the default value is the null character, that is, '\u0000'.</li>
+	 * <li>For type boolean, the default value is false.</li>
+	 * <li>For all reference types (§4.3), the default value is null.</li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 */
 	private <T> Object getDefaultValue(Class<T> typeClass)
 	{
 		if (typeClass.isPrimitive())
 		{
-			if (Integer.TYPE.equals(typeClass))
-			{
-				return Integer.valueOf(0);
-			}
-			else if (Long.TYPE.equals(typeClass))
-			{
-				return Long.valueOf(0);
-			}
-			else if (Double.TYPE.equals(typeClass))
-			{
-				return Double.valueOf(0);
-			}
-			else if (Boolean.TYPE.equals(typeClass))
-			{
-				return Boolean.FALSE;
-			}
-			else if (Byte.TYPE.equals(typeClass))
-			{
-				return Byte.valueOf((byte) 0);
-			}
-			else if (Short.TYPE.equals(typeClass))
-			{
-				return Short.valueOf((short) 0);
-			}
-			else if (Float.TYPE.equals(typeClass))
-			{
-				return Float.valueOf(0);
-			}
-			else
-			{
-				throw new IllegalArgumentException(format("Unknown type: [class: %s]", typeClass));
-			}
+			return getPrimitiveDefaultValueObject(typeClass);
 		}
 		return null;
 	}

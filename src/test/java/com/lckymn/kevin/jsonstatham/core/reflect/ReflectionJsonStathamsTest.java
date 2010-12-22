@@ -68,10 +68,11 @@ public class ReflectionJsonStathamsTest
 	{
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalAccessException.class)
 	public void testReflectionJsonStathams() throws Exception
 	{
-		testNotAccessibleConstructor(ReflectionJsonStathams.class, EMPTY_CLASS_ARRAY, EMPTY_OBJECT_ARRAY);
+		testNotAccessibleConstructor(ReflectionJsonStathams.class, this, Accessibility.PRIVATE, classArrayOf(),
+				objectArrayOf());
 	}
 
 	/**
@@ -117,8 +118,9 @@ public class ReflectionJsonStathamsTest
 				equalTo(jsonArrayConvertibleCreator));
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
 				equalTo(knownDataStructureTypeProcessorDecider));
-		assertTrue(Arrays.deepEquals(new KnownTypeProcessorDeciderForJavaToJson[] { knownDataStructureTypeProcessorDecider,
-				knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider },
+		assertTrue(Arrays.deepEquals(new KnownTypeProcessorDeciderForJavaToJson[] {
+				knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
+				oneProcessorForKnownTypeDecider },
 				reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownTypeProcessorDeciders()));
 	}
 
