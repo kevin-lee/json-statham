@@ -15,6 +15,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.lckymn.kevin.common.reflect.Classes;
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
 import com.lckymn.kevin.jsonstatham.annotation.ValueAccessor;
@@ -34,8 +35,8 @@ import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
  */
 public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 {
-	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
-	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+	private static final Class<?>[] EMPTY_CLASS_ARRAY = Classes.classArrayOf();
+	private static final Object[] EMPTY_OBJECT_ARRAY = Classes.objectArrayOf();
 
 	private final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
 
@@ -283,10 +284,6 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 		return createJsonObject(value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.lckymn.kevin.jsonstatham.core.JavaToJsonConverter#convertIntoJson(java.lang.Object)
-	 */
 	@Override
 	public String convertIntoJson(Object source) throws IllegalArgumentException, JsonStathamException,
 			IllegalAccessException

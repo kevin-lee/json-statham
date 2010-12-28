@@ -182,7 +182,6 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				jsonFieldName = fieldName;
 			}
 
-			// if (jsonFieldNameToFieldNameAndFieldPairMap.getLeft()
 			if (jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.containsKey(jsonFieldName))
 			{
 				/* [ERROR] duplicate field names found */
@@ -191,9 +190,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 								jsonFieldName, field));
 			}
 
-			// jsonFieldNameToFieldNameAndFieldPairMap.getLeft()
 			jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.put(jsonFieldName, field);
-			// jsonFieldNameToFieldNameAndFieldPairMap.getRight()
 			jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap.put(fieldName,
 					new JsonFieldNameAndFieldPair(jsonFieldName, field));
 		}
@@ -315,26 +312,20 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			/*
 			 * First, find the constructor with all the parameters matched with all the JSON field.
 			 */
-			// final Pair<Constructor<T>, String[]> constructorEntry =
 			final ConstructorAndParamsPair<T, String[]> constructorEntry =
 				findMatchingConstructor(constructorMapWithJsonConstructorAnnotation,
 						jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
-			// if (null == constructorEntry || null == constructorEntry.getLeft())
 			if (null == constructorEntry || null == constructorEntry.constructor)
 			{
 				/*
 				 * if there is no matching one, try to find the one annotated with @JsonConstructor having the fewest
 				 * number of non-matching parameters and the greatest number of matching parameters.
 				 */
-				// final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
 				final ConstructorAndParamsPair<T, List<Object>> constructorToParamsPair =
 					findConstructorWithMaxMatchingMinNonMatchingParams(constructorMapWithJsonConstructorAnnotation,
 							jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
 				if (null != constructorToParamsPair)
 				{
-					// return constructorToParamsPair.getLeft()
-					// .newInstance(constructorToParamsPair.getRight()
-					// .toArray());
 					return constructorToParamsPair.constructor.newInstance(constructorToParamsPair.params.toArray());
 				}
 			}
@@ -347,7 +338,6 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				for (String fieldName : constructorEntry.getRight())
 				{
 					final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
-					// final Field field = jsonFieldNameAndFieldPair.getRight();
 					final Field field = jsonFieldNameAndFieldPair.field;
 					argList.add(resolveFieldValue(field, field.getType(),
 							jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
@@ -377,7 +367,6 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				for (String fieldName : constructorEntry.getRight())
 				{
 					final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
-					// final Field field = jsonFieldNameAndFieldPair.getRight();
 					final Field field = jsonFieldNameAndFieldPair.field;
 					final Object arg =
 						resolveFieldValue(field, field.getType(),
@@ -635,7 +624,6 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
 	{
 		final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
-		// jsonFieldNameToFieldNameAndFieldPairMap.getRight();
 			jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap;
 		final int fieldSize = fieldNameToFieldMap.size();
 		for (Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
@@ -679,7 +667,6 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	{
 		final List<Object> paramValues = new ArrayList<Object>();
 		final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap =
-		// jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
 			jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.fieldNameToJsonFieldNameAndFieldPairMap;
 
 		final int fieldSize = fieldNameToJsonFieldNameAndFieldPairMap.size();
@@ -708,7 +695,6 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 					final String paramName = paramNames[i];
 					final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair =
 						fieldNameToJsonFieldNameAndFieldPairMap.get(paramName);
-					// final Field field = jsonFieldNameAndFieldPair.getRight();
 					final Field field = jsonFieldNameAndFieldPair.field;
 					if (paramTypes[i].equals(field.getType()))
 					{
@@ -742,12 +728,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				}
 				else
 				{
-					// final Field field = jsonFieldNameAndFieldPair.getRight();
 					final Field field = jsonFieldNameAndFieldPair.field;
 					if (paramTypes[i].equals(field.getType()))
 					{
 						paramValues.add(resolveFieldValue(field, field.getType(),
-						// jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
 								jsonObjectConvertible.get(jsonFieldNameAndFieldPair.jsonFieldName)));
 					}
 					else

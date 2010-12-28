@@ -11,8 +11,8 @@ package com.lckymn.kevin.jsonstatham.core.convertible;
 public interface JsonArrayConvertible extends JsonConvertible
 {
 	Object get(int index);
-	
-	JsonArrayConvertible put(Object value);
+
+	<T> JsonArrayConvertible put(T value);
 
 	int length();
 

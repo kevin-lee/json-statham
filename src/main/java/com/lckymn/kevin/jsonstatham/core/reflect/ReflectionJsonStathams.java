@@ -3,11 +3,10 @@
  */
 package com.lckymn.kevin.jsonstatham.core.reflect;
 
-import com.lckymn.kevin.common.util.CommonConstants;
 import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.UnorderedJsonObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
@@ -41,27 +40,31 @@ public final class ReflectionJsonStathams
 	 */
 	public static JsonStathamInAction newReflectionJsonStathamInAction()
 	{
-		final OrgJsonOrderedJsonObjectConvertibleCreator orderedJsonObjectConvertibleCreator =
-			new OrgJsonOrderedJsonObjectConvertibleCreator();
+		// final OrgJsonOrderedJsonObjectConvertibleCreator orderedJsonObjectConvertibleCreator =
+		// new OrgJsonOrderedJsonObjectConvertibleCreator();
+		// final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
+		// new OrgJsonJsonArrayConvertibleCreator();
+		final OrderedJsonObjectCreator orderedJsonObjectCreator = new OrderedJsonObjectCreator();
 		final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
 			new OrgJsonJsonArrayConvertibleCreator();
-		return newJsonStathamInAction(new ReflectionJavaToJsonConverter(orderedJsonObjectConvertibleCreator,
+		return newJsonStathamInAction(new ReflectionJavaToJsonConverter(orderedJsonObjectCreator,
 				orgJsonJsonArrayConvertibleCreator, new KnownDataStructureTypeProcessorDecider(),
 				new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()),
-				new ReflectionJsonToJavaConverter(orderedJsonObjectConvertibleCreator,
-						orgJsonJsonArrayConvertibleCreator));
+				new ReflectionJsonToJavaConverter(orderedJsonObjectCreator, orgJsonJsonArrayConvertibleCreator));
 	}
 
 	public static JsonStathamInAction newUnorderedReflectionJsonStathamInAction()
 	{
-		final OrgJsonUnorderedJsonObjectConvertibleCreator orgJsonUnorderedJsonObjectConvertibleCreator =
-			new OrgJsonUnorderedJsonObjectConvertibleCreator();
+		// final OrgJsonUnorderedJsonObjectConvertibleCreator orgJsonUnorderedJsonObjectConvertibleCreator =
+		// new OrgJsonUnorderedJsonObjectConvertibleCreator();
+		// final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
+		// new OrgJsonJsonArrayConvertibleCreator();
+		final UnorderedJsonObjectCreator unorderedJsonObjectCreator = new UnorderedJsonObjectCreator();
 		final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
 			new OrgJsonJsonArrayConvertibleCreator();
-		return newJsonStathamInAction(new ReflectionJavaToJsonConverter(orgJsonUnorderedJsonObjectConvertibleCreator,
+		return newJsonStathamInAction(new ReflectionJavaToJsonConverter(unorderedJsonObjectCreator,
 				orgJsonJsonArrayConvertibleCreator, new KnownDataStructureTypeProcessorDecider(),
 				new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()),
-				new ReflectionJsonToJavaConverter(orgJsonUnorderedJsonObjectConvertibleCreator,
-						orgJsonJsonArrayConvertibleCreator));
+				new ReflectionJsonToJavaConverter(unorderedJsonObjectCreator, orgJsonJsonArrayConvertibleCreator));
 	}
 }

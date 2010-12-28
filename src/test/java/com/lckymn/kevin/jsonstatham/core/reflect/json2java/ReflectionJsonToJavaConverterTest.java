@@ -436,6 +436,30 @@ public class ReflectionJsonToJavaConverterTest
 	}
 
 	@Test
+	public void testEmptyArray() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		System.out.println("\nReflectionJsonToJavaConverterTest.testEmptyArray()");
+
+		final String intArrayJson = "[]";
+		final int[] intArray = new int[] {};
+		System.out.println("\njson:\n" + intArrayJson);
+		System.out.println("java: ");
+		final int[] resultIntArray = reflectionJsonToJavaConverter.convertFromJson(int[].class, intArrayJson);
+		System.out.println(toString(resultIntArray));
+		assertThat(resultIntArray, is(equalTo(intArray)));
+
+		final String objectArrayJson = "[]";
+		final Object[] doubleArray = new Object[0];
+		System.out.println("\njson:\n" + objectArrayJson);
+		System.out.println("java: ");
+		final Object[] resultObjectArray =
+			reflectionJsonToJavaConverter.convertFromJson(Object[].class, objectArrayJson);
+		System.out.println(toString(resultObjectArray));
+		assertThat(resultObjectArray, is(equalTo(doubleArray)));
+	}
+
+	@Test
 	public void testArray() throws JsonStathamException, IllegalArgumentException, InstantiationException,
 			IllegalAccessException, InvocationTargetException
 	{
@@ -828,16 +852,97 @@ public class ReflectionJsonToJavaConverterTest
 		jsonObject.setPrimaryKey(Long.valueOf(id));
 		jsonObject.setName(name);
 		jsonObject.setAddress(address);
+		jsonObject.setIntNumber(Integer.MAX_VALUE);
+		jsonObject.setDoubleNumber(Double.MAX_VALUE);
 
 		final String json =
 			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
 					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}}";
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ Integer.MAX_VALUE + ",\"doubleNumber\":" + Double.MAX_VALUE + "}";
 		System.out.println("json:\n" + json);
 		System.out.println("java: ");
 		final NestedJsonObject result = reflectionJsonToJavaConverter.convertFromJson(NestedJsonObject.class, json);
 		System.out.println(result);
 		assertThat(result, is(equalTo(jsonObject)));
+
+		final Long id2 = Long.valueOf(id + 100);
+		final String name2 = name + "4Testing";
+		jsonObject.setPrimaryKey(id2);
+		jsonObject.setName(name2);
+		jsonObject.setAddress(new Address(streetList.get(1), suburbList.get(1), cityList.get(1), stateList.get(1),
+				postcodeList.get(1)));
+		jsonObject.setIntNumber(Integer.MIN_VALUE);
+		jsonObject.setDoubleNumber(Double.MIN_VALUE);
+
+		final String json2 =
+			"{\"id\":" + id2 + ",\"name\":\"" + name2 + "\",\"address\":{\"street\":\"" + streetList.get(1)
+					+ "\",\"suburb\":\"" + suburbList.get(1) + "\",\"city\":\"" + cityList.get(1) + "\",\"state\":\""
+					+ stateList.get(1) + "\",\"postcode\":\"" + postcodeList.get(1) + "\"},\"intNumber\":"
+					+ Integer.MIN_VALUE + ",\"doubleNumber\":" + Double.MIN_VALUE + "}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("json:\n" + json2);
+		System.out.println("java: ");
+		final NestedJsonObject result2 = reflectionJsonToJavaConverter.convertFromJson(NestedJsonObject.class, json2);
+		System.out.println(result2);
+		assertThat(result2, is(equalTo(jsonObject)));
+
+		final Long id3 = Long.valueOf(id + 100);
+		final String name3 = name + "4Testing";
+		jsonObject.setPrimaryKey(id3);
+		jsonObject.setName(name3);
+		jsonObject.setAddress(new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0),
+				postcodeList.get(0)));
+		jsonObject.setIntNumber(Integer.MAX_VALUE >>> 1);
+		jsonObject.setDoubleNumber(1234.1000D);
+
+		final String json3 =
+			"{\"id\":" + id3 + ",\"name\":\"" + name3 + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ (Integer.MAX_VALUE >>> 1) + ",\"doubleNumber\":1234.1}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("json:\n" + json3);
+		System.out.println("java: ");
+		final NestedJsonObject result3 = reflectionJsonToJavaConverter.convertFromJson(NestedJsonObject.class, json3);
+		System.out.println(result3);
+		assertThat(result3, is(equalTo(jsonObject)));
+
+		jsonObject.setPrimaryKey(Long.valueOf(id));
+		jsonObject.setName(name);
+		jsonObject.setAddress(address);
+		jsonObject.setIntNumber(Integer.MAX_VALUE);
+		jsonObject.setDoubleNumber(1234.0D);
+
+		final String json4 =
+			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ Integer.MAX_VALUE + ",\"doubleNumber\":1234}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("json:\n" + json4);
+		System.out.println("java: ");
+		final NestedJsonObject result4 = reflectionJsonToJavaConverter.convertFromJson(NestedJsonObject.class, json4);
+		System.out.println(result4);
+		assertThat(result4, is(equalTo(jsonObject)));
+
+		jsonObject.setPrimaryKey(Long.valueOf(id));
+		jsonObject.setName(name);
+		jsonObject.setAddress(address);
+		jsonObject.setIntNumber(Integer.MAX_VALUE);
+		jsonObject.setDoubleNumber(123456789.1234D);
+
+		final String json5 =
+			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ Integer.MAX_VALUE + ",\"doubleNumber\":" + 123456789.1234D + "}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("json:\n" + json5);
+		System.out.println("java: ");
+		final NestedJsonObject result5 = reflectionJsonToJavaConverter.convertFromJson(NestedJsonObject.class, json5);
+		System.out.println(result5);
+		assertThat(result5, is(equalTo(jsonObject)));
 	}
 
 	@Test(expected = JsonStathamException.class)

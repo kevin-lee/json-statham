@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,12 +33,12 @@ import org.mockito.stubbing.Answer;
 
 import com.lckymn.kevin.jsonstatham.annotation.JsonField;
 import com.lckymn.kevin.jsonstatham.annotation.JsonObject;
+import com.lckymn.kevin.jsonstatham.core.convertible.JsonArray;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertible;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
-import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectImpl;
 import com.lckymn.kevin.jsonstatham.exception.JsonStathamException;
 import com.lckymn.kevin.jsonstatham.json.Address;
 import com.lckymn.kevin.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
@@ -93,7 +91,9 @@ public class ReflectionJavaToJsonConverterTest
 			public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
 			{
-				return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+				// TODO remove after testing.
+				// return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+				return JsonObjectImpl.newOrderedJsonObject();
 			}
 		};
 	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
@@ -121,7 +121,7 @@ public class ReflectionJavaToJsonConverterTest
 					@Override
 					public Object getActualObject()
 					{
-						return JSONObject.NULL;
+						return JsonObjectImpl.NULL_JSON_OBJECT;
 					}
 
 					@Override
@@ -134,7 +134,7 @@ public class ReflectionJavaToJsonConverterTest
 					@Override
 					public String toString()
 					{
-						return JSONObject.NULL.toString();
+						return JsonObjectImpl.NULL_JSON_OBJECT.toString();
 					}
 				};
 			}
@@ -148,7 +148,7 @@ public class ReflectionJavaToJsonConverterTest
 			public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation)
 					throws Throwable
 			{
-				return new OrgJsonJsonArrayConvertible(new JSONArray());
+				return JsonArray.newJsonArray();
 			}
 		};
 
@@ -294,6 +294,25 @@ public class ReflectionJavaToJsonConverterTest
 		}
 		stringBuilder.append("]");
 		return stringBuilder.toString();
+	}
+
+	@Test
+	public void testEmptyArray() throws IllegalArgumentException, JsonStathamException, IllegalAccessException
+	{
+		System.out.println("\nReflectionJavaToJsonConverterTest.testEmptyArray()");
+
+		final String expected = "[]";
+		System.out.println("\nexpected:\n" + expected);
+		System.out.println("actual: ");
+		final String resultIntArray = reflectionJavaToJsonConverter.convertIntoJson(new int[] {});
+		System.out.println(resultIntArray);
+		assertThat(resultIntArray, is(equalTo(expected)));
+		
+		System.out.println("\nexpected:\n" + expected);
+		System.out.println("actual: ");
+		final String result = reflectionJavaToJsonConverter.convertIntoJson(new Object[0]);
+		System.out.println(result);
+		assertThat(result, is(equalTo(expected)));
 	}
 
 	@Test
@@ -549,17 +568,98 @@ public class ReflectionJavaToJsonConverterTest
 		jsonObject.setPrimaryKey(Long.valueOf(id));
 		jsonObject.setName(name);
 		jsonObject.setAddress(address);
+		jsonObject.setIntNumber(Integer.MAX_VALUE);
+		jsonObject.setDoubleNumber(Double.MAX_VALUE);
 
 		final String expected =
 			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
 					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}}";
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ Integer.MAX_VALUE + ",\"doubleNumber\":" + Double.MAX_VALUE + "}";
 		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
 		System.out.println("expected:\n" + expected);
 		System.out.println("actual: ");
 		final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
 		System.out.println(result);
 		assertThat(result, is(equalTo(expected)));
+
+		final Long id2 = Long.valueOf(id + 100);
+		final String name2 = name + "4Testing";
+		jsonObject.setPrimaryKey(id2);
+		jsonObject.setName(name2);
+		jsonObject.setAddress(new Address(streetList.get(1), suburbList.get(1), cityList.get(1), stateList.get(1),
+				postcodeList.get(1)));
+		jsonObject.setIntNumber(Integer.MIN_VALUE);
+		jsonObject.setDoubleNumber(Double.MIN_VALUE);
+
+		final String expected2 =
+			"{\"id\":" + id2 + ",\"name\":\"" + name2 + "\",\"address\":{\"street\":\"" + streetList.get(1)
+					+ "\",\"suburb\":\"" + suburbList.get(1) + "\",\"city\":\"" + cityList.get(1) + "\",\"state\":\""
+					+ stateList.get(1) + "\",\"postcode\":\"" + postcodeList.get(1) + "\"},\"intNumber\":"
+					+ Integer.MIN_VALUE + ",\"doubleNumber\":" + Double.MIN_VALUE + "}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("expected:\n" + expected2);
+		System.out.println("actual: ");
+		final String result2 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
+		System.out.println(result2);
+		assertThat(result2, is(equalTo(expected2)));
+
+		final Long id3 = Long.valueOf(id + 100);
+		final String name3 = name + "4Testing";
+		jsonObject.setPrimaryKey(id3);
+		jsonObject.setName(name3);
+		jsonObject.setAddress(new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0),
+				postcodeList.get(0)));
+		jsonObject.setIntNumber(Integer.MAX_VALUE >>> 1);
+		jsonObject.setDoubleNumber(1234.1000D);
+
+		final String expected3 =
+			"{\"id\":" + id3 + ",\"name\":\"" + name3 + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ (Integer.MAX_VALUE >>> 1) + ",\"doubleNumber\":1234.1}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("expected:\n" + expected3);
+		System.out.println("actual: ");
+		final String result3 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
+		System.out.println(result3);
+		assertThat(result3, is(equalTo(expected3)));
+
+		jsonObject.setPrimaryKey(Long.valueOf(id));
+		jsonObject.setName(name);
+		jsonObject.setAddress(address);
+		jsonObject.setIntNumber(Integer.MAX_VALUE);
+		jsonObject.setDoubleNumber(1234.0D);
+
+		final String expected4 =
+			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0)
+					+ "\"},\"intNumber\":2147483647,\"doubleNumber\":1234}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("expected:\n" + expected4);
+		System.out.println("actual: ");
+		final String result4 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
+		System.out.println(result4);
+		assertThat(result4, is(equalTo(expected4)));
+
+		jsonObject.setPrimaryKey(Long.valueOf(id));
+		jsonObject.setName(name);
+		jsonObject.setAddress(address);
+		jsonObject.setIntNumber(Integer.MAX_VALUE);
+		jsonObject.setDoubleNumber(123456789.1234D);
+
+		final String expected5 =
+			"{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+					+ "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
+					+ stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
+					+ Integer.MAX_VALUE + ",\"doubleNumber\":" + 123456789.1234D + "}";
+		System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
+		System.out.println("expected:\n" + expected5);
+		System.out.println("actual: ");
+		final String result5 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
+		System.out.println(result5);
+		assertThat(result5, is(equalTo(expected5)));
 	}
 
 	@Test(expected = JsonStathamException.class)

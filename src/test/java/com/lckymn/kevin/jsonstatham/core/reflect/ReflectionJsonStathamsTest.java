@@ -16,13 +16,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.lckymn.kevin.common.test.CommonTestHelper.Accessibility;
 import com.lckymn.kevin.jsonstatham.core.JsonStathamInAction;
 import com.lckymn.kevin.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
-import com.lckymn.kevin.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectConvertibleCreator;
+import com.lckymn.kevin.jsonstatham.core.convertible.UnorderedJsonObjectCreator;
 import com.lckymn.kevin.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import com.lckymn.kevin.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
@@ -143,8 +144,12 @@ public class ReflectionJsonStathamsTest
 		// final ReflectionJsonToJavaConverter reflectionJsonToJavaConverterFromJsonStathamInAction =
 		// (ReflectionJsonToJavaConverter) jsonStathamInAction.getJsonToJavaConverter();
 
+		// TODO remove it after testing.
+		// assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator(),
+		// is((instanceOf(OrgJsonOrderedJsonObjectConvertibleCreator.class))));
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator(),
-				is((instanceOf(OrgJsonOrderedJsonObjectConvertibleCreator.class))));
+				is((instanceOf(OrderedJsonObjectCreator.class))));
+
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
 				is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
@@ -180,8 +185,12 @@ public class ReflectionJsonStathamsTest
 		// final ReflectionJsonToJavaConverter reflectionJsonToJavaConverterFromJsonStathamInAction =
 		// (ReflectionJsonToJavaConverter) jsonStathamInAction.getJsonToJavaConverter();
 
+		// TODO remove it after testing.
+		// assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator(),
+		// is((instanceOf(OrgJsonUnorderedJsonObjectConvertibleCreator.class))));
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator(),
-				is((instanceOf(OrgJsonUnorderedJsonObjectConvertibleCreator.class))));
+				is((instanceOf(UnorderedJsonObjectCreator.class))));
+
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
 				is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
 		assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),

@@ -35,12 +35,8 @@ public final class OrgJsonJsonArrayConvertible implements JsonArrayConvertible
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.lckymn.kevin.jsonstatham.core.JsonArrayConvertible#put(java.lang.Object)
-	 */
 	@Override
-	public JsonArrayConvertible put(Object value)
+	public <T> JsonArrayConvertible put(T value)
 	{
 		if (value instanceof JsonConvertible)
 		{
@@ -52,7 +48,7 @@ public final class OrgJsonJsonArrayConvertible implements JsonArrayConvertible
 		}
 		return this;
 	}
-
+	
 	@Override
 	public int length()
 	{

@@ -25,15 +25,23 @@ public final class NestedJsonObject
 	@JsonField(name = "address")
 	private Address address;
 
+	@JsonField
+	private int intNumber;
+
+	@JsonField
+	private double doubleNumber;
+
 	public NestedJsonObject()
 	{
 	}
 
-	public NestedJsonObject(Long primaryKey, String name, Address address)
+	public NestedJsonObject(Long primaryKey, String name, Address address, int intNumber, double doubleNumber)
 	{
 		this.primaryKey = primaryKey;
 		this.name = name;
 		this.address = address;
+		this.intNumber = intNumber;
+		this.doubleNumber = doubleNumber;
 	}
 
 	/**
@@ -87,10 +95,30 @@ public final class NestedJsonObject
 		this.address = address;
 	}
 
+	public int getIntNumber()
+	{
+		return intNumber;
+	}
+
+	public void setIntNumber(int intNumber)
+	{
+		this.intNumber = intNumber;
+	}
+
+	public double getDoubleNumber()
+	{
+		return doubleNumber;
+	}
+
+	public void setDoubleNumber(double doubleNumber)
+	{
+		this.doubleNumber = doubleNumber;
+	}
+
 	@Override
 	public int hashCode()
 	{
-		return hash(primaryKey, name, address);
+		return hash(hash(hash(primaryKey, name, address), intNumber), doubleNumber);
 	}
 
 	@Override
@@ -105,7 +133,9 @@ public final class NestedJsonObject
 		return isNotNull(that) && 
 				and(equal(this.primaryKey, that.getPrimaryKey()), 
 					equal(this.name, that.getName()),
-					equal(this.address, that.getAddress()));
+					equal(this.address, that.getAddress()),
+					equal(this.intNumber, that.getIntNumber()),
+					equal(this.doubleNumber, that.getDoubleNumber()));
 		/* @formatter:on */
 	}
 }
