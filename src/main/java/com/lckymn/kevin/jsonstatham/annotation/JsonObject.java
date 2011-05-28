@@ -7,8 +7,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * It indicates that an instance of any classes, annotated with this annotation, is eligible to be used as the target object of the
- * {@link com.lckymn.kevin.jsonstatham.core.JsonStatham JsonStatham}'s methods which convert Java object to JSON.
+ * It indicates that an instance of any classes, annotated with this annotation, is eligible to be used as the target
+ * object of the {@link com.lckymn.kevin.jsonstatham.core.JsonStatham JsonStatham}'s methods which convert Java object
+ * to JSON.
+ * 
+ * <pre>
+ *     ___  _____  __________  ___________ _____  ____
+ *    /   \/    / /      \   \/   /_    _//     \/   /
+ *   /        /  /    ___/\      / /   / /          /
+ *  /        \  /    ___/  \    /_/   /_/          /
+ * /____/\____\/_______/    \__//______/___/\_____/
+ * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-21)

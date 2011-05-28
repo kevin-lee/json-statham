@@ -5,7 +5,7 @@
 	<groupId>com.lckymn.kevin</groupId>
 	<artifactId>json-statham</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<name>json-statham</name>
 	<url>http://elixirian.org</url>
 	<distributionManagement>
@@ -100,9 +100,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.lckymn.kevin</groupId>
-			<artifactId>kevin-common-test</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
+			<groupId>org.elixirian</groupId>
+			<artifactId>elixirian-common-test</artifactId>
+			<version>0.0.10-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -114,38 +114,38 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.lckymn.kevin</groupId>
-			<artifactId>kevin-common-util</artifactId>
-			<version>0.0.9-SNAPSHOT</version>
+			<groupId>org.elixirian</groupId>
+			<artifactId>elixirian-common-util</artifactId>
+			<version>0.0.10-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.lckymn.kevin</groupId>
-			<artifactId>kevin-common-validation</artifactId>
-			<version>0.0.12-SNAPSHOT</version>
+			<groupId>org.elixirian</groupId>
+			<artifactId>elixirian-common-validation</artifactId>
+			<version>0.0.15-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>com.lckymn.kevin</groupId>
-			<artifactId>kevin-common-asm</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.lckymn.kevin</groupId>
-			<artifactId>kevin-common-type</artifactId>
+			<groupId>org.elixirian</groupId>
+			<artifactId>elixirian-common-asm</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.lckymn.kevin</groupId>
-			<artifactId>kevin-common-reflect</artifactId>
+			<groupId>org.elixirian</groupId>
+			<artifactId>elixirian-common-type</artifactId>
 			<version>0.0.6-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.elixirian</groupId>
+			<artifactId>elixirian-common-reflect</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
