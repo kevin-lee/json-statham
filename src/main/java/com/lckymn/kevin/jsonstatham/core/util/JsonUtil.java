@@ -108,12 +108,12 @@ public final class JsonUtil
 		if (0 < numberString.indexOf('.') && (0 > numberString.indexOf('e') & 0 > numberString.indexOf('E')))
 		{
 			/* remove 0s from the end. */
-			int theLast = numberString.length() - 1;
-			while ('0' == numberString.charAt(theLast))
-				numberString = numberString.substring(0, theLast--);
+			int theEnd = numberString.length() - 1;
+			while ('0' == numberString.charAt(theEnd))
+				numberString = numberString.substring(0, theEnd--);
 
-			if ('.' == numberString.charAt(theLast))
-				numberString = numberString.substring(0, theLast);
+			if ('.' == numberString.charAt(theEnd))
+				numberString = numberString.substring(0, theEnd);
 		}
 		return numberString;
 	}
