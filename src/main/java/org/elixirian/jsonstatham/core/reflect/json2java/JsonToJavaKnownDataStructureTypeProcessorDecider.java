@@ -24,7 +24,6 @@ import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONArray;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____
@@ -52,8 +51,9 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 
     map.put(Array.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
       {
         final Class<?> actualValueType = value.getClass();
 
@@ -68,7 +68,11 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
         }
         else
         {
-          throw new JsonStathamException(format("Unknown array type [valueType: %s][value: %s]", valueType, value));
+          throw new JsonStathamException(
+              format(
+                  "Unknown array type [valueType: %s][value: %s]\n"
+                      + "[input] ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s",
+                  valueType, value, reflectionJsonToJavaConverter, valueType, value));
         }
 
         final Class<?> targetClass = valueType;
@@ -102,7 +106,10 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
         }
         catch (Exception e)
         {
-          throw new JsonStathamException(e);
+          throw new JsonStathamException(
+              format(
+                  "[input] ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s",
+                  reflectionJsonToJavaConverter, valueType, value), e);
         }
         throw new JsonStathamException(format("Unknown type [class: %s] [JsonArrayConvertible: %s]", targetClass,
             jsonArrayConvertible));
@@ -112,9 +119,9 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
     map.put(Collection.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
 
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-          ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
-          JsonStathamException
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final ParameterizedType valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
       {
         final Class<?> fieldType = (Class<?>) valueType.getRawType();
         try
@@ -130,7 +137,10 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
         }
         catch (Exception e)
         {
-          throw new JsonStathamException(e);
+          throw new JsonStathamException(
+              format(
+                  "[input] ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, ParameterizedType valueType: %s, Object value: %s",
+                  reflectionJsonToJavaConverter, valueType, value), e);
         }
         throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", fieldType, value));
       }

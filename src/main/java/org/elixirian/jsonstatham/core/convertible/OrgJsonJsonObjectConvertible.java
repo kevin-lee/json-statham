@@ -3,10 +3,11 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import static org.elixirian.common.util.MessageFormatter.*;
+
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 /**
  * <pre>
@@ -39,7 +40,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
   }
 
   @Override
-  public Object get(String name) throws JsonStathamException
+  public Object get(final String name) throws JsonStathamException
   {
     try
     {
@@ -47,16 +48,12 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
     }
     catch (JSONException e)
     {
-      throw new JsonStathamException(e);
+      throw new JsonStathamException(format("[input] String name: %s", name), e);
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.elixirian.jsonstatham.core.JsonObjectConvertible#put(java.lang.String, java.lang.Object)
-   */
   @Override
-  public JsonObjectConvertible put(String name, Object value) throws JsonStathamException
+  public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
   {
     try
     {
@@ -72,7 +69,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
     }
     catch (JSONException e)
     {
-      throw new JsonStathamException(e);
+      throw new JsonStathamException(format("[input] String name: %s, Object value: %s", name, value), e);
     }
   }
 

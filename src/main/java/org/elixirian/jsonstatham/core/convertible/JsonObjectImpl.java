@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____
@@ -32,10 +31,10 @@ public class JsonObjectImpl implements JsonObjectConvertible
 {
   public static final JsonObjectConvertible NULL_JSON_OBJECT = new JsonObjectConvertible() {
     @Override
-    public JsonObjectConvertible put(@SuppressWarnings("unused") String name, @SuppressWarnings("unused") Object value)
-        throws JsonStathamException
+    public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
     {
-      throw new JsonStathamException("The put method in NullJsonObject cannot used.");
+      throw new JsonStathamException(format("The put method in NullJsonObject cannot used.\n"
+          + "[input] String name: %s, Object value: %s", name, value));
     }
 
     @Override
@@ -51,9 +50,10 @@ public class JsonObjectImpl implements JsonObjectConvertible
     }
 
     @Override
-    public Object get(@SuppressWarnings("unused") String name)
+    public Object get(final String name)
     {
-      throw new JsonStathamException("The name method in NullJsonObject cannot used.");
+      throw new JsonStathamException(format("The name method in NullJsonObject cannot used.\n[input] String name: %s",
+          name));
     }
 
     @Override
@@ -95,10 +95,11 @@ public class JsonObjectImpl implements JsonObjectConvertible
     return this;
   }
 
-  private void put0(String name, Object value)
+  private void put0(final String name, final Object value)
   {
     if (null == name)
-      throw new JsonStathamException(format("The name must not be null [name: %s, value: %s]", name, value));
+      throw new JsonStathamException(format("The name must not be null.\n[input] String name: %s, Object value: %s]",
+          name, value));
 
     validate(value);
     jsonFieldMap.put(name, value);

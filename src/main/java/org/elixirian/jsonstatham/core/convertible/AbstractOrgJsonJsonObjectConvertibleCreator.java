@@ -9,7 +9,6 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____
@@ -49,7 +48,8 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
     public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
     {
       throw new JsonStathamException(format(
-          "The put method in NullJsonObjectConvertible cannot used.\n[input] name: %s, value: %s", name, value));
+          "The put method in NullJsonObjectConvertible cannot used.\n[input] String name: %s, Object value: %s", name,
+          value));
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
     }
     catch (JSONException e)
     {
-      throw new JsonStathamException(e);
+      throw new JsonStathamException(format("[input] String jsonString: %s", jsonString), e);
     }
   }
 

@@ -29,7 +29,6 @@ import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____
@@ -171,9 +170,20 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
       if (fieldNameSet.contains(jsonFieldName))
       {
         /* [ERROR] duplicate field names found */
-        throw new JsonStathamException(format(
-            "Json filed name must be unique. [JsonField name: %s] in [field: %s] is already used in another field.",
-            jsonFieldName, field));
+        /* @formatter:off */
+        throw new JsonStathamException(
+            format(
+                "Json filed name must be unique. [JsonField name: %s] in [field: %s] is already used in another field.\n"
+                    + "[input] Object source: %s, " +
+                  		"Class<?> sourceClass: %s, " +
+                  		"Set<String> fieldNameSet: %s, " +
+                  		"JsonObjectConvertible jsonObjectConvertible: %s",
+                jsonFieldName, field, 
+                      source,
+                      sourceClass,
+                      fieldNameSet,
+                      jsonObjectConvertible));
+        /* @formatter:on */
       }
       fieldNameSet.add(jsonFieldName);
 

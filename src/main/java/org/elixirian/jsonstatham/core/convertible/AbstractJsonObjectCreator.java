@@ -3,10 +3,11 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import static org.elixirian.common.util.MessageFormatter.*;
+
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 /**
  * <pre>
@@ -32,7 +33,7 @@ public abstract class AbstractJsonObjectCreator implements JsonObjectConvertible
     }
     catch (JSONException e)
     {
-      throw new JsonStathamException(e);
+      throw new JsonStathamException(format("[input] String jsonString: %s", jsonString), e);
     }
   }
 

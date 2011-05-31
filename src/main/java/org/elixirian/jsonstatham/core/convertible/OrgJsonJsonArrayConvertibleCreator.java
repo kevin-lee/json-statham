@@ -3,10 +3,11 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import static org.elixirian.common.util.MessageFormatter.*;
+
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 
 /**
  * <pre>
@@ -30,7 +31,7 @@ public final class OrgJsonJsonArrayConvertibleCreator implements JsonArrayConver
   }
 
   @Override
-  public JsonArrayConvertible newJsonArrayConvertible(String jsonString)
+  public JsonArrayConvertible newJsonArrayConvertible(final String jsonString)
   {
     try
     {
@@ -38,7 +39,7 @@ public final class OrgJsonJsonArrayConvertibleCreator implements JsonArrayConver
     }
     catch (JSONException e)
     {
-      throw new JsonStathamException(e);
+      throw new JsonStathamException(format("[input] String jsonString: %s", jsonString), e);
     }
   }
 
