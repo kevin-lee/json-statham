@@ -39,6 +39,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import org.elixirian.jsonstatham.core.reflect.ReflectionJsonStathams;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
@@ -76,6 +77,9 @@ import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Access;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Role;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.test.ItemDefinition;
+import org.elixirian.jsonstatham.test.MultipleSelectionItem;
+import org.elixirian.jsonstatham.test.Option;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
@@ -85,7 +89,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
 
 /**
  * <pre>
@@ -240,11 +243,15 @@ public class JsonStathamInActionTest
     when(jsonArrayConvertibleCreator.newJsonArrayConvertible(anyString())).thenAnswer(
         ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
 
-    jsonStatham =
-      new JsonStathamInAction(new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator,
-          jsonArrayConvertibleCreator, new KnownDataStructureTypeProcessorDecider(),
-          new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider()),
-          new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator));
+    final ReflectionJavaToJsonConverter javaToJsonConverter =
+      new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator,
+          new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
+          new OneProcessorForKnownTypeDecider());
+
+    final ReflectionJsonToJavaConverter jsonToJavaConverter =
+      new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
+
+    jsonStatham = new JsonStathamInAction(javaToJsonConverter, jsonToJavaConverter);
     address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
     addressList = new ArrayList<Address>();
@@ -381,8 +388,8 @@ public class JsonStathamInActionTest
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}
-   * with List as the parameter object.
+   * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)} with
+   * List as the parameter object.
    */
   @Test
   public void testList()
@@ -1921,5 +1928,81 @@ public class JsonStathamInActionTest
     System.out.println(result);
     assertThat(result, is(equalTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
         Access.WIKI, Access.EMAIL, Access.TWITTER))));
+  }
+
+  @Test
+  public void testWithMultipleSelectionItemIntoJson()
+  {
+    System.out.println("JsonStathamInActionTest.testWithMultipleSelectionItem()");
+    /* given */
+    final String expected =
+      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+    System.out.println("expected:\n" + expected);
+    final ItemDefinition itemDefinition =
+      new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(new Option("A",
+          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+          "will not have any impact on our lives in the next 10 years."), new Option("D",
+          "is really a problem for the next generation."), new Option("E",
+          "will not have any effect for at least 100 years.")));
+
+    /* when */
+    System.out.println("actual: ");
+    String result = jsonStatham.convertIntoJson(itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+
+    /* given */
+    final JsonStatham jsonStatham2 = ReflectionJsonStathams.newReflectionJsonStathamInAction();
+    System.out.println();
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    System.out.println("actual: ");
+    String result2 = jsonStatham2.convertIntoJson(itemDefinition);
+    System.out.println(result2);
+
+    /* then */
+    assertThat(result2, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testWithMultipleSelectionItemFromJson()
+  {
+    System.out.println("JsonStathamInActionTest.testWithMultipleSelectionItemFromJson()");
+
+    /* given */
+    final ItemDefinition expected =
+      new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(new Option("A",
+          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+          "will not have any impact on our lives in the next 10 years."), new Option("D",
+          "is really a problem for the next generation."), new Option("E",
+          "will not have any effect for at least 100 years.")));
+    System.out.println("expected:\n" + expected);
+
+    final String itemDefinition =
+      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemDefinition result = jsonStatham.convertFromJson(MultipleSelectionItem.class, itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+
+    /* given */
+    final JsonStatham jsonStatham2 = ReflectionJsonStathams.newReflectionJsonStathamInAction();
+    System.out.println();
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemDefinition result2 = jsonStatham2.convertFromJson(MultipleSelectionItem.class, itemDefinition);
+    System.out.println(result2);
+
+    /* then */
+    assertThat(result2, is(equalTo(expected)));
   }
 }

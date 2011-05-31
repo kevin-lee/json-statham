@@ -77,6 +77,9 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.test.ItemDefinition;
+import org.elixirian.jsonstatham.test.MultipleSelectionItem;
+import org.elixirian.jsonstatham.test.Option;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
@@ -86,7 +89,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
 
 /**
  * <pre>
@@ -1548,4 +1550,31 @@ public class ReflectionJsonToJavaConverterTest
         Access.WIKI, Access.EMAIL, Access.TWITTER))));
   }
 
+  @Test
+  public void testWithMultipleSelectionItem() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    System.out.println("ReflectionJsonToJavaConverterTest.testWithMultipleSelectionItem()");
+
+    /* given */
+    final ItemDefinition expected =
+      new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(new Option("A",
+          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+          "will not have any impact on our lives in the next 10 years."), new Option("D",
+          "is really a problem for the next generation."), new Option("E",
+          "will not have any effect for at least 100 years.")));
+    System.out.println("expected:\n" + expected);
+
+    final String itemDefinition =
+      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemDefinition result =
+      reflectionJsonToJavaConverter.convertFromJson(MultipleSelectionItem.class, itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
 }

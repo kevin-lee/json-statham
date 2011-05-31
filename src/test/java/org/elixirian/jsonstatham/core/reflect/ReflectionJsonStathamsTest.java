@@ -14,11 +14,10 @@ import org.elixirian.common.test.CommonTestHelper.Accessibility;
 import org.elixirian.jsonstatham.core.JsonStathamInAction;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObjectCreator;
-import org.elixirian.jsonstatham.core.reflect.ReflectionJsonStathams;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
@@ -29,7 +28,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 /**
  * <pre>
@@ -157,8 +155,12 @@ public class ReflectionJsonStathamsTest
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator(),
         is((instanceOf(OrderedJsonObjectCreator.class))));
 
+    // TODO remove it after testing.
+    // assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
+    // is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
-        is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
+        is(instanceOf(JsonArrayCreator.class)));
+
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
         is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));
 
@@ -173,8 +175,7 @@ public class ReflectionJsonStathamsTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.reflect.ReflectionJsonStathams#newUnorderedReflectionJsonStathamInAction()}
-   * .
+   * {@link org.elixirian.jsonstatham.core.reflect.ReflectionJsonStathams#newUnorderedReflectionJsonStathamInAction()} .
    */
   @Test
   public final void testNewUnorderedReflectionJsonStathamInAction()
@@ -197,8 +198,12 @@ public class ReflectionJsonStathamsTest
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator(),
         is((instanceOf(UnorderedJsonObjectCreator.class))));
 
+    // TODO remove it after testing.
+    // assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
+    // is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
-        is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
+        is(instanceOf(JsonArrayCreator.class)));
+
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
         is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));
 

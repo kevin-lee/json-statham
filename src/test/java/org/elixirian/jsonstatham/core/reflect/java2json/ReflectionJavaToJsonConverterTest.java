@@ -65,6 +65,9 @@ import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMet
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Access;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Role;
+import org.elixirian.jsonstatham.test.ItemDefinition;
+import org.elixirian.jsonstatham.test.MultipleSelectionItem;
+import org.elixirian.jsonstatham.test.Option;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -72,7 +75,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
 
 /**
  * <pre>
@@ -396,8 +398,8 @@ public class ReflectionJavaToJsonConverterTest
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}
-   * with List as the parameter object.
+   * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)} with
+   * List as the parameter object.
    * 
    * @throws IllegalAccessException
    * @throws JsonStathamException
@@ -1184,4 +1186,30 @@ public class ReflectionJavaToJsonConverterTest
     assertThat(result, is(equalTo(expected)));
   }
 
+  @Test
+  public void testWithMultipleSelectionItem() throws IllegalArgumentException, JsonStathamException,
+      IllegalAccessException
+  {
+    System.out.println("\nReflectionJavaToJsonConverterTest.testWithMultipleSelectionItem()");
+
+    /* given */
+
+    final String expected =
+      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+    System.out.println("expected:\n" + expected);
+    final ItemDefinition itemDefinition =
+      new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(new Option("A",
+          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+          "will not have any impact on our lives in the next 10 years."), new Option("D",
+          "is really a problem for the next generation."), new Option("E",
+          "will not have any effect for at least 100 years.")));
+
+    /* when */
+    System.out.println("actual: ");
+    String result = reflectionJavaToJsonConverter.convertIntoJson(itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
 }

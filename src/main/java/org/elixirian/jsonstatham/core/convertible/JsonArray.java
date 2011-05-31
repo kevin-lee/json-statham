@@ -88,4 +88,11 @@ public class JsonArray implements JsonArrayConvertible
   {
     return new JsonArray(elements);
   }
+
+  public static JsonArrayConvertible newJsonArray(final String jsonString)
+  {
+    throw new UnsupportedOperationException("Not implemented yet. [input] String jsonString: " + jsonString);
+    // final List<Object> elements = new ArrayList<Object>();
+    // return new JsonArray(elements);
+  }
 }
