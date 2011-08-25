@@ -11,7 +11,6 @@ import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJava
 import org.elixirian.jsonstatham.core.SimpleKnownTypeChecker;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____

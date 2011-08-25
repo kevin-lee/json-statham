@@ -3,8 +3,8 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.common.util.Conditional.*;
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.Conditional.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +15,7 @@ import java.util.Set;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
-import org.elixirian.common.reflect.Classes;
+import org.elixirian.kommonlee.reflect.Classes;
 
 /**
  * <pre>

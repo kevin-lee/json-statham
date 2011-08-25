@@ -3,7 +3,7 @@
  */
 package org.elixirian.jsonstatham.json.json2java;
 
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.List;
 

@@ -3,12 +3,12 @@
  */
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
-import static org.elixirian.common.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.collect.Lists.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -94,7 +94,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
           }
           else if (Collection.class.isAssignableFrom(targetClass))
           {
-            final List<Object> list = new ArrayList<Object>();
+            final List<Object> list = newArrayList();
             for (int i = 0; i < length; i++)
             {
               list.add(reflectionJsonToJavaConverter.resolveElement(Object.class, jsonArrayConvertible.get(i)));

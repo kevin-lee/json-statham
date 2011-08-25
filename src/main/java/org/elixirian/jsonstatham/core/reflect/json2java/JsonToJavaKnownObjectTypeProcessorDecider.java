@@ -3,7 +3,7 @@
  */
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
-import static org.elixirian.common.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -18,7 +18,6 @@ import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONObject;
-
 
 /**
  * <pre>

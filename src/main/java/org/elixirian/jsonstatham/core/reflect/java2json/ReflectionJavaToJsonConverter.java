@@ -3,9 +3,9 @@
  */
 package org.elixirian.jsonstatham.core.reflect.java2json;
 
-import static org.elixirian.common.util.MessageFormatter.*;
-import static org.elixirian.common.util.Strings.*;
-import static org.elixirian.common.validation.Assertions.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Strings.*;
+import static org.elixirian.kommonlee.validation.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +15,6 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.elixirian.common.reflect.Classes;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
@@ -28,6 +27,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.reflect.Classes;
 
 /**
  * <pre>

@@ -3,8 +3,8 @@
  */
 package org.elixirian.jsonstatham.core.util;
 
-import static org.elixirian.common.util.MessageFormatter.*;
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -13,7 +13,6 @@ import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectImpl;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-
 
 /**
  * <pre>

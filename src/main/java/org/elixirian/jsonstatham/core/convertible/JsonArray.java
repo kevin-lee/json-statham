@@ -4,8 +4,8 @@
 package org.elixirian.jsonstatham.core.convertible;
 
 import static org.elixirian.jsonstatham.core.util.JsonUtil.*;
+import static org.elixirian.kommonlee.collect.Lists.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -28,12 +28,12 @@ public class JsonArray implements JsonArrayConvertible
 
   private JsonArray()
   {
-    this.list = new ArrayList<Object>();
+    this.list = newArrayList();
   }
 
   private JsonArray(final Collection<?> elements)
   {
-    this.list = new ArrayList<Object>(elements);
+    this.list = newArrayList(elements);
   }
 
   @Override

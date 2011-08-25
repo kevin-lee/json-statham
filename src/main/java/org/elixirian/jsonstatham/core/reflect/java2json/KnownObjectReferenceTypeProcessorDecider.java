@@ -14,7 +14,6 @@ import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____
@@ -86,8 +85,7 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 
   /*
    * (non-Javadoc)
-   * @see
-   * org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
+   * @see org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
    */
   @Override
   public <T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<T> type)

@@ -3,7 +3,7 @@
  */
 package org.elixirian.jsonstatham.test;
 
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Arrays;
 import java.util.Collections;

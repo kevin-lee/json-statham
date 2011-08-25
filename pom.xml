@@ -5,7 +5,7 @@
 	<groupId>org.elixirian</groupId>
 	<artifactId>json-statham</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>0.2.4-SNAPSHOT</version>
 	<name>json-statham</name>
 	<url>http://elixirian.org</url>
 	<distributionManagement>
@@ -99,13 +99,6 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.elixirian</groupId>
-			<artifactId>elixirian-common-test</artifactId>
-			<version>0.0.10-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.json</groupId>
@@ -113,41 +106,42 @@
 			<version>20090211</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.elixirian</groupId>
-			<artifactId>elixirian-common-util</artifactId>
-			<version>0.0.10-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.elixirian</groupId>
-			<artifactId>elixirian-common-validation</artifactId>
-			<version>0.0.15-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
 
 		<dependency>
-			<groupId>org.elixirian</groupId>
-			<artifactId>elixirian-common-asm</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-test</artifactId>
+		  <version>0.0.12-SNAPSHOT</version>
+		  <scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.elixirian</groupId>
-			<artifactId>elixirian-common-type</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-util</artifactId>
+		  <version>0.0.11-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.elixirian</groupId>
-			<artifactId>elixirian-common-reflect</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-validation</artifactId>
+		  <version>0.0.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-asm</artifactId>
+		  <version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-type</artifactId>
+		  <version>0.0.7-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-reflect</artifactId>
+		  <version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.elixirian</groupId>
+		  <artifactId>kommonlee-collection</artifactId>
+		  <version>0.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<properties>

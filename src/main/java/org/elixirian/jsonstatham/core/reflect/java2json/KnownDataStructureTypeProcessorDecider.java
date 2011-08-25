@@ -17,7 +17,6 @@ import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
-
 /**
  * <pre>
  *     ___  _____  __________  ___________ _____  ____

@@ -5,7 +5,6 @@ package org.elixirian.jsonstatham.core;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.elixirian.common.reflect.TypeHolder;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
@@ -13,7 +12,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-
+import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**
  * <pre>

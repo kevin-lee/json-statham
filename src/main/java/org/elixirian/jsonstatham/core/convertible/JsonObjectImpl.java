@@ -3,8 +3,8 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.common.util.MessageFormatter.*;
 import static org.elixirian.jsonstatham.core.util.JsonUtil.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
 
 import java.util.HashMap;
 import java.util.Iterator;

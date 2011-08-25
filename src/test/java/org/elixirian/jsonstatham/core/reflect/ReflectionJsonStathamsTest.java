@@ -3,14 +3,13 @@
  */
 package org.elixirian.jsonstatham.core.reflect;
 
-import static org.elixirian.common.test.CommonTestHelper.*;
+import static org.elixirian.kommonlee.test.CommonTestHelper.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
-import org.elixirian.common.test.CommonTestHelper.Accessibility;
 import org.elixirian.jsonstatham.core.JsonStathamInAction;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
@@ -23,6 +22,7 @@ import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceType
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
+import org.elixirian.kommonlee.test.CommonTestHelper.Accessibility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

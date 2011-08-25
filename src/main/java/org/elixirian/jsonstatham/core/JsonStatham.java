@@ -6,10 +6,9 @@ package org.elixirian.jsonstatham.core;
 import java.util.Collection;
 import java.util.Map;
 
-import org.elixirian.common.reflect.TypeHolder;
 import org.elixirian.jsonstatham.annotation.JsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-
+import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**
  * <pre>

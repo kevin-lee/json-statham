@@ -3,8 +3,8 @@
  */
 package org.elixirian.jsonstatham.core;
 
-import static org.elixirian.common.util.MessageFormatter.*;
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -28,11 +28,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.elixirian.common.reflect.TypeHolder;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
-import org.elixirian.jsonstatham.core.JsonStatham;
-import org.elixirian.jsonstatham.core.JsonStathamInAction;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
@@ -51,6 +48,8 @@ import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
 import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessorWithoutItsName;
 import org.elixirian.jsonstatham.json.JsonObjectContainingCollection;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums;
+import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Access;
+import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Role;
 import org.elixirian.jsonstatham.json.JsonObjectContainingIterable;
 import org.elixirian.jsonstatham.json.JsonObjectContainingIterator;
 import org.elixirian.jsonstatham.json.JsonObjectContainingList;
@@ -73,13 +72,12 @@ import org.elixirian.jsonstatham.json.SubClassWithValueAccessor;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithAbstractMethod;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMethod;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
-import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Access;
-import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Role;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
+import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;

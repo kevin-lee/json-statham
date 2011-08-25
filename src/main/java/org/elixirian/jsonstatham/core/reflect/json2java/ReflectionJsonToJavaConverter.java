@@ -3,12 +3,13 @@
  */
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
-import static org.elixirian.common.reflect.Classes.*;
-import static org.elixirian.common.reflect.Primitives.*;
-import static org.elixirian.common.util.MessageFormatter.*;
-import static org.elixirian.common.util.Objects.*;
-import static org.elixirian.common.util.Strings.*;
-import static org.elixirian.common.validation.Assertions.*;
+import static org.elixirian.kommonlee.collect.Lists.*;
+import static org.elixirian.kommonlee.reflect.Classes.*;
+import static org.elixirian.kommonlee.reflect.Primitives.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Objects.*;
+import static org.elixirian.kommonlee.util.Strings.*;
+import static org.elixirian.kommonlee.validation.Assertions.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -27,10 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.elixirian.common.asm.analysis.AsmMethodAndConstructorAnalyser;
-import org.elixirian.common.asm.analysis.ConstructorAnalyser;
-import org.elixirian.common.reflect.TypeHolder;
-import org.elixirian.common.type.Pair;
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
@@ -43,9 +40,12 @@ import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.asm.analysis.AsmMethodAndConstructorAnalyser;
+import org.elixirian.kommonlee.asm.analysis.ConstructorAnalyser;
+import org.elixirian.kommonlee.reflect.TypeHolder;
+import org.elixirian.kommonlee.type.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 
 /**
  * <pre>
@@ -338,7 +338,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         final Constructor<T> constructor = constructorEntry.getLeft();
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
-        final List<Object> argList = new ArrayList<Object>();
+        final List<Object> argList = newArrayList();
         for (final String fieldName : constructorEntry.getRight())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
@@ -367,7 +367,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       {
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
-        final List<Object> argList = new ArrayList<Object>();
+        final List<Object> argList = newArrayList();
         for (final String fieldName : constructorEntry.getRight())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
@@ -619,7 +619,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       throw new JsonStathamException(format("The given collectionClass [class: %s] cannot be instantiated.",
           collectionClass), e);
     }
-    return new ArrayList<E>();
+    return newArrayList();
   }
 
   public <T> ConstructorAndParamsPair<T, String[]> findMatchingConstructor(
@@ -668,7 +668,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       final JsonObjectConvertible jsonObjectConvertible) throws JsonStathamException, IllegalArgumentException,
       IllegalAccessException
   {
-    final List<Object> paramValues = new ArrayList<Object>();
+    final List<Object> paramValues = newArrayList();
     final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap =
       jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.fieldNameToJsonFieldNameAndFieldPairMap;
 
@@ -825,7 +825,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       // @SuppressWarnings("unchecked")
       // final List<Object> list = (List<Object>) (targetClass.isInterface() ? new ArrayList<Object>() :
       // targetClass.newInstance());
-      final List<Object> list = new ArrayList<Object>();
+      final List<Object> list = newArrayList();
       for (int i = 0; i < length; i++)
       {
         list.add(resolveElement(Object.class, jsonArrayConvertible.get(i)));

@@ -3,7 +3,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.common.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
 
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONException;

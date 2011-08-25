@@ -5,9 +5,8 @@ package org.elixirian.jsonstatham.core;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.elixirian.common.reflect.TypeHolder;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-
+import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**
  * <pre>

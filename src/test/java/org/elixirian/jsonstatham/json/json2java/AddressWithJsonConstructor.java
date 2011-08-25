@@ -3,8 +3,8 @@
  */
 package org.elixirian.jsonstatham.json.json2java;
 
-import static org.elixirian.common.util.Conditional.*;
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.Conditional.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;

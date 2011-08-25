@@ -3,7 +3,7 @@
  */
 package org.elixirian.jsonstatham.test;
 
-import static org.elixirian.common.util.Objects.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
