@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
@@ -76,8 +76,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   private final JsonToJavaKnownObjectTypeProcessorDecider jsonToJavaKnownObjectTypeProcessorDecider =
     new JsonToJavaKnownObjectTypeProcessorDecider();
 
-  public ReflectionJsonToJavaConverter(JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-      JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+  public ReflectionJsonToJavaConverter(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
+      final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
   {
     this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
     this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
@@ -98,7 +98,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     final String jsonFieldName;
     final Field field;
 
-    public JsonFieldNameAndFieldPair(String jsonFieldName, Field field)
+    public JsonFieldNameAndFieldPair(final String jsonFieldName, final Field field)
     {
       this.jsonFieldName = jsonFieldName;
       this.field = field;
@@ -131,8 +131,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     final Map<String, Field> jsonFieldNameToFieldMap;
     final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap;
 
-    public JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair(Map<String, Field> jsonFieldNameToFieldMap,
-        Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap)
+    public JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair(
+        final Map<String, Field> jsonFieldNameToFieldMap,
+        final Map<String, JsonFieldNameAndFieldPair> fieldNameToJsonFieldNameAndFieldPairMap)
     {
       this.jsonFieldNameToFieldMap = jsonFieldNameToFieldMap;
       this.fieldNameToJsonFieldNameAndFieldPairMap = fieldNameToJsonFieldNameAndFieldPairMap;
@@ -165,7 +166,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   private void extractJsonFieldNames(final Class<?> sourceClass,
       final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
   {
-    for (Field field : sourceClass.getDeclaredFields())
+    for (final Field field : sourceClass.getDeclaredFields())
     {
       if (!field.isAnnotationPresent(JsonField.class))
       {
@@ -202,7 +203,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   }
 
   private <T, A extends Annotation> Map<Constructor<T>, String[]> extractAllConstructorsWithAnnotations(
-      Map<Constructor<T>, String[]> constructorMap, Class<? extends A>... annotations)
+      final Map<Constructor<T>, String[]> constructorMap, final Class<? extends A>... annotations)
   {
     final Map<Constructor<T>, String[]> map = new HashMap<Constructor<T>, String[]>();
     for (final Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
@@ -236,19 +237,19 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       }
       return createFromJsonObject0(targetClass, jsonObjectConvertible);
     }
-    catch (IllegalArgumentException e)
+    catch (final IllegalArgumentException e)
     {
       throw e;
     }
-    catch (IllegalAccessException e)
+    catch (final IllegalAccessException e)
     {
       throw e;
     }
-    catch (InstantiationException e)
+    catch (final InstantiationException e)
     {
       throw new JsonStathamException(e);
     }
-    catch (InvocationTargetException e)
+    catch (final InvocationTargetException e)
     {
       throw new JsonStathamException(e);
     }
@@ -259,7 +260,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     final Constructor<T> constructor;
     final P params;
 
-    public ConstructorAndParamsPair(Constructor<T> constructor, P paramNames)
+    public ConstructorAndParamsPair(final Constructor<T> constructor, final P paramNames)
     {
       this.constructor = constructor;
       this.params = paramNames;
@@ -282,7 +283,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException
   {
     final List<Class<?>> classList =
-      extractClssesWithAnnotationsInSuperToSubOrder(targetClass, Object.class, true, JsonObject.class);
+      extractClassesWithAnnotationsInSuperToSubOrder(targetClass, Object.class, true, JsonObject.class);
 
     assertFalse(classList.isEmpty(), "The given type is not a JSON object type. " + "It must be annotated with %s.\n"
         + "[class: %s]", JsonObject.class.getName(), targetClass);
@@ -398,7 +399,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     {
       // use it
       constructor.setAccessible(true);
-      T t = constructor.newInstance();
+      final T t = constructor.newInstance();
       // set the values;
       for (final Entry<String, Field> fieldEntry : jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getLeft()
           .entrySet())
@@ -423,8 +424,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return createFromJsonObject(targetClass, jsonObjectConvertible);
   }
 
-  private <T> Object resolveFieldValue(Field field, Class<T> fieldType, Object value) throws JsonStathamException,
-      IllegalArgumentException, IllegalAccessException
+  private <T> Object resolveFieldValue(final Field field, final Class<T> fieldType, final Object value)
+      throws JsonStathamException, IllegalArgumentException, IllegalAccessException
   {
     return resolveTypeAndValue(field.getGenericType(), fieldType, value);
   }
@@ -496,10 +497,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       final Type valueType, final Object value) throws IllegalAccessException
   {
     /* @formatter:off */
-		final JsonObjectConvertible jsonObject = 
+		final JsonObjectConvertible jsonObject =
 			JsonObjectConvertible.class.isAssignableFrom(value.getClass()) ?
 				/* JsonObjectConvertible */
-				(JsonObjectConvertible) value : 
+				(JsonObjectConvertible) value :
 			JSONObject.class.isAssignableFrom(value.getClass()) ?
 				/* JSONObject */
 				new OrgJsonJsonObjectConvertible((JSONObject) value) :
@@ -512,7 +513,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       if (valueType instanceof ParameterizedType)
       {
         final Map<String, Object> map = newMap(mapType);
-        for (String name : jsonObject.getNames())
+        for (final String name : jsonObject.getNames())
         {
           map.put(name, resolveTypeAndValue(valueType, null, jsonObject.get(name)));
         }
@@ -522,7 +523,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       if (valueType instanceof Class)
       {
         final Map<String, Object> map = newMap(mapType);
-        for (String name : jsonObject.getNames())
+        for (final String name : jsonObject.getNames())
         {
           final Class<?> typeClass = (Class<?>) valueType;
           map.put(name, resolveElement(typeClass, jsonObject.get(name)));
@@ -533,7 +534,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     throw new JsonStathamException(format("Unknown type: [class: %s][value: %s]", valueType, value));
   }
 
-  private <E, M extends Map<String, E>> Map<String, E> newMap(Class<M> mapClass)
+  private <E, M extends Map<String, E>> Map<String, E> newMap(final Class<M> mapClass)
   {
     try
     {
@@ -543,7 +544,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       }
 
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       throw new JsonStathamException(format("The given collectionClass [class: %s] cannot be instantiated.", mapClass),
           e);
@@ -551,8 +552,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return new HashMap<String, E>();
   }
 
-  public <E, C extends Collection<E>> Collection<?> createCollectionWithValues(Class<C> collectionClass,
-      Type valueType, Object value) throws IllegalAccessException
+  public <E, C extends Collection<E>> Collection<?> createCollectionWithValues(final Class<C> collectionClass,
+      final Type valueType, final Object value) throws IllegalAccessException
   {
     /* @formatter:off */
 		final JsonArrayConvertible jsonArray =
@@ -561,7 +562,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			(JsonArrayConvertible) value :
 
 			/* JSONArray. */
-			JSONArray.class.isAssignableFrom(value.getClass()) ? 
+			JSONArray.class.isAssignableFrom(value.getClass()) ?
 			new OrgJsonJsonArrayConvertible((JSONArray) value) :
 
 			/* Neither JsonArrayConvertible nor JSONArray  */
@@ -600,7 +601,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
   }
 
-  private <E, C extends Collection<E>> Collection<E> newCollection(Class<C> collectionClass)
+  private <E, C extends Collection<E>> Collection<E> newCollection(final Class<C> collectionClass)
   {
     try
     {
@@ -614,7 +615,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         return collectionClass.isInterface() ? new HashSet<E>() : collectionClass.newInstance();
       }
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       throw new JsonStathamException(format("The given collectionClass [class: %s] cannot be instantiated.",
           collectionClass), e);
@@ -629,7 +630,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
       jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap;
     final int fieldSize = fieldNameToFieldMap.size();
-    for (Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
+    for (final Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
     {
       final String[] paramNames = entry.getValue();
       if (fieldSize == paramNames.length)
@@ -770,7 +771,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
    * </li>
    * </ul>
    */
-  private <T> Object getDefaultValue(Class<T> typeClass)
+  private <T> Object getDefaultValue(final Class<T> typeClass)
   {
     if (typeClass.isPrimitive())
     {
@@ -779,7 +780,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return null;
   }
 
-  public <E> Object resolveElement(Class<E> componentType, Object element) throws IllegalArgumentException,
+  public <E> Object resolveElement(final Class<E> componentType, final Object element) throws IllegalArgumentException,
       JsonStathamException, IllegalAccessException
   {
     final Class<?> elementType = element.getClass();

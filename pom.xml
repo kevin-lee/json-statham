@@ -5,7 +5,7 @@
 	<groupId>org.elixirian</groupId>
 	<artifactId>json-statham</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.4-SNAPSHOT</version>
+	<version>0.2.5-SNAPSHOT</version>
 	<name>json-statham</name>
 	<url>http://elixirian.org</url>
 	<distributionManagement>
@@ -136,7 +136,7 @@
 		<dependency>
 		  <groupId>org.elixirian</groupId>
 		  <artifactId>kommonlee-reflect</artifactId>
-		  <version>0.0.4-SNAPSHOT</version>
+		  <version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.elixirian</groupId>
