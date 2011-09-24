@@ -116,17 +116,17 @@
 		<dependency>
 		  <groupId>org.elixirian</groupId>
 		  <artifactId>kommonlee-util</artifactId>
-		  <version>0.0.11-SNAPSHOT</version>
+		  <version>0.0.12-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.elixirian</groupId>
 		  <artifactId>kommonlee-validation</artifactId>
-		  <version>0.0.16-SNAPSHOT</version>
+		  <version>0.0.17-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.elixirian</groupId>
 		  <artifactId>kommonlee-asm</artifactId>
-		  <version>0.0.4-SNAPSHOT</version>
+		  <version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.elixirian</groupId>
@@ -136,12 +136,12 @@
 		<dependency>
 		  <groupId>org.elixirian</groupId>
 		  <artifactId>kommonlee-reflect</artifactId>
-		  <version>0.0.5-SNAPSHOT</version>
+		  <version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.elixirian</groupId>
 		  <artifactId>kommonlee-collection</artifactId>
-		  <version>0.0.2-SNAPSHOT</version>
+		  <version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<properties>
