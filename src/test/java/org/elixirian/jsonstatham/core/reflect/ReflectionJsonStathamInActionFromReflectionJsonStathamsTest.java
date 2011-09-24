@@ -202,17 +202,19 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final StringBuilder stringBuilder = new StringBuilder("[");
     for (final Address address : addressList)
     {
+      /* @formatter:off */
       stringBuilder.append("{\"street\":\"")
-          .append(address.getStreet())
-          .append("\",\"suburb\":\"")
-          .append(address.getSuburb())
-          .append("\",\"city\":\"")
-          .append(address.getCity())
-          .append("\",\"state\":\"")
-          .append(address.getState())
-          .append("\",\"postcode\":\"")
-          .append(address.getPostcode())
-          .append("\"},");
+                     .append(address.getStreet())
+                   .append("\",\"suburb\":\"")
+                     .append(address.getSuburb())
+                   .append("\",\"city\":\"")
+                     .append(address.getCity())
+                   .append("\",\"state\":\"")
+                     .append(address.getState())
+                   .append("\",\"postcode\":\"")
+                     .append(address.getPostcode())
+                   .append("\"},");
+      /* @formatter:on */
     }
     if (1 < stringBuilder.length())
     {
@@ -1083,19 +1085,19 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     }
   }
 
-//  @Test
-//  public void testJson2JavaJsonHavingNullValue()
-//  {
-//    System.out.println("\nReflectionJsonStathamInActionFromReflectionJsonStathamsTest.testJson2JavaJsonHavingNullValue()");
-//    final String json = "{\"object\":null}";
-//    System.out.println("json:\n" + json);
-//    System.out.println("java: ");
-//    final TestPojo result = jsonStatham.convertFromJson(TestPojo.class, json);
-//    System.out.println(result);
-//    assertTrue(new TestPojo().equals(result));
-//    assertEquals(new TestPojo().hashCode(), result.hashCode());
-//
-//  }
+  @Test
+  public void testJson2JavaJsonHavingNullValue()
+  {
+    System.out.println("\nReflectionJsonStathamInActionFromReflectionJsonStathamsTest.testJson2JavaJsonHavingNullValue()");
+    final String json = "{\"object\":null}";
+    System.out.println("json:\n" + json);
+    System.out.println("java: ");
+    final TestPojo result = jsonStatham.convertFromJson(TestPojo.class, json);
+    System.out.println(result);
+    assertTrue(new TestPojo().equals(result));
+    assertEquals(new TestPojo().hashCode(), result.hashCode());
+
+  }
 
   private String toString(final Object object)
   {
@@ -1898,23 +1900,23 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     assertThat(result2, is(equalTo(expected)));
   }
 
-//  @Test
-//  public void testItemConfig() throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException,
-//      IllegalAccessException, InvocationTargetException
-//  {
-//    /* given */
-//    final ItemConfig expected = ItemConfig.NULL_ITEM_CONFIG;
-//    System.out.println("expected:\n" + expected);
-//
-//    final String itemConfig =
-//      "{\"idAutomated\":null,\"optionsRandomised\":null,\"optionCodesShown\":null,\"correctAnswers\":[],\"optional\":false}";
-//
-//    /* when */
-//    System.out.println("actual: ");
-//    final ItemConfig result = jsonStatham.convertFromJson(ItemConfig.class, itemConfig);
-//    System.out.println(result);
-//
-//    /* then */
-//    assertThat(result, is(equalTo(expected)));
-//  }
+  @Test
+  public void testItemConfig() throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException,
+      IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final ItemConfig expected = ItemConfig.NULL_ITEM_CONFIG;
+    System.out.println("expected:\n" + expected);
+
+    final String itemConfig =
+      "{\"idAutomated\":null,\"optionsRandomised\":null,\"optionCodesShown\":null,\"correctAnswers\":[],\"optional\":false}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemConfig result = jsonStatham.convertFromJson(ItemConfig.class, itemConfig);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
 }

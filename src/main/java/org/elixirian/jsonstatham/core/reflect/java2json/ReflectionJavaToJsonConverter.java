@@ -216,11 +216,11 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
           method.setAccessible(true);
           fieldValue = method.invoke(source, EMPTY_OBJECT_ARRAY);
         }
-        catch (SecurityException e)
+        catch (final SecurityException e)
         {
           throw new JsonStathamException(e);
         }
-        catch (NoSuchMethodException e)
+        catch (final NoSuchMethodException e)
         {
           if (hasNoAccessorName && isFieldBoolean)
           {
@@ -231,7 +231,7 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
               method.setAccessible(true);
               fieldValue = method.invoke(source, EMPTY_OBJECT_ARRAY);
             }
-            catch (Exception e1)
+            catch (final Exception e1)
             {
               /* throw the original exception. */
               throw new JsonStathamException(format("The given ValueAccessor method that is [%s] is not found."
@@ -245,7 +245,7 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
                 valueAccessorName), e);
           }
         }
-        catch (InvocationTargetException e)
+        catch (final InvocationTargetException e)
         {
           throw new JsonStathamException(format("Value accessor invocation failed.\n"
               + "It might be caused by any error happened in the given value accessor method or "
@@ -298,7 +298,7 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
   }
 
   @Override
-  public String convertIntoJson(Object source) throws IllegalArgumentException, JsonStathamException,
+  public String convertIntoJson(final Object source) throws IllegalArgumentException, JsonStathamException,
       IllegalAccessException
   {
     if (null == source)

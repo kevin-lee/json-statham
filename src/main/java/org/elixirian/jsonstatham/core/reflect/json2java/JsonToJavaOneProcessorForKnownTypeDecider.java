@@ -1,5 +1,7 @@
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
@@ -10,6 +12,8 @@ import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJava
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.SimpleKnownTypeChecker;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.reflect.Primitives;
+import org.json.JSONObject;
 
 /**
  * <pre>
@@ -35,10 +39,20 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
   {
     DEFAULT_KNOWN_TYPE_PROCESSOR = new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
-      public <T> Object process(
-          @SuppressWarnings("unused") ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
       {
+        if (JSONObject.NULL.equals(value))
+        {
+          if (Primitives.isPrimitive(valueType))
+          {
+            throw new IllegalArgumentException(format("value is null but the valueType is one of primitive type\n"
+                + "(\"unused\") ReflectionJsonToJavaConverter reflectionJsonToJavaConverter:%s\n"
+                + "Class<?> valueType: %s\n" + "Object value: %s", reflectionJsonToJavaConverter, valueType, value));
+          }
+          return null;
+        }
         final Class<?> actualValueType = value.getClass();
         // if (valueType.isAssignableFrom(actualValueType))
         // {
@@ -89,13 +103,13 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
 
     DAFAULT_SIMPLE_TYPE_CHECKERS = new SimpleKnownTypeChecker[] { new SimpleKnownTypeChecker() {
       @Override
-      public boolean isKnown(Class<?> type)
+      public boolean isKnown(final Class<?> type)
       {
         return type.isPrimitive();
       }
     }, new SimpleKnownTypeChecker() {
       @Override
-      public boolean isKnown(Class<?> type)
+      public boolean isKnown(final Class<?> type)
       {
         return type.isEnum();
       }
@@ -116,9 +130,9 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
   }
 
   @Override
-  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(Class<?> type)
+  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(final Class<?> type)
   {
-    for (SimpleKnownTypeChecker simpleKnownTypeChecker : simpleKnownTypeCheckers)
+    for (final SimpleKnownTypeChecker simpleKnownTypeChecker : simpleKnownTypeCheckers)
     {
       if (simpleKnownTypeChecker.isKnown(type))
       {
@@ -130,7 +144,7 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
       return knownTypeProcessorWithReflectionJsonToJavaConverter;
     }
 
-    for (Class<?> knownType : knownExtensibleBasicTypeSet)
+    for (final Class<?> knownType : knownExtensibleBasicTypeSet)
     {
       if (knownType.isAssignableFrom(type))
       {

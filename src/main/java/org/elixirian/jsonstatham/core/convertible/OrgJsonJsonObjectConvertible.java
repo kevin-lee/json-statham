@@ -27,7 +27,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
 
   private final JSONObject jsonObject;
 
-  public OrgJsonJsonObjectConvertible(JSONObject jsonObject)
+  public OrgJsonJsonObjectConvertible(final JSONObject jsonObject)
   {
     this.jsonObject = jsonObject;
   }
@@ -46,7 +46,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
     {
       return jsonObject.get(name);
     }
-    catch (JSONException e)
+    catch (final JSONException e)
     {
       throw new JsonStathamException(format("[input] String name: %s", name), e);
     }
@@ -59,7 +59,8 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
     {
       if (value instanceof JsonConvertible)
       {
-        jsonObject.put(name, ((JsonConvertible) value).getActualObject());
+        final Object actualObject = ((JsonConvertible) value).getActualObject();
+        jsonObject.put(name, actualObject);
       }
       else
       {
@@ -67,7 +68,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
       }
       return this;
     }
-    catch (JSONException e)
+    catch (final JSONException e)
     {
       throw new JsonStathamException(format("[input] String name: %s, Object value: %s", name, value), e);
     }

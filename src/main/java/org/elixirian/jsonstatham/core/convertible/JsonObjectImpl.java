@@ -83,13 +83,13 @@ public class JsonObjectImpl implements JsonObjectConvertible
   }
 
   @Override
-  public Object get(String name)
+  public Object get(final String name)
   {
     return jsonFieldMap.get(name);
   }
 
   @Override
-  public JsonObjectConvertible put(String name, Object value) throws JsonStathamException
+  public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
   {
     put0(name, value);
     return this;
