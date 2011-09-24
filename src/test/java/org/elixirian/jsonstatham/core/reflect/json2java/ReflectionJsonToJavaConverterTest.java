@@ -75,6 +75,7 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.test.ItemConfig;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
@@ -113,7 +114,8 @@ public class ReflectionJsonToJavaConverterTest
   private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
     new Answer<JsonObjectConvertible>() {
       @Override
-      public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+      public JsonObjectConvertible answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
+          throws Throwable
       {
         return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
       }
@@ -122,13 +124,13 @@ public class ReflectionJsonToJavaConverterTest
   private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING =
     new Answer<JsonObjectConvertible>() {
       @Override
-      public JsonObjectConvertible answer(InvocationOnMock invocation) throws Throwable
+      public JsonObjectConvertible answer(final InvocationOnMock invocation) throws Throwable
       {
         try
         {
           return new OrgJsonJsonObjectConvertible(new JSONObject((String) invocation.getArguments()[0]));
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           throw new JsonStathamException(e);
         }
@@ -140,7 +142,8 @@ public class ReflectionJsonToJavaConverterTest
     new Answer<JsonObjectConvertible>() {
 
       @Override
-      public JsonObjectConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+      public JsonObjectConvertible answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
+          throws Throwable
       {
         return new JsonObjectConvertible() {
           @Override
@@ -150,7 +153,7 @@ public class ReflectionJsonToJavaConverterTest
           }
 
           @Override
-          public Object get(@SuppressWarnings("unused") String name)
+          public Object get(@SuppressWarnings("unused") final String name)
           {
             throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
           }
@@ -162,8 +165,8 @@ public class ReflectionJsonToJavaConverterTest
           }
 
           @Override
-          public JsonObjectConvertible put(@SuppressWarnings("unused") String name,
-              @SuppressWarnings("unused") Object value) throws JsonStathamException
+          public JsonObjectConvertible put(@SuppressWarnings("unused") final String name,
+              @SuppressWarnings("unused") final Object value) throws JsonStathamException
           {
             throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
           }
@@ -182,7 +185,8 @@ public class ReflectionJsonToJavaConverterTest
     new Answer<JsonArrayConvertible>() {
 
       @Override
-      public JsonArrayConvertible answer(@SuppressWarnings("unused") InvocationOnMock invocation) throws Throwable
+      public JsonArrayConvertible answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
+          throws Throwable
       {
         return new OrgJsonJsonArrayConvertible(new JSONArray());
       }
@@ -191,7 +195,7 @@ public class ReflectionJsonToJavaConverterTest
   private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING =
     new Answer<JsonArrayConvertible>() {
       @Override
-      public JsonArrayConvertible answer(InvocationOnMock invocation) throws Throwable
+      public JsonArrayConvertible answer(final InvocationOnMock invocation) throws Throwable
       {
         return new OrgJsonJsonArrayConvertible(new JSONArray((String) invocation.getArguments()[0]));
       }
@@ -319,7 +323,7 @@ public class ReflectionJsonToJavaConverterTest
       }
 
       @Override
-      public boolean equals(Object testPojo)
+      public boolean equals(final Object testPojo)
       {
         if (this == testPojo)
         {
@@ -340,7 +344,7 @@ public class ReflectionJsonToJavaConverterTest
     {
       reflectionJsonToJavaConverter.convertFromJson(TestPojo.class, json);
     }
-    catch (Exception e)
+    catch (final Exception e)
     {
       System.out.println("exceptionMessage: " + e.getMessage());
       throw e;
@@ -360,7 +364,7 @@ public class ReflectionJsonToJavaConverterTest
     }
 
     @Override
-    public boolean equals(Object testPojo)
+    public boolean equals(final Object testPojo)
     {
       if (this == testPojo)
       {
@@ -393,7 +397,7 @@ public class ReflectionJsonToJavaConverterTest
   private String getAddressArrayString()
   {
     final StringBuilder stringBuilder = new StringBuilder("[");
-    for (Address address : addressList)
+    for (final Address address : addressList)
     {
       stringBuilder.append("{\"street\":\"")
           .append(address.getStreet())
@@ -415,7 +419,7 @@ public class ReflectionJsonToJavaConverterTest
     return stringBuilder.toString();
   }
 
-  private String toString(Object object)
+  private String toString(final Object object)
   {
     if (object.getClass()
         .isArray())
@@ -957,7 +961,7 @@ public class ReflectionJsonToJavaConverterTest
     {
       result = reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithDuplicateKeys.class, "{}");
     }
-    catch (JsonStathamException e)
+    catch (final JsonStathamException e)
     {
       System.out.println(e.getMessage());
       throw e;
@@ -1038,7 +1042,7 @@ public class ReflectionJsonToJavaConverterTest
     jsonObject.setAddress(address);
     @SuppressWarnings("deprecation")
     final Date date = new Date(2010, 9, 27);
-    Calendar calendar = Calendar.getInstance();
+    final Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     calendar.getTimeInMillis();
     jsonObject.setDate(date);
@@ -1063,15 +1067,15 @@ public class ReflectionJsonToJavaConverterTest
     assertThat(result, is(equalTo(jsonObject)));
   }
 
-  private String getExpectedJsonArray(String name, String value, String setName)
+  private String getExpectedJsonArray(final String name, final String value, final String setName)
   {
-    StringBuilder stringBuilder = new StringBuilder("{\"").append(name)
+    final StringBuilder stringBuilder = new StringBuilder("{\"").append(name)
         .append("\":\"")
         .append(value)
         .append("\",\"")
         .append(setName)
         .append("\":[");
-    for (String element : SOME_STRING_VALUE_ARRAY)
+    for (final String element : SOME_STRING_VALUE_ARRAY)
     {
       stringBuilder.append("\"")
           .append(element)
@@ -1083,9 +1087,10 @@ public class ReflectionJsonToJavaConverterTest
         .toString();
   }
 
-  private <V extends Object, T extends Collection<V>> T initialiseCollectionWithStringValues(T t, V... values)
+  private <V extends Object, T extends Collection<V>> T initialiseCollectionWithStringValues(final T t,
+      final V... values)
   {
-    for (V value : values)
+    for (final V value : values)
     {
       t.add(value);
     }
@@ -1098,7 +1103,7 @@ public class ReflectionJsonToJavaConverterTest
   {
     System.out.println("\nReflectionJsonToJavaConverterTest.testJsonObjectContainingCollection()");
     final String nameValue = "testJsonWithCollection";
-    Collection<String> collection =
+    final Collection<String> collection =
       initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
     final JsonObjectContainingCollection jsonObjectContainingCollection =
@@ -1160,9 +1165,9 @@ public class ReflectionJsonToJavaConverterTest
 
     final StringBuilder stringBuilder =
       new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
-    for (Entry<String, Address> entry : addressMap.entrySet())
+    for (final Entry<String, Address> entry : addressMap.entrySet())
     {
-      Address address = entry.getValue();
+      final Address address = entry.getValue();
       stringBuilder.append("{\"" + entry.getKey() + "\":")
           .append("{\"street\":\"")
           .append(address.getStreet())
@@ -1204,7 +1209,7 @@ public class ReflectionJsonToJavaConverterTest
       InstantiationException, IllegalAccessException, InvocationTargetException
   {
     System.out.println("\nReflectionJsonToJavaConverterTest.testJsonPojoHavingMap()");
-    Map<String, Long> map = new HashMap<String, Long>();
+    final Map<String, Long> map = new HashMap<String, Long>();
     map.put("Kevin", 1L);
     map.put("Lee", 2L);
     map.put("Kevin Lee", 3L);
@@ -1571,6 +1576,26 @@ public class ReflectionJsonToJavaConverterTest
     System.out.println("actual: ");
     final ItemDefinition result =
       reflectionJsonToJavaConverter.convertFromJson(MultipleSelectionItem.class, itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testItemConfig() throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException,
+      IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final ItemConfig expected = ItemConfig.NULL_ITEM_CONFIG;
+    System.out.println("expected:\n" + expected);
+
+    final String itemConfig =
+      "{\"idAutomated\":null,\"optionsRandomised\":null,\"optionCodesShown\":null,\"correctAnswers\":[],\"optional\":false}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemConfig result = reflectionJsonToJavaConverter.convertFromJson(ItemConfig.class, itemConfig);
     System.out.println(result);
 
     /* then */

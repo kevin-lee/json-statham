@@ -840,20 +840,19 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   }
 
   @Override
-  public <T> T convertFromJson(final Class<T> targetClass, final String jsonString)
-      throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-      InvocationTargetException
+  public <T> T convertFromJson(final Class<T> targetClass, final String json) throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
-    final String trimedJson = nullSafeTrim(jsonString);
-    if ('{' == trimedJson.charAt(0))
+    final String jsonString = toStringOf(json).trim();
+    if ('{' == jsonString.charAt(0))
     {
       return convertFromJsonObject(targetClass, jsonString);
     }
-    else if ('[' == trimedJson.charAt(0))
+    else if ('[' == jsonString.charAt(0))
     {
       return convertFromJsonArray(targetClass, jsonString);
     }
-    else if ("null".equals(trimedJson))
+    else if ("null".equals(jsonString))
     {
       return null;
     }
