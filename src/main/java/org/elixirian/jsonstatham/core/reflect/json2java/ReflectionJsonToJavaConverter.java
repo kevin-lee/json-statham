@@ -105,13 +105,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     @Override
-    public String getLeft()
+    public String getFirst()
     {
       return jsonFieldName;
     }
 
     @Override
-    public Field getRight()
+    public Field getSecond()
     {
       return field;
     }
@@ -140,13 +140,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     @Override
-    public Map<String, Field> getLeft()
+    public Map<String, Field> getFirst()
     {
       return jsonFieldNameToFieldMap;
     }
 
     @Override
-    public Map<String, JsonFieldNameAndFieldPair> getRight()
+    public Map<String, JsonFieldNameAndFieldPair> getSecond()
     {
       return fieldNameToJsonFieldNameAndFieldPairMap;
     }
@@ -267,13 +267,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     @Override
-    public Constructor<T> getLeft()
+    public Constructor<T> getFirst()
     {
       return constructor;
     }
 
     @Override
-    public P getRight()
+    public P getSecond()
     {
       return params;
     }
@@ -336,16 +336,16 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       }
       else
       {
-        final Constructor<T> constructor = constructorEntry.getLeft();
+        final Constructor<T> constructor = constructorEntry.getFirst();
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
-          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
+          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getSecond();
         final List<Object> argList = newArrayList();
-        for (final String fieldName : constructorEntry.getRight())
+        for (final String fieldName : constructorEntry.getSecond())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
           final Field field = jsonFieldNameAndFieldPair.field;
           argList.add(resolveFieldValue(field, field.getType(),
-              jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
+              jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst())));
         }
         /* It is annotated with @JsonConstructor so it should be used even if it is a private constructor. */
         constructor.setAccessible(true);
@@ -363,18 +363,18 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     if (null != constructorEntry)
     {/* if constructorEntry is null try with any available constructors. */
-      final Constructor<T> constructor = constructorEntry.getLeft();
+      final Constructor<T> constructor = constructorEntry.getFirst();
       if (null != constructor)
       {
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
-          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getRight();
+          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getSecond();
         final List<Object> argList = newArrayList();
-        for (final String fieldName : constructorEntry.getRight())
+        for (final String fieldName : constructorEntry.getSecond())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
           final Field field = jsonFieldNameAndFieldPair.field;
           final Object arg =
-            resolveFieldValue(field, field.getType(), jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft()));
+            resolveFieldValue(field, field.getType(), jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst()));
           argList.add(arg);
         }
         return constructor.newInstance(argList.toArray());
@@ -388,8 +388,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     if (null != constructorToParamsPair)
     {
-      return constructorToParamsPair.getLeft()
-          .newInstance(constructorToParamsPair.getRight()
+      return constructorToParamsPair.getFirst()
+          .newInstance(constructorToParamsPair.getSecond()
               .toArray());
     }
 
@@ -401,7 +401,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       constructor.setAccessible(true);
       final T t = constructor.newInstance();
       // set the values;
-      for (final Entry<String, Field> fieldEntry : jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getLeft()
+      for (final Entry<String, Field> fieldEntry : jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getFirst()
           .entrySet())
       {
         final Field field = fieldEntry.getValue();
@@ -651,7 +651,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           {
             final String paramName = paramNames[i];
             if (paramTypes[i].equals(fieldNameToFieldMap.get(paramName)
-                .getRight()
+                .getSecond()
                 .getType()))
               count++;
           }
@@ -703,7 +703,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           if (paramTypes[i].equals(field.getType()))
           {
             paramValues.add(resolveFieldValue(field, field.getType(),
-                jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getLeft())));
+                jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst())));
           }
         }
         return new ConstructorAndParamsPair<T, List<Object>>(entry.getKey(), paramValues);
