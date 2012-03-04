@@ -69,6 +69,7 @@ import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMet
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
 import org.elixirian.jsonstatham.json.json2java.AddressWithJsonConstructor;
 import org.elixirian.jsonstatham.json.json2java.AddressWithPrivateConstructorAndJsonConstructor;
+import org.elixirian.jsonstatham.json.json2java.EmailMessageJson;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithJsonConstructorWithSomeNotMatchingParams;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation;
@@ -151,6 +152,17 @@ public class ReflectionJsonToJavaConverterTest
           {
             throw new JsonStathamException("The getNames method in NullJsonObjectConvertible cannot be used.");
           }
+
+          @Override
+          public int fieldLength()
+          {
+            return 0;
+          }
+
+          /* @formatter:off */
+          @Override
+          public boolean containsName(@SuppressWarnings("unused") final String name) { return false; }
+          /* @formatter:on */
 
           @Override
           public Object get(@SuppressWarnings("unused") final String name)
@@ -1552,6 +1564,88 @@ public class ReflectionJsonToJavaConverterTest
     System.out.println(result);
     assertThat(result, is(equalTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
         Access.WIKI, Access.EMAIL, Access.TWITTER))));
+  }
+
+  @Test
+  public final void testJsonObjectWithMultipleConstructors() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final EmailMessageJson expected =
+      new EmailMessageJson("kevin@elixirian.com", "Test Subject", "Test file. blah blah blah");
+    System.out.println("expected:\n" + expected);
+
+    final String emailMessageJson =
+      "{\"from\":\"kevin@elixirian.com\", \"subject\":\"Test Subject\",\"content\":\"Test file. blah blah blah\"}";
+    System.out.println("json:\n" + emailMessageJson);
+    System.out.println("java: ");
+    /* when */
+    final EmailMessageJson result =
+      reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public final void testJsonObjectWithMultipleConstructors2() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final EmailMessageJson expected = new EmailMessageJson("kevin@elixirian.com", null, "Test file. blah blah blah");
+    System.out.println("expected:\n" + expected);
+
+    final String emailMessageJson = "{\"from\":\"kevin@elixirian.com\", \"content\":\"Test file. blah blah blah\"}";
+    System.out.println("json:\n" + emailMessageJson);
+    System.out.println("java: ");
+    /* when */
+    final EmailMessageJson result =
+      reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+  
+  @Test
+  public final void testJsonObjectWithMultipleConstructors3() throws ArrayIndexOutOfBoundsException,
+  IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final EmailMessageJson expected = new EmailMessageJson("kevin@elixirian.com");
+    System.out.println("expected:\n" + expected);
+    
+    final String emailMessageJson = "{\"from\":\"kevin@elixirian.com\"}";
+    System.out.println("json:\n" + emailMessageJson);
+    System.out.println("java: ");
+    /* when */
+    final EmailMessageJson result =
+        reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
+    System.out.println(result);
+    
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+  
+  @Test
+  public final void testJsonObjectWithMultipleConstructors4() throws ArrayIndexOutOfBoundsException,
+  IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final EmailMessageJson expected = new EmailMessageJson("kevin@elixirian.com", "kevin.lee@elixirian.com");
+    System.out.println("expected:\n" + expected);
+    
+    final String emailMessageJson = "{\"from\":\"kevin@elixirian.com\", \"to\":\"kevin.lee@elixirian.com\"}";
+    System.out.println("json:\n" + emailMessageJson);
+    System.out.println("java: ");
+    /* when */
+    final EmailMessageJson result =
+        reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
+    System.out.println(result);
+    
+    /* then */
+    assertThat(result, is(equalTo(expected)));
   }
 
   @Test

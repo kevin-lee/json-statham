@@ -154,6 +154,17 @@ public class JsonStathamInActionTest
           }
 
           @Override
+          public int fieldLength()
+          {
+            return 0;
+          }
+
+          /* @formatter:off */
+          @Override
+          public boolean containsName(@SuppressWarnings("unused") final String name) { return false; }
+          /* @formatter:on */
+
+          @Override
           public Object get(@SuppressWarnings("unused") final String name)
           {
             throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");

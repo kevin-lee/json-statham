@@ -21,6 +21,10 @@ public interface JsonObjectConvertible extends JsonConvertible
 {
   String[] getNames();
 
+  int fieldLength();
+
+  boolean containsName(String name);
+
   Object get(String name);
 
   JsonObjectConvertible put(String name, Object value) throws JsonStathamException;

@@ -40,6 +40,18 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
   }
 
   @Override
+  public int fieldLength()
+  {
+    return jsonObject.length();
+  }
+  
+  @Override
+  public boolean containsName(final String name)
+  {
+    return jsonObject.has(name);
+  }
+  
+  @Override
   public Object get(final String name) throws JsonStathamException
   {
     try

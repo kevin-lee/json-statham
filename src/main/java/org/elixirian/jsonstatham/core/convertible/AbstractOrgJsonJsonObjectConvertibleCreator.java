@@ -32,6 +32,17 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
     }
 
     @Override
+    public int fieldLength()
+    {
+      return 0;
+    }
+
+    /* @formatter:off */
+    @Override
+    public boolean containsName(@SuppressWarnings("unused") final String name) { return false; }
+    /* @formatter:on */
+
+    @Override
     public Object get(final String name)
     {
       throw new JsonStathamException(format(
@@ -60,13 +71,13 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
   };
 
   @Override
-  public JsonObjectConvertible newJsonObjectConvertible(String jsonString) throws JsonStathamException
+  public JsonObjectConvertible newJsonObjectConvertible(final String jsonString) throws JsonStathamException
   {
     try
     {
       return new OrgJsonJsonObjectConvertible(new JSONObject(jsonString));
     }
-    catch (JSONException e)
+    catch (final JSONException e)
     {
       throw new JsonStathamException(format("[input] String jsonString: %s", jsonString), e);
     }

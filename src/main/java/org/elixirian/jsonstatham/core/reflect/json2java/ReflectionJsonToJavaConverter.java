@@ -4,6 +4,7 @@
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
 import static org.elixirian.kommonlee.collect.Lists.*;
+import static org.elixirian.kommonlee.collect.Maps.*;
 import static org.elixirian.kommonlee.reflect.Classes.*;
 import static org.elixirian.kommonlee.reflect.Primitives.*;
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
@@ -62,6 +63,8 @@ import org.json.JSONObject;
  */
 public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 {
+  private static final Object DUMMY_OBJECT = new Object();
+
   private final ConstructorAnalyser constructorAnalyser = new AsmMethodAndConstructorAnalyser();
 
   private final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
@@ -163,9 +166,11 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
   }
 
-  private void extractJsonFieldNames(final Class<?> sourceClass,
+  private void extractJsonFieldNames(final Class<?> sourceClass, final JsonObjectConvertible jsonObjectConvertible,
       final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
   {
+    final Map<String, Object> jsonFieldMapToCheckDuplicateJsonFieldName = newHashMap();
+
     for (final Field field : sourceClass.getDeclaredFields())
     {
       if (!field.isAnnotationPresent(JsonField.class))
@@ -188,17 +193,23 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         jsonFieldName = fieldName;
       }
 
-      if (jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.containsKey(jsonFieldName))
+      // if (jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.containsKey(jsonFieldName))
+      if (jsonFieldMapToCheckDuplicateJsonFieldName.containsKey(jsonFieldName))
       {
         /* [ERROR] duplicate field names found */
         throw new JsonStathamException(format(
             "Json filed name must be unique. [JsonField name: %s] in [field: %s] is already used in another field.",
             jsonFieldName, field));
       }
+      jsonFieldMapToCheckDuplicateJsonFieldName.put(jsonFieldName, DUMMY_OBJECT);
 
-      jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.put(jsonFieldName, field);
-      jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap.put(fieldName,
-          new JsonFieldNameAndFieldPair(jsonFieldName, field));
+      if (jsonObjectConvertible.containsName(jsonFieldName))
+      {
+
+        jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap.put(jsonFieldName, field);
+        jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap.put(fieldName,
+            new JsonFieldNameAndFieldPair(jsonFieldName, field));
+      }
     }
   }
 
@@ -293,11 +304,14 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           new LinkedHashMap<String, JsonFieldNameAndFieldPair>());
     for (final Class<?> eachClass : classList)
     {
-      extractJsonFieldNames(eachClass, jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
+      extractJsonFieldNames(eachClass, jsonObjectConvertible,
+          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
     }
 
     final Map<Constructor<T>, String[]> constructorMap =
       constructorAnalyser.findConstructorsWithParameterNames(targetClass);
+
+    final Map<Constructor<T>, String[]> constructorWithoutJsonConstructorAnnotationMap = newHashMap(constructorMap);
 
     @SuppressWarnings("unchecked")
     final Map<Constructor<T>, String[]> constructorMapWithJsonConstructorAnnotation =
@@ -311,7 +325,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       for (final Constructor<T> constructor : constructorMapWithJsonConstructorAnnotation.keySet())
       {
         /* remove all the constructors with the annotation from the constructor map. */
-        constructorMap.remove(constructor);
+        constructorWithoutJsonConstructorAnnotationMap.remove(constructor);
       }
 
       /*
@@ -322,17 +336,21 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
       if (null == constructorEntry || null == constructorEntry.constructor)
       {
-        /*
-         * if there is no matching one, try to find the one annotated with @JsonConstructor having the fewest number of
-         * non-matching parameters and the greatest number of matching parameters.
-         */
-        final ConstructorAndParamsPair<T, List<Object>> constructorToParamsPair =
-          findConstructorWithMaxMatchingMinNonMatchingParams(constructorMapWithJsonConstructorAnnotation,
-              jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
-        if (null != constructorToParamsPair)
-        {
-          return constructorToParamsPair.constructor.newInstance(constructorToParamsPair.params.toArray());
-        }
+        // if there is no matching one, it should check the rest constructors first then will check if there is
+        // one with minimum matching params. Check "find constructor with minimum matching params" part.
+        // TODO remove it
+        // /*
+        // * if there is no matching one, try to find the one annotated with @JsonConstructor having the fewest number
+        // of
+        // * non-matching parameters and the greatest number of matching parameters.
+        // */
+        // final ConstructorAndParamsPair<T, List<Object>> constructorToParamsPair =
+        // findConstructorWithMaxMatchingMinNonMatchingParams(constructorMapWithJsonConstructorAnnotation,
+        // jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
+        // if (null != constructorToParamsPair)
+        // {
+        // return constructorToParamsPair.constructor.newInstance(constructorToParamsPair.params.toArray());
+        // }
       }
       else
       {
@@ -357,11 +375,12 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
        */
     }
 
-    /* matching with all the json field */
+    /* check if there is any constructor without @JsonConstructor annotation and matches with all the json field */
     final Pair<Constructor<T>, String[]> constructorEntry =
-      findMatchingConstructor(constructorMap, jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
+      findMatchingConstructor(constructorWithoutJsonConstructorAnnotationMap,
+          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
 
-    if (null != constructorEntry)
+    if (null != constructorEntry && constructorEntry.getSecond().length == jsonObjectConvertible.fieldLength())
     {/* if constructorEntry is null try with any available constructors. */
       final Constructor<T> constructor = constructorEntry.getFirst();
       if (null != constructor)
@@ -381,7 +400,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       }
     }
 
-    // find constructor with minimum matching params.
+    /* find constructor with minimum matching params. */
     final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
       findConstructorWithMaxMatchingMinNonMatchingParams(constructorMap,
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
@@ -393,7 +412,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
               .toArray());
     }
 
-    // no arg constructor
+    /* no arg constructor */
     final Constructor<T> constructor = findConstructor(targetClass, EMPTY_CLASS_ARRAY);
     if (null != constructor)
     {
@@ -412,8 +431,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     throw new JsonStathamException(format(
-        "The target JSON class [class: %s] cannot be instantiated with the given JSON [json: %s].",
-        targetClass.getName(), jsonObjectConvertible));
+        "The target JSON class [class: %s] cannot be instantiated with the given JSON [targetClass: %s, json: %s].",
+        null == targetClass ? "null" : targetClass.getSimpleName(), targetClass, jsonObjectConvertible));
   }
 
   private <T> T convertFromJsonObject(final Class<T> targetClass, final String jsonString)
@@ -629,34 +648,35 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   {
     final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
       jsonFieldNameToFieldNameAndFieldPairMap.fieldNameToJsonFieldNameAndFieldPairMap;
+
     final int fieldSize = fieldNameToFieldMap.size();
-    for (final Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
+    for (final Entry<Constructor<T>, String[]> entryOfConstructor : constructorMap.entrySet())
     {
-      final String[] paramNames = entry.getValue();
-      if (fieldSize == paramNames.length)
+      final String[] constructorParamNames = entryOfConstructor.getValue();
+      if (fieldSize == constructorParamNames.length)
       {
         int count = 0;
-        for (final String paramName : paramNames)
+        for (final String constructorParamName : constructorParamNames)
         {
-          if (fieldNameToFieldMap.containsKey(paramName))
+          if (fieldNameToFieldMap.containsKey(constructorParamName))
             count++;
         }
         if (fieldSize == count)
         {
           count = 0;
-          final Class<?>[] paramTypes = entry.getKey()
+          final Class<?>[] paramTypes = entryOfConstructor.getKey()
               .getParameterTypes();
 
           for (int i = 0; i < fieldSize; i++)
           {
-            final String paramName = paramNames[i];
+            final String paramName = constructorParamNames[i];
             if (paramTypes[i].equals(fieldNameToFieldMap.get(paramName)
                 .getSecond()
                 .getType()))
               count++;
           }
           if (fieldSize == count)
-            return new ConstructorAndParamsPair<T, String[]>(entry.getKey(), entry.getValue());
+            return new ConstructorAndParamsPair<T, String[]>(entryOfConstructor.getKey(), entryOfConstructor.getValue());
         }
       }
     }

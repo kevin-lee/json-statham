@@ -49,11 +49,22 @@ public class JsonObjectImpl implements JsonObjectConvertible
       return this;
     }
 
+    /* @formatter:off */
+    @Override
+    public boolean containsName(@SuppressWarnings("unused") final String name) { return false; }
+    /* @formatter:on */
+
     @Override
     public Object get(final String name)
     {
       throw new JsonStathamException(format("The name method in NullJsonObject cannot used.\n[input] String name: %s",
           name));
+    }
+
+    @Override
+    public int fieldLength()
+    {
+      return 0;
     }
 
     @Override
@@ -80,6 +91,18 @@ public class JsonObjectImpl implements JsonObjectConvertible
 
     final Set<String> keySet = jsonFieldMap.keySet();
     return keySet.toArray(new String[keySet.size()]);
+  }
+
+  @Override
+  public int fieldLength()
+  {
+    return jsonFieldMap.size();
+  }
+
+  @Override
+  public boolean containsName(final String name)
+  {
+    return jsonFieldMap.containsKey(name);
   }
 
   @Override
