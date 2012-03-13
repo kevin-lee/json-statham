@@ -1229,4 +1229,31 @@ public class ReflectionJavaToJsonConverterTest
     /* then */
     assertThat(result, is(equalTo(expected)));
   }
+
+  @Test
+  public void testWithMultipleSelectionItemHavingSomeUnicode() throws IllegalArgumentException, JsonStathamException,
+      IllegalAccessException
+  {
+    System.out.println("\nReflectionJavaToJsonConverterTest.testWithMultipleSelectionItemHavingSomeUnicode()");
+
+    /* given */
+
+    final String expected =
+      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global \\u000bwarming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+    System.out.println("expected:\n" + expected);
+    final ItemDefinition itemDefinition =
+      new MultipleSelectionItem("Global Warming", "In your opinion, global \u000bwarming...", Arrays.asList(new Option(
+          "A", "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+          "will not have any impact on our lives in the next 10 years."), new Option("D",
+          "is really a problem for the next generation."), new Option("E",
+          "will not have any effect for at least 100 years.")));
+
+    /* when */
+    System.out.println("actual: ");
+    final String result = reflectionJavaToJsonConverter.convertIntoJson(itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
 }

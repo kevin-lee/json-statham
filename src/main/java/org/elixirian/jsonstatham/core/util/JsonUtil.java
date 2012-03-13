@@ -71,7 +71,7 @@ public final class JsonUtil
         default:
           if (' ' > c || (('\u0080' <= c & '\u00a0' > c) | ('\u2000' <= c & '\u2100' > c)))
           {
-            final String hex = Integer.toHexString(c);
+            final String hex = "000" + Integer.toHexString(c);
             quotedStringBuilder.append("\\u")
                 .append(hex.substring(hex.length() - 4));
           }

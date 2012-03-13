@@ -1607,43 +1607,43 @@ public class ReflectionJsonToJavaConverterTest
     /* then */
     assertThat(result, is(equalTo(expected)));
   }
-  
+
   @Test
   public final void testJsonObjectWithMultipleConstructors3() throws ArrayIndexOutOfBoundsException,
-  IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     /* given */
     final EmailMessageJson expected = new EmailMessageJson("kevin@elixirian.com");
     System.out.println("expected:\n" + expected);
-    
+
     final String emailMessageJson = "{\"from\":\"kevin@elixirian.com\"}";
     System.out.println("json:\n" + emailMessageJson);
     System.out.println("java: ");
     /* when */
     final EmailMessageJson result =
-        reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
+      reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
     System.out.println(result);
-    
+
     /* then */
     assertThat(result, is(equalTo(expected)));
   }
-  
+
   @Test
   public final void testJsonObjectWithMultipleConstructors4() throws ArrayIndexOutOfBoundsException,
-  IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     /* given */
     final EmailMessageJson expected = new EmailMessageJson("kevin@elixirian.com", "kevin.lee@elixirian.com");
     System.out.println("expected:\n" + expected);
-    
+
     final String emailMessageJson = "{\"from\":\"kevin@elixirian.com\", \"to\":\"kevin.lee@elixirian.com\"}";
     System.out.println("json:\n" + emailMessageJson);
     System.out.println("java: ");
     /* when */
     final EmailMessageJson result =
-        reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
+      reflectionJsonToJavaConverter.convertFromJson(EmailMessageJson.class, emailMessageJson);
     System.out.println(result);
-    
+
     /* then */
     assertThat(result, is(equalTo(expected)));
   }
@@ -1665,6 +1665,34 @@ public class ReflectionJsonToJavaConverterTest
 
     final String itemDefinition =
       "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemDefinition result =
+      reflectionJsonToJavaConverter.convertFromJson(MultipleSelectionItem.class, itemDefinition);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testWithMultipleSelectionItemHavingSomeUnicode() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    System.out.println("\nReflectionJsonToJavaConverterTest.testWithMultipleSelectionItemHavingSomeUnicode()");
+
+    /* given */
+    final ItemDefinition expected =
+      new MultipleSelectionItem("Global Warming", "In your opinion, global \u000bwarming...", Arrays.asList(new Option("A",
+          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+          "will not have any impact on our lives in the next 10 years."), new Option("D",
+          "is really a problem for the next generation."), new Option("E",
+          "will not have any effect for at least 100 years.")));
+    System.out.println("expected:\n" + expected);
+
+    final String itemDefinition =
+      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global \\u000bwarming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
 
     /* when */
     System.out.println("actual: ");
