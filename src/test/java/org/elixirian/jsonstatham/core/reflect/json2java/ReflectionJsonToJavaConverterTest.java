@@ -76,7 +76,9 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.test.CorrectAnswer;
 import org.elixirian.jsonstatham.test.ItemConfig;
+import org.elixirian.jsonstatham.test.ItemConfigWithPrivateConstructor;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
@@ -1684,8 +1686,8 @@ public class ReflectionJsonToJavaConverterTest
 
     /* given */
     final ItemDefinition expected =
-      new MultipleSelectionItem("Global Warming", "In your opinion, global \u000bwarming...", Arrays.asList(new Option("A",
-          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+      new MultipleSelectionItem("Global Warming", "In your opinion, global \u000bwarming...", Arrays.asList(new Option(
+          "A", "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
           "will not have any impact on our lives in the next 10 years."), new Option("D",
           "is really a problem for the next generation."), new Option("E",
           "will not have any effect for at least 100 years.")));
@@ -1718,6 +1720,84 @@ public class ReflectionJsonToJavaConverterTest
     /* when */
     System.out.println("actual: ");
     final ItemConfig result = reflectionJsonToJavaConverter.convertFromJson(ItemConfig.class, itemConfig);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testItemConfigWithPrivateConstructor_1() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final ItemConfigWithPrivateConstructor expected = ItemConfigWithPrivateConstructor.NULL_ITEM_CONFIG;
+    System.out.println("expected:\n" + expected);
+
+    final String itemConfig =
+      "{\"idAutomated\":null,\"optionsRandomised\":null,\"optionCodesShown\":null,\"correctAnswers\":[],\"optional\":false}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemConfigWithPrivateConstructor result =
+      reflectionJsonToJavaConverter.convertFromJson(ItemConfigWithPrivateConstructor.class, itemConfig);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testItemConfigWithPrivateConstructor_2() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final ItemConfigWithPrivateConstructor expected = ItemConfigWithPrivateConstructor.builder()
+        .mandatory()
+        .automateId()
+        .unrandomizeOptions()
+        .showOptionCodes()
+        .addCorrectAnswer(new CorrectAnswer("A"))
+        .disallowOtherAnswer()
+        .build();
+    System.out.println("expected:\n" + expected);
+
+    final String itemConfig =
+      "{\"idAutomated\":true,\"optionsRandomised\":false,\"optionCodesShown\":true,\"correctAnswers\":[{\"answer\":\"A\",\"caseSensitive\":false}],\"optional\":false,otherAnswerEnabled=false,otherAnswerLabel=null}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemConfigWithPrivateConstructor result =
+      reflectionJsonToJavaConverter.convertFromJson(ItemConfigWithPrivateConstructor.class, itemConfig);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testItemConfigWithPrivateConstructor_3() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final ItemConfigWithPrivateConstructor expected = ItemConfigWithPrivateConstructor.builder()
+        .optional()
+        .unautomateId()
+        .randomizeOptions()
+        .showOptionCodes()
+        .addAllCorrectAnswers(new CorrectAnswer("A"), new CorrectAnswer("Bbb", true))
+        .allowOtherAnswer()
+        .otherAnswerLabel("Other")
+        .build();
+    System.out.println("expected:\n" + expected);
+
+    final String itemConfig =
+      "{\"idAutomated\":false,\"optionsRandomised\":true,\"optionCodesShown\":true,\"correctAnswers\":[{\"answer\":\"A\",\"caseSensitive\":false},{\"answer\":\"Bbb\",\"caseSensitive\":true}],\"optional\":true,otherAnswerEnabled=true,otherAnswerLabel=\"Other\"}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemConfigWithPrivateConstructor result =
+      reflectionJsonToJavaConverter.convertFromJson(ItemConfigWithPrivateConstructor.class, itemConfig);
     System.out.println(result);
 
     /* then */

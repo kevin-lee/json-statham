@@ -349,7 +349,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         // jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
         // if (null != constructorToParamsPair)
         // {
-        // return constructorToParamsPair.constructor.newInstance(constructorToParamsPair.params.toArray());
+        // final Constructor<T> constructor =constructorToParamsPair.constructor;
+        // constructor.setAccessible(true);
+        // return constructor.newInstance(constructorToParamsPair.params.toArray());
         // }
       }
       else
@@ -396,6 +398,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             resolveFieldValue(field, field.getType(), jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst()));
           argList.add(arg);
         }
+        constructor.setAccessible(true);
         return constructor.newInstance(argList.toArray());
       }
     }
@@ -407,9 +410,16 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     if (null != constructorToParamsPair)
     {
-      return constructorToParamsPair.getFirst()
-          .newInstance(constructorToParamsPair.getSecond()
-              .toArray());
+      final Constructor<T> constructor = constructorToParamsPair.getFirst();
+      if (null != constructor)
+      {
+        constructor.setAccessible(true);
+        /* @formatter:off */
+        return constructor.newInstance(constructorToParamsPair
+                                         .getSecond()
+                                           .toArray());
+        /* @formatter:on */
+      }
     }
 
     /* no arg constructor */

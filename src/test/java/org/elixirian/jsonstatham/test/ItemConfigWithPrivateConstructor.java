@@ -23,13 +23,13 @@ import org.elixirian.kommonlee.util.Objects;
  * @version 0.0.1 (2011-09-09)
  */
 @JsonObject
-public class ItemConfig implements Serializable
+public class ItemConfigWithPrivateConstructor implements Serializable
 {
   private static final long serialVersionUID = 1L;
 
   public static final List<CorrectAnswer> EMPTY_CORRECT_ANSWERS = Collections.emptyList();
 
-  private static class NullItemConfig extends ItemConfig
+  private static class NullItemConfig extends ItemConfigWithPrivateConstructor
   {
     private static final long serialVersionUID = 1L;
 
@@ -45,10 +45,10 @@ public class ItemConfig implements Serializable
     }
   }
 
-  public static final ItemConfig NULL_ITEM_CONFIG = new NullItemConfig();
+  public static final ItemConfigWithPrivateConstructor NULL_ITEM_CONFIG = new NullItemConfig();
 
   /* @formatter:off */
-  public static final ItemConfig DEFAULT_MULTIPLE_CHOICE_CONFIG = ItemConfig.builder()
+  public static final ItemConfigWithPrivateConstructor DEFAULT_MULTIPLE_CHOICE_CONFIG = ItemConfigWithPrivateConstructor.builder()
                                                                                 .mandatory()
                                                                                 .automateId()
                                                                                 .unrandomizeOptions()
@@ -78,7 +78,7 @@ public class ItemConfig implements Serializable
   @JsonField
   private final List<CorrectAnswer> correctAnswers;
 
-  public static class Builder implements GenericBuilder<ItemConfig>
+  public static class Builder implements GenericBuilder<ItemConfigWithPrivateConstructor>
   {
     boolean optional;
 
@@ -96,9 +96,10 @@ public class ItemConfig implements Serializable
 
     public Builder()
     {
+      this.correctAnswers = newArrayList();
     }
 
-    public Builder(final ItemConfig itemConfig)
+    public Builder(final ItemConfigWithPrivateConstructor itemConfig)
     {
       this.optional = itemConfig.isOptional();
       this.idAutomated = itemConfig.isIdAutomated();
@@ -177,7 +178,7 @@ public class ItemConfig implements Serializable
 
     public Builder disallowOtherAnswer()
     {
-      this.otherAnswerEnabled = true;
+      this.otherAnswerEnabled = false;
       return this;
     }
 
@@ -188,14 +189,14 @@ public class ItemConfig implements Serializable
     }
 
     @Override
-    public ItemConfig build()
+    public ItemConfigWithPrivateConstructor build()
     {
-      return new ItemConfig(this);
+      return new ItemConfigWithPrivateConstructor(this);
     }
   }
 
   @JsonConstructor
-  ItemConfig(final boolean optional, final Boolean idAutomated, final Boolean optionsRandomised,
+  private ItemConfigWithPrivateConstructor(final boolean optional, final Boolean idAutomated, final Boolean optionsRandomised,
       final Boolean optionCodesShown, final boolean otherAnswerEnabled, final String otherAnswerLabel,
       final List<CorrectAnswer> correctAnswers)
   {
@@ -212,12 +213,12 @@ public class ItemConfig implements Serializable
     /* @formatter:on */
   }
 
-  public static ItemConfig newInstance(final boolean optional, final boolean idAutomated,
+  public static ItemConfigWithPrivateConstructor newInstance(final boolean optional, final boolean idAutomated,
       final boolean optionsRandomised, final boolean optionCodesShown, final boolean otherAnswerEnabled,
       final String otherAnswerLabel, final CorrectAnswer... correctAnswers)
   {
     /* @formatter:off */
-    return new ItemConfig(optional,
+    return new ItemConfigWithPrivateConstructor(optional,
                            valueOf(idAutomated),
                            valueOf(optionsRandomised),
                            valueOf(optionCodesShown),
@@ -227,7 +228,7 @@ public class ItemConfig implements Serializable
     /* @formatter:on */
   }
 
-  private ItemConfig(final Builder builder)
+  private ItemConfigWithPrivateConstructor(final Builder builder)
   {
     this(builder.optional, builder.idAutomated, builder.optionsRandomised, builder.optionCodesShown,
         builder.otherAnswerEnabled, builder.otherAnswerLabel, builder.correctAnswers);
@@ -238,7 +239,7 @@ public class ItemConfig implements Serializable
     return new Builder();
   }
 
-  public static Builder builder(final ItemConfig itemConfig)
+  public static Builder builder(final ItemConfigWithPrivateConstructor itemConfig)
   {
     return new Builder(itemConfig);
   }
@@ -291,6 +292,8 @@ public class ItemConfig implements Serializable
              null == idAutomated &&
              null == optionsRandomised &&
              null == optionCodesShown &&
+             !otherAnswerEnabled &&
+             null == otherAnswerLabel &&
              correctAnswers.isEmpty());
     /* @formatter:on */
   }
@@ -315,7 +318,7 @@ public class ItemConfig implements Serializable
     {
       return true;
     }
-    final ItemConfig that = castIfInstanceOf(ItemConfig.class, itemConfig);
+    final ItemConfigWithPrivateConstructor that = castIfInstanceOf(ItemConfigWithPrivateConstructor.class, itemConfig);
     /* @formatter:off */
     return Objects.isNotNull(that) &&
               (equal(this.optional, that.isOptional()) &&
