@@ -26,11 +26,11 @@ import org.json.JSONArray;
 
 /**
  * <pre>
- *     ___  _____  __________  ___________ _____  ____
- *    /   \/    / /      \   \/   /_    _//     \/   /
- *   /        /  /    ___/\      / /   / /          /
- *  /        \  /    ___/  \    /_/   /_/          /
- * /____/\____\/_______/    \__//______/___/\_____/
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
@@ -89,6 +89,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
                   reflectionJsonToJavaConverter.resolveElement(componentType, jsonArrayConvertible.get(i)));
             }
             @SuppressWarnings("unchecked")
+            final
             T t = (T) array;
             return t;
           }
@@ -104,7 +105,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
             return t;
           }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           throw new JsonStathamException(
               format(
@@ -135,7 +136,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
             return collection;
           }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
           throw new JsonStathamException(
               format(
@@ -148,8 +149,8 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 
     map.put(Map.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Type>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Type valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, final Type valueType,
+          final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
       {
         if (valueType instanceof ParameterizedType)
         {
@@ -172,11 +173,12 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 
     map.put(Iterable.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-          ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final ParameterizedType valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
           JsonStathamException
       {
         @SuppressWarnings("unchecked")
+        final
         Collection<?> collection =
           reflectionJsonToJavaConverter.createCollectionWithValues(List.class, valueType.getActualTypeArguments()[0],
               value);
@@ -186,8 +188,8 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 
     map.put(Iterator.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-          ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final ParameterizedType valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
           JsonStathamException
       {
         @SuppressWarnings("unchecked")
@@ -200,8 +202,8 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 
     map.put(Entry.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<ParameterizedType>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-          ParameterizedType valueType, Object value) throws IllegalArgumentException, IllegalAccessException,
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final ParameterizedType valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
           JsonStathamException
       {
         @SuppressWarnings("unchecked")
@@ -209,7 +211,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
         final Map<String, Object> map =
           reflectionJsonToJavaConverter.createHashMapWithKeysAndValues(mapType, valueType.getActualTypeArguments()[1],
               value);
-        for (Entry<String, Object> entry : map.entrySet())
+        for (final Entry<String, Object> entry : map.entrySet())
         {
           return entry;
         }
@@ -231,7 +233,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
   }
 
   @Override
-  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Type> decide(Type type)
+  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Type> decide(final Type type)
   {
     final Class<?> classType =
       type instanceof Class ? (Class<?>) type

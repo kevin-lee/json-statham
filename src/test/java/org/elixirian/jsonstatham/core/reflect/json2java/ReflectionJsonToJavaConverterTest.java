@@ -41,6 +41,7 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
 import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
 import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessorWithoutItsName;
+import org.elixirian.jsonstatham.json.InteractionConfig;
 import org.elixirian.jsonstatham.json.JsonObjectContainingCollection;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Access;
@@ -1798,6 +1799,27 @@ public class ReflectionJsonToJavaConverterTest
     System.out.println("actual: ");
     final ItemConfigWithPrivateConstructor result =
       reflectionJsonToJavaConverter.convertFromJson(ItemConfigWithPrivateConstructor.class, itemConfig);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testInteractionConfigHavingDifferentConstructorParamsFromField() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final InteractionConfig expected = InteractionConfig.builder()
+        .addAllPageBreaks(0, 2, 3, 7, 8)
+        .build();
+    System.out.println("expected:\n" + expected);
+
+    final String json = "{\"submitMessage\":null,\"pageBreaks\":[0,2,3,7,8]}";
+
+    /* when */
+    System.out.println("actual: ");
+    final InteractionConfig result = reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, json);
     System.out.println(result);
 
     /* then */

@@ -21,11 +21,11 @@ import org.json.JSONObject;
 
 /**
  * <pre>
- *     ___  _____  __________  ___________ _____  ____
- *    /   \/    / /      \   \/   /_    _//     \/   /
- *   /        /  /    ___/\      / /   / /          /
- *  /        \  /    ___/  \    /_/   /_/          /
- * /____/\____\/_______/    \__//______/___/\_____/
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
@@ -38,13 +38,13 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 
   static
   {
-    Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> map =
+    final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> map =
       new HashMap<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>>();
     map.put(Date.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
       public <T> Object process(
-          @SuppressWarnings("unused") ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+          @SuppressWarnings("unused") final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, final Class<?> valueType,
+          final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
       {
         if (long.class.equals(value.getClass()) || Long.class.equals(value.getClass()))
         {
@@ -57,8 +57,8 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
     map.put(Calendar.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
       public <T> Object process(
-          @SuppressWarnings("unused") ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+          @SuppressWarnings("unused") final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, final Class<?> valueType,
+          final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
       {
         if (long.class.equals(value.getClass()) || Long.class.equals(value.getClass()))
         {
@@ -73,8 +73,8 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 
     map.put(JSONObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, final Class<?> valueType,
+          final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
       {
         return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObjectConvertible(
             (JSONObject) value));
@@ -83,8 +83,8 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 
     map.put(JsonObjectConvertible.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
-      public <T> Object process(ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, Class<?> valueType,
-          Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter, final Class<?> valueType,
+          final Object value) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
       {
         return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (OrgJsonJsonObjectConvertible) value);
       }
@@ -102,7 +102,7 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
   }
 
   @Override
-  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(Class<?> type)
+  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(final Class<?> type)
   {
     /* @formatter:off */
     for (final Entry<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> entry : 
