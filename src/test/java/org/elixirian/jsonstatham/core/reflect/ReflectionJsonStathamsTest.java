@@ -21,6 +21,7 @@ import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypePr
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.reflect.json2java.JsonToJavaConfig;
 import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 import org.elixirian.kommonlee.test.CommonTestHelper.Accessibility;
 import org.junit.After;
@@ -104,7 +105,9 @@ public class ReflectionJsonStathamsTest
           knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
           oneProcessorForKnownTypeDecider);
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
+      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(jsonObjectConvertibleCreator,
+          jsonArrayConvertibleCreator)
+          .build());
 
     final JsonStathamInAction jsonStathamInAction =
       ReflectionJsonStathams.newJsonStathamInAction(reflectionJavaToJsonConverter, reflectionJsonToJavaConverter);

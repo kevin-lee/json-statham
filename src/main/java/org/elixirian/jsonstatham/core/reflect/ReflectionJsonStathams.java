@@ -14,15 +14,16 @@ import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypePr
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.reflect.json2java.JsonToJavaConfig;
 import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 
 /**
  * <pre>
- *     ___  _____  __________  ___________ _____  ____
- *    /   \/    / /      \   \/   /_    _//     \/   /
- *   /        /  /    ___/\      / /   / /          /
- *  /        \  /    ___/  \    /_/   /_/          /
- * /____/\____\/_______/    \__//______/___/\_____/
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
@@ -51,13 +52,31 @@ public final class ReflectionJsonStathams
    */
   public static JsonStathamInAction newReflectionJsonStathamInAction()
   {
+    final JsonObjectConvertibleCreator orderedJsonObjectCreator = new OrderedJsonObjectCreator();
+    final JsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator = new OrgJsonJsonArrayConvertibleCreator();
+
+    return newReflectionJsonStathamInAction(JsonToJavaConfig.builder(orderedJsonObjectCreator,
+        orgJsonJsonArrayConvertibleCreator)
+        .build());
+  }
+
+  /**
+   * Returns JsonStathamInAction object created with ReflectionJavaToJsonConverter and ReflectionJsonToJavaConverter.
+   * The ReflectionJavaToJsonConverter object is created with OrgJsonOrderedJsonObjectConvertibleCreator,
+   * OrgJsonJsonArrayConvertibleCreator, KnownDataStructureTypeProcessorDecider,
+   * KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
+   * 
+   * @param jsonToJavaConfig
+   * @return JsonStathamInAction object created with ReflectionJavaToJsonConverter and ReflectionJsonToJavaConverter.
+   */
+  public static JsonStathamInAction newReflectionJsonStathamInAction(final JsonToJavaConfig jsonToJavaConfig)
+  {
     // final OrgJsonOrderedJsonObjectConvertibleCreator orderedJsonObjectConvertibleCreator =
     // new OrgJsonOrderedJsonObjectConvertibleCreator();
     // final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
     // new OrgJsonJsonArrayConvertibleCreator();
     final JsonObjectConvertibleCreator orderedJsonObjectCreator = new OrderedJsonObjectCreator();
     final JsonArrayConvertibleCreator jsonArrayCreator = new JsonArrayCreator();
-    final JsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator = new OrgJsonJsonArrayConvertibleCreator();
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
       new ReflectionJavaToJsonConverter(orderedJsonObjectCreator, jsonArrayCreator,
@@ -65,7 +84,7 @@ public final class ReflectionJsonStathams
           new OneProcessorForKnownTypeDecider());
 
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(orderedJsonObjectCreator, orgJsonJsonArrayConvertibleCreator);
+      new ReflectionJsonToJavaConverter(jsonToJavaConfig);
 
     return newJsonStathamInAction(reflectionJavaToJsonConverter, reflectionJsonToJavaConverter);
   }
@@ -86,7 +105,9 @@ public final class ReflectionJsonStathams
           new OneProcessorForKnownTypeDecider());
 
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(unorderedJsonObjectCreator, orgJsonJsonArrayConvertibleCreator);
+      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(unorderedJsonObjectCreator,
+          orgJsonJsonArrayConvertibleCreator)
+          .build());
 
     return newJsonStathamInAction(reflectionJavaToJsonConverter, reflectionJsonToJavaConverter);
   }

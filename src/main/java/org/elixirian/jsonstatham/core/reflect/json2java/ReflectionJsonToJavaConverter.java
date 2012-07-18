@@ -34,6 +34,7 @@ import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
 import org.elixirian.jsonstatham.core.JsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
+import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
@@ -79,12 +80,22 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   private final JsonToJavaKnownObjectTypeProcessorDecider jsonToJavaKnownObjectTypeProcessorDecider =
     new JsonToJavaKnownObjectTypeProcessorDecider();
 
-  public ReflectionJsonToJavaConverter(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-      final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+  private final List<KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>> knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList;
+
+  public ReflectionJsonToJavaConverter(final JsonToJavaConfig javaConfig)
   {
-    this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
-    this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
+    this.jsonObjectConvertibleCreator = javaConfig.getJsonObjectConvertibleCreator();
+    this.jsonArrayConvertibleCreator = javaConfig.getJsonArrayConvertibleCreator();
+    this.knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList =
+      javaConfig.getKnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList();
   }
+
+  // public ReflectionJsonToJavaConverter(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
+  // final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+  // {
+  // this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
+  // this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
+  // }
 
   public JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
   {
@@ -122,9 +133,12 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     @Override
     public String toString()
     {
-      return toStringBuilder(this).add("jsonFieldName", jsonFieldName)
+      /* @formatter:off */
+      return toStringBuilder(this)
+          .add("jsonFieldName", jsonFieldName)
           .add("field", field.getName())
           .toString();
+      /* @formatter:on */
     }
   }
 
@@ -292,6 +306,40 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   private <T> T createFromJsonObject0(final Class<T> targetClass, final JsonObjectConvertible jsonObjectConvertible)
       throws JsonStathamException
   {
+    for (final KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>> deciderForJsonToJava : knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList)
+    {
+      final KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> knownTypeProcessorWithReflectionJsonToJavaConverter =
+        deciderForJsonToJava.decide(targetClass);
+      if (null != knownTypeProcessorWithReflectionJsonToJavaConverter)
+      {
+        try
+        {
+          @SuppressWarnings("unchecked")
+          final T processedType =
+            (T) knownTypeProcessorWithReflectionJsonToJavaConverter.process(this, targetClass, jsonObjectConvertible);
+          return processedType;
+        }
+        catch (final IllegalArgumentException e)
+        {
+          throw new JsonStathamException(format("Attempt to process known type failed with IllegalArgumentException.\n"
+              + "[Class<T> targetClass: %s][JsonObjectConvertible jsonObjectConvertible: %s]\n"
+              + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n"
+              + "found from knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList: %s",
+              targetClass, jsonObjectConvertible, knownTypeProcessorWithReflectionJsonToJavaConverter,
+              knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList), e);
+        }
+        catch (final IllegalAccessException e)
+        {
+          throw new JsonStathamException(format("Attempt to process known type failed with IllegalAccessException.\n"
+              + "[Class<T> targetClass: %s][JsonObjectConvertible jsonObjectConvertible: %s]\n"
+              + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n"
+              + "found from knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList: %s",
+              targetClass, jsonObjectConvertible, knownTypeProcessorWithReflectionJsonToJavaConverter,
+              knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList), e);
+        }
+      }
+    }
+
     final List<Class<?>> classList =
       extractClassesWithAnnotationsInSuperToSubOrder(targetClass, Object.class, true, JsonObject.class);
 
@@ -365,14 +413,18 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           final Field field = jsonFieldNameAndFieldPair.field;
           try
           {
-            argList.add(resolveFieldValue(field, field.getType(),
-                jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst())));
+            final Object resolvedFieldValue =
+              resolveFieldValue(field, field.getType(), jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst()));
+            argList.add(resolvedFieldValue);
           }
           catch (final IllegalArgumentException e)
           {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            throw new UnsupportedOperationException(e);
+            throw new JsonStathamException(format("Invocation of resolveFieldValue failed.\n"
+                + "[Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
+                + "[jsonFieldNameAndFieldPair: %s]\n" + "[field: %s][field.getType(): %s]\n"
+                + "[Incomplete argList: %s]\n" + "[JsonObjectConvertible jsonObjectConvertible: %s]",
+                targetClass.getName(), jsonFieldNameAndFieldPair, field, field.getType(), argList,
+                jsonObjectConvertible), e);
           }
         }
         /* It is annotated with @JsonConstructor so it should be used even if it is a private constructor. */
@@ -669,6 +721,37 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         .equals(value))
     {
       return null;
+    }
+
+    for (final KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>> deciderForJsonToJava : knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList)
+    {
+      final KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> knownTypeProcessorWithReflectionJsonToJavaConverter =
+        deciderForJsonToJava.decide(valueType);
+      if (null != knownTypeProcessorWithReflectionJsonToJavaConverter)
+      {
+        try
+        {
+          return knownTypeProcessorWithReflectionJsonToJavaConverter.process(this, valueType, value);
+        }
+        catch (final IllegalArgumentException e)
+        {
+          throw new JsonStathamException(format("Attempt to process known type failed with IllegalArgumentException.\n"
+              + "[Class<T> valueType: %s][Object value: %s]\n"
+              + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n"
+              + "found from knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList: %s",
+              valueType, value, knownTypeProcessorWithReflectionJsonToJavaConverter,
+              knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList), e);
+        }
+        catch (final IllegalAccessException e)
+        {
+          throw new JsonStathamException(format("Attempt to process known type failed with IllegalAccessException.\n"
+              + "[Class<T> valueType: %s][Object value: %s]\n"
+              + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n"
+              + "found from knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList: %s",
+              valueType, value, knownTypeProcessorWithReflectionJsonToJavaConverter,
+              knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList), e);
+        }
+      }
     }
 
     final KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> knownTypeProcessorWithReflectionJsonToJavaConverter =
@@ -1147,7 +1230,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       final List<Object> list = newArrayList();
       for (int i = 0; i < length; i++)
       {
-        list.add(resolveElement(Object.class, jsonArrayConvertible.get(i)));
+        final Object element = jsonArrayConvertible.get(i);
+        list.add(resolveElement(Object.class, element));
       }
       @SuppressWarnings("unchecked")
       final T t = (T) list;

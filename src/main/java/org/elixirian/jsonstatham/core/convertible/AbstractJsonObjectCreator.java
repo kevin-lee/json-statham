@@ -11,11 +11,11 @@ import org.json.JSONObject;
 
 /**
  * <pre>
- *     ___  _____  __________  ___________ _____  ____
- *    /   \/    / /      \   \/   /_    _//     \/   /
- *   /        /  /    ___/\      / /   / /          /
- *  /        \  /    ___/  \    /_/   /_/          /
- * /____/\____\/_______/    \__//______/___/\_____/
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
@@ -25,13 +25,13 @@ public abstract class AbstractJsonObjectCreator implements JsonObjectConvertible
 {
 
   @Override
-  public JsonObjectConvertible newJsonObjectConvertible(String jsonString) throws JsonStathamException
+  public JsonObjectConvertible newJsonObjectConvertible(final String jsonString) throws JsonStathamException
   {
     try
     {
       return new OrgJsonJsonObjectConvertible(new JSONObject(jsonString));
     }
-    catch (JSONException e)
+    catch (final JSONException e)
     {
       throw new JsonStathamException(format("[input] String jsonString: %s", jsonString), e);
     }

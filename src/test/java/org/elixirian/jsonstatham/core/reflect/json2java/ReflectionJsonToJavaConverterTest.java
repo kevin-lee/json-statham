@@ -31,11 +31,15 @@ import java.util.Set;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
+import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
@@ -77,6 +81,9 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitionHolder;
+import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitions;
+import org.elixirian.jsonstatham.json.json2java.item.ItemVersion;
 import org.elixirian.jsonstatham.test.CorrectAnswer;
 import org.elixirian.jsonstatham.test.ItemConfig;
 import org.elixirian.jsonstatham.test.ItemConfigWithPrivateConstructor;
@@ -260,7 +267,9 @@ public class ReflectionJsonToJavaConverterTest
         ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
 
     reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
+      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(jsonObjectConvertibleCreator,
+          jsonArrayConvertibleCreator)
+          .build());
     address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
     addressList = new ArrayList<Address>();
@@ -1806,8 +1815,8 @@ public class ReflectionJsonToJavaConverterTest
   }
 
   @Test
-  public void testInteractionConfigHavingDifferentConstructorParamsFromField() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-      InstantiationException, IllegalAccessException, InvocationTargetException
+  public void testInteractionConfigHavingDifferentConstructorParamsFromField() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     /* given */
     final InteractionConfig expected = InteractionConfig.builder()
@@ -1822,6 +1831,139 @@ public class ReflectionJsonToJavaConverterTest
     final InteractionConfig result = reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, json);
     System.out.println(result);
 
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  private static final KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>> CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION =
+    new KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>() {
+
+      @Override
+      public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(final Class<?> type)
+      {
+        if (org.elixirian.jsonstatham.json.json2java.item.ItemDefinition.class == type)
+        {
+          return new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+
+            @Override
+            public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+                final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+                JsonStathamException
+            {
+              if (org.elixirian.jsonstatham.json.json2java.item.ItemDefinition.class == valueType)
+              {
+                final JsonObjectConvertible jsonObjectConvertible =
+                  value instanceof JsonObjectConvertible ? (JsonObjectConvertible) value
+                      : value instanceof JSONObject ? new OrgJsonJsonObjectConvertible((JSONObject) value) : null;
+                if (null == jsonObjectConvertible)
+                {
+                  return null;
+                }
+                final String questionVersionString = (String) jsonObjectConvertible.get("questionVersion");
+
+                final ItemVersion itemVersion = ItemVersion.valueOf(questionVersionString);
+                if (ItemVersion.isMultipleChoice(itemVersion))
+                {
+                  return reflectionJsonToJavaConverter.createFromJsonObject(
+                      org.elixirian.jsonstatham.json.json2java.item.MultipleSelectionItem.class, jsonObjectConvertible);
+                }
+                return reflectionJsonToJavaConverter.createFromJsonObject(
+                    org.elixirian.jsonstatham.json.json2java.item.FreeInputItem.class, jsonObjectConvertible);
+              }
+              return null;
+            }
+          };
+        }
+        return null;
+      }
+    };
+
+  @Test
+  public void testItemDefinitionWithCustomTypeProcessor() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+
+    final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
+      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
+          new OrgJsonJsonArrayConvertibleCreator())
+          .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
+          .build());
+
+    /* given */
+    final org.elixirian.jsonstatham.json.json2java.item.ItemDefinition expected =
+      ItemDefinitions.newItemDefinition(ItemVersion.MULTI_SELECT, "test", "blah blah", Arrays.asList(
+          new org.elixirian.jsonstatham.json.json2java.item.Option("A", "111"),
+          new org.elixirian.jsonstatham.json.json2java.item.Option("B", "222")));
+    System.out.println("expected:\n" + expected);
+
+    final String json =
+      "{\"name\":\"test\",\"instructions\":\"blah blah\",\"questionVersion\":\"MULTI_SELECT\",\"options\":[{\"code\":\"A\",\"text\":\"111\"},{\"code\":\"B\",\"text\":\"222\"}]}";
+
+    /* when */
+    System.out.println("actual: ");
+    final org.elixirian.jsonstatham.json.json2java.item.ItemDefinition result =
+      reflectionJsonToJavaConverter.convertFromJson(org.elixirian.jsonstatham.json.json2java.item.ItemDefinition.class,
+          json);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testItemDefinitionWithCustomTypeProcessor2() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+
+    final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
+      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
+          new OrgJsonJsonArrayConvertibleCreator())
+          .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
+          .build());
+
+    /* given */
+    final ItemDefinitionHolder expected =
+      new ItemDefinitionHolder(ItemDefinitions.newItemDefinition(ItemVersion.MULTI_SELECT, "test", "blah blah",
+          Arrays.asList(new org.elixirian.jsonstatham.json.json2java.item.Option("A", "111"),
+              new org.elixirian.jsonstatham.json.json2java.item.Option("B", "222"))));
+    System.out.println("expected:\n" + expected);
+
+    final String json =
+      "{\"definition\":{\"name\":\"test\",\"instructions\":\"blah blah\",\"questionVersion\":\"MULTI_SELECT\",\"options\":[{\"code\":\"A\",\"text\":\"111\"},{\"code\":\"B\",\"text\":\"222\"}]}}";
+
+    /* when */
+    System.out.println("actual: ");
+    final ItemDefinitionHolder result = reflectionJsonToJavaConverter.convertFromJson(ItemDefinitionHolder.class, json);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testItemDefinitionWithCustomTypeProcessor3() throws ArrayIndexOutOfBoundsException,
+  IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
+        new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
+            new OrgJsonJsonArrayConvertibleCreator())
+            .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
+            .build());
+    
+    /* given */
+    final ItemDefinitionHolder expected =
+        new ItemDefinitionHolder(ItemDefinitions.newItemDefinition(ItemVersion.TEXT, "test", "blah blah",
+            ItemDefinitions.EMPTY_IMMUTABLE_OPTION_LIST));
+    System.out.println("expected:\n" + expected);
+    
+    final String json =
+        "{\"definition\":{\"name\":\"test\",\"instructions\":\"blah blah\",\"questionVersion\":\"TEXT\",\"options\":[]}}";
+    
+    /* when */
+    System.out.println("actual: ");
+    final ItemDefinitionHolder result = reflectionJsonToJavaConverter.convertFromJson(ItemDefinitionHolder.class, json);
+    System.out.println(result);
+    
     /* then */
     assertThat(result, is(equalTo(expected)));
   }
