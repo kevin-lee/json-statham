@@ -1,14 +1,20 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core;
 
-import static org.elixirian.kommonlee.util.MessageFormatter.*;
-import static org.elixirian.kommonlee.util.Objects.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.format;
+import static org.elixirian.kommonlee.util.Objects.equal;
+import static org.elixirian.kommonlee.util.Objects.hash;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -29,7 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
@@ -41,7 +47,7 @@ import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypePr
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
-import org.elixirian.jsonstatham.core.reflect.json2java.JsonToJavaConfig;
+import org.elixirian.jsonstatham.core.reflect.json2java.DefaultJsonToJavaConfig;
 import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
@@ -98,7 +104,7 @@ import org.mockito.stubbing.Answer;
  *  /        \  /    ___/  \    /_/   /_/          /
  * /____/\____\/_______/    \__//______/___/\_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
@@ -185,6 +191,12 @@ public class JsonStathamInActionTest
           }
 
           @Override
+          public boolean isNull()
+          {
+          	return true;
+          }
+
+          @Override
           public String toString()
           {
             return JSONObject.NULL.toString();
@@ -263,7 +275,7 @@ public class JsonStathamInActionTest
           new OneProcessorForKnownTypeDecider());
 
     final ReflectionJsonToJavaConverter jsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(jsonObjectConvertibleCreator,
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectConvertibleCreator,
           jsonArrayConvertibleCreator)
           .build());
 
@@ -321,7 +333,7 @@ public class JsonStathamInActionTest
   {
     System.out.println("\nJsonStathamInActionTest.testJsonHavingNullValue()");
     @SuppressWarnings("hiding")
-    @JsonObject
+    @Json
     class TestPojo
     {
       @SuppressWarnings("unused")
@@ -1141,7 +1153,7 @@ public class JsonStathamInActionTest
   {
     System.out.println("\nJsonStathamInActionTest.testLocalJsonClass().TestPojo.testLocalJsonClass()");
     @SuppressWarnings("hiding")
-    @JsonObject
+    @Json
     class TestPojo
     {
       @JsonField
@@ -1182,7 +1194,7 @@ public class JsonStathamInActionTest
     }
   }
 
-  @JsonObject
+  @Json
   private static class TestPojo
   {
     @JsonField

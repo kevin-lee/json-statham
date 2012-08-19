@@ -1,98 +1,97 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.jsonstatham.core.util.JsonUtil.*;
 import static org.elixirian.kommonlee.collect.Lists.*;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.elixirian.jsonstatham.core.util.JsonUtil;
+
 /**
  * <pre>
- *     ___  _____  __________  ___________ _____  ____
- *    /   \/    / /      \   \/   /_    _//     \/   /
- *   /        /  /    ___/\      / /   / /          /
- *  /        \  /    ___/  \    /_/   /_/          /
- * /____/\____\/_______/    \__//______/___/\_____/
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public class JsonArray implements JsonArrayConvertible
+public abstract class JsonArray implements JsonArrayConvertible
 {
-  private final List<Object> list;
+	private final List<Object> list;
 
-  private JsonArray()
-  {
-    this.list = newArrayList();
-  }
+	protected JsonArray()
+	{
+		this.list = newArrayList();
+	}
 
-  private JsonArray(final Collection<?> elements)
-  {
-    this.list = newArrayList(elements);
-  }
+	protected JsonArray(final JsonScanner jsonScanner)
+	{
+		this.list = newArrayList();
+		// TODO: do the rest!!!
+	}
 
-  @Override
-  public Object get(final int index)
-  {
-    return list.get(index);
-  }
+	protected JsonArray(final Collection<?> elements)
+	{
+		this.list = newArrayList(elements);
+	}
 
-  @Override
-  public <T> JsonArrayConvertible put(final T value)
-  {
-    list.add(value);
-    return this;
-  }
+	protected JsonArray(final Object[] elements)
+	{
+		this.list = newArrayList(elements);
+	}
 
-  @Override
-  public int length()
-  {
-    return list.size();
-  }
+	@Override
+	public Object get(final int index)
+	{
+		return list.get(index);
+	}
 
-  @Override
-  public Object getActualObject()
-  {
-    return this;
-  }
+	@Override
+	public <T> JsonArrayConvertible put(final T value)
+	{
+		list.add(value);
+		return this;
+	}
 
-  @Override
-  public String toString()
-  {
-    final StringBuilder stringBuilder = new StringBuilder("[");
-    final Iterator<Object> iterator = list.iterator();
+	@Override
+	public int length()
+	{
+		return list.size();
+	}
 
-    if (iterator.hasNext())
-      stringBuilder.append(toStringValue(iterator.next()));
+	@Override
+	public Object getActualObject()
+	{
+		return this;
+	}
 
-    while (iterator.hasNext())
-    {
-      stringBuilder.append(',')
-          .append(toStringValue(iterator.next()));
-    }
-    return stringBuilder.append(']')
-        .toString();
-  }
+	@Override
+	public String toString()
+	{
+		final StringBuilder stringBuilder = new StringBuilder("[");
+		final Iterator<Object> iterator = list.iterator();
 
-  public static JsonArray newJsonArray()
-  {
-    return new JsonArray();
-  }
+		if (iterator.hasNext())
+		{
+			final String value = JsonUtil.toStringValue(iterator.next(), this);
+			stringBuilder.append(value);
+		}
 
-  public static JsonArray newJsonArray(final Collection<?> elements)
-  {
-    return new JsonArray(elements);
-  }
-
-  public static JsonArrayConvertible newJsonArray(final String jsonString)
-  {
-    throw new UnsupportedOperationException("Not implemented yet. [input] String jsonString: " + jsonString);
-    // final List<Object> elements = new ArrayList<Object>();
-    // return new JsonArray(elements);
-  }
+		while (iterator.hasNext())
+		{
+			final String value = JsonUtil.toStringValue(iterator.next(), this);
+			stringBuilder.append(',')
+					.append(value);
+		}
+		return stringBuilder.append(']')
+				.toString();
+	}
 }

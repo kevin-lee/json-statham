@@ -3,8 +3,6 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-
 /**
  * <pre>
  *     ___  _____                                _____
@@ -15,13 +13,9 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * </pre>
  *
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-02-03)
+ * @version 0.0.1 (2012-08-18)
  */
-public interface JsonObjectConvertibleCreator
+public interface JsonScanner
 {
-	JsonObjectConvertible newJsonObjectConvertible();
-
-	JsonObjectConvertible nullJsonObjectConvertible();
-
-	JsonObjectConvertible newJsonObjectConvertible(String jsonString) throws JsonStathamException;
+	String getJsonString();
 }

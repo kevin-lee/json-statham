@@ -7,7 +7,7 @@ import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 /**
  * <pre>
@@ -21,7 +21,7 @@ import org.elixirian.jsonstatham.annotation.JsonObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2012-07-18)
  */
-@JsonObject
+@Json
 public class ItemDefinitionHolder
 {
   @JsonField(name = "definition")

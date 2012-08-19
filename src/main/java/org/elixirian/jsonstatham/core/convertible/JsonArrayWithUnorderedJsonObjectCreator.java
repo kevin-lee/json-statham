@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core.convertible;
 
@@ -11,22 +11,21 @@ package org.elixirian.jsonstatham.core.convertible;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public class JsonArrayCreator implements JsonArrayConvertibleCreator
+public class JsonArrayWithUnorderedJsonObjectCreator implements JsonArrayConvertibleCreator
 {
+	@Override
+	public JsonArrayConvertible newJsonArrayConvertible()
+	{
+		return JsonArrayWithUnorderedJsonObject.newJsonArray();
+	}
 
-  @Override
-  public JsonArrayConvertible newJsonArrayConvertible()
-  {
-    return JsonArray.newJsonArray();
-  }
-
-  @Override
-  public JsonArrayConvertible newJsonArrayConvertible(final String jsonString)
-  {
-    return JsonArray.newJsonArray(jsonString);
-  }
+	@Override
+	public JsonArrayConvertible newJsonArrayConvertible(final String jsonString)
+	{
+		return JsonArrayWithUnorderedJsonObject.newJsonArray(jsonString);
+	}
 }

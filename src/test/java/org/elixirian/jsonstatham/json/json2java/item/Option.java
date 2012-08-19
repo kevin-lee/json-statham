@@ -3,13 +3,13 @@ package org.elixirian.jsonstatham.json.json2java.item;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-07)
  */
-@JsonObject
+@Json
 public class Option
 {
   @JsonField

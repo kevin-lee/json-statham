@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 import org.elixirian.jsonstatham.core.JavaToJsonConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
@@ -123,16 +123,16 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
     final Deque<Class<?>> classStack = new ArrayDeque<Class<?>>();
     while (!Object.class.equals(sourceClass))
     {
-      if (sourceClass.isAnnotationPresent(JsonObject.class))
+      if (sourceClass.isAnnotationPresent(Json.class))
       {
-        /* add if the class is annotated with @JsonObject. Otherwise ignore it as it is not a JSON Object */
+        /* add if the class is annotated with @Json. Otherwise ignore it as it is not a JSON Object */
         classStack.push(sourceClass);
       }
       sourceClass = sourceClass.getSuperclass();
     }
 
     assertFalse(classStack.isEmpty(), "The target object is not a JSON object. " + "It must be annotated with %s.\n"
-        + "[class: %s]\n[object: %s]", JsonObject.class.getName(), sourceClass, sourceObject);
+        + "[class: %s]\n[object: %s]", Json.class.getName(), sourceClass, sourceObject);
 
     final Set<String> fieldNameSet = new HashSet<String>();
     final JsonObjectConvertible jsonObjectConvertible = newJsonObjectConvertible();
@@ -162,7 +162,7 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
       if (isEmpty(jsonFieldName))
       {
         /*
-         * no field name is set in the @JsonField annotation so use the actual field name for the JsonObject field.
+         * no field name is set in the @JsonField annotation so use the actual field name for the Json field.
          */
         jsonFieldName = field.getName();
       }

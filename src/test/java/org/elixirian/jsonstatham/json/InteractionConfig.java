@@ -11,7 +11,7 @@ import java.util.NavigableSet;
 import java.util.SortedSet;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.kommonlee.collect.Sets;
 import org.elixirian.kommonlee.type.GenericBuilder;
 import org.elixirian.kommonlee.util.Objects;
@@ -20,7 +20,7 @@ import org.elixirian.kommonlee.util.Objects;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2012-04-24)
  */
-@JsonObject
+@Json
 public class InteractionConfig
 {
   public static final SortedSet<Integer> EMPTY_INTEGER_SORTED_SET =

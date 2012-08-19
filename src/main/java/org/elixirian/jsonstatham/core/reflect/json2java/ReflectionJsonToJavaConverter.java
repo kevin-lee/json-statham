@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.core.JsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
@@ -202,7 +202,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       if (isEmpty(jsonFieldName))
       {
         /*
-         * no field name is set in the @JsonField annotation so use the actual field name for the JsonObject field.
+         * no field name is set in the @JsonField annotation so use the actual field name for the Json field.
          */
         jsonFieldName = fieldName;
       }
@@ -341,10 +341,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     final List<Class<?>> classList =
-      extractClassesWithAnnotationsInSuperToSubOrder(targetClass, Object.class, true, JsonObject.class);
+      extractClassesWithAnnotationsInSuperToSubOrder(targetClass, Object.class, true, Json.class);
 
     assertFalse(classList.isEmpty(), "The given type is not a JSON object type. " + "It must be annotated with %s.\n"
-        + "[class: %s]", JsonObject.class.getName(), targetClass);
+        + "[class: %s]", Json.class.getName(), targetClass);
 
     final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair =
       new JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair(new LinkedHashMap<String, Field>(),

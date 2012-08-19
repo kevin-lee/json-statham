@@ -5,13 +5,13 @@ import static org.elixirian.kommonlee.util.Objects.*;
 import java.util.List;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-07)
  */
-@JsonObject
+@Json
 public class MultipleSelectionItem extends AbstractItemDefinition implements ItemDefinition
 {
   private static final MultipleSelectionItem EMPTY_MULTIPLE_SELECTION_MULTI_SELECT_ITEM = new MultipleSelectionItem("",

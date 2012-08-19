@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 
 /**
@@ -25,7 +25,7 @@ import org.elixirian.jsonstatham.annotation.JsonObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-28)
  */
-@JsonObject
+@Json
 public class JsonObjectWithJsonConstructorWithSomeNotMatchingParams
 {
   private final String name;

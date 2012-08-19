@@ -6,7 +6,7 @@ package org.elixirian.jsonstatham.core;
 import java.lang.reflect.InvocationTargetException;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
@@ -41,7 +41,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  * @version 0.0.6 (2010-02-03) {@link JsonObjectConvertibleCreator} is added to create a new {@link org.json.JSONObject}
  *          .
  * @version 0.0.7 (2010-02-12) The name is changed from NonIndentedJsonStatham to JsonStathamInAction. When the
- *          JsonObject is converted into JSON, if any fields annotated with @JsonField without the 'name' element
+ *          Json is converted into JSON, if any fields annotated with @JsonField without the 'name' element
  *          explicitly set, it will use the actual field names as the JsonField names.
  * @version 0.0.8 (2010-03-02) refactoring...
  * @version 0.0.9 (2010-03-06)
@@ -51,7 +51,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *          field name: name => getName / field name: id => getId).</li>
  *          <li>It can handle proxied objects created by javassist.</li>
  *          <li>It ignores any super classes of the given JSON object if the classes are not annotated with the
- *          {@link JsonObject} annotation.</li>
+ *          {@link Json} annotation.</li>
  *          </ul>
  * @version 0.0.10 (2010-03-07) It does not throw an exception when the given JSON object has a proxied object created
  *          by javassist as a field value. Instead it tries to find any JSON objects from its super classes.

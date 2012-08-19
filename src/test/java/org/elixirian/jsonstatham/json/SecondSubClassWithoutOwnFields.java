@@ -3,7 +3,7 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 /**
  * <pre>
@@ -17,7 +17,7 @@ import org.elixirian.jsonstatham.annotation.JsonObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-12-22)
  */
-@JsonObject
+@Json
 public class SecondSubClassWithoutOwnFields extends SubClass
 {
   public SecondSubClassWithoutOwnFields(String name, int number, String email)

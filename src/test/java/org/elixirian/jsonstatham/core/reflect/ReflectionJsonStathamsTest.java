@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core.reflect;
 
@@ -13,7 +13,8 @@ import java.util.Arrays;
 import org.elixirian.jsonstatham.core.JsonStathamInAction;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayWithUnorderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObjectCreator;
@@ -21,7 +22,7 @@ import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypePr
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
-import org.elixirian.jsonstatham.core.reflect.json2java.JsonToJavaConfig;
+import org.elixirian.jsonstatham.core.reflect.json2java.DefaultJsonToJavaConfig;
 import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 import org.elixirian.kommonlee.test.CommonTestHelper.Accessibility;
 import org.junit.After;
@@ -38,7 +39,7 @@ import org.junit.Test;
  *  /        \  /    ___/  \    /_/   /_/          /
  * /____/\____\/_______/    \__//______/___/\_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-14)
  */
@@ -105,7 +106,7 @@ public class ReflectionJsonStathamsTest
           knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
           oneProcessorForKnownTypeDecider);
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(jsonObjectConvertibleCreator,
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectConvertibleCreator,
           jsonArrayConvertibleCreator)
           .build());
 
@@ -162,7 +163,7 @@ public class ReflectionJsonStathamsTest
     // assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
     // is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
-        is(instanceOf(JsonArrayCreator.class)));
+        is(instanceOf(JsonArrayWithOrderedJsonObjectCreator.class)));
 
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
         is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));
@@ -205,7 +206,7 @@ public class ReflectionJsonStathamsTest
     // assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
     // is(instanceOf(OrgJsonJsonArrayConvertibleCreator.class)));
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator(),
-        is(instanceOf(JsonArrayCreator.class)));
+        is(instanceOf(JsonArrayWithUnorderedJsonObjectCreator.class)));
 
     assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider(),
         is(instanceOf(KnownDataStructureTypeProcessorDecider.class)));

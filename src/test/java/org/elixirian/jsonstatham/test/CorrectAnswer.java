@@ -7,13 +7,13 @@ import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2012-03-22)
  */
-@JsonObject
+@Json
 public class CorrectAnswer
 {
 	@JsonField

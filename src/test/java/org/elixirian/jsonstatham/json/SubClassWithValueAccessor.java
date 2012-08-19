@@ -7,7 +7,7 @@ import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 
 
@@ -23,7 +23,7 @@ import org.elixirian.jsonstatham.annotation.ValueAccessor;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-03-06)
  */
-@JsonObject
+@Json
 public class SubClassWithValueAccessor extends SuperClassWithValueAccessor
 {
   @ValueAccessor(name = "emailAddress")

@@ -9,7 +9,7 @@ import static org.elixirian.kommonlee.util.Objects.*;
 import org.elixirian.kommonlee.util.Objects;
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 
 /**
@@ -24,7 +24,7 @@ import org.elixirian.jsonstatham.annotation.JsonObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-28)
  */
-@JsonObject
+@Json
 public class AddressWithPrivateConstructorAndJsonConstructor
 {
   @JsonField(name = "street")

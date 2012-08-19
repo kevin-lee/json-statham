@@ -7,7 +7,7 @@ import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 
 /**
@@ -22,7 +22,7 @@ import org.elixirian.jsonstatham.annotation.JsonObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-12-22)
  */
-@JsonObject
+@Json
 public abstract class SuperClass
 {
   @JsonField(name = "name")

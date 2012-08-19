@@ -8,7 +8,7 @@ import static org.elixirian.kommonlee.util.Objects.*;
 import java.util.List;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.json.Address;
 
 
@@ -24,7 +24,7 @@ import org.elixirian.jsonstatham.json.Address;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-10-08)
  */
-@JsonObject
+@Json
 public class JsonObjectHavingNestedGenericTypes
 {
   @JsonField

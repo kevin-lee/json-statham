@@ -7,7 +7,7 @@ import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 
 /**
@@ -22,7 +22,7 @@ import org.elixirian.jsonstatham.annotation.JsonObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-05-10)
  */
-@JsonObject
+@Json
 public final class JsonObjectContainingEnums
 {
   public static enum Role

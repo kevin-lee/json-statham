@@ -1,11 +1,12 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core.reflect;
 
 import org.elixirian.jsonstatham.core.JsonStathamInAction;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayWithUnorderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
@@ -14,6 +15,7 @@ import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypePr
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.reflect.json2java.DefaultJsonToJavaConfig;
 import org.elixirian.jsonstatham.core.reflect.json2java.JsonToJavaConfig;
 import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConverter;
 
@@ -25,7 +27,7 @@ import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConv
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-12)
  */
@@ -47,7 +49,7 @@ public final class ReflectionJsonStathams
    * The ReflectionJavaToJsonConverter object is created with OrgJsonOrderedJsonObjectConvertibleCreator,
    * OrgJsonJsonArrayConvertibleCreator, KnownDataStructureTypeProcessorDecider,
    * KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
-   * 
+   *
    * @return JsonStathamInAction object created with ReflectionJavaToJsonConverter and ReflectionJsonToJavaConverter.
    */
   public static JsonStathamInAction newReflectionJsonStathamInAction()
@@ -55,7 +57,7 @@ public final class ReflectionJsonStathams
     final JsonObjectConvertibleCreator orderedJsonObjectCreator = new OrderedJsonObjectCreator();
     final JsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator = new OrgJsonJsonArrayConvertibleCreator();
 
-    return newReflectionJsonStathamInAction(JsonToJavaConfig.builder(orderedJsonObjectCreator,
+    return newReflectionJsonStathamInAction(DefaultJsonToJavaConfig.builder(orderedJsonObjectCreator,
         orgJsonJsonArrayConvertibleCreator)
         .build());
   }
@@ -65,7 +67,7 @@ public final class ReflectionJsonStathams
    * The ReflectionJavaToJsonConverter object is created with OrgJsonOrderedJsonObjectConvertibleCreator,
    * OrgJsonJsonArrayConvertibleCreator, KnownDataStructureTypeProcessorDecider,
    * KnownObjectReferenceTypeProcessorDecider and OneProcessorForKnownTypeDecider.
-   * 
+   *
    * @param jsonToJavaConfig
    * @return JsonStathamInAction object created with ReflectionJavaToJsonConverter and ReflectionJsonToJavaConverter.
    */
@@ -76,7 +78,7 @@ public final class ReflectionJsonStathams
     // final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
     // new OrgJsonJsonArrayConvertibleCreator();
     final JsonObjectConvertibleCreator orderedJsonObjectCreator = new OrderedJsonObjectCreator();
-    final JsonArrayConvertibleCreator jsonArrayCreator = new JsonArrayCreator();
+    final JsonArrayConvertibleCreator jsonArrayCreator = new JsonArrayWithOrderedJsonObjectCreator();
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
       new ReflectionJavaToJsonConverter(orderedJsonObjectCreator, jsonArrayCreator,
@@ -96,7 +98,7 @@ public final class ReflectionJsonStathams
     // final OrgJsonJsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator =
     // new OrgJsonJsonArrayConvertibleCreator();
     final UnorderedJsonObjectCreator unorderedJsonObjectCreator = new UnorderedJsonObjectCreator();
-    final JsonArrayConvertibleCreator jsonArrayCreator = new JsonArrayCreator();
+    final JsonArrayConvertibleCreator jsonArrayCreator = new JsonArrayWithUnorderedJsonObjectCreator();
     final JsonArrayConvertibleCreator orgJsonJsonArrayConvertibleCreator = new OrgJsonJsonArrayConvertibleCreator();
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
@@ -105,7 +107,7 @@ public final class ReflectionJsonStathams
           new OneProcessorForKnownTypeDecider());
 
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(JsonToJavaConfig.builder(unorderedJsonObjectCreator,
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(unorderedJsonObjectCreator,
           orgJsonJsonArrayConvertibleCreator)
           .build());
 

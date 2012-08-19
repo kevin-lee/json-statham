@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 
 
@@ -27,7 +27,7 @@ import org.elixirian.jsonstatham.annotation.ValueAccessor;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-12-20)
  */
-@JsonObject
+@Json
 public final class ComplexJsonObjectWithValueAccessor
 {
   @JsonField(name = "id")

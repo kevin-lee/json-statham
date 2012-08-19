@@ -32,6 +32,8 @@ public interface JsonObjectConvertible extends JsonConvertible
   @Override
   Object getActualObject();
 
+  boolean isNull();
+  
   @Override
   String toString();
 }

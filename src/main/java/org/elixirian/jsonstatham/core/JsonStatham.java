@@ -6,7 +6,7 @@ package org.elixirian.jsonstatham.core;
 import java.util.Collection;
 import java.util.Map;
 
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 
@@ -28,7 +28,7 @@ public interface JsonStatham
 {
   /**
    * Returns String value containing JSON text. It turns the given target object which must be annotated with
-   * {@link JsonObject} into JSON text. If the target object is not annotated with {@link JsonObject}, it throws
+   * {@link Json} into JSON text. If the target object is not annotated with {@link Json}, it throws
    * {@link IllegalStateException}.
    * 
    * @param target

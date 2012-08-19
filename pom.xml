@@ -143,41 +143,41 @@
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-test</artifactId>
-      <version>0.0.13-SNAPSHOT</version>
+      <version>0.0.14-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-type</artifactId>
-      <version>0.0.9-SNAPSHOT</version>
+      <version>0.0.11-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-util</artifactId>
-      <version>0.0.15-SNAPSHOT</version>
+      <version>0.0.17-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-validation</artifactId>
-      <version>0.0.20-SNAPSHOT</version>
+      <version>0.0.21-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-asm</artifactId>
-      <version>0.0.10-SNAPSHOT</version>
+      <version>0.0.11-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-reflect</artifactId>
-      <version>0.0.9-SNAPSHOT</version>
+      <version>0.0.10-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-collection</artifactId>
-      <version>0.0.7-SNAPSHOT</version>
+      <version>0.0.8-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <properties>

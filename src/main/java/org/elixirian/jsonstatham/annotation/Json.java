@@ -8,23 +8,23 @@ import java.lang.annotation.Target;
 
 /**
  * It indicates that an instance of any classes, annotated with this annotation, is eligible to be used as the target
- * object of the {@link org.elixirian.jsonstatham.core.JsonStatham JsonStatham}'s methods which convert Java object
- * to JSON.
- * 
+ * object of the {@link org.elixirian.jsonstatham.core.JsonStatham JsonStatham}'s methods which convert Java object to
+ * JSON.
+ *
  * <pre>
- *     ___  _____  __________  ___________ _____  ____
- *    /   \/    / /      \   \/   /_    _//     \/   /
- *   /        /  /    ___/\      / /   / /          /
- *  /        \  /    ___/  \    /_/   /_/          /
- * /____/\____\/_______/    \__//______/___/\_____/
+ *     ___  _____                                _____
+ *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
+ *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
+ *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
+ * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.01 (2009-11-21)
  */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JsonObject
+public @interface Json
 {
 }

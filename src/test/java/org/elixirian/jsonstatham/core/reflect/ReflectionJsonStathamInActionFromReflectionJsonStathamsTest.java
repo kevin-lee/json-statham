@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.core.JsonStatham;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
@@ -181,7 +181,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
   {
     System.out.println("\nReflectionJsonStathamInActionFromReflectionJsonStathamsTest.testJsonHavingNullValue()");
     @SuppressWarnings("hiding")
-    @JsonObject
+    @Json
     class TestPojo
     {
       @SuppressWarnings("unused")
@@ -1016,7 +1016,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
   {
     System.out.println("\nReflectionJsonStathamInActionFromReflectionJsonStathamsTest.testLocalJsonClass().TestPojo.testLocalJsonClass()");
     @SuppressWarnings("hiding")
-    @JsonObject
+    @Json
     class TestPojo
     {
       @JsonField
@@ -1057,7 +1057,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     }
   }
 
-  @JsonObject
+  @Json
   private static class TestPojo
   {
     @JsonField

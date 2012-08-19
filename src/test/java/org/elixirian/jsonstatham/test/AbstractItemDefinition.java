@@ -10,13 +10,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 
 /**
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-07)
  */
-@JsonObject
+@Json
 public abstract class AbstractItemDefinition implements ItemDefinition
 {
   protected static final List<Option> EMPTY_IMMUTABLE_OPTION_LIST =

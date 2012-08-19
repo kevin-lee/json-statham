@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.JsonObject;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.kommonlee.type.GenericBuilder;
 import org.elixirian.kommonlee.util.Objects;
 
@@ -22,7 +22,7 @@ import org.elixirian.kommonlee.util.Objects;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2011-09-09)
  */
-@JsonObject
+@Json
 public class ItemConfigWithPrivateConstructor implements Serializable
 {
   private static final long serialVersionUID = 1L;
