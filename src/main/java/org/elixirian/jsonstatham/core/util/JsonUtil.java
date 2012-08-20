@@ -256,7 +256,7 @@ public final class JsonUtil
 		if (null == value)
 			return AbstractJsonObject.NULL_JSON_OBJECT.toString();
 
-		if ((value instanceof JsonConvertible || value instanceof JsonArray) | value instanceof Boolean)
+		if (value instanceof JsonConvertible || value instanceof Boolean)
 			return value.toString();
 
 		if (value instanceof Number)
