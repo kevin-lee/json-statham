@@ -101,8 +101,8 @@ public abstract class AbstractJsonObject implements JsonObject
 		if ('{' != c)
 		{
 			throw JsonStathamException.newJsonStathamException("Invalid JSON String found in the JsonScanner. "
-					+ "It must start with { but does not.\n[char found:[int char: %s][char found: '%s']]%s", (int) c, c,
-					jsonScanner.getPreviousCharInfo());
+					+ "It must start with { but does not.\n[char found:[int char: %s][char found: '%s']]%s", Integer.valueOf(c),
+					Character.valueOf(c), jsonScanner.getPreviousCharInfo());
 		}
 
 		String key = null;
@@ -113,8 +113,8 @@ public abstract class AbstractJsonObject implements JsonObject
 			{
 				case 0:
 					throw JsonStathamException.newJsonStathamException("Invalid JSON String found in the JsonScanner. "
-							+ "It must end with } but does not.\n[char found:[int char: %s][char found: '%s']]%s", (int) c, c,
-							jsonScanner.getPreviousCharInfo());
+							+ "It must end with } but does not.\n[char found:[int char: %s][char found: '%s']]%s",
+							Integer.valueOf(c), Character.valueOf(c), jsonScanner.getPreviousCharInfo());
 				case '}':
 					/* an empty JSON object "{}" */
 					return;
@@ -135,7 +135,7 @@ public abstract class AbstractJsonObject implements JsonObject
 			{
 				throw JsonStathamException.newJsonStathamException(
 						"The separator char that is : is expected after the key yet not found.\n{char found:[int char: %s][char found: '%s']}%s",
-						(int) c, c, jsonScanner.getPreviousCharInfo());
+						Integer.valueOf(c), Character.valueOf(c), jsonScanner.getPreviousCharInfo());
 			}
 
 			if (jsonFieldMap.containsKey(key))
@@ -165,7 +165,7 @@ public abstract class AbstractJsonObject implements JsonObject
 				default:
 					throw JsonStathamException.newJsonStathamException(
 							", (line delimiter) or } is expected but neither is found.\n[char found:[int char: %s][char found: '%s']]%s",
-							(int) c, c, jsonScanner.getPreviousCharInfo());
+							Integer.valueOf(c), Character.valueOf(c), jsonScanner.getPreviousCharInfo());
 			}
 		}
 	}

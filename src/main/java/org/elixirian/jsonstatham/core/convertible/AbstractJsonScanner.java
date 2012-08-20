@@ -27,7 +27,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 	private final int length;
 	private int index = 0;
 	private char previousChar;
-	private boolean usePreviousChar = false;
+	private boolean previousCharRequiredAlready = false;
 	private int previousPositionInLine = 0;
 	private int currentLine = 1;
 	private boolean ended;
@@ -53,10 +53,10 @@ public abstract class AbstractJsonScanner implements JsonScanner
 	private char nextChar0()
 	{
 		char c;
-		if (usePreviousChar)
+		if (previousCharRequiredAlready)
 		{
-			usePreviousChar = false;
-			c = previousChar;
+			previousCharRequiredAlready = false;
+			c = jsonString.charAt(index);
 		}
 		else
 		{
@@ -107,8 +107,9 @@ public abstract class AbstractJsonScanner implements JsonScanner
 			if (ended)
 			{
 				throw new JsonStathamException(format(
-						"Getting next %s char%s failed.[param: index howMany: %s][index: %s, length: %s, ended: %s]", howMany,
-						1 < howMany ? "s" : "", howMany, index, length, ended));
+						"Getting next %s char%s failed.[param: index howMany: %s][index: %s, length: %s, ended: %s]",
+						Integer.valueOf(howMany), 1 < howMany ? "s" : "", Integer.valueOf(howMany), Integer.valueOf(index),
+						Integer.valueOf(length), Boolean.valueOf(ended)));
 			}
 			index++;
 		}
@@ -234,11 +235,11 @@ public abstract class AbstractJsonScanner implements JsonScanner
 
 	private void backToPrevious0()
 	{
-		if (usePreviousChar)
+		if (previousCharRequiredAlready)
 		{
 			throw new JsonStathamException(
-					"It cannot move back to the second previous char. It can only move back to one previous char. [usePreviousChar: "
-							+ usePreviousChar + "]");
+					"It cannot move back to the second previous char. It can only move back to one previous char. [previousCharRequiredAlready: "
+							+ previousCharRequiredAlready + "]");
 		}
 		if (0 >= index)
 		{
@@ -246,7 +247,9 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		}
 		index--;
 		previousPositionInLine--;
-		usePreviousChar = true;
+		previousChar = 0 == index ? 0 : jsonString.charAt(index - 1);
+
+		previousCharRequiredAlready = true;
 		ended = false;
 	}
 
@@ -261,8 +264,10 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		{
 			return "Not started![index: 0, length: %s]" + length;
 		}
-		return format("[index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
-				index - 1, previousPositionInLine, currentLine, length, ended);
+		return format(
+				"[index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
+				Integer.valueOf(index - 1), Integer.valueOf(previousPositionInLine), Integer.valueOf(currentLine),
+				Integer.valueOf(length), Boolean.valueOf(ended));
 	}
 
 	@Override
@@ -273,7 +278,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 				.add("length", length)
 				.add("index", index)
 				.add("previousChar", previousChar)
-				.add("usePreviousChar", usePreviousChar)
+				.add("previousCharRequiredAlready", previousCharRequiredAlready)
 				.add("previousPositionInLine", previousPositionInLine)
 				.add("currentLine", currentLine)
 				.add("ended", ended)

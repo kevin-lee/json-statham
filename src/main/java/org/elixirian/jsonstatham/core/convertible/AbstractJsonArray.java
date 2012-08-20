@@ -46,8 +46,8 @@ public abstract class AbstractJsonArray implements JsonArray
 		if ('[' != c)
 		{
 			throw JsonStathamException.newJsonStathamException("Invalid JSON Array found in the JsonScanner. "
-					+ "It must start with [ but does not.\n[char found:[int char: %s][char found: '%s']]%s", (int) c, c,
-					jsonScanner.getPreviousCharInfo());
+					+ "It must start with [ but does not.\n[char found:[int char: %s][char found: '%s']]%s", Integer.valueOf(c),
+					Character.valueOf(c), jsonScanner.getPreviousCharInfo());
 		}
 		c = jsonScanner.nextNonWhiteSpaceChar();
 		if (']' != c)
@@ -79,7 +79,7 @@ public abstract class AbstractJsonArray implements JsonArray
 					default:
 						throw JsonStathamException.newJsonStathamException(
 								", (line delimiter) or ] is expected but neither is found.\n[char found:[int char: %s][char found: '%s']]%s",
-								(int) c, c, jsonScanner.getPreviousCharInfo());
+								Integer.valueOf(c), Character.valueOf(c), jsonScanner.getPreviousCharInfo());
 				}
 				c = jsonScanner.nextNonWhiteSpaceChar();
 			}
