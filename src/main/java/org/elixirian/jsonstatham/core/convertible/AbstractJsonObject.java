@@ -3,18 +3,21 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.jsonstatham.core.util.JsonUtil.*;
-import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.jsonstatham.core.util.JsonUtil.doubleQuote;
+import static org.elixirian.jsonstatham.core.util.JsonUtil.validate;
+import static org.elixirian.kommonlee.util.MessageFormatter.format;
+import static org.elixirian.kommonlee.util.Objects.toStringOf;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.collect.Maps;
 
 /**
  * <pre>
@@ -28,14 +31,14 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public abstract class AbstractJsonObject implements JsonObjectConvertible
+public abstract class AbstractJsonObject implements JsonObject
 {
-	public static final JsonObjectConvertible NULL_JSON_OBJECT = new JsonObjectConvertible() {
+	public static final JsonObject NULL_JSON_OBJECT = new JsonObject() {
 		@Override
-		public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
+		public JsonObject put(final String name, final Object value) throws JsonStathamException
 		{
-			throw new JsonStathamException(format("The put method in NullJsonObject cannot used.\n"
-					+ "[input] String name: %s, Object value: %s", name, value));
+			throw JsonStathamException.newJsonStathamException("The put method in NullJsonObject cannot used.\n"
+					+ "[input] String name: %s, Object value: %s", name, value);
 		}
 
 		@Override
@@ -58,8 +61,8 @@ public abstract class AbstractJsonObject implements JsonObjectConvertible
 		@Override
 		public Object get(final String name)
 		{
-			throw new JsonStathamException(format("The name method in NullJsonObject cannot used.\n[input] String name: %s",
-					name));
+			throw JsonStathamException.newJsonStathamException(
+					"The name method in NullJsonObject cannot used.\n[input] String name: %s", name);
 		}
 
 		@Override
@@ -86,16 +89,168 @@ public abstract class AbstractJsonObject implements JsonObjectConvertible
 	private final Map<String, Object> jsonFieldMap;
 	private final boolean ordered;
 
-	protected AbstractJsonObject(final JsonScanner jsonScanner, final Map<String, Object> jsonFieldMap)
+	protected AbstractJsonObject(final JsonScanner jsonScanner, final boolean ordered)
 	{
-		this(jsonFieldMap);
-		// TODO: use jsonScanner
+		this(ordered);
+		map(jsonScanner, this.jsonFieldMap);
 	}
 
-	protected AbstractJsonObject(final Map<String, Object> jsonFieldMap)
+	private void map(final JsonScanner jsonScanner, final Map<String, Object> jsonFieldMap) throws JsonStathamException
 	{
-		this.ordered = (jsonFieldMap instanceof LinkedHashMap || jsonFieldMap instanceof SortedMap);
-		this.jsonFieldMap = jsonFieldMap;
+		char c = jsonScanner.nextNonWhiteSpaceChar();
+		if ('{' != c)
+		{
+			throw JsonStathamException.newJsonStathamException("Invalid JSON String found in the JsonScanner. "
+					+ "It must start with { but does not.\n[char found:[int char: %s][char found: '%s']]%s", (int) c, c,
+					jsonScanner.getPreviousCharInfo());
+		}
+
+		String key = null;
+		while (true)
+		{
+			c = jsonScanner.nextNonWhiteSpaceChar();
+			switch (c)
+			{
+				case 0:
+					throw JsonStathamException.newJsonStathamException("Invalid JSON String found in the JsonScanner. "
+							+ "It must end with } but does not.\n[char found:[int char: %s][char found: '%s']]%s", (int) c, c,
+							jsonScanner.getPreviousCharInfo());
+				case '}':
+					/* an empty JSON object "{}" */
+					return;
+				default:
+					jsonScanner.backToPrevious();
+					key = toStringOf(jsonScanner.nextValue());
+			}
+
+			c = jsonScanner.nextNonWhiteSpaceChar();
+			if ('=' == c)
+			{
+				if ('>' != jsonScanner.nextChar())
+				{
+					jsonScanner.backToPrevious();
+				}
+			}
+			else if (':' != c)
+			{
+				throw JsonStathamException.newJsonStathamException(
+						"The separator char that is : is expected after the key yet not found.\n{char found:[int char: %s][char found: '%s']}%s",
+						(int) c, c, jsonScanner.getPreviousCharInfo());
+			}
+
+			if (jsonFieldMap.containsKey(key))
+			{
+				throw JsonStathamException.newJsonStathamException(
+						"Duplicate key found!\nThe key [%s] already exists in this JSON object", key);
+			}
+			final Object value = jsonScanner.nextValue();
+			if (null != key && null != value)
+			{
+				jsonFieldMap.put(key, value);
+			}
+
+			c = jsonScanner.nextNonWhiteSpaceChar();
+			switch (c)
+			{
+				case ',':
+				case ';':
+					if ('}' == jsonScanner.nextNonWhiteSpaceChar())
+					{
+						return;
+					}
+					jsonScanner.backToPrevious();
+					break;
+				case '}':
+					return;
+				default:
+					throw JsonStathamException.newJsonStathamException(
+							", (line delimiter) or } is expected but neither is found.\n[char found:[int char: %s][char found: '%s']]%s",
+							(int) c, c, jsonScanner.getPreviousCharInfo());
+			}
+		}
+	}
+
+	protected AbstractJsonObject(final boolean ordered)
+	{
+		this.ordered = ordered;
+		this.jsonFieldMap = this.ordered ? Maps.<String, Object> newLinkedHashMap() : Maps.<String, Object> newHashMap();
+	}
+
+	protected AbstractJsonObject(final Map<Object, Object> jsonFieldMap, final boolean ordered)
+	{
+		this(ordered);
+		for (final Entry<Object, Object> entry : jsonFieldMap.entrySet())
+		{
+			this.jsonFieldMap.put(toStringOf(entry.getKey()), JsonUtil.convert(entry.getValue(), this));
+		}
+	}
+
+	protected AbstractJsonObject(final Object javaBean, final boolean ordered)
+	{
+		this(ordered);
+		final Class<?> theClass = javaBean.getClass();
+		final boolean includeSuperClass = theClass.getClassLoader() != null;
+
+		final Method[] methods = includeSuperClass ? theClass.getMethods() : theClass.getDeclaredMethods();
+		for (int i = 0; i < methods.length; i++)
+		{
+			try
+			{
+				final Method method = methods[i];
+				if (Modifier.isPublic(method.getModifiers()))
+				{
+					final String name = method.getName();
+					String key = "";
+					if (name.startsWith("get"))
+					{
+						/* @formatter:off */
+						key = ("getClass".equals(name) || "getDeclaringClass".equals(name)) ?
+										"" :
+										name.substring(3);
+						/* @formatter:on */
+					}
+					else if (name.startsWith("is"))
+					{
+						key = name.substring(2);
+					}
+					final int length = key.length();
+					if (0 < length && Character.isUpperCase(key.charAt(0)) && 0 == method.getParameterTypes().length)
+					{
+						if (length == 1)
+						{
+							key = key.toLowerCase();
+						}
+						else
+						{
+							final boolean isSecondNotUpperCase = !Character.isUpperCase(key.charAt(1));
+
+							if (2 == length)
+							{
+								if (isSecondNotUpperCase)
+								{
+									key = key.substring(0, 1)
+											.toLowerCase() + key.substring(1);
+								}
+							}
+							else
+							{
+								key = key.substring(0, 1)
+										.toLowerCase() + key.substring(1);
+							}
+						}
+						final Object result = method.invoke(javaBean, (Object[]) null);
+						if (null != result)
+						{
+							this.jsonFieldMap.put(key, JsonUtil.convert(result, this));
+						}
+					}
+				}
+			}
+			catch (final Throwable e)
+			{
+				/* Any exception (or throwable) should be ignored. */
+			}
+		}
 	}
 
 	@Override
@@ -127,7 +282,7 @@ public abstract class AbstractJsonObject implements JsonObjectConvertible
 	}
 
 	@Override
-	public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
+	public JsonObject put(final String name, final Object value) throws JsonStathamException
 	{
 		put0(name, value);
 		return this;

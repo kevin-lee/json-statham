@@ -21,10 +21,10 @@ import org.elixirian.jsonstatham.annotation.ValueAccessor;
 import org.elixirian.jsonstatham.core.JavaToJsonConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.reflect.Classes;
@@ -89,28 +89,28 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 
   /**/
 
-  public JsonObjectConvertible newJsonObjectConvertible()
+  public JsonObject newJsonObjectConvertible()
   {
     return jsonObjectConvertibleCreator.newJsonObjectConvertible();
   }
 
-  public JsonObjectConvertible nullJsonObjectConvertible()
+  public JsonObject nullJsonObjectConvertible()
   {
     return jsonObjectConvertibleCreator.nullJsonObjectConvertible();
   }
 
-  public JsonArrayConvertible newJsonArrayConvertible()
+  public JsonArray newJsonArrayConvertible()
   {
     return jsonArrayConvertibleCreator.newJsonArrayConvertible();
   }
 
   /**
-   * Creates a JSON object which is {@link JsonObjectConvertible} containing all the fields annotated with the
+   * Creates a JSON object which is {@link JsonObject} containing all the fields annotated with the
    * {@link JsonField} annotation. The value of the given sourceObject must not be a null reference.
    * 
    * @param sourceObject
-   *          the given source object to be converted into {@link JsonObjectConvertible}.
-   * @return The {@link JsonObjectConvertible} object created based on the given sourceObject.
+   *          the given source object to be converted into {@link JsonObject}.
+   * @return The {@link JsonObject} object created based on the given sourceObject.
    * @throws IllegalArgumentException
    * @throws IllegalAccessException
    * @throws JsonStathamException
@@ -135,16 +135,16 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
         + "[class: %s]\n[object: %s]", Json.class.getName(), sourceClass, sourceObject);
 
     final Set<String> fieldNameSet = new HashSet<String>();
-    final JsonObjectConvertible jsonObjectConvertible = newJsonObjectConvertible();
+    final JsonObject jsonObject = newJsonObjectConvertible();
     for (final Class<?> eachClass : classStack)
     {
-      extractJsonFields(sourceObject, eachClass, fieldNameSet, jsonObjectConvertible);
+      extractJsonFields(sourceObject, eachClass, fieldNameSet, jsonObject);
     }
-    return jsonObjectConvertible;
+    return jsonObject;
   }
 
   private void extractJsonFields(final Object source, final Class<?> sourceClass, final Set<String> fieldNameSet,
-      final JsonObjectConvertible jsonObjectConvertible) throws IllegalAccessException, JsonStathamException
+      final JsonObject jsonObject) throws IllegalAccessException, JsonStathamException
   {
     for (final Field field : sourceClass.getDeclaredFields())
     {
@@ -177,12 +177,12 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
                     + "[input] Object source: %s, " +
                   		"Class<?> sourceClass: %s, " +
                   		"Set<String> fieldNameSet: %s, " +
-                  		"JsonObjectConvertible jsonObjectConvertible: %s",
+                  		"JsonObject jsonObjectConvertible: %s",
                 jsonFieldName, field, 
                       source,
                       sourceClass,
                       fieldNameSet,
-                      jsonObjectConvertible));
+                      jsonObject));
         /* @formatter:on */
       }
       fieldNameSet.add(jsonFieldName);
@@ -263,19 +263,19 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
       {
         fieldValue = field.get(source);
       }
-      jsonObjectConvertible.put(jsonFieldName, createJsonValue(fieldValue));
+      jsonObject.put(jsonFieldName, createJsonValue(fieldValue));
     }
   }
 
   /**
-   * Converts the given value into {@link JsonConvertible} object. It can be either {@link JsonObjectConvertible} or
-   * {@link JsonArrayConvertible}.
+   * Converts the given value into {@link JsonConvertible} object. It can be either {@link JsonObject} or
+   * {@link JsonArray}.
    * 
    * @param value
    *          the given target object to be converted to {@link JsonConvertible} which is either
-   *          {@link JsonObjectConvertible} or {@link JsonArrayConvertible}.
+   *          {@link JsonObject} or {@link JsonArray}.
    * @return {@link JsonConvertible} converted from the given value object. It can be either
-   *         {@link JsonObjectConvertible} or {@link JsonArrayConvertible}. If the given value is the null reference, it
+   *         {@link JsonObject} or {@link JsonArray}. If the given value is the null reference, it
    *         returns the object created by {@link #nullJsonObjectConvertible()}.
    * @throws JsonStathamException
    * @throws IllegalAccessException

@@ -3,12 +3,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.kommonlee.collect.Maps.*;
-
-import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.elixirian.kommonlee.collect.Maps;
 
 /**
  * <pre>
@@ -24,25 +19,34 @@ import org.elixirian.kommonlee.collect.Maps;
  */
 public class OrderedJsonObject extends AbstractJsonObject
 {
+	protected OrderedJsonObject()
+	{
+		super(true);
+	}
 
 	protected OrderedJsonObject(final JsonScanner jsonScanner)
 	{
-		super(jsonScanner, Maps.<String, Object> newLinkedHashMap());
+		super(jsonScanner, true);
 	}
 
-	protected OrderedJsonObject(final Map<String, Object> jsonFieldMap)
+	protected OrderedJsonObject(final Map<Object, Object> jsonFieldMap)
 	{
-		super(newLinkedHashMap(jsonFieldMap));
+		super(jsonFieldMap, true);
 	}
 
-	public static OrderedJsonObject newJsonObject(final Map<String, Object> fieldMap)
+	protected OrderedJsonObject(final Object javaBean)
+	{
+		super(javaBean, true);
+	}
+
+	public static OrderedJsonObject newJsonObject(final Map<Object, Object> fieldMap)
 	{
 		return new OrderedJsonObject(fieldMap);
 	}
 
 	public static OrderedJsonObject newJsonObject()
 	{
-		return new OrderedJsonObject(new LinkedHashMap<String, Object>());
+		return new OrderedJsonObject();
 	}
 
 	public static OrderedJsonObject newJsonObject(final JsonScanner jsonScanner)
@@ -54,6 +58,11 @@ public class OrderedJsonObject extends AbstractJsonObject
 	{
 		final JsonScannerForOrderedJsonObject jsonScanner = new JsonScannerForOrderedJsonObject(jsonString);
 		return new OrderedJsonObject(jsonScanner);
+	}
+
+	public static OrderedJsonObject newJsonObject(final Object javaBean)
+	{
+		return new OrderedJsonObject(javaBean);
 	}
 
 }

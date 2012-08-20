@@ -18,4 +18,14 @@ package org.elixirian.jsonstatham.core.convertible;
 public interface JsonScanner
 {
 	String getJsonString();
+
+	void backToPrevious();
+
+	char nextChar();
+
+	char nextNonWhiteSpaceChar();
+
+	Object nextValue();
+
+	String getPreviousCharInfo();
 }

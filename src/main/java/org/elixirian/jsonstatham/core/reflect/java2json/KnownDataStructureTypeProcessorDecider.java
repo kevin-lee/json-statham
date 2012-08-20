@@ -13,8 +13,8 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -43,12 +43,12 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
           @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
-        final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
         for (int i = 0, size = Array.getLength(value); i < size; i++)
         {
-          jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(Array.get(value, i)));
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(Array.get(value, i)));
         }
-        return jsonArrayConvertible;
+        return jsonArray;
       }
     });
 
@@ -59,12 +59,12 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
           @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
-        final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
         for (Object eachElement : (Collection<Object>) value)
         {
-          jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
         }
-        return jsonArrayConvertible;
+        return jsonArray;
       }
     });
     tempMap.put(Iterable.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
@@ -74,12 +74,12 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
           @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
-        final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
         for (Object eachElement : (Iterable<Object>) value)
         {
-          jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
         }
-        return jsonArrayConvertible;
+        return jsonArray;
       }
     });
     tempMap.put(Iterator.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
@@ -89,12 +89,12 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
           @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
-        final JsonArrayConvertible jsonArrayConvertible = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
         for (Iterator<Object> iterator = (Iterator<Object>) value; iterator.hasNext();)
         {
-          jsonArrayConvertible.put(reflectionJavaToJsonConverter.createJsonValue(iterator.next()));
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(iterator.next()));
         }
-        return jsonArrayConvertible;
+        return jsonArray;
       }
     });
     tempMap.put(Map.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
@@ -104,13 +104,13 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
           @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
-        final JsonObjectConvertible jsonObjectConvertible = reflectionJavaToJsonConverter.newJsonObjectConvertible();
+        final JsonObject jsonObject = reflectionJavaToJsonConverter.newJsonObjectConvertible();
         for (Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet())
         {
-          jsonObjectConvertible.put(String.valueOf(entry.getKey()),
+          jsonObject.put(String.valueOf(entry.getKey()),
               reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
         }
-        return jsonObjectConvertible;
+        return jsonObject;
       }
     });
     DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);

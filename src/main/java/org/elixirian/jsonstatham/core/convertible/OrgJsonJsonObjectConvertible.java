@@ -21,34 +21,34 @@ import org.json.JSONObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
+public final class OrgJsonJsonObjectConvertible implements JsonObject
 {
 	private static final String[] EMPTY_NAMES = new String[0];
 
-	private final JSONObject jsonObject;
+	private final JSONObject orgJsonObject;
 
-	public OrgJsonJsonObjectConvertible(final JSONObject jsonObject)
+	public OrgJsonJsonObjectConvertible(final JSONObject orgJsonObject)
 	{
-		this.jsonObject = jsonObject;
+		this.orgJsonObject = orgJsonObject;
 	}
 
 	@Override
 	public String[] getNames()
 	{
-		final String[] names = JSONObject.getNames(jsonObject);
+		final String[] names = JSONObject.getNames(orgJsonObject);
 		return (null == names ? EMPTY_NAMES : names);
 	}
 
 	@Override
 	public int fieldLength()
 	{
-		return jsonObject.length();
+		return orgJsonObject.length();
 	}
 
 	@Override
 	public boolean containsName(final String name)
 	{
-		return jsonObject.has(name);
+		return orgJsonObject.has(name);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
 	{
 		try
 		{
-			return jsonObject.get(name);
+			return orgJsonObject.get(name);
 		}
 		catch (final JSONException e)
 		{
@@ -65,18 +65,18 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
 	}
 
 	@Override
-	public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
+	public JsonObject put(final String name, final Object value) throws JsonStathamException
 	{
 		try
 		{
 			if (value instanceof JsonConvertible)
 			{
 				final Object actualObject = ((JsonConvertible) value).getActualObject();
-				jsonObject.put(name, actualObject);
+				orgJsonObject.put(name, actualObject);
 			}
 			else
 			{
-				jsonObject.put(name, value);
+				orgJsonObject.put(name, value);
 			}
 			return this;
 		}
@@ -89,7 +89,7 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
 	@Override
 	public Object getActualObject()
 	{
-		return jsonObject;
+		return orgJsonObject;
 	}
 
 	@Override
@@ -101,6 +101,6 @@ public final class OrgJsonJsonObjectConvertible implements JsonObjectConvertible
 	@Override
 	public String toString()
 	{
-		return jsonObject.toString();
+		return orgJsonObject.toString();
 	}
 }

@@ -3,6 +3,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import org.elixirian.jsonstatham.exception.JsonStathamException;
 
 /**
  * <pre>
@@ -16,15 +17,23 @@ package org.elixirian.jsonstatham.core.convertible;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public abstract class AbstractJsonObjectCreator implements JsonObjectConvertibleCreator
+public interface JsonObject extends JsonConvertible
 {
-	@Override
-	public abstract JsonObject newJsonObjectConvertible();
+	String[] getNames();
+
+	int fieldLength();
+
+	boolean containsName(String name);
+
+	Object get(String name);
+
+	JsonObject put(String name, Object value) throws JsonStathamException;
 
 	@Override
-	public JsonObject nullJsonObjectConvertible()
-	{
-		return AbstractJsonObject.NULL_JSON_OBJECT;
-	}
+	Object getActualObject();
 
+	boolean isNull();
+
+	@Override
+	String toString();
 }

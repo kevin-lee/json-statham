@@ -19,9 +19,9 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  */
 public interface JsonObjectConvertibleCreator
 {
-	JsonObjectConvertible newJsonObjectConvertible();
+	JsonObject newJsonObjectConvertible();
 
-	JsonObjectConvertible nullJsonObjectConvertible();
+	JsonObject nullJsonObjectConvertible();
 
-	JsonObjectConvertible newJsonObjectConvertible(String jsonString) throws JsonStathamException;
+	JsonObject newJsonObjectConvertible(String jsonString) throws JsonStathamException;
 }

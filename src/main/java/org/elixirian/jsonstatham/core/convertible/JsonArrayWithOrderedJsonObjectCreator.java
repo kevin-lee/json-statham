@@ -18,13 +18,13 @@ package org.elixirian.jsonstatham.core.convertible;
 public class JsonArrayWithOrderedJsonObjectCreator implements JsonArrayConvertibleCreator
 {
 	@Override
-	public JsonArrayConvertible newJsonArrayConvertible()
+	public JsonArray newJsonArrayConvertible()
 	{
 		return JsonArrayWithOrderedJsonObject.newJsonArray();
 	}
 
 	@Override
-	public JsonArrayConvertible newJsonArrayConvertible(final String jsonString)
+	public JsonArray newJsonArrayConvertible(final String jsonString)
 	{
 		return JsonArrayWithOrderedJsonObject.newJsonArray(jsonString);
 	}

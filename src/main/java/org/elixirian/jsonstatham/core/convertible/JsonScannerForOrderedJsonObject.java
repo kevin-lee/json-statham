@@ -24,7 +24,7 @@ public class JsonScannerForOrderedJsonObject extends AbstractJsonScanner
 	}
 
 	@Override
-	protected JsonObjectConvertible newJsonObjectConvertible(final JsonScanner jsonScanner)
+	protected JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
 	{
 		return new OrderedJsonObject(jsonScanner);
 	}

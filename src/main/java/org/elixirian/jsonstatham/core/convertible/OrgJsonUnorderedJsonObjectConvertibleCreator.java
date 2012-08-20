@@ -26,7 +26,7 @@ public final class OrgJsonUnorderedJsonObjectConvertibleCreator extends Abstract
    * @see org.elixirian.jsonstatham.core.JsonObjectConvertibleCreator#newJSONObject()
    */
   @Override
-  public JsonObjectConvertible newJsonObjectConvertible()
+  public JsonObject newJsonObjectConvertible()
   {
     return new OrgJsonJsonObjectConvertible(new JSONObject(new HashMap<String, Object>()));
   }

@@ -3,12 +3,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.kommonlee.collect.Maps.*;
-
-import java.util.HashMap;
 import java.util.Map;
-
-import org.elixirian.kommonlee.collect.Maps;
 
 /**
  * <pre>
@@ -24,23 +19,32 @@ import org.elixirian.kommonlee.collect.Maps;
  */
 public class UnorderedJsonObject extends AbstractJsonObject
 {
+	protected UnorderedJsonObject()
+	{
+		super(false);
+	}
 
 	protected UnorderedJsonObject(final JsonScanner jsonScanner)
 	{
-		super(jsonScanner, Maps.<String, Object> newHashMap());
+		super(jsonScanner, false);
 	}
 
-	protected UnorderedJsonObject(final Map<String, Object> jsonFieldMap)
+	protected UnorderedJsonObject(final Map<Object, Object> jsonFieldMap)
 	{
-		super(newHashMap(jsonFieldMap));
+		super(jsonFieldMap, false);
+	}
+
+	public UnorderedJsonObject(final Object javaBean)
+	{
+		super(javaBean, false);
 	}
 
 	public static UnorderedJsonObject newJsonObject()
 	{
-		return new UnorderedJsonObject(new HashMap<String, Object>());
+		return new UnorderedJsonObject();
 	}
 
-	public static UnorderedJsonObject newJsonObject(final Map<String, Object> jsonFieldMap)
+	public static UnorderedJsonObject newJsonObject(final Map<Object, Object> jsonFieldMap)
 	{
 		return new UnorderedJsonObject(jsonFieldMap);
 	}
@@ -54,5 +58,10 @@ public class UnorderedJsonObject extends AbstractJsonObject
 	{
 		final JsonScanner jsonScanner = new JsonScannerForUnorderedJsonObject(jsonString);
 		return new UnorderedJsonObject(jsonScanner);
+	}
+
+	public static UnorderedJsonObject newJsonObject(final Object javaBean)
+	{
+		return new UnorderedJsonObject(javaBean);
 	}
 }

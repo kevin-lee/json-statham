@@ -5,9 +5,9 @@
   <groupId>org.elixirian</groupId>
   <artifactId>json-statham</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.15-SNAPSHOT</version>
+  <version>0.2.16-SNAPSHOT</version>
   <name>json-statham</name>
-  <url>http://elixirian.org</url>
+  <url>http://projects.elixirian.org/json-statham</url>
 
   <distributionManagement>
     <repository>
@@ -27,7 +27,7 @@
   </distributionManagement>
 
   <issueManagement>
-    <url>https://trac.elixirian.org/json-statham</url>
+    <url>http://projects.elixirian.org/json-statham</url>
   </issueManagement>
   <build>
     <plugins>

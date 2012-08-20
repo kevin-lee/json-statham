@@ -5,7 +5,7 @@ package org.elixirian.jsonstatham.core.convertible;
 
 import java.util.Collection;
 
-import org.elixirian.jsonstatham.core.util.JsonUtil;
+import org.elixirian.jsonstatham.exception.JsonStathamException;
 
 /**
  * <pre>
@@ -19,26 +19,37 @@ import org.elixirian.jsonstatham.core.util.JsonUtil;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public class JsonArrayWithUnorderedJsonObject extends JsonArray
+public class JsonArrayWithUnorderedJsonObject extends AbstractJsonArray
 {
 
-	public JsonArrayWithUnorderedJsonObject()
+	protected JsonArrayWithUnorderedJsonObject()
 	{
 	}
 
-	public JsonArrayWithUnorderedJsonObject(final Collection<?> elements)
+	protected JsonArrayWithUnorderedJsonObject(final Collection<?> elements)
 	{
 		super(elements);
 	}
 
-	public JsonArrayWithUnorderedJsonObject(final JsonScanner jsonScanner)
+	protected JsonArrayWithUnorderedJsonObject(final JsonScanner jsonScanner)
 	{
 		super(jsonScanner);
 	}
 
-	public JsonArrayWithUnorderedJsonObject(final Object[] elements)
+	protected JsonArrayWithUnorderedJsonObject(final Object[] elements)
 	{
 		super(elements);
+	}
+
+	public static JsonArrayWithUnorderedJsonObject newJsonArray(final Object arrayObject)
+	{
+		final Object[] elements = convertToArrayIfArray(arrayObject);
+		if (null == elements)
+		{
+			throw JsonStathamException.newJsonStathamException(
+					"The given arrayObject is not an array object.[arrayObject: %s]", arrayObject);
+		}
+		return new JsonArrayWithUnorderedJsonObject(elements);
 	}
 
 	public static JsonArrayWithUnorderedJsonObject newJsonArray()
@@ -56,7 +67,7 @@ public class JsonArrayWithUnorderedJsonObject extends JsonArray
 		return new JsonArrayWithUnorderedJsonObject(elements);
 	}
 
-	public static JsonArrayWithUnorderedJsonObject newJsonArray(final JsonScannerForUnorderedJsonObject jsonScanner)
+	public static JsonArrayWithUnorderedJsonObject newJsonArray(final JsonScanner jsonScanner)
 	{
 		return new JsonArrayWithUnorderedJsonObject(jsonScanner);
 	}

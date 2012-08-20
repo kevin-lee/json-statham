@@ -7,7 +7,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.elixirian.jsonstatham.core.convertible.AbstractOrgJsonJsonObjectConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONObject;
@@ -37,19 +37,19 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
   @Test
   public final void testNewJsonObjectConvertible()
   {
-    final JsonObjectConvertible jsonObjectConvertible = new OrgJsonJsonObjectConvertible(new JSONObject());
+    final JsonObject jsonObject = new OrgJsonJsonObjectConvertible(new JSONObject());
     final AbstractOrgJsonJsonObjectConvertibleCreator orgJsonJsonObjectConvertibleCreator =
       new AbstractOrgJsonJsonObjectConvertibleCreator() {
 
         @Override
-        public JsonObjectConvertible newJsonObjectConvertible()
+        public JsonObject newJsonObjectConvertible()
         {
-          return jsonObjectConvertible;
+          return jsonObject;
         }
       };
 
-    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), is(jsonObjectConvertible));
-    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), equalTo(jsonObjectConvertible));
+    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), is(jsonObject));
+    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), equalTo(jsonObject));
   }
 
   /**
@@ -64,7 +64,7 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
       new AbstractOrgJsonJsonObjectConvertibleCreator() {
 
         @Override
-        public JsonObjectConvertible newJsonObjectConvertible()
+        public JsonObject newJsonObjectConvertible()
         {
           return null;
         }

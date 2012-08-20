@@ -23,7 +23,7 @@ import org.json.JSONObject;
  */
 public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements JsonObjectConvertibleCreator
 {
-	static final JsonObjectConvertible NULL_JSON_OBJECT_CONVERTIBLE = new JsonObjectConvertible() {
+	static final JsonObject NULL_JSON_OBJECT_CONVERTIBLE = new JsonObject() {
 
 		@Override
 		public String[] getNames()
@@ -56,7 +56,7 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
 		}
 
 		@Override
-		public JsonObjectConvertible put(final String name, final Object value) throws JsonStathamException
+		public JsonObject put(final String name, final Object value) throws JsonStathamException
 		{
 			throw new JsonStathamException(format(
 					"The put method in NullJsonObjectConvertible cannot used.\n[input] String name: %s, Object value: %s", name,
@@ -78,7 +78,7 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
 	};
 
 	@Override
-	public JsonObjectConvertible newJsonObjectConvertible(final String jsonString) throws JsonStathamException
+	public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
 	{
 		try
 		{
@@ -91,10 +91,10 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
 	}
 
 	@Override
-	public abstract JsonObjectConvertible newJsonObjectConvertible();
+	public abstract JsonObject newJsonObjectConvertible();
 
 	@Override
-	public JsonObjectConvertible nullJsonObjectConvertible()
+	public JsonObject nullJsonObjectConvertible()
 	{
 		return NULL_JSON_OBJECT_CONVERTIBLE;
 	}

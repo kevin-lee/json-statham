@@ -26,10 +26,10 @@ import java.util.Set;
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
@@ -96,10 +96,10 @@ public class ReflectionJavaToJsonConverterTest
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
 	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
-	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObjectConvertible>() {
+	private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
+		new Answer<JsonObject>() {
 			@Override
-			public JsonObjectConvertible answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
+			public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
 					throws Throwable
 			{
 				// TODO remove after testing.
@@ -107,15 +107,15 @@ public class ReflectionJavaToJsonConverterTest
 				return OrderedJsonObject.newJsonObject();
 			}
 		};
-	private static final Answer<JsonObjectConvertible> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObjectConvertible>() {
+	private static final Answer<JsonObject> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
+		new Answer<JsonObject>() {
 
 			@Override
-			public JsonObjectConvertible answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
+			public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
 					throws Throwable
 			{
 				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
-				return new JsonObjectConvertible() {
+				return new JsonObject() {
 					@Override
 					public String[] getNames()
 					{
@@ -146,7 +146,7 @@ public class ReflectionJavaToJsonConverterTest
 					}
 
 					@Override
-					public JsonObjectConvertible put(@SuppressWarnings("unused") final String name,
+					public JsonObject put(@SuppressWarnings("unused") final String name,
 							@SuppressWarnings("unused") final Object value) throws JsonStathamException
 					{
 						throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
@@ -169,11 +169,11 @@ public class ReflectionJavaToJsonConverterTest
 
 		};
 
-	private static final Answer<JsonArrayConvertible> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
-		new Answer<JsonArrayConvertible>() {
+	private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
+		new Answer<JsonArray>() {
 
 			@Override
-			public JsonArrayConvertible answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
+			public JsonArray answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
 					throws Throwable
 			{
 				return JsonArrayWithOrderedJsonObject.newJsonArray();

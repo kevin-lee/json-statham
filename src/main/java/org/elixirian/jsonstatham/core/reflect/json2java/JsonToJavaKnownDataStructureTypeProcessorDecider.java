@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONArray;
@@ -57,14 +57,14 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
       {
         final Class<?> actualValueType = value.getClass();
 
-        JsonArrayConvertible jsonArrayConvertible = null;
-        if (JsonArrayConvertible.class.isAssignableFrom(actualValueType))
+        JsonArray jsonArray = null;
+        if (JsonArray.class.isAssignableFrom(actualValueType))
         {
-          jsonArrayConvertible = (JsonArrayConvertible) value;
+          jsonArray = (JsonArray) value;
         }
         else if (JSONArray.class.isAssignableFrom(actualValueType))
         {
-          jsonArrayConvertible = new OrgJsonJsonArrayConvertible((JSONArray) value);
+          jsonArray = new OrgJsonJsonArrayConvertible((JSONArray) value);
         }
         else
         {
@@ -76,7 +76,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
         }
 
         final Class<?> targetClass = valueType;
-        final int length = jsonArrayConvertible.length();
+        final int length = jsonArray.length();
         try
         {
           if (targetClass.isArray())
@@ -86,7 +86,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
             for (int i = 0; i < length; i++)
             {
               Array.set(array, i,
-                  reflectionJsonToJavaConverter.resolveElement(componentType, jsonArrayConvertible.get(i)));
+                  reflectionJsonToJavaConverter.resolveElement(componentType, jsonArray.get(i)));
             }
             @SuppressWarnings("unchecked")
             final
@@ -98,7 +98,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
             final List<Object> list = newArrayList();
             for (int i = 0; i < length; i++)
             {
-              list.add(reflectionJsonToJavaConverter.resolveElement(Object.class, jsonArrayConvertible.get(i)));
+              list.add(reflectionJsonToJavaConverter.resolveElement(Object.class, jsonArray.get(i)));
             }
             @SuppressWarnings("unchecked")
             final T t = (T) list;
@@ -112,8 +112,8 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
                   "[input] ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s",
                   reflectionJsonToJavaConverter, valueType, value), e);
         }
-        throw new JsonStathamException(format("Unknown type [class: %s] [JsonArrayConvertible: %s]", targetClass,
-            jsonArrayConvertible));
+        throw new JsonStathamException(format("Unknown type [class: %s] [JsonArray: %s]", targetClass,
+            jsonArray));
       }
     });
 

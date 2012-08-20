@@ -4,6 +4,7 @@
 package org.elixirian.jsonstatham.core.convertible;
 
 import static org.elixirian.kommonlee.util.MessageFormatter.format;
+import static org.elixirian.kommonlee.util.Objects.toStringBuilder;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
@@ -26,17 +27,15 @@ public abstract class AbstractJsonScanner implements JsonScanner
 	private final int length;
 	private int index = 0;
 	private char previousChar;
-	private boolean usePreviousChar;
-	private int positionInLine;
-	private int currentLine;
+	private boolean usePreviousChar = false;
+	private int previousPositionInLine = 0;
+	private int currentLine = 1;
 	private boolean ended;
 
 	public AbstractJsonScanner(final String jsonString)
 	{
 		this.jsonString = jsonString;
 		this.length = jsonString.length();
-		this.positionInLine = 1;
-		this.currentLine = 1;
 	}
 
 	@Override
@@ -45,6 +44,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		return jsonString;
 	}
 
+	@Override
 	public char nextChar()
 	{
 		return nextChar0();
@@ -60,7 +60,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		}
 		else
 		{
-			if (length >= index)
+			if (length <= index)
 			{
 				c = 0;
 				ended = true;
@@ -71,19 +71,22 @@ public abstract class AbstractJsonScanner implements JsonScanner
 			}
 		}
 
-		if ('\r' == previousChar)
+		if ('\r' == c)
 		{
 			currentLine++;
-			positionInLine = '\n' == c ? 0 : 1;
+			previousPositionInLine = 0;
 		}
-		else if ('\n' == previousChar)
+		else if ('\n' == c)
 		{
-			currentLine++;
-			positionInLine = 0;
+			if ('\r' != previousChar)
+			{
+				currentLine++;
+				previousPositionInLine = 0;
+			}
 		}
 		else
 		{
-			positionInLine++;
+			previousPositionInLine++;
 		}
 		previousChar = c;
 		index++;
@@ -112,6 +115,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		return new String(chars);
 	}
 
+	@Override
 	public char nextNonWhiteSpaceChar()
 	{
 		return nextNonWhiteSpaceChar0();
@@ -119,7 +123,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 
 	private char nextNonWhiteSpaceChar0()
 	{
-		for (;;)
+		while (true)
 		{
 			final char c = nextChar0();
 			if (0 == c || ' ' < c)
@@ -132,7 +136,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 	public String nextStringUntilQuoteEnded(final char quoteChar)
 	{
 		final StringBuilder stringBuilder = new StringBuilder();
-		for (;;)
+		while (true)
 		{
 			char c = nextChar0();
 			switch (c)
@@ -186,6 +190,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		}
 	}
 
+	@Override
 	public Object nextValue()
 	{
 		char c = nextNonWhiteSpaceChar0();
@@ -196,10 +201,12 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		}
 		if (c == '{')
 		{
+			backToPrevious0();
 			return newJsonObjectConvertible(this);
 		}
 		if (c == '[')
 		{
+			backToPrevious0();
 			return newJsonArrayConvertible(this);
 		}
 		final StringBuilder stringBuilder = new StringBuilder();
@@ -219,6 +226,12 @@ public abstract class AbstractJsonScanner implements JsonScanner
 		return JsonUtil.fromStringToValueIfPossible(value);
 	}
 
+	@Override
+	public void backToPrevious()
+	{
+		backToPrevious0();
+	}
+
 	private void backToPrevious0()
 	{
 		if (usePreviousChar)
@@ -232,12 +245,39 @@ public abstract class AbstractJsonScanner implements JsonScanner
 			throw new JsonStathamException("It cannot move to anywhere before the first char. [index: " + index + "]");
 		}
 		index--;
-		positionInLine--;
+		previousPositionInLine--;
 		usePreviousChar = true;
 		ended = false;
 	}
 
-	protected abstract JsonObjectConvertible newJsonObjectConvertible(JsonScanner jsonScanner);
+	protected abstract JsonObject newJsonObjectConvertible(JsonScanner jsonScanner);
 
-	protected abstract JsonArray newJsonArrayConvertible(final JsonScanner jsonScanner);
+	protected abstract AbstractJsonArray newJsonArrayConvertible(JsonScanner jsonScanner);
+
+	@Override
+	public String getPreviousCharInfo()
+	{
+		if (0 == index)
+		{
+			return "Not started![index: 0, length: %s]" + length;
+		}
+		return format("[index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
+				index - 1, previousPositionInLine, currentLine, length, ended);
+	}
+
+	@Override
+	public String toString()
+	{
+		/* @formatter:off */
+		return toStringBuilder(this)
+				.add("length", length)
+				.add("index", index)
+				.add("previousChar", previousChar)
+				.add("usePreviousChar", usePreviousChar)
+				.add("previousPositionInLine", previousPositionInLine)
+				.add("currentLine", currentLine)
+				.add("ended", ended)
+				.toString();
+		/* @formatter:on */
+	}
 }

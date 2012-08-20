@@ -1,97 +1,32 @@
 /**
- *
+ * 
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.kommonlee.collect.Lists.*;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import org.elixirian.jsonstatham.core.util.JsonUtil;
-
 /**
  * <pre>
- *     ___  _____                                _____
- *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
- *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
- *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
- * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
+ *     ___  _____  __________  ___________ _____  ____
+ *    /   \/    / /      \   \/   /_    _//     \/   /
+ *   /        /  /    ___/\      / /   / /          /
+ *  /        \  /    ___/  \    /_/   /_/          /
+ * /____/\____\/_______/    \__//______/___/\_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-12-25)
+ * @version 0.0.1 (2010-06-02)
+ * @version 0.0.2 (2010-09-13)
  */
-public abstract class JsonArray implements JsonArrayConvertible
+public interface JsonArray extends JsonConvertible
 {
-	private final List<Object> list;
+  Object get(int index);
 
-	protected JsonArray()
-	{
-		this.list = newArrayList();
-	}
+  <T> JsonArray put(T value);
 
-	protected JsonArray(final JsonScanner jsonScanner)
-	{
-		this.list = newArrayList();
-		// TODO: do the rest!!!
-	}
+  int length();
 
-	protected JsonArray(final Collection<?> elements)
-	{
-		this.list = newArrayList(elements);
-	}
+  @Override
+  Object getActualObject();
 
-	protected JsonArray(final Object[] elements)
-	{
-		this.list = newArrayList(elements);
-	}
-
-	@Override
-	public Object get(final int index)
-	{
-		return list.get(index);
-	}
-
-	@Override
-	public <T> JsonArrayConvertible put(final T value)
-	{
-		list.add(value);
-		return this;
-	}
-
-	@Override
-	public int length()
-	{
-		return list.size();
-	}
-
-	@Override
-	public Object getActualObject()
-	{
-		return this;
-	}
-
-	@Override
-	public String toString()
-	{
-		final StringBuilder stringBuilder = new StringBuilder("[");
-		final Iterator<Object> iterator = list.iterator();
-
-		if (iterator.hasNext())
-		{
-			final String value = JsonUtil.toStringValue(iterator.next(), this);
-			stringBuilder.append(value);
-		}
-
-		while (iterator.hasNext())
-		{
-			final String value = JsonUtil.toStringValue(iterator.next(), this);
-			stringBuilder.append(',')
-					.append(value);
-		}
-		return stringBuilder.append(']')
-				.toString();
-	}
+  @Override
+  String toString();
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.elixirian.jsonstatham.core.convertible;
 
@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 import java.util.LinkedHashMap;
 
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
@@ -25,7 +25,7 @@ import org.junit.Test;
  *  /        \  /    ___/  \    /_/   /_/          /
  * /____/\____\/_______/    \__//______/___/\_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-13)
  */
@@ -42,11 +42,11 @@ public class OrgJsonJsonArrayConvertibleTest
   @Test
   public final void testOrgJsonJsonArrayConvertible()
   {
-    final JSONArray jsonArray = new JSONArray();
-    final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
-    assertThat(jsonArrayConvertible.getActualObject(), is(instanceOf(JSONArray.class)));
-    assertThat(((JSONArray) jsonArrayConvertible.getActualObject()), is(jsonArray));
-    assertThat(((JSONArray) jsonArrayConvertible.getActualObject()), equalTo(jsonArray));
+    final JSONArray orgJsonArray = new JSONArray();
+    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    assertThat(jsonArray.getActualObject(), is(instanceOf(JSONArray.class)));
+    assertThat(((JSONArray) jsonArray.getActualObject()), is(orgJsonArray));
+    assertThat(((JSONArray) jsonArray.getActualObject()), equalTo(orgJsonArray));
   }
 
   /**
@@ -55,40 +55,40 @@ public class OrgJsonJsonArrayConvertibleTest
   @Test
   public final void testGet()
   {
-    final JSONArray jsonArray = new JSONArray();
+    final JSONArray orgJsonArray = new JSONArray();
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      jsonArray.put(VALUES[i]);
+      orgJsonArray.put(VALUES[i]);
     }
-    final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      assertThat(jsonArrayConvertible.get(i), is(equalTo(VALUES[i])));
+      assertThat(jsonArray.get(i), is(equalTo(VALUES[i])));
     }
   }
 
   /**
    * Test method for
    * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#put(java.lang.Object)}.
-   * 
+   *
    * @throws JSONException
    */
   @Test
   public final void testPut() throws JSONException
   {
-    final JSONArray jsonArray = new JSONArray();
-    final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+    final JSONArray orgJsonArray = new JSONArray();
+    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      jsonArrayConvertible.put(VALUES[i]);
+      jsonArray.put(VALUES[i]);
     }
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      assertThat(jsonArray.get(i), is(equalTo(VALUES[i])));
+      assertThat(orgJsonArray.get(i), is(equalTo(VALUES[i])));
     }
 
-    final JSONArray jsonArray2 = new JSONArray();
-    final JsonArrayConvertible jsonArrayConvertible2 = new OrgJsonJsonArrayConvertible(jsonArray2);
+    final JSONArray orgJsonArray2 = new JSONArray();
+    final JsonArray jsonArrayConvertible2 = new OrgJsonJsonArrayConvertible(orgJsonArray2);
 
     @SuppressWarnings("boxing")
     final Object[] valueObjects =
@@ -105,11 +105,11 @@ public class OrgJsonJsonArrayConvertibleTest
       final Object object = valueObjects[i];
       if (object instanceof JsonConvertible)
       {
-        assertThat(jsonArray2.get(i), is(equalTo(((JsonConvertible) object).getActualObject())));
+        assertThat(orgJsonArray2.get(i), is(equalTo(((JsonConvertible) object).getActualObject())));
       }
       else
       {
-        assertThat(jsonArray2.get(i), is(equalTo(valueObjects[i])));
+        assertThat(orgJsonArray2.get(i), is(equalTo(valueObjects[i])));
       }
     }
   }
@@ -121,13 +121,13 @@ public class OrgJsonJsonArrayConvertibleTest
   @Test
   public final void testLength()
   {
-    final JSONArray jsonArray = new JSONArray();
-    final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+    final JSONArray orgJsonArray = new JSONArray();
+    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      jsonArrayConvertible.put(VALUES[i]);
+      jsonArray.put(VALUES[i]);
     }
-    assertThat(jsonArrayConvertible.length(), is(equalTo(VALUES.length)));
+    assertThat(jsonArray.length(), is(equalTo(VALUES.length)));
   }
 
   /**
@@ -137,9 +137,9 @@ public class OrgJsonJsonArrayConvertibleTest
   @Test
   public final void testGetActualObject()
   {
-    final JSONArray jsonArray = new JSONArray();
-    final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
-    assertThat(jsonArrayConvertible.getActualObject(), is(equalTo((Object) jsonArray)));
+    final JSONArray orgJsonArray = new JSONArray();
+    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    assertThat(jsonArray.getActualObject(), is(equalTo((Object) orgJsonArray)));
   }
 
   /**
@@ -148,13 +148,13 @@ public class OrgJsonJsonArrayConvertibleTest
   @Test
   public final void testToString()
   {
-    final JSONArray jsonArray = new JSONArray();
-    final JsonArrayConvertible jsonArrayConvertible = new OrgJsonJsonArrayConvertible(jsonArray);
+    final JSONArray orgJsonArray = new JSONArray();
+    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      jsonArrayConvertible.put(VALUES[i]);
+      jsonArray.put(VALUES[i]);
     }
-    assertThat(jsonArrayConvertible.toString(), is(equalTo(jsonArray.toString())));
+    assertThat(jsonArray.toString(), is(equalTo(orgJsonArray.toString())));
   }
 
 }

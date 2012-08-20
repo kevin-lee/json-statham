@@ -5,6 +5,8 @@ package org.elixirian.jsonstatham.core.convertible;
 
 import java.util.Collection;
 
+import org.elixirian.jsonstatham.exception.JsonStathamException;
+
 /**
  * <pre>
  *     ___  _____                                _____
@@ -17,24 +19,24 @@ import java.util.Collection;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public class JsonArrayWithOrderedJsonObject extends JsonArray
+public class JsonArrayWithOrderedJsonObject extends AbstractJsonArray
 {
 
-	public JsonArrayWithOrderedJsonObject()
+	protected JsonArrayWithOrderedJsonObject()
 	{
 	}
 
-	public JsonArrayWithOrderedJsonObject(final Collection<?> elements)
+	protected JsonArrayWithOrderedJsonObject(final Collection<?> elements)
 	{
 		super(elements);
 	}
 
-	public JsonArrayWithOrderedJsonObject(final JsonScanner jsonScanner)
+	protected JsonArrayWithOrderedJsonObject(final JsonScanner jsonScanner)
 	{
 		super(jsonScanner);
 	}
 
-	public JsonArrayWithOrderedJsonObject(final Object[] elements)
+	protected JsonArrayWithOrderedJsonObject(final Object[] elements)
 	{
 		super(elements);
 	}
@@ -49,12 +51,23 @@ public class JsonArrayWithOrderedJsonObject extends JsonArray
 		return new JsonArrayWithOrderedJsonObject(elements);
 	}
 
+	public static JsonArrayWithOrderedJsonObject newJsonArray(final Object arrayObject)
+	{
+		final Object[] elements = convertToArrayIfArray(arrayObject);
+		if (null == elements)
+		{
+			throw JsonStathamException.newJsonStathamException(
+					"The given arrayObject is not an array object.[arrayObject: %s]", arrayObject);
+		}
+		return new JsonArrayWithOrderedJsonObject(elements);
+	}
+
 	public static JsonArrayWithOrderedJsonObject newJsonArray(final Object... elements)
 	{
 		return new JsonArrayWithOrderedJsonObject(elements);
 	}
 
-	public static JsonArrayWithOrderedJsonObject newJsonArray(final JsonScannerForOrderedJsonObject jsonScanner)
+	public static JsonArrayWithOrderedJsonObject newJsonArray(final JsonScanner jsonScanner)
 	{
 		return new JsonArrayWithOrderedJsonObject(jsonScanner);
 	}

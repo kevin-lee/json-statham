@@ -17,7 +17,7 @@ package org.elixirian.jsonstatham.core.convertible;
  */
 public interface JsonArrayConvertibleCreator
 {
-	JsonArrayConvertible newJsonArrayConvertible();
+	JsonArray newJsonArrayConvertible();
 
-	JsonArrayConvertible newJsonArrayConvertible(String jsonString);
+	JsonArray newJsonArrayConvertible(String jsonString);
 }

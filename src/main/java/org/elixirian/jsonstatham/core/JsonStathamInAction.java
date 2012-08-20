@@ -8,8 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.reflect.TypeHolder;
@@ -65,7 +65,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *          <p>
  *          {@link org.json.JSONObject} and {@link org.json.JSONArray}
  *          <p>
- *          These are replaced by {@link JsonObjectConvertible} and {@link JsonArrayConvertible} respectively.
+ *          These are replaced by {@link JsonObject} and {@link JsonArray} respectively.
  * @version 0.0.15 (2010-06-10) known types are injectable (more extensible design).
  * @version 0.0.16 (2010-06-14) refactoring...
  * @version 0.1.0 (2010-09-08) {@link #convertFromJson(Class, String)} is added.

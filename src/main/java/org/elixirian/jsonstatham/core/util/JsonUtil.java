@@ -3,8 +3,9 @@
  */
 package org.elixirian.jsonstatham.core.util;
 
-import static org.elixirian.kommonlee.util.MessageFormatter.*;
-import static org.elixirian.kommonlee.util.Objects.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.format;
+import static org.elixirian.kommonlee.util.Objects.castIfInstanceOf;
+import static org.elixirian.kommonlee.util.Objects.toStringOf;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -12,14 +13,15 @@ import java.util.Map;
 
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithUnorderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.util.CommonConstants;
+import org.elixirian.kommonlee.util.NeoArrays;
 
 /**
  * <pre>
@@ -35,8 +37,9 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  */
 public final class JsonUtil
 {
-	private JsonUtil()
+	private JsonUtil() throws IllegalAccessException
 	{
+		throw new IllegalAccessException(getClass().getName() + CommonConstants.CANNOT_BE_INSTANTIATED);
 	}
 
 	public static String doubleQuote(final String value)
@@ -135,20 +138,24 @@ public final class JsonUtil
 
 	public interface JsonObjectAndArrayCreator
 	{
-		JsonObjectConvertible newJsonObject(Map<String, Object> map);
+		JsonObject newJsonObject(Map<Object, Object> map);
+
+		JsonObject newJsonObject(Object value);
 
 		JsonArray newJsonArray(Object[] elements);
 
 		JsonArray newJsonArray(Collection<?> elements);
+
+		JsonArray newJsonArray(Object value);
 	}
 
-	public static JsonObjectAndArrayCreator getJsonObjectAndArrayCreator(final JsonObjectConvertible jsonObject)
+	public static JsonObjectAndArrayCreator getJsonObjectAndArrayCreator(final JsonObject jsonObject)
 	{
 		return jsonObject instanceof OrderedJsonObject ? JSON_OBJECT_AND_ARRAY_WITH_ORDERED_JSON_OBJECT_CREATOR
 				: JSON_OBJECT_AND_ARRAY_WITH_UNORDERED_JSON_OBJECT_CREATOR;
 	}
 
-	public static JsonObjectAndArrayCreator getJsonObjectAndArrayCreator(final JsonArrayConvertible jsonArray)
+	public static JsonObjectAndArrayCreator getJsonObjectAndArrayCreator(final JsonArray jsonArray)
 	{
 		return jsonArray instanceof JsonArrayWithOrderedJsonObject ? JSON_OBJECT_AND_ARRAY_WITH_ORDERED_JSON_OBJECT_CREATOR
 				: JSON_OBJECT_AND_ARRAY_WITH_UNORDERED_JSON_OBJECT_CREATOR;
@@ -157,52 +164,88 @@ public final class JsonUtil
 	private static final JsonObjectAndArrayCreator JSON_OBJECT_AND_ARRAY_WITH_ORDERED_JSON_OBJECT_CREATOR =
 		new JsonObjectAndArrayCreator() {
 			@Override
-			public JsonObjectConvertible newJsonObject(final Map<String, Object> map)
+			public OrderedJsonObject newJsonObject(final Map<Object, Object> map)
 			{
 				return OrderedJsonObject.newJsonObject(map);
 			}
 
 			@Override
-			public JsonArray newJsonArray(final Object[] elements)
+			public OrderedJsonObject newJsonObject(final Object javaBean)
+			{
+				return OrderedJsonObject.newJsonObject(javaBean);
+			}
+
+			@Override
+			public JsonArrayWithOrderedJsonObject newJsonArray(final Object[] elements)
 			{
 				return JsonArrayWithOrderedJsonObject.newJsonArray(elements);
 			}
 
 			@Override
-			public JsonArray newJsonArray(final Collection<?> elements)
+			public JsonArrayWithOrderedJsonObject newJsonArray(final Collection<?> elements)
 			{
 				return JsonArrayWithOrderedJsonObject.newJsonArray(elements);
+			}
+
+			@Override
+			public JsonArrayWithOrderedJsonObject newJsonArray(final Object value)
+			{
+				return JsonArrayWithOrderedJsonObject.newJsonArray(value);
+			}
+
+			@Override
+			public String toString()
+			{
+				return "JSON_OBJECT_AND_ARRAY_WITH_ORDERED_JSON_OBJECT_CREATOR";
 			}
 		};
 
 	private static final JsonObjectAndArrayCreator JSON_OBJECT_AND_ARRAY_WITH_UNORDERED_JSON_OBJECT_CREATOR =
 		new JsonObjectAndArrayCreator() {
 			@Override
-			public JsonObjectConvertible newJsonObject(final Map<String, Object> map)
+			public UnorderedJsonObject newJsonObject(final Map<Object, Object> map)
 			{
 				return UnorderedJsonObject.newJsonObject(map);
 			}
 
 			@Override
-			public JsonArray newJsonArray(final Object[] elements)
+			public UnorderedJsonObject newJsonObject(final Object javaBean)
+			{
+				return UnorderedJsonObject.newJsonObject(javaBean);
+			}
+
+			@Override
+			public JsonArrayWithUnorderedJsonObject newJsonArray(final Object[] elements)
 			{
 				return JsonArrayWithUnorderedJsonObject.newJsonArray(elements);
 			}
 
 			@Override
-			public JsonArray newJsonArray(final Collection<?> elements)
+			public JsonArrayWithUnorderedJsonObject newJsonArray(final Collection<?> elements)
 			{
 				return JsonArrayWithUnorderedJsonObject.newJsonArray(elements);
 			}
+
+			@Override
+			public JsonArrayWithUnorderedJsonObject newJsonArray(final Object value)
+			{
+				return JsonArrayWithUnorderedJsonObject.newJsonArray(value);
+			}
+
+			@Override
+			public String toString()
+			{
+				return "JSON_OBJECT_AND_ARRAY_WITH_UNORDERED_JSON_OBJECT_CREATOR";
+			}
 		};
 
-	public static String toStringValue(final Object value, final JsonObjectConvertible jsonObject)
+	public static String toStringValue(final Object value, final JsonObject jsonObject)
 	{
 		final JsonObjectAndArrayCreator jsonObjectAndArrayCreator = getJsonObjectAndArrayCreator(jsonObject);
 		return toStringValue(value, jsonObjectAndArrayCreator);
 	}
 
-	public static String toStringValue(final Object value, final JsonArrayConvertible jsonArray)
+	public static String toStringValue(final Object value, final JsonArray jsonArray)
 	{
 		final JsonObjectAndArrayCreator jsonObjectAndArrayCreator = getJsonObjectAndArrayCreator(jsonArray);
 		return toStringValue(value, jsonObjectAndArrayCreator);
@@ -213,7 +256,7 @@ public final class JsonUtil
 		if (null == value)
 			return AbstractJsonObject.NULL_JSON_OBJECT.toString();
 
-		if ((value instanceof JsonConvertible || value instanceof JsonArrayConvertible) | value instanceof Boolean)
+		if ((value instanceof JsonConvertible || value instanceof JsonArray) | value instanceof Boolean)
 			return value.toString();
 
 		if (value instanceof Number)
@@ -222,7 +265,7 @@ public final class JsonUtil
 		if (value instanceof Map)
 		{
 			@SuppressWarnings("unchecked")
-			final Map<String, Object> map = (Map<String, Object>) value;
+			final Map<Object, Object> map = (Map<Object, Object>) value;
 			return withJsonObjectAndArrayCreator.newJsonObject(map)
 					.toString();
 		}
@@ -246,6 +289,25 @@ public final class JsonUtil
 		return doubleQuote(value.toString());
 	}
 
+	/**
+	 * returns an Object if it is possible to get one based on the given stringValue.
+	 * <ul>
+	 * <li>if the stringValue is null or "null", it returns {@link AbstractJsonObject#NULL_JSON_OBJECT}.</li>
+	 * <li>if the stringValue is an empty String, it returns "" (an empty String).</li>
+	 * <li>if the stringValue is "true" (case insensitive), it returns {@link Boolean#TRUE}.</li>
+	 * <li>if the stringValue is "false" (case insensitive), it returns {@link Boolean#FALSE}.</li>
+	 * <li>if the stringValue is a decimal, it returns a {@link Double} object.</li>
+	 * <li>if the stringValue is an integer, it returns {@link Long} when the number.intValue() != number.longValue.
+	 * Otherwise, it returns an {@link Integer} object.</li>
+	 * <li>if the stringValue is any exception is thrown while the stringValue is converted into one of {@link Double},
+	 * {@link Integer} and {@link Long} objects, it ignores the exception, and still returns the given stringValue.</li>
+	 * <li>None of the cases above is matching, it just returns the given stringValue.</li>
+	 * </ul>
+	 *
+	 * @param stringValue
+	 *          the given stringValue
+	 * @return an Object created based on the given stringValue.
+	 */
 	public static Object fromStringToValueIfPossible(final String stringValue)
 	{
 		if (null == stringValue || "null".equalsIgnoreCase(stringValue))
@@ -266,7 +328,7 @@ public final class JsonUtil
 		}
 
 		final char c = stringValue.charAt(0);
-		if ((0 <= c && 9 >= c) || '-' == c || '.' == c || '+' == c)
+		if (('0' <= c & '9' >= c) || '-' == c || '.' == c || '+' == c)
 		{
 			/*
 			 * Try to get a number if it looks like a number. If converting to number fails, it should still be a value String
@@ -296,8 +358,93 @@ public final class JsonUtil
 			catch (final Throwable e)
 			{
 				/* It is to ignore any exception (or throwable). */
+				System.out.println(format(
+						"log from %s (%s.java:%s)\nException is thrown when converting stringValue [%s] into a Number object.\n"
+								+ "This should be just ignored.\n[paramInfo-> String stringValue: %s][Message from Throwable: %s]",
+						JsonUtil.class, JsonUtil.class.getSimpleName(), Integer.valueOf(Thread.currentThread()
+								.getStackTrace()[1].getLineNumber()), stringValue, stringValue, e.getMessage()));
 			}
 		}
 		return stringValue;
+	}
+
+	public static Object convert(final Object value, final JsonObjectAndArrayCreator jsonObjectAndArrayCreator)
+	{
+		if (null == value)
+		{
+			return AbstractJsonObject.NULL_JSON_OBJECT;
+		}
+		/* @formatter:off */
+		if (value instanceof JsonObject ||
+				value instanceof JsonArray ||
+				value instanceof String ||
+				value instanceof Boolean ||
+				value instanceof Integer ||
+				value instanceof Long ||
+				value instanceof Double ||
+				value instanceof Enum ||
+				value instanceof Character ||
+				value instanceof Byte ||
+				value instanceof Short ||
+				value instanceof Float)
+		{
+			return value;
+		}
+		/* @formatter:on */
+
+		try
+		{
+			if (value instanceof Collection)
+			{
+				return jsonObjectAndArrayCreator.newJsonArray((Collection<?>) value);
+			}
+			if (value instanceof Map)
+			{
+				@SuppressWarnings("unchecked")
+				final Map<Object, Object> castedValue = (Map<Object, Object>) value;
+				return jsonObjectAndArrayCreator.newJsonObject(castedValue);
+			}
+			if (NeoArrays.isArray(value))
+			{
+				return jsonObjectAndArrayCreator.newJsonArray(value);
+			}
+			final Class<? extends Object> theClass = value.getClass();
+			final Package thePackage = theClass.getPackage();
+			/* @formatter:off */
+			final String packageName = null == thePackage ?
+																		"" :
+																		thePackage.getName();
+			/* @formatter:on */
+
+			/* @formatter:off */
+			if (packageName.startsWith("java") ||
+					packageName.startsWith("javax") ||
+					null == theClass.getClassLoader())
+			{
+				return toStringOf(value);
+			}
+			/* @formatter:on */
+			return jsonObjectAndArrayCreator.newJsonObject(value);
+		}
+		catch (final Throwable e)
+		{
+			System.out.println(format(
+					"log from %s (%s.java:%s)\nException is thrown when converting value [%s] into another object.\n"
+							+ "This should be just ignored.\n[paramInfo-> Object value: %s, JsonObjectAndArrayCreator jsonObjectAndArrayCreator: %s]"
+							+ "[Message from Throwable: %s]", JsonUtil.class, JsonUtil.class.getSimpleName(),
+					Integer.valueOf(Thread.currentThread()
+							.getStackTrace()[1].getLineNumber()), value, value, jsonObjectAndArrayCreator, e.getMessage()));
+			return null;
+		}
+	}
+
+	public static Object convert(final Object value, final JsonObject jsonObject)
+	{
+		return convert(value, getJsonObjectAndArrayCreator(jsonObject));
+	}
+
+	public static Object convert(final Object value, final JsonArray jsonArray)
+	{
+		return convert(value, getJsonObjectAndArrayCreator(jsonArray));
 	}
 }

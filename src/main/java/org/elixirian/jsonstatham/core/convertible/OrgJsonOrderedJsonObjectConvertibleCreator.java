@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class OrgJsonOrderedJsonObjectConvertibleCreator extends AbstractOrgJsonJsonObjectConvertibleCreator
 {
 	@Override
-	public JsonObjectConvertible newJsonObjectConvertible()
+	public JsonObject newJsonObjectConvertible()
 	{
 		return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
 	}
