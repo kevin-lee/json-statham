@@ -146,7 +146,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 				case '\n':
 				case '\r':
 					throw new JsonStathamException(
-							"Invalid JSON String. It is not terminated properly.[expected: some char not one of 0, \\n, \\r][actual: "
+							"Invalid JSON String. It is not terminated properly.[expected: some char that is none of 0, \\n and \\r][actual: "
 									+ c + "]");
 				case '\\':
 					c = nextChar0();
@@ -178,7 +178,8 @@ public abstract class AbstractJsonScanner implements JsonScanner
 							stringBuilder.append(c);
 							break;
 						default:
-							throw new JsonStathamException("Invalid escaping. [found: \\" + c + "]");
+							throw new JsonStathamException("Invalid escaping. [int char: " + (int) c + "][escaped char found: \\" + c
+									+ "][char only: '" + c + "']");
 					}
 					break;
 				default:
@@ -222,7 +223,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
 				.trim();
 		if (0 == value.length())
 		{
-			throw new JsonStathamException("No value is found!");
+			throw new JsonStathamException("No value is found!\nPrevious Char: " + getPreviousCharInfo());
 		}
 		return JsonUtil.fromStringToValueIfPossible(value);
 	}
