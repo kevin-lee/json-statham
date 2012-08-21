@@ -6,6 +6,9 @@ package org.elixirian.jsonstatham.core.convertible;
 import static org.elixirian.jsonstatham.core.util.JsonUtil.doubleQuote;
 import static org.elixirian.jsonstatham.core.util.JsonUtil.validate;
 import static org.elixirian.kommonlee.util.MessageFormatter.format;
+import static org.elixirian.kommonlee.util.Objects.castIfInstanceOf;
+import static org.elixirian.kommonlee.util.Objects.equal;
+import static org.elixirian.kommonlee.util.Objects.hash;
 import static org.elixirian.kommonlee.util.Objects.toStringOf;
 
 import java.lang.reflect.Method;
@@ -33,7 +36,12 @@ import org.elixirian.kommonlee.collect.Maps;
  */
 public abstract class AbstractJsonObject implements JsonObject
 {
-	public static final JsonObject NULL_JSON_OBJECT = new JsonObject() {
+	private static final class NullJsonObject implements JsonObject
+	{
+		private NullJsonObject()
+		{
+		}
+
 		@Override
 		public JsonObject put(final String name, final Object value) throws JsonStathamException
 		{
@@ -78,11 +86,34 @@ public abstract class AbstractJsonObject implements JsonObject
 		}
 
 		@Override
+		public int hashCode()
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean equals(final Object jsonObject)
+		{
+			if (this == jsonObject)
+			{
+				return true;
+			}
+			if (!(jsonObject instanceof NullJsonObject))
+			{
+				return false;
+			}
+			final NullJsonObject that = castIfInstanceOf(NullJsonObject.class, jsonObject);
+			return null != that;
+		}
+
+		@Override
 		public String toString()
 		{
 			return "null";
 		}
-	};
+	}
+
+	public static final JsonObject NULL_JSON_OBJECT = new NullJsonObject();
 
 	private static final String[] EMPTY_NAMES = new String[0];
 
@@ -249,6 +280,12 @@ public abstract class AbstractJsonObject implements JsonObject
 			catch (final Throwable e)
 			{
 				/* Any exception (or throwable) should be ignored. */
+				System.out.println(format(
+						"log from %s (%s.java:%s)\nException is thrown when extracting data from JavaBean [%s].\n"
+								+ "This should be just ignored.\n"
+								+ "[paramInfo-> final Object javaBean: %s, final boolean ordered: %s][Message from Throwable: %s]",
+						JsonUtil.class, JsonUtil.class.getSimpleName(), Integer.valueOf(Thread.currentThread()
+								.getStackTrace()[1].getLineNumber()), javaBean, javaBean, Boolean.valueOf(ordered), e.getMessage()));
 			}
 		}
 	}
@@ -308,6 +345,41 @@ public abstract class AbstractJsonObject implements JsonObject
 	public boolean isNull()
 	{
 		return false;
+	}
+
+	protected Map<String, Object> getJsonFieldMap()
+	{
+		return jsonFieldMap;
+	}
+
+	public boolean isOrdered()
+	{
+		return ordered;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return hash(hash(ordered), jsonFieldMap);
+	}
+
+	@Override
+	public boolean equals(final Object jsonObject)
+	{
+		if (this == jsonObject)
+		{
+			return true;
+		}
+		if (!(jsonObject instanceof AbstractJsonObject))
+		{
+			return false;
+		}
+		final AbstractJsonObject that = castIfInstanceOf(AbstractJsonObject.class, jsonObject);
+		/* @formatter:off */
+		return null != that &&
+						(equal(this.ordered, that.isOrdered()) &&
+						 equal(this.jsonFieldMap, that.getJsonFieldMap()));
+		/* @formatter:on */
 	}
 
 	@Override

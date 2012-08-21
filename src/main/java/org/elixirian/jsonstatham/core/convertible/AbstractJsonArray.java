@@ -4,6 +4,9 @@
 package org.elixirian.jsonstatham.core.convertible;
 
 import static org.elixirian.kommonlee.collect.Lists.newArrayList;
+import static org.elixirian.kommonlee.util.Objects.castIfInstanceOf;
+import static org.elixirian.kommonlee.util.Objects.equal;
+import static org.elixirian.kommonlee.util.Objects.hash;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -12,6 +15,7 @@ import java.util.List;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.util.NeoArrays;
 
 /**
  * <pre>
@@ -125,6 +129,32 @@ public abstract class AbstractJsonArray implements JsonArray
 		return this;
 	}
 
+	protected List<Object> getList()
+	{
+		return list;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return hash(list);
+	}
+
+	@Override
+	public boolean equals(final Object jsonArray)
+	{
+		if (this == jsonArray)
+		{
+			return true;
+		}
+		if (!(jsonArray instanceof AbstractJsonArray))
+		{
+			return false;
+		}
+		final AbstractJsonArray that = castIfInstanceOf(AbstractJsonArray.class, jsonArray);
+		return null != that && (equal(this.list, that.getList()));
+	}
+
 	@Override
 	public String toString()
 	{
@@ -149,8 +179,7 @@ public abstract class AbstractJsonArray implements JsonArray
 
 	public static Object[] convertToArrayIfArray(final Object possibleArray)
 	{
-		if (null != possibleArray && possibleArray.getClass()
-				.isArray())
+		if (NeoArrays.isArray(possibleArray))
 		{
 			final int length = Array.getLength(possibleArray);
 			final Object[] elements = new Object[length];
