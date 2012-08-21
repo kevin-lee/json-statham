@@ -98,10 +98,6 @@ public abstract class AbstractJsonObject implements JsonObject
 			{
 				return true;
 			}
-			if (!(jsonObject instanceof NullJsonObject))
-			{
-				return false;
-			}
 			final NullJsonObject that = castIfInstanceOf(NullJsonObject.class, jsonObject);
 			return null != that;
 		}
@@ -369,10 +365,6 @@ public abstract class AbstractJsonObject implements JsonObject
 		if (this == jsonObject)
 		{
 			return true;
-		}
-		if (!(jsonObject instanceof AbstractJsonObject))
-		{
-			return false;
 		}
 		final AbstractJsonObject that = castIfInstanceOf(AbstractJsonObject.class, jsonObject);
 		/* @formatter:off */
