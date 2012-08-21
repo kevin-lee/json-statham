@@ -10,8 +10,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectCreator;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -28,11 +28,11 @@ import org.junit.Test;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-02-03)
  */
-public class OrgJsonUnorderedJsonObjectConvertibleCreatorTest
+public class OrgJsonUnorderedJsonObjectCreatorTest
 {
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectConvertibleCreator#newJsonObjectConvertible()}
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonUnorderedJsonObjectCreator#newJsonObjectConvertible()}
    * .
    *
    * @throws NoSuchFieldException
@@ -44,7 +44,7 @@ public class OrgJsonUnorderedJsonObjectConvertibleCreatorTest
   public void testNewJSONObject() throws SecurityException, NoSuchFieldException, IllegalArgumentException,
       IllegalAccessException
   {
-    final JsonObjectConvertibleCreator jsonObjectCreator = new OrgJsonUnorderedJsonObjectConvertibleCreator();
+    final JsonObjectCreator jsonObjectCreator = new OrgJsonUnorderedJsonObjectCreator();
     final JsonObject jsonObject = jsonObjectCreator.newJsonObjectConvertible();
 
     final Field jsonObjectField = jsonObject.getClass()

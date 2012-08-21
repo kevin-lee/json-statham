@@ -22,10 +22,10 @@ import org.elixirian.jsonstatham.core.JavaToJsonConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.reflect.Classes;
 
@@ -46,35 +46,35 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
   private static final Class<?>[] EMPTY_CLASS_ARRAY = Classes.classArrayOf();
   private static final Object[] EMPTY_OBJECT_ARRAY = Classes.objectArrayOf();
 
-  private final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
+  private final JsonObjectCreator jsonObjectCreator;
 
-  private final JsonArrayConvertibleCreator jsonArrayConvertibleCreator;
+  private final JsonArrayCreator jsonArrayCreator;
 
   private final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider;
   private final KnownTypeProcessorDeciderForJavaToJson[] knownTypeProcessorDeciderForJavaToJsons;
 
-  public ReflectionJavaToJsonConverter(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-      final JsonArrayConvertibleCreator jsonArrayConvertibleCreator,
+  public ReflectionJavaToJsonConverter(final JsonObjectCreator jsonObjectCreator,
+      final JsonArrayCreator jsonArrayCreator,
       final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider,
       final KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider,
       final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider)
   {
-    this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
-    this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
+    this.jsonObjectCreator = jsonObjectCreator;
+    this.jsonArrayCreator = jsonArrayCreator;
     this.knownDataStructureTypeProcessorDecider = knownDataStructureTypeProcessorDecider;
     this.knownTypeProcessorDeciderForJavaToJsons =
       new KnownTypeProcessorDeciderForJavaToJson[] { knownDataStructureTypeProcessorDecider,
           knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider };
   }
 
-  public JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
+  public JsonObjectCreator getJsonObjectConvertibleCreator()
   {
-    return jsonObjectConvertibleCreator;
+    return jsonObjectCreator;
   }
 
-  public JsonArrayConvertibleCreator getJsonArrayConvertibleCreator()
+  public JsonArrayCreator getJsonArrayConvertibleCreator()
   {
-    return jsonArrayConvertibleCreator;
+    return jsonArrayCreator;
   }
 
   public KnownDataStructureTypeProcessorDecider getKnownDataStructureTypeProcessorDecider()
@@ -91,17 +91,17 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 
   public JsonObject newJsonObjectConvertible()
   {
-    return jsonObjectConvertibleCreator.newJsonObjectConvertible();
+    return jsonObjectCreator.newJsonObjectConvertible();
   }
 
   public JsonObject nullJsonObjectConvertible()
   {
-    return jsonObjectConvertibleCreator.nullJsonObjectConvertible();
+    return jsonObjectCreator.nullJsonObjectConvertible();
   }
 
   public JsonArray newJsonArrayConvertible()
   {
-    return jsonArrayConvertibleCreator.newJsonArrayConvertible();
+    return jsonArrayCreator.newJsonArrayConvertible();
   }
 
   /**

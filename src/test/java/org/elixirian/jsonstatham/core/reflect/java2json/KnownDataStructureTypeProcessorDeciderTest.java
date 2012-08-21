@@ -19,8 +19,8 @@ import java.util.TreeSet;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayCreator;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
 import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
@@ -143,8 +143,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     // final JsonStathamInAction jsonStatham =
-    // new JsonStathamInAction(new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(),
-    // new OrgJsonJsonArrayConvertibleCreator(), knownDataStructureTypeProcessorDecider,
+    // new JsonStathamInAction(new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectCreator(),
+    // new OrgJsonJsonArrayCreator(), knownDataStructureTypeProcessorDecider,
     // knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider), new
     // ReflectionJsonToJavaConverter());
 
@@ -212,8 +212,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(),
-          new OrgJsonJsonArrayConvertibleCreator(), knownDataStructureTypeProcessorDecider,
+      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectCreator(),
+          new OrgJsonJsonArrayCreator(), knownDataStructureTypeProcessorDecider,
           knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStatham = new JsonStathamInAction(reflectionJavaToJsonConverter, new
     // ReflectionJsonToJavaConverter());
@@ -278,8 +278,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectConvertibleCreator(),
-          new OrgJsonJsonArrayConvertibleCreator(), knownDataStructureTypeProcessorDecider,
+      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectCreator(),
+          new OrgJsonJsonArrayCreator(), knownDataStructureTypeProcessorDecider,
           knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStatham =
     // new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());

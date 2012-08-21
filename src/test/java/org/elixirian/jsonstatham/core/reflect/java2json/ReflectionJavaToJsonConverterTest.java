@@ -27,10 +27,10 @@ import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
@@ -103,7 +103,7 @@ public class ReflectionJavaToJsonConverterTest
 					throws Throwable
 			{
 				// TODO remove after testing.
-				// return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+				// return new OrgJsonJsonObject(new JSONObject(new LinkedHashMap<String, Object>()));
 				return OrderedJsonObject.newJsonObject();
 			}
 		};
@@ -212,15 +212,15 @@ public class ReflectionJavaToJsonConverterTest
 	@Before
 	public void setUp() throws Exception
 	{
-		final JsonObjectConvertibleCreator jsonObjectConvertibleCreator = mock(JsonObjectConvertibleCreator.class);
-		when(jsonObjectConvertibleCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
-		when(jsonObjectConvertibleCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
+		final JsonObjectCreator jsonObjectCreator = mock(JsonObjectCreator.class);
+		when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
+		when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
 
-		final JsonArrayConvertibleCreator jsonArrayConvertibleCreator = mock(JsonArrayConvertibleCreator.class);
-		when(jsonArrayConvertibleCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
+		final JsonArrayCreator jsonArrayCreator = mock(JsonArrayCreator.class);
+		when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
 
 		reflectionJavaToJsonConverter =
-			new ReflectionJavaToJsonConverter(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator,
+			new ReflectionJavaToJsonConverter(jsonObjectCreator, jsonArrayCreator,
 					new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
 					new OneProcessorForKnownTypeDecider());
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));

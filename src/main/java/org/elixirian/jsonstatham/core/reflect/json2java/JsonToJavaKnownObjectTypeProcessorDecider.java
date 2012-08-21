@@ -17,7 +17,7 @@ import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJava
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONObject;
@@ -82,7 +82,7 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
-				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObjectConvertible(
+				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObject(
 						(JSONObject) value));
 			}
 		});

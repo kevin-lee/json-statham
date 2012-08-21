@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import java.util.LinkedHashMap;
 
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-03)
  */
-public class OrgJsonJsonObjectConvertibleTest
+public class OrgJsonJsonObjectTest
 {
   private static final String[] NAMES = { "surnname", "givenName", "number", "email", "someKey" };
 
@@ -37,14 +37,14 @@ public class OrgJsonJsonObjectConvertibleTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible#OrgJsonJsonObjectConvertible(org.json.JSONObject)}
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject#OrgJsonJsonObjectConvertible(org.json.JSONObject)}
    * .
    */
   @Test
   public final void testOrgJsonJsonObjectConvertible()
   {
     final JSONObject JSONObject = new JSONObject();
-    final JsonObject jsonObject = new OrgJsonJsonObjectConvertible(JSONObject);
+    final JsonObject jsonObject = new OrgJsonJsonObject(JSONObject);
     assertThat(jsonObject.getActualObject(), is(instanceOf(JSONObject.class)));
     assertThat(((JSONObject) jsonObject.getActualObject()), is(JSONObject));
     assertThat(((JSONObject) jsonObject.getActualObject()), equalTo(JSONObject));
@@ -54,7 +54,7 @@ public class OrgJsonJsonObjectConvertibleTest
   public void testGetNames()
   {
     final JSONObject orgJsonObject = new JSONObject(new LinkedHashMap<String, Object>());
-    final JsonObject jsonObject = new OrgJsonJsonObjectConvertible(orgJsonObject);
+    final JsonObject jsonObject = new OrgJsonJsonObject(orgJsonObject);
 
     for (int i = 0, size = NAMES.length; i < size; i++)
     {
@@ -67,7 +67,7 @@ public class OrgJsonJsonObjectConvertibleTest
   public void testGet()
   {
     final JSONObject orgJsonObject = new JSONObject();
-    final JsonObject jsonObject = new OrgJsonJsonObjectConvertible(orgJsonObject);
+    final JsonObject jsonObject = new OrgJsonJsonObject(orgJsonObject);
 
     for (int i = 0, size = NAMES.length; i < size; i++)
     {
@@ -81,7 +81,7 @@ public class OrgJsonJsonObjectConvertibleTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible#put(java.lang.String, java.lang.Object)}
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject#put(java.lang.String, java.lang.Object)}
    * .
    *
    * @throws JSONException
@@ -90,22 +90,22 @@ public class OrgJsonJsonObjectConvertibleTest
   public final void testPut() throws JSONException
   {
     final JSONObject orgJsonObject1 = new JSONObject();
-    final JsonObject jsonObjectConvertible1 = new OrgJsonJsonObjectConvertible(orgJsonObject1);
+    final JsonObject jsonObjectConvertible1 = new OrgJsonJsonObject(orgJsonObject1);
     jsonObjectConvertible1.put("name", "Kevin Lee");
 
     final JSONObject orgJsonObject2 = new JSONObject();
-    final JsonObject jsonObjectConvertible2 = new OrgJsonJsonObjectConvertible(orgJsonObject2);
+    final JsonObject jsonObjectConvertible2 = new OrgJsonJsonObject(orgJsonObject2);
     jsonObjectConvertible2.put("jsonObjectConvertible1", jsonObjectConvertible1);
 
     assertThat(((JSONObject) jsonObjectConvertible2.getActualObject()).get("jsonObjectConvertible1"),
-        is(not(instanceOf(OrgJsonJsonObjectConvertible.class))));
+        is(not(instanceOf(OrgJsonJsonObject.class))));
     assertThat(((JSONObject) jsonObjectConvertible2.getActualObject()).get("jsonObjectConvertible1"),
         is(instanceOf(JSONObject.class)));
     assertThat(((JSONObject) orgJsonObject2.get("jsonObjectConvertible1")), is(orgJsonObject1));
     assertThat(((JSONObject) orgJsonObject2.get("jsonObjectConvertible1")), equalTo(orgJsonObject1));
 
     final JSONObject orgJsonObject3 = new JSONObject();
-    final JsonObject jsonObjectConvertible3 = new OrgJsonJsonObjectConvertible(orgJsonObject3);
+    final JsonObject jsonObjectConvertible3 = new OrgJsonJsonObject(orgJsonObject3);
     final String idName = "id";
     final Integer idValue = Integer.valueOf(999);
     final String surnameName = "surname";
@@ -126,7 +126,7 @@ public class OrgJsonJsonObjectConvertibleTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible#put(java.lang.String, java.lang.Object)}
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject#put(java.lang.String, java.lang.Object)}
    * .
    *
    * @throws JSONException
@@ -134,22 +134,22 @@ public class OrgJsonJsonObjectConvertibleTest
   @Test(expected = JsonStathamException.class)
   public final void testPutWithNullKey() throws JSONException
   {
-    new OrgJsonJsonObjectConvertible(new JSONObject()).put(null, "Test");
+    new OrgJsonJsonObject(new JSONObject()).put(null, "Test");
   }
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible#getActualObject()}.
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject#getActualObject()}.
    */
   @Test
   public final void testGetActualObject()
   {
     final JSONObject orgJsonObject1 = new JSONObject();
-    final JsonObject jsonObjectConvertible1 = new OrgJsonJsonObjectConvertible(orgJsonObject1);
+    final JsonObject jsonObjectConvertible1 = new OrgJsonJsonObject(orgJsonObject1);
     jsonObjectConvertible1.put("name", "Kevin Lee");
 
     final JSONObject orgJsonObject2 = new JSONObject();
-    final JsonObject jsonObjectConvertible2 = new OrgJsonJsonObjectConvertible(orgJsonObject2);
+    final JsonObject jsonObjectConvertible2 = new OrgJsonJsonObject(orgJsonObject2);
     jsonObjectConvertible2.put("jsonObjectConvertible1", jsonObjectConvertible1);
 
     assertThat(jsonObjectConvertible2.getActualObject(), is(instanceOf(JSONObject.class)));
@@ -157,7 +157,7 @@ public class OrgJsonJsonObjectConvertibleTest
     assertThat((JSONObject) jsonObjectConvertible2.getActualObject(), equalTo(orgJsonObject2));
 
     final JSONObject orgJsonObject3 = new JSONObject();
-    final JsonObject jsonObjectConvertible3 = new OrgJsonJsonObjectConvertible(orgJsonObject3);
+    final JsonObject jsonObjectConvertible3 = new OrgJsonJsonObject(orgJsonObject3);
     final String idName = "id";
     final Integer idValue = Integer.valueOf(999);
     final String surnameName = "surname";
@@ -174,23 +174,23 @@ public class OrgJsonJsonObjectConvertibleTest
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible#toString()}.
+   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject#toString()}.
    */
   @Test
   public final void testToString()
   {
     final JSONObject orgJsonObject1 = new JSONObject();
-    final JsonObject jsonObjectConvertible1 = new OrgJsonJsonObjectConvertible(orgJsonObject1);
+    final JsonObject jsonObjectConvertible1 = new OrgJsonJsonObject(orgJsonObject1);
     jsonObjectConvertible1.put("name", "Kevin Lee");
 
     final JSONObject orgJsonObject2 = new JSONObject();
-    final JsonObject jsonObjectConvertible2 = new OrgJsonJsonObjectConvertible(orgJsonObject2);
+    final JsonObject jsonObjectConvertible2 = new OrgJsonJsonObject(orgJsonObject2);
     jsonObjectConvertible2.put("jsonObjectConvertible1", jsonObjectConvertible1);
 
     assertThat(jsonObjectConvertible2.toString(), equalTo(orgJsonObject2.toString()));
 
     final JSONObject orgJsonObject3 = new JSONObject();
-    final JsonObject jsonObjectConvertible3 = new OrgJsonJsonObjectConvertible(orgJsonObject3);
+    final JsonObject jsonObjectConvertible3 = new OrgJsonJsonObject(orgJsonObject3);
     jsonObjectConvertible3.put("id", Integer.valueOf(999))
         .put("surname", "Lee")
         .put("givenName", "Kevin");

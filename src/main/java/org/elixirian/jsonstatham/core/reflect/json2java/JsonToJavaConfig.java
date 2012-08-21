@@ -6,8 +6,8 @@ package org.elixirian.jsonstatham.core.reflect.json2java;
 import java.util.List;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 
 /**
  * <pre>
@@ -23,9 +23,9 @@ import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
  */
 public interface JsonToJavaConfig
 {
-	JsonObjectConvertibleCreator getJsonObjectConvertibleCreator();
+	JsonObjectCreator getJsonObjectConvertibleCreator();
 
-	JsonArrayConvertibleCreator getJsonArrayConvertibleCreator();
+	JsonArrayCreator getJsonArrayConvertibleCreator();
 
 	List<KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>> getKnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList();
 }

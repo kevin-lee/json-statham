@@ -15,7 +15,7 @@ package org.elixirian.jsonstatham.core.convertible;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public class JsonArrayWithOrderedJsonObjectCreator implements JsonArrayConvertibleCreator
+public class JsonArrayWithOrderedJsonObjectCreator implements JsonArrayCreator
 {
 	@Override
 	public JsonArray newJsonArrayConvertible()

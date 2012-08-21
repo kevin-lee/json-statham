@@ -19,7 +19,7 @@ import org.json.JSONObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-02-03)
  */
-public final class OrgJsonUnorderedJsonObjectConvertibleCreator extends AbstractOrgJsonJsonObjectConvertibleCreator
+public final class OrgJsonUnorderedJsonObjectCreator extends AbstractOrgJsonJsonObjectConvertibleCreator
 {
   /*
    * (non-Javadoc)
@@ -28,7 +28,7 @@ public final class OrgJsonUnorderedJsonObjectConvertibleCreator extends Abstract
   @Override
   public JsonObject newJsonObjectConvertible()
   {
-    return new OrgJsonJsonObjectConvertible(new JSONObject(new HashMap<String, Object>()));
+    return new OrgJsonJsonObject(new JSONObject(new HashMap<String, Object>()));
   }
 
 }

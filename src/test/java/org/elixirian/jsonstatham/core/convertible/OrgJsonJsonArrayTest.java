@@ -10,8 +10,8 @@ import java.util.LinkedHashMap;
 
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,28 +29,28 @@ import org.junit.Test;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-13)
  */
-public class OrgJsonJsonArrayConvertibleTest
+public class OrgJsonJsonArrayTest
 {
   @SuppressWarnings("boxing")
   private static final Object[] VALUES = { "Lee", "Kevin", 1, "kevin@some.email.com", 12.50 };
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#OrgJsonJsonArrayConvertible(org.json.JSONArray)}
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray#OrgJsonJsonArrayConvertible(org.json.JSONArray)}
    * .
    */
   @Test
   public final void testOrgJsonJsonArrayConvertible()
   {
     final JSONArray orgJsonArray = new JSONArray();
-    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArray(orgJsonArray);
     assertThat(jsonArray.getActualObject(), is(instanceOf(JSONArray.class)));
     assertThat(((JSONArray) jsonArray.getActualObject()), is(orgJsonArray));
     assertThat(((JSONArray) jsonArray.getActualObject()), equalTo(orgJsonArray));
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#get(int)}.
+   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray#get(int)}.
    */
   @Test
   public final void testGet()
@@ -60,7 +60,7 @@ public class OrgJsonJsonArrayConvertibleTest
     {
       orgJsonArray.put(VALUES[i]);
     }
-    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArray(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
       assertThat(jsonArray.get(i), is(equalTo(VALUES[i])));
@@ -69,7 +69,7 @@ public class OrgJsonJsonArrayConvertibleTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#put(java.lang.Object)}.
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray#put(java.lang.Object)}.
    *
    * @throws JSONException
    */
@@ -77,7 +77,7 @@ public class OrgJsonJsonArrayConvertibleTest
   public final void testPut() throws JSONException
   {
     final JSONArray orgJsonArray = new JSONArray();
-    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArray(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
       jsonArray.put(VALUES[i]);
@@ -88,13 +88,13 @@ public class OrgJsonJsonArrayConvertibleTest
     }
 
     final JSONArray orgJsonArray2 = new JSONArray();
-    final JsonArray jsonArrayConvertible2 = new OrgJsonJsonArrayConvertible(orgJsonArray2);
+    final JsonArray jsonArrayConvertible2 = new OrgJsonJsonArray(orgJsonArray2);
 
     @SuppressWarnings("boxing")
     final Object[] valueObjects =
-      { new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>())).put("first", "test1")
+      { new OrgJsonJsonObject(new JSONObject(new LinkedHashMap<String, Object>())).put("first", "test1")
           .put("second", "test2")
-          .put("third", "test3"), new OrgJsonJsonArrayConvertible(new JSONArray()).put("test")
+          .put("third", "test3"), new OrgJsonJsonArray(new JSONArray()).put("test")
           .put("value"), "Kevin", 1234, 9864L, 1.0F, 10.456D, true };
     for (int i = 0, size = valueObjects.length; i < size; i++)
     {
@@ -115,14 +115,14 @@ public class OrgJsonJsonArrayConvertibleTest
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#length()}.
+   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray#length()}.
    */
   @SuppressWarnings("boxing")
   @Test
   public final void testLength()
   {
     final JSONArray orgJsonArray = new JSONArray();
-    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArray(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
       jsonArray.put(VALUES[i]);
@@ -131,25 +131,25 @@ public class OrgJsonJsonArrayConvertibleTest
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#getActualObject()}
+   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray#getActualObject()}
    * .
    */
   @Test
   public final void testGetActualObject()
   {
     final JSONArray orgJsonArray = new JSONArray();
-    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArray(orgJsonArray);
     assertThat(jsonArray.getActualObject(), is(equalTo((Object) orgJsonArray)));
   }
 
   /**
-   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible#toString()}.
+   * Test method for {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray#toString()}.
    */
   @Test
   public final void testToString()
   {
     final JSONArray orgJsonArray = new JSONArray();
-    final JsonArray jsonArray = new OrgJsonJsonArrayConvertible(orgJsonArray);
+    final JsonArray jsonArray = new OrgJsonJsonArray(orgJsonArray);
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
       jsonArray.put(VALUES[i]);

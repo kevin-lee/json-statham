@@ -22,11 +22,11 @@ import org.json.JSONException;
  * @version 0.0.1 (2010-06-02)
  * @version 0.0.2 (2010-09-13)
  */
-public final class OrgJsonJsonArrayConvertible implements JsonArray
+public final class OrgJsonJsonArray implements JsonArray
 {
 	private final JSONArray orgJsonArray;
 
-	public OrgJsonJsonArrayConvertible(final JSONArray orgJsonArray)
+	public OrgJsonJsonArray(final JSONArray orgJsonArray)
 	{
 		this.orgJsonArray = orgJsonArray;
 	}

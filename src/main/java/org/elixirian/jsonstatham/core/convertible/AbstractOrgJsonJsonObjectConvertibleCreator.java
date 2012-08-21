@@ -21,7 +21,7 @@ import org.json.JSONObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements JsonObjectConvertibleCreator
+public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements JsonObjectCreator
 {
 	static final JsonObject NULL_JSON_OBJECT_CONVERTIBLE = new JsonObject() {
 
@@ -82,7 +82,7 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
 	{
 		try
 		{
-			return new OrgJsonJsonObjectConvertible(new JSONObject(jsonString));
+			return new OrgJsonJsonObject(new JSONObject(jsonString));
 		}
 		catch (final JSONException e)
 		{

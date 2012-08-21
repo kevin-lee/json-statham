@@ -19,11 +19,11 @@ import org.json.JSONObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-02-03)
  */
-public class OrgJsonOrderedJsonObjectConvertibleCreator extends AbstractOrgJsonJsonObjectConvertibleCreator
+public class OrgJsonOrderedJsonObjectCreator extends AbstractOrgJsonJsonObjectConvertibleCreator
 {
 	@Override
 	public JsonObject newJsonObjectConvertible()
 	{
-		return new OrgJsonJsonObjectConvertible(new JSONObject(new LinkedHashMap<String, Object>()));
+		return new OrgJsonJsonObject(new JSONObject(new LinkedHashMap<String, Object>()));
 	}
 }

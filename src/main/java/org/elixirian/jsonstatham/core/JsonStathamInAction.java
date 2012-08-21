@@ -10,7 +10,7 @@ import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 
@@ -38,7 +38,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *          annotation, it uses the method specified with the {@link ValueAccessor} annotation in order to get the
  *          value.
  *          </p>
- * @version 0.0.6 (2010-02-03) {@link JsonObjectConvertibleCreator} is added to create a new {@link org.json.JSONObject}
+ * @version 0.0.6 (2010-02-03) {@link JsonObjectCreator} is added to create a new {@link org.json.JSONObject}
  *          .
  * @version 0.0.7 (2010-02-12) The name is changed from NonIndentedJsonStatham to JsonStathamInAction. When the
  *          Json is converted into JSON, if any fields annotated with @JsonField without the 'name' element

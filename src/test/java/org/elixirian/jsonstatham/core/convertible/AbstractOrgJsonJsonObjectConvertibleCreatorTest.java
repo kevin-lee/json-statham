@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 import org.elixirian.jsonstatham.core.convertible.AbstractOrgJsonJsonObjectConvertibleCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
   @Test
   public final void testNewJsonObjectConvertible()
   {
-    final JsonObject jsonObject = new OrgJsonJsonObjectConvertible(new JSONObject());
+    final JsonObject jsonObject = new OrgJsonJsonObject(new JSONObject());
     final AbstractOrgJsonJsonObjectConvertibleCreator orgJsonJsonObjectConvertibleCreator =
       new AbstractOrgJsonJsonObjectConvertibleCreator() {
 

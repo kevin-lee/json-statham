@@ -21,13 +21,13 @@ import org.json.JSONObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public final class OrgJsonJsonObjectConvertible implements JsonObject
+public final class OrgJsonJsonObject implements JsonObject
 {
 	private static final String[] EMPTY_NAMES = new String[0];
 
 	private final JSONObject orgJsonObject;
 
-	public OrgJsonJsonObjectConvertible(final JSONObject orgJsonObject)
+	public OrgJsonJsonObject(final JSONObject orgJsonObject)
 	{
 		this.orgJsonObject = orgJsonObject;
 	}

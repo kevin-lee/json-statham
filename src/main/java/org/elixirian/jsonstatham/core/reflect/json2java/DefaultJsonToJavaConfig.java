@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.kommonlee.type.GenericBuilder;
 
 /**
@@ -27,32 +27,32 @@ import org.elixirian.kommonlee.type.GenericBuilder;
  */
 public class DefaultJsonToJavaConfig implements JsonToJavaConfig
 {
-	private final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
-	private final JsonArrayConvertibleCreator jsonArrayConvertibleCreator;
+	private final JsonObjectCreator jsonObjectCreator;
+	private final JsonArrayCreator jsonArrayCreator;
 
 	private final List<KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>> knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList;
 
 	private DefaultJsonToJavaConfig(final Builder builder)
 	{
-		this.jsonObjectConvertibleCreator = builder.jsonObjectConvertibleCreator;
-		this.jsonArrayConvertibleCreator = builder.jsonArrayConvertibleCreator;
+		this.jsonObjectCreator = builder.jsonObjectCreator;
+		this.jsonArrayCreator = builder.jsonArrayCreator;
 		this.knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList =
 			Collections.unmodifiableList(builder.knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList);
 	}
 
 	public static class Builder implements GenericBuilder<JsonToJavaConfig>
 	{
-		final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
-		final JsonArrayConvertibleCreator jsonArrayConvertibleCreator;
+		final JsonObjectCreator jsonObjectCreator;
+		final JsonArrayCreator jsonArrayCreator;
 
 		List<KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>> knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList =
 			newArrayList();
 
-		public Builder(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-				final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+		public Builder(final JsonObjectCreator jsonObjectCreator,
+				final JsonArrayCreator jsonArrayCreator)
 		{
-			this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
-			this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
+			this.jsonObjectCreator = jsonObjectCreator;
+			this.jsonArrayCreator = jsonArrayCreator;
 		}
 
 		public Builder addKnownTypeProcessor(
@@ -69,22 +69,22 @@ public class DefaultJsonToJavaConfig implements JsonToJavaConfig
 		}
 	}
 
-	public static Builder builder(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-			final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+	public static Builder builder(final JsonObjectCreator jsonObjectCreator,
+			final JsonArrayCreator jsonArrayCreator)
 	{
-		return new Builder(jsonObjectConvertibleCreator, jsonArrayConvertibleCreator);
+		return new Builder(jsonObjectCreator, jsonArrayCreator);
 	}
 
 	@Override
-	public JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
+	public JsonObjectCreator getJsonObjectConvertibleCreator()
 	{
-		return jsonObjectConvertibleCreator;
+		return jsonObjectCreator;
 	}
 
 	@Override
-	public JsonArrayConvertibleCreator getJsonArrayConvertibleCreator()
+	public JsonArrayCreator getJsonArrayConvertibleCreator()
 	{
-		return jsonArrayConvertibleCreator;
+		return jsonArrayCreator;
 	}
 
 	@Override

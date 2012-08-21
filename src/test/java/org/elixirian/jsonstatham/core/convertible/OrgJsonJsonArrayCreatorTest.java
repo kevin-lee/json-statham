@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-03)
  */
-public class OrgJsonJsonArrayConvertibleCreatorTest
+public class OrgJsonJsonArrayCreatorTest
 {
 
   /**
@@ -68,7 +68,7 @@ public class OrgJsonJsonArrayConvertibleCreatorTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertibleCreator#newJsonArrayConvertible()}.
+   * {@link org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayCreator#newJsonArrayConvertible()}.
    *
    * @throws NoSuchFieldException
    * @throws SecurityException
@@ -79,8 +79,8 @@ public class OrgJsonJsonArrayConvertibleCreatorTest
   public final void testNewJsonArrayConvertible() throws SecurityException, NoSuchFieldException,
       IllegalArgumentException, IllegalAccessException
   {
-    final JsonArrayConvertibleCreator jsonArrayConvertibleCreator = new JsonArrayWithOrderedJsonObjectCreator();
-    final JsonArray jsonArray = jsonArrayConvertibleCreator.newJsonArrayConvertible();
+    final JsonArrayCreator jsonArrayCreator = new JsonArrayWithOrderedJsonObjectCreator();
+    final JsonArray jsonArray = jsonArrayCreator.newJsonArrayConvertible();
 
 //    final Field jsonObjectField = jsonArray.getClass()
 //        .getDeclaredField("jsonArray");

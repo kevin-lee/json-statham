@@ -21,13 +21,13 @@ import org.json.JSONException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public final class OrgJsonJsonArrayConvertibleCreator implements JsonArrayConvertibleCreator
+public final class OrgJsonJsonArrayCreator implements JsonArrayCreator
 {
 
 	@Override
 	public JsonArray newJsonArrayConvertible()
 	{
-		return new OrgJsonJsonArrayConvertible(new JSONArray());
+		return new OrgJsonJsonArray(new JSONArray());
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public final class OrgJsonJsonArrayConvertibleCreator implements JsonArrayConver
 	{
 		try
 		{
-			return new OrgJsonJsonArrayConvertible(new JSONArray(jsonString));
+			return new OrgJsonJsonArray(new JSONArray(jsonString));
 		}
 		catch (final JSONException e)
 		{

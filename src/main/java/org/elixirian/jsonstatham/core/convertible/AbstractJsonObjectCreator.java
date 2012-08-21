@@ -16,7 +16,7 @@ package org.elixirian.jsonstatham.core.convertible;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public abstract class AbstractJsonObjectCreator implements JsonObjectConvertibleCreator
+public abstract class AbstractJsonObjectCreator implements JsonObjectCreator
 {
 	@Override
 	public abstract JsonObject newJsonObjectConvertible();

@@ -36,11 +36,11 @@ import org.elixirian.jsonstatham.core.JsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
-import org.elixirian.jsonstatham.core.convertible.JsonArrayConvertibleCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.JsonObjectConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObjectConvertible;
+import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.asm.analysis.AsmMethodAndConstructorAnalyser;
 import org.elixirian.kommonlee.asm.analysis.ConstructorAnalyser;
@@ -68,8 +68,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	private final ConstructorAnalyser constructorAnalyser = new AsmMethodAndConstructorAnalyser();
 
-	private final JsonObjectConvertibleCreator jsonObjectConvertibleCreator;
-	private final JsonArrayConvertibleCreator jsonArrayConvertibleCreator;
+	private final JsonObjectCreator jsonObjectCreator;
+	private final JsonArrayCreator jsonArrayCreator;
 
 	private final JsonToJavaOneProcessorForKnownTypeDecider jsonToJavaOneProcessorForKnownTypeDecider =
 		new JsonToJavaOneProcessorForKnownTypeDecider();
@@ -84,27 +84,27 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	public ReflectionJsonToJavaConverter(final JsonToJavaConfig javaConfig)
 	{
-		this.jsonObjectConvertibleCreator = javaConfig.getJsonObjectConvertibleCreator();
-		this.jsonArrayConvertibleCreator = javaConfig.getJsonArrayConvertibleCreator();
+		this.jsonObjectCreator = javaConfig.getJsonObjectConvertibleCreator();
+		this.jsonArrayCreator = javaConfig.getJsonArrayConvertibleCreator();
 		this.knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList =
 			javaConfig.getKnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList();
 	}
 
-	// public ReflectionJsonToJavaConverter(final JsonObjectConvertibleCreator jsonObjectConvertibleCreator,
-	// final JsonArrayConvertibleCreator jsonArrayConvertibleCreator)
+	// public ReflectionJsonToJavaConverter(final JsonObjectCreator jsonObjectCreator,
+	// final JsonArrayCreator jsonArrayCreator)
 	// {
-	// this.jsonObjectConvertibleCreator = jsonObjectConvertibleCreator;
-	// this.jsonArrayConvertibleCreator = jsonArrayConvertibleCreator;
+	// this.jsonObjectConvertibleCreator = jsonObjectCreator;
+	// this.jsonArrayConvertibleCreator = jsonArrayCreator;
 	// }
 
-	public JsonObjectConvertibleCreator getJsonObjectConvertibleCreator()
+	public JsonObjectCreator getJsonObjectConvertibleCreator()
 	{
-		return jsonObjectConvertibleCreator;
+		return jsonObjectCreator;
 	}
 
-	public JsonArrayConvertibleCreator getJsonArrayConvertibleCreator()
+	public JsonArrayCreator getJsonArrayConvertibleCreator()
 	{
-		return jsonArrayConvertibleCreator;
+		return jsonArrayCreator;
 	}
 
 	private static class JsonFieldNameAndFieldPair implements Pair<String, Field>
@@ -691,7 +691,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 	private <T> T convertFromJsonObject(final Class<T> targetClass, final String jsonString)
 			throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
 	{
-		final JsonObject jsonObject = jsonObjectConvertibleCreator.newJsonObjectConvertible(jsonString);
+		final JsonObject jsonObject = jsonObjectCreator.newJsonObjectConvertible(jsonString);
 		return createFromJsonObject(targetClass, jsonObject);
 	}
 
@@ -713,7 +713,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	private <T> Object resolveTypeAndValue(final Class<T> valueType, final Object value) throws JsonStathamException
 	{
-		if (null == value || jsonObjectConvertibleCreator.nullJsonObjectConvertible()
+		if (null == value || jsonObjectCreator.nullJsonObjectConvertible()
 				.getActualObject()
 				.equals(value))
 		{
@@ -889,7 +889,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				(JsonObject) value :
 			JSONObject.class.isAssignableFrom(value.getClass()) ?
 				/* JSONObject */
-				new OrgJsonJsonObjectConvertible((JSONObject) value) :
+				new OrgJsonJsonObject((JSONObject) value) :
 				/* unknown */
 				null;
 		/* @formatter:on */
@@ -949,7 +949,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 			/* JSONArray. */
 			JSONArray.class.isAssignableFrom(value.getClass()) ?
-			new OrgJsonJsonArrayConvertible((JSONArray) value) :
+			new OrgJsonJsonArray((JSONArray) value) :
 
 			/* Neither JsonArray nor JSONArray  */
 			null;
@@ -1194,7 +1194,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 		}
 		if (JSONObject.class.isAssignableFrom(elementType))
 		{
-			return createFromJsonObject(componentType, new OrgJsonJsonObjectConvertible((JSONObject) element));
+			return createFromJsonObject(componentType, new OrgJsonJsonObject((JSONObject) element));
 		}
 
 		throw new UnsupportedOperationException();
@@ -1204,7 +1204,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException, IllegalAccessException,
 			InvocationTargetException
 	{
-		return createFromJsonArray(targetClass, jsonArrayConvertibleCreator.newJsonArrayConvertible(jsonString));
+		return createFromJsonArray(targetClass, jsonArrayCreator.newJsonArrayConvertible(jsonString));
 	}
 
 	public <T, E> T createFromJsonArray(final Class<T> targetClass, final JsonArray jsonArray)
@@ -1285,7 +1285,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				final T t =
 					(T) createCollectionWithValues((Class<Collection<T>>) typeClass,
 							parameterizedType.getActualTypeArguments()[0],
-							jsonArrayConvertibleCreator.newJsonArrayConvertible(jsonString));
+							jsonArrayCreator.newJsonArrayConvertible(jsonString));
 				return t;
 			}
 			if (Map.class.isAssignableFrom(typeClass))
@@ -1294,7 +1294,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 				final T t =
 					(T) createHashMapWithKeysAndValues((Class<Map<String, Object>>) typeClass,
 							parameterizedType.getActualTypeArguments()[1],
-							jsonObjectConvertibleCreator.newJsonObjectConvertible(jsonString));
+							jsonObjectCreator.newJsonObjectConvertible(jsonString));
 				return t;
 			}
 		}

@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayConvertible;
+import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONArray;
 
@@ -64,7 +64,7 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
         }
         else if (JSONArray.class.isAssignableFrom(actualValueType))
         {
-          jsonArray = new OrgJsonJsonArrayConvertible((JSONArray) value);
+          jsonArray = new OrgJsonJsonArray((JSONArray) value);
         }
         else
         {
