@@ -21,11 +21,6 @@ public class JsonStathamException extends RuntimeException
 {
 	private static final long serialVersionUID = -6441560700078967071L;
 
-	public JsonStathamException()
-	{
-		super();
-	}
-
 	public JsonStathamException(final String message)
 	{
 		super(message);
