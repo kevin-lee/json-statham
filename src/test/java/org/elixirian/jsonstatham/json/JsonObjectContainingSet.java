@@ -3,7 +3,7 @@
  * if the following condition is met:
  * (otherwise it cannot be used by anyone but the author, Kevin, only)
  *
- * The original KommonLee project is owned by Lee, Seong Hyun (Kevin).
+ * The original JSON Statham project is owned by Lee, Seong Hyun (Kevin).
  *
  * -What does it mean to you?
  * Nothing, unless you want to take the ownership of
