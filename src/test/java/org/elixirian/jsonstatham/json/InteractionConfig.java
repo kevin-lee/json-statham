@@ -30,8 +30,8 @@ public class InteractionConfig
     @Override
     public int compare(final Integer integer1, final Integer integer2)
     {
-      notNull(integer1);
-      notNull(integer2);
+      mustNotBeNull(integer1);
+      mustNotBeNull(integer2);
       return integer1.compareTo(integer2);
     }
   };
