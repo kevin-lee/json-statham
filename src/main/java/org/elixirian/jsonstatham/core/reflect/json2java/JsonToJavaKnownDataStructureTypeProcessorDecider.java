@@ -31,7 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
-import static org.elixirian.kommonlee.collect.Lists.*;
+import static org.elixirian.kommonlee.util.collect.Lists.*;
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 
 import java.lang.reflect.Array;

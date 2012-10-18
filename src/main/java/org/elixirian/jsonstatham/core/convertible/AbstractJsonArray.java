@@ -31,10 +31,8 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.kommonlee.collect.Lists.newArrayList;
-import static org.elixirian.kommonlee.util.Objects.castIfInstanceOf;
-import static org.elixirian.kommonlee.util.Objects.equal;
-import static org.elixirian.kommonlee.util.Objects.hash;
+import static org.elixirian.kommonlee.util.Objects.*;
+import static org.elixirian.kommonlee.util.collect.Lists.*;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -53,7 +51,7 @@ import org.elixirian.kommonlee.util.NeoArrays;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */

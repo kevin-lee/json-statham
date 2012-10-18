@@ -31,13 +31,9 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.jsonstatham.core.util.JsonUtil.doubleQuote;
-import static org.elixirian.jsonstatham.core.util.JsonUtil.validate;
-import static org.elixirian.kommonlee.util.MessageFormatter.format;
-import static org.elixirian.kommonlee.util.Objects.castIfInstanceOf;
-import static org.elixirian.kommonlee.util.Objects.equal;
-import static org.elixirian.kommonlee.util.Objects.hash;
-import static org.elixirian.kommonlee.util.Objects.toStringOf;
+import static org.elixirian.jsonstatham.core.util.JsonUtil.*;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -48,7 +44,7 @@ import java.util.Set;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.collect.Maps;
+import org.elixirian.kommonlee.util.collect.Maps;
 
 /**
  * <pre>
@@ -58,7 +54,7 @@ import org.elixirian.kommonlee.collect.Maps;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
