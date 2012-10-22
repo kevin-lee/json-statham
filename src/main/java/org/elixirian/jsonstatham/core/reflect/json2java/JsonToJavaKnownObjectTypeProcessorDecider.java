@@ -119,6 +119,16 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
+				final JsonObject castedValue = (JsonObject) value;
+				if (castedValue.isNull())
+				{
+					return null;
+				}
+				final JsonObject result = getJsonObject(valueType, castedValue);
+				if (null != result)
+				{
+					return result;
+				}
 				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (OrderedJsonObject) value);
 			}
 
@@ -130,6 +140,16 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
 					JsonStathamException
 			{
+				final JsonObject castedValue = (JsonObject) value;
+				if (castedValue.isNull())
+				{
+					return null;
+				}
+				final JsonObject result = getJsonObject(valueType, castedValue);
+				if (null != result)
+				{
+					return result;
+				}
 				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (UnorderedJsonObject) value);
 			}
 
@@ -146,12 +166,22 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 				{
 					return null;
 				}
+				final JsonObject result = getJsonObject(valueType, castedValue);
+				if (null != result)
+				{
+					return result;
+				}
 				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, castedValue);
 			}
 
 		});
 
 		DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(map);
+	}
+
+	private static JsonObject getJsonObject(final Class<?> valueType, final JsonObject value)
+	{
+		return JsonObject.class.isAssignableFrom(valueType) ? value : null;
 	}
 
 	public final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> KnownObjectTypeProcessorMap;

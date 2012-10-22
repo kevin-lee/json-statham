@@ -31,19 +31,12 @@
  */
 package org.elixirian.jsonstatham.core.reflect.json2java;
 
-import static org.elixirian.kommonlee.util.MessageFormatter.format;
-import static org.elixirian.kommonlee.util.Objects.deepEqual;
-import static org.elixirian.kommonlee.util.Objects.equal;
-import static org.elixirian.kommonlee.util.Objects.hash;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Objects.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -117,6 +110,7 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitionHolder;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitions;
 import org.elixirian.jsonstatham.json.json2java.item.ItemVersion;
@@ -300,8 +294,7 @@ public class ReflectionJsonToJavaConverterTest
 				ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
 
 		reflectionJsonToJavaConverter =
-			new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator,
-					jsonArrayCreator)
+			new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator, jsonArrayCreator)
 					.build());
 		address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
@@ -2000,5 +1993,45 @@ public class ReflectionJsonToJavaConverterTest
 
 		/* then */
 		assertThat(result, is(equalTo(expected)));
+	}
+
+	@Test
+	public final void testConvertingToJavaHavingJsonObject() throws ArrayIndexOutOfBoundsException,
+			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+	{
+		/* given */
+		final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
+			new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
+					new JsonArrayWithOrderedJsonObjectCreator())
+					.addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
+					.build());
+
+		final String jsonObjectString =
+			"{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+		final String jsonArrayString =
+			"["
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+					+ "]";
+		final String json =
+			"{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+		System.out.println("json:\n" + json);
+
+		final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
+		final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+		final ObjectHavingJsonObjectAndJsonArray expected =
+			new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
+		System.out.println("expected:\n" + expected);
+
+		/* when */
+		System.out.println("actual: ");
+		final ObjectHavingJsonObjectAndJsonArray actual =
+			reflectionJsonToJavaConverter.convertFromJson(ObjectHavingJsonObjectAndJsonArray.class, json);
+		System.out.println(actual);
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
 	}
 }

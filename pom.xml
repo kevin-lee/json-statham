@@ -5,7 +5,7 @@
   <groupId>org.elixirian</groupId>
   <artifactId>json-statham</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.21-SNAPSHOT</version>
+  <version>0.2.22-SNAPSHOT</version>
   <name>json-statham</name>
   <url>http://projects.elixirian.org/json-statham</url>
 
@@ -109,6 +109,17 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>releases</id>
+      <name>Kevin's Snapshot</name>
+      <url>http://nexus.lckymn.com/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -131,6 +142,12 @@
       <version>3.15.0-GA</version>
       <type>jar</type>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+    	<groupId>org.elixirian</groupId>
+    	<artifactId>kommonlee-3rd-asm</artifactId>
+    	<version>3.3.1</version>
     </dependency>
 
     <dependency>
@@ -159,6 +176,11 @@
       <version>0.0.22-SNAPSHOT</version>
     </dependency>
     <dependency>
+    	<groupId>org.elixirian</groupId>
+    	<artifactId>kommonlee-exception</artifactId>
+    	<version>0.0.13-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-validation</artifactId>
       <version>0.0.24-SNAPSHOT</version>
@@ -179,6 +201,7 @@
       <artifactId>kommonlee-collection</artifactId>
       <version>0.0.11-SNAPSHOT</version>
     </dependency>
+
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

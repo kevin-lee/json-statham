@@ -40,6 +40,7 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
 /**
@@ -50,83 +51,92 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
 public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProcessorDeciderForJavaToJson
 {
-  public static final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
+	public static final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
 
-  static
-  {
-    final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> tempMap =
-      new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
-    tempMap.put(Date.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-      @Override
-      public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-          IllegalAccessException, JsonStathamException
-      {
-        return reflectionJavaToJsonConverter.createJsonValue(value.toString());
-      }
-    });
-    tempMap.put(Calendar.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-      @Override
-      public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-          IllegalAccessException, JsonStathamException
-      {
-        return reflectionJavaToJsonConverter.createJsonValue(((Calendar) value).getTime()
-            .toString());
-      }
+	static
+	{
+		final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> tempMap =
+			new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
+		tempMap.put(Date.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+			@Override
+			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+					IllegalAccessException, JsonStathamException
+			{
+				return reflectionJavaToJsonConverter.createJsonValue(value.toString());
+			}
+		});
+		tempMap.put(Calendar.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+			@Override
+			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+					IllegalAccessException, JsonStathamException
+			{
+				return reflectionJavaToJsonConverter.createJsonValue(((Calendar) value).getTime()
+						.toString());
+			}
 
-    });
-    tempMap.put(Entry.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-      @SuppressWarnings("unchecked")
-      @Override
-      public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-          IllegalAccessException, JsonStathamException
-      {
-        final Entry<Object, Object> entry = (Entry<Object, Object>) value;
-        return reflectionJavaToJsonConverter.newJsonObjectConvertible()
-            .put((String) entry.getKey(), reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
-      }
+		});
+		tempMap.put(Entry.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+					IllegalAccessException, JsonStathamException
+			{
+				final Entry<Object, Object> entry = (Entry<Object, Object>) value;
+				return reflectionJavaToJsonConverter.newJsonObjectConvertible()
+						.put((String) entry.getKey(), reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
+			}
 
-    });
-    DEFAULT_KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
-  }
+		});
+		tempMap.put(JsonObject.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+			@Override
+			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+					IllegalAccessException, JsonStathamException
+			{
+				return value;
+			}
+		});
+		DEFAULT_KNOWN_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
+	}
 
-  private final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownTypeProcessorMap;
+	private final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownTypeProcessorMap;
 
-  public KnownObjectReferenceTypeProcessorDecider()
-  {
-    knownTypeProcessorMap = DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
-  }
+	public KnownObjectReferenceTypeProcessorDecider()
+	{
+		knownTypeProcessorMap = DEFAULT_KNOWN_TYPE_PROCESSOR_MAP;
+	}
 
-  public KnownObjectReferenceTypeProcessorDecider(
-      Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownTypeProcessorMap)
-  {
-    this.knownTypeProcessorMap = Collections.unmodifiableMap(knownTypeProcessorMap);
-  }
+	public KnownObjectReferenceTypeProcessorDecider(
+			final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownTypeProcessorMap)
+	{
+		this.knownTypeProcessorMap = Collections.unmodifiableMap(knownTypeProcessorMap);
+	}
 
-  /*
-   * (non-Javadoc)
-   * @see org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
-   */
-  @Override
-  public <T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(Class<T> type)
-  {
-    for (Entry<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> entry : knownTypeProcessorMap.entrySet())
-    {
-      if (entry.getKey()
-          .isAssignableFrom(type))
-      {
-        return entry.getValue();
-      }
-    }
-    return null;
-  }
+	/*
+	 * (non-Javadoc)
+	 * @see org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson#getKnownTypeProcessor(java.lang.Object)
+	 */
+	@Override
+	public <T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(final Class<T> type)
+	{
+		for (final Entry<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> entry : knownTypeProcessorMap.entrySet())
+		{
+			if (entry.getKey()
+					.isAssignableFrom(type))
+			{
+				return entry.getValue();
+			}
+		}
+		return null;
+	}
 
 }

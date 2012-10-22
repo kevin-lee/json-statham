@@ -90,6 +90,7 @@ import org.elixirian.jsonstatham.json.SubClassWithValueAccessor;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithAbstractMethod;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMethod;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
+import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
@@ -124,89 +125,83 @@ public class ReflectionJavaToJsonConverterTest
 	private static final List<String> postcodeList = Arrays.asList("2000", "3000");
 	private static final String[] SOME_STRING_VALUE_ARRAY = { "111", "222", "aaa", "bbb", "ccc" };
 
-	private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObject>() {
-			@Override
-			public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
-					throws Throwable
-			{
-				// TODO remove after testing.
-				// return new OrgJsonJsonObject(new JSONObject(new LinkedHashMap<String, Object>()));
-				return OrderedJsonObject.newJsonObject();
-			}
-		};
-	private static final Answer<JsonObject> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE =
-		new Answer<JsonObject>() {
+	private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObject>() {
+		@Override
+		public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable
+		{
+			// TODO remove after testing.
+			// return new OrgJsonJsonObject(new JSONObject(new LinkedHashMap<String, Object>()));
+			return OrderedJsonObject.newJsonObject();
+		}
+	};
+	private static final Answer<JsonObject> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObject>() {
 
-			@Override
-			public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
-					throws Throwable
-			{
-				// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
-				return new JsonObject() {
-					@Override
-					public String[] getNames()
-					{
-						throw new JsonStathamException("The getNames method in NullJsonObjectConvertible cannot be used.");
-					}
+		@Override
+		public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable
+		{
+			// return AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE;
+			return new JsonObject() {
+				@Override
+				public String[] getNames()
+				{
+					throw new JsonStathamException("The getNames method in NullJsonObjectConvertible cannot be used.");
+				}
 
-					@Override
-					public int fieldLength()
-					{
-						return 0;
-					}
+				@Override
+				public int fieldLength()
+				{
+					return 0;
+				}
 
-					/* @formatter:off */
+				/* @formatter:off */
           @Override
           public boolean containsName(@SuppressWarnings("unused") final String name) { return false; }
           /* @formatter:on */
 
-					@Override
-					public Object get(@SuppressWarnings("unused") final String name)
-					{
-						throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
-					}
+				@Override
+				public Object get(@SuppressWarnings("unused") final String name)
+				{
+					throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
+				}
 
-					@Override
-					public Object getActualObject()
-					{
-						return AbstractJsonObject.NULL_JSON_OBJECT;
-					}
+				@Override
+				public Object getActualObject()
+				{
+					return AbstractJsonObject.NULL_JSON_OBJECT;
+				}
 
-					@Override
-					public JsonObject put(@SuppressWarnings("unused") final String name,
-							@SuppressWarnings("unused") final Object value) throws JsonStathamException
-					{
-						throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
-					}
+				@Override
+				public JsonObject put(@SuppressWarnings("unused") final String name,
+						@SuppressWarnings("unused") final Object value) throws JsonStathamException
+				{
+					throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
+				}
 
-					@Override
-					public boolean isNull()
-					{
-						return true;
-					}
+				@Override
+				public boolean isNull()
+				{
+					return true;
+				}
 
-					@Override
-					public String toString()
-					{
-						return AbstractJsonObject.NULL_JSON_OBJECT.toString();
-					}
+				@Override
+				public String toString()
+				{
+					return AbstractJsonObject.NULL_JSON_OBJECT.toString();
+				}
 
-				};
-			}
+			};
+		}
 
-		};
+	};
 
-	private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE =
-		new Answer<JsonArray>() {
+	private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE = new Answer<JsonArray>() {
 
-			@Override
-			public JsonArray answer(@SuppressWarnings("unused") final InvocationOnMock invocation)
-					throws Throwable
-			{
-				return JsonArrayWithOrderedJsonObject.newJsonArray();
-			}
-		};
+		@Override
+		public JsonArray answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable
+		{
+			return JsonArrayWithOrderedJsonObject.newJsonArray();
+		}
+	};
 
 	private List<Address> addressList;
 
@@ -1287,5 +1282,37 @@ public class ReflectionJavaToJsonConverterTest
 
 		/* then */
 		assertThat(result, is(equalTo(expected)));
+	}
+
+	@Test
+	public final void testConvertingToJsonFromJavaHavingJsonObject() throws IllegalArgumentException,
+			JsonStathamException, IllegalAccessException
+	{
+		/* given */
+		final String jsonObjectString =
+			"{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+		final String jsonArrayString =
+			"["
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+					+ "]";
+		final String expected =
+			"{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+		System.out.println("expected:\n" + expected);
+
+		final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
+		final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+		final ObjectHavingJsonObjectAndJsonArray objectHavingJsonObjectAndJsonArray =
+			new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
+
+		/* when */
+		System.out.println("actual: ");
+		final String actual = reflectionJavaToJsonConverter.convertIntoJson(objectHavingJsonObjectAndJsonArray);
+		System.out.println(actual);
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
 	}
 }
