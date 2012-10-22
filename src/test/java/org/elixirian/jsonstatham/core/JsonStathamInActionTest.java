@@ -31,19 +31,12 @@
  */
 package org.elixirian.jsonstatham.core;
 
-import static org.elixirian.kommonlee.util.MessageFormatter.format;
-import static org.elixirian.kommonlee.util.Objects.equal;
-import static org.elixirian.kommonlee.util.Objects.hash;
-import static org.elixirian.kommonlee.util.Objects.toStringBuilder;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.elixirian.kommonlee.util.Objects.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -66,6 +59,7 @@ import java.util.Set;
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
+import org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
@@ -111,6 +105,7 @@ import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMet
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectHavingNestedGenericTypes;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.test.ItemConfig;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
@@ -296,8 +291,7 @@ public class JsonStathamInActionTest
 					new OneProcessorForKnownTypeDecider());
 
 		final ReflectionJsonToJavaConverter jsonToJavaConverter =
-			new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator,
-					jsonArrayCreator)
+			new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator, jsonArrayCreator)
 					.build());
 
 		jsonStatham = new JsonStathamInAction(javaToJsonConverter, jsonToJavaConverter);
@@ -357,7 +351,6 @@ public class JsonStathamInActionTest
 		@Json
 		class TestPojo
 		{
-			@SuppressWarnings("unused")
 			@JsonField
 			private Object object = null;
 		}
@@ -2084,5 +2077,365 @@ public class JsonStathamInActionTest
 
 		/* then */
 		assertThat(result, is(equalTo(expected)));
+	}
+
+	@Test
+	public void testConvertIntoJsonConvertible()
+	{
+		System.out.println("\nJsonStathamInActionTest.testConvertIntoJsonConvertible() {");
+		/* given */
+		final String jsonObjectString =
+			"{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+		final String jsonArrayString =
+			"["
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+					+ "]";
+		final String json =
+			"{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+		System.out.println("json:\n" + json);
+
+		final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
+		final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+		final JsonObject expected = OrderedJsonObject.newJsonObject(json);
+		final ObjectHavingJsonObjectAndJsonArray target =
+			new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
+		System.out.println("expected:\n" + expected);
+
+		/* when */
+		System.out.println("actual:");
+		final JsonObject actual = jsonStatham.convertIntoJsonConvertible(target);
+		System.out.println(actual);
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
+		System.out.println("} JsonStathamInActionTest.testConvertIntoJsonConvertible()");
+	}
+
+	@Test
+	public void testConvertIntoJsonConvertibleObject()
+	{
+		/* given */
+		final String jsonObjectString =
+			"{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+		System.out.println("json:\n" + jsonObjectString);
+
+		final JsonObject expected = OrderedJsonObject.newJsonObject(jsonObjectString);
+		System.out.println("expected:\n" + expected);
+
+		/* when */
+		System.out.println("actual:");
+		final JsonObject actual =
+			jsonStatham.convertIntoJsonConvertible(new ParamObject(new StringAndObjectPair("abc", "1234"),
+					new StringAndObjectPair("z", "yx"), new StringAndObjectPair("a", "aaa")));
+		System.out.println(actual);
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
+	}
+
+	@Json
+	private static class TestJsonObject
+	{
+		@JsonField
+		String name;
+
+		@JsonField
+		ParamObject params;
+
+		public TestJsonObject(final String name, final ParamObject params)
+		{
+			this.name = name;
+			this.params = params;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return hash(name, params);
+		}
+
+		@Override
+		public boolean equals(final Object testJsonObject)
+		{
+			if (this == testJsonObject)
+				return true;
+			final TestJsonObject that = castIfInstanceOf(TestJsonObject.class, testJsonObject);
+			return null != testJsonObject && (equal(this.name, that.name) && equal(this.params, that.params));
+		}
+
+		@Override
+		public String toString()
+		{
+			/* @formatter:off */
+			return toStringBuilder(this)
+					.add("name", name)
+					.add("params", params)
+					.toString();
+			/* @formatter:on */
+		}
+	}
+
+	@Json
+	private static class ParamObject
+	{
+		@JsonField
+		ImmutableJsonObjectConvertiblePair<String, Object> first;
+		@JsonField
+		ImmutableJsonObjectConvertiblePair<String, Object> second;
+		@JsonField
+		ImmutableJsonObjectConvertiblePair<String, Object> third;
+
+		public ParamObject(final ImmutableJsonObjectConvertiblePair<String, Object> first,
+				final ImmutableJsonObjectConvertiblePair<String, Object> second,
+				final ImmutableJsonObjectConvertiblePair<String, Object> third)
+		{
+			this.first = first;
+			this.second = second;
+			this.third = third;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return hash(first, second, third);
+		}
+
+		@Override
+		public boolean equals(final Object paramObject)
+		{
+			if (this == paramObject)
+				return true;
+			final ParamObject that = castIfInstanceOf(ParamObject.class, paramObject);
+			return null != that
+					&& (equal(this.first, that.first) && equal(this.second, that.second) && equal(this.third, that.third));
+		}
+
+		@Override
+		public String toString()
+		{
+			/* @formatter:off */
+			return toStringBuilder(this)
+					.add("first", first)
+					.add("second", second)
+					.add("third", third)
+					.toString();
+			/* @formatter:on */
+		}
+	}
+
+	private static class StringAndObjectPair extends ImmutableJsonObjectConvertiblePair<String, Object>
+	{
+		public StringAndObjectPair(final String first, final Object second)
+		{
+			super(first, second);
+		}
+	}
+
+	@Test
+	public void testConvertIntoJsonConvertibleArray()
+	{
+		/* given */
+		final String[] names = { "test1", "test2", "test3" };
+		final String[] params1_1 = { "number1", "number2", "number3" };
+		@SuppressWarnings("boxing")
+		final Object[] params1_2 = { 1234, 123, 12 };
+		final String[] params2_1 = { "value1", "value2", "value3" };
+		final Object[] params2_2 = { "yxA", "yxB", "yxC" };
+		final String[] params3_1 = { "test1", "test2", "test3" };
+		final Object[] params3_2 = { "aaa", "bbb", "ccc" };
+		final String jsonArrayString =
+			"[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
+					+ "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\""
+					+ params3_2[0] + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":"
+					+ params1_2[1] + "},\"second\":{\"" + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\""
+					+ params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\"" + names[2]
+					+ "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2]
+					+ "\":\"" + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
+		System.out.println("json:\n" + jsonArrayString);
+
+		final JsonArray expected = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+		System.out.println("expected:\n" + expected);
+
+		/* @formatter:off */
+		final List<TestJsonObject> list = Arrays.asList(
+				new TestJsonObject(
+						names[0],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[0], params1_2[0]),
+								new StringAndObjectPair(params2_1[0], params2_2[0]),
+								new StringAndObjectPair(params3_1[0], params3_2[0]))),
+				new TestJsonObject(
+						names[1],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[1], params1_2[1]),
+								new StringAndObjectPair(params2_1[1], params2_2[1]),
+								new StringAndObjectPair(params3_1[1], params3_2[1]))),
+				new TestJsonObject(
+						names[2],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[2], params1_2[2]),
+								new StringAndObjectPair(params2_1[2], params2_2[2]),
+								new StringAndObjectPair(params3_1[2], params3_2[2]))));
+		/* @formatter:on */
+
+		/* when */
+		System.out.println("actual:");
+		final JsonArray actual = jsonStatham.convertIntoJsonConvertible(list);
+		System.out.println(actual);
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
+	}
+
+	@Test
+	public void testConvertFromJsonConvertible()
+	{
+		/* given */
+		final String jsonObjectString =
+			"{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+		final String jsonArrayString =
+			"["
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+					+ "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+					+ "]";
+		final String json =
+			"{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+		System.out.println("json:\n" + json);
+
+		final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
+		final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+		final ObjectHavingJsonObjectAndJsonArray expected =
+			new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
+
+		final JsonObject target = OrderedJsonObject.newJsonObject(json);
+		System.out.println("expected:\n" + expected);
+
+		/* when */
+		System.out.println("actual:");
+		final ObjectHavingJsonObjectAndJsonArray actual =
+			jsonStatham.convertFromJsonConvertible(ObjectHavingJsonObjectAndJsonArray.class, target);
+		System.out.println(actual);
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
+	}
+
+	@Test
+	public void testConvertFromJsonConvertibleWithJsonArray()
+	{
+		/* given */
+		final String[] names = { "test1", "test2", "test3" };
+		final String[] params1_1 = { "number1", "number2", "number3" };
+		@SuppressWarnings("boxing")
+		final Object[] params1_2 = { 1234, 123, 12 };
+		final String[] params2_1 = { "value1", "value2", "value3" };
+		final Object[] params2_2 = { "yxA", "yxB", "yxC" };
+		final String[] params3_1 = { "test1", "test2", "test3" };
+		final Object[] params3_2 = { "aaa", "bbb", "ccc" };
+		final String jsonArrayString =
+			"[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
+					+ "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\""
+					+ params3_2[0] + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":"
+					+ params1_2[1] + "},\"second\":{\"" + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\""
+					+ params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\"" + names[2]
+					+ "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2]
+					+ "\":\"" + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
+		System.out.println("json:\n" + jsonArrayString);
+
+		final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+		/* @formatter:off */
+		final TestJsonObject[] expected = {
+				new TestJsonObject(
+						names[0],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[0], params1_2[0]),
+								new StringAndObjectPair(params2_1[0], params2_2[0]),
+								new StringAndObjectPair(params3_1[0], params3_2[0]))),
+				new TestJsonObject(
+						names[1],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[1], params1_2[1]),
+								new StringAndObjectPair(params2_1[1], params2_2[1]),
+								new StringAndObjectPair(params3_1[1], params3_2[1]))),
+				new TestJsonObject(
+						names[2],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[2], params1_2[2]),
+								new StringAndObjectPair(params2_1[2], params2_2[2]),
+								new StringAndObjectPair(params3_1[2], params3_2[2])))};
+		/* @formatter:on */
+		System.out.println("expected:\n" + toStringOf(expected));
+
+		/* when */
+		System.out.println("actual:");
+		final TestJsonObject[] actual = jsonStatham.convertFromJsonConvertible(TestJsonObject[].class, jsonArray);
+		System.out.println(toStringOf(actual));
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
+	}
+
+	@Test
+	public void testConvertFromJsonConvertibleWithTypeHolder()
+	{
+		/* given */
+		final String[] names = { "test1", "test2", "test3" };
+		final String[] params1_1 = { "number1", "number2", "number3" };
+		@SuppressWarnings("boxing")
+		final Object[] params1_2 = { 1234, 123, 12 };
+		final String[] params2_1 = { "value1", "value2", "value3" };
+		final Object[] params2_2 = { "yxA", "yxB", "yxC" };
+		final String[] params3_1 = { "test1", "test2", "test3" };
+		final Object[] params3_2 = { "aaa", "bbb", "ccc" };
+		final String jsonArrayString =
+			"[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
+					+ "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\""
+					+ params3_2[0] + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":"
+					+ params1_2[1] + "},\"second\":{\"" + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\""
+					+ params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\"" + names[2]
+					+ "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2]
+					+ "\":\"" + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
+		System.out.println("json:\n" + jsonArrayString);
+
+		final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+		/* @formatter:off */
+		final List<TestJsonObject> expected = Arrays.asList(
+				new TestJsonObject(
+						names[0],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[0], params1_2[0]),
+								new StringAndObjectPair(params2_1[0], params2_2[0]),
+								new StringAndObjectPair(params3_1[0], params3_2[0]))),
+				new TestJsonObject(
+						names[1],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[1], params1_2[1]),
+								new StringAndObjectPair(params2_1[1], params2_2[1]),
+								new StringAndObjectPair(params3_1[1], params3_2[1]))),
+				new TestJsonObject(
+						names[2],
+						new ParamObject(
+								new StringAndObjectPair(params1_1[2], params1_2[2]),
+								new StringAndObjectPair(params2_1[2], params2_2[2]),
+								new StringAndObjectPair(params3_1[2], params3_2[2]))));
+		/* @formatter:on */
+
+		System.out.println("expected:\n" + toStringOf(expected));
+
+		/* when */
+		System.out.println("actual:");
+		final List<TestJsonObject> actual =
+			jsonStatham.convertFromJsonConvertible(new TypeHolder<List<TestJsonObject>>() {}, jsonArray);
+		System.out.println(toStringOf(actual));
+
+		/* then */
+		assertThat(actual, is(equalTo(expected)));
 	}
 }

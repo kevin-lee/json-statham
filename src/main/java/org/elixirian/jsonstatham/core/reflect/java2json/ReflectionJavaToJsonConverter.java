@@ -43,8 +43,8 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 import org.elixirian.jsonstatham.core.JavaToJsonConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
@@ -355,4 +355,31 @@ public class ReflectionJavaToJsonConverter implements JavaToJsonConverter
 		/* @formatter:on */
 	}
 
+	@Override
+	public <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws IllegalArgumentException,
+			JsonStathamException, IllegalAccessException
+	{
+		if (null == source)
+		{
+			@SuppressWarnings("unchecked")
+			final T nullJsonObjectConvertible = (T) nullJsonObjectConvertible();
+			return nullJsonObjectConvertible;
+		}
+
+		final Class<?> sourceType = source.getClass();
+		final KnownTypeProcessorWithReflectionJavaToJsonConverter knownTypeProcessorWithReflectionJavaToJsonConverter =
+			knownDataStructureTypeProcessorDecider.decide(sourceType);
+		if (null != knownTypeProcessorWithReflectionJavaToJsonConverter)
+		{
+			@SuppressWarnings("unchecked")
+			final T jsonArray = (T) knownTypeProcessorWithReflectionJavaToJsonConverter.process(this, sourceType, source);
+			return jsonArray;
+		}
+
+		/* @formatter:off */
+		@SuppressWarnings("unchecked")
+		final T jsonObject = (T) createJsonObject(source);
+		return jsonObject;
+		/* @formatter:on */
+	}
 }

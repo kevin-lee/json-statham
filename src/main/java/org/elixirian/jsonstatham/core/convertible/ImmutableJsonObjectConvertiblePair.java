@@ -29,13 +29,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
+package org.elixirian.jsonstatham.core.convertible;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.reflect.TypeHolder;
+import static org.elixirian.kommonlee.util.Objects.*;
 
 /**
  * <pre>
@@ -47,20 +43,61 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  * </pre>
  *
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2012-10-23)
  */
-public interface JsonToJavaConverter
+public class ImmutableJsonObjectConvertiblePair<L, R> extends AbstractJsonObjectConvertiblePair<L, R>
 {
-	<T> T convertFromJson(Class<T> targetClass, String jsonString) throws JsonStathamException, IllegalArgumentException,
-			InstantiationException, IllegalAccessException, InvocationTargetException;
+	private final L first;
+	private final R second;
 
-	<T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException,
-			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+	public ImmutableJsonObjectConvertiblePair(final L first, final R second)
+	{
+		this.first = first;
+		this.second = second;
+	}
 
-	<T> T convertFromJsonConvertible(Class<T> targetClass, JsonConvertible jsonConvertible) throws JsonStathamException,
-			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+	@Override
+	public L getFirst()
+	{
+		return first;
+	}
 
-	<T> T convertFromJsonConvertible(TypeHolder<T> typeHolder, JsonConvertible jsonConvertible)
-			throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-			InvocationTargetException;
+	@Override
+	public R getSecond()
+	{
+		return second;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return hash(first, second);
+	}
+
+	@Override
+	public boolean equals(final Object jsonObjectConvertiblePair)
+	{
+		if (this == jsonObjectConvertiblePair)
+		{
+			return true;
+		}
+		final ImmutableJsonObjectConvertiblePair<?, ?> that =
+			castIfInstanceOf(ImmutableJsonObjectConvertiblePair.class, jsonObjectConvertiblePair);
+		/* @formatter:off */
+		return null != that &&
+						(equal(this.first, that.getFirst()) &&
+						 equal(this.second, that.getSecond()));
+		/* @formatter:on */
+	}
+
+	@Override
+	public String toString()
+	{
+		/* @formatter:off */
+		return toStringBuilder(this)
+				.add("first", first)
+				.add("second", second)
+				.toString();
+		/* @formatter:on */
+	}
 }

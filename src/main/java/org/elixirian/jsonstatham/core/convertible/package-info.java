@@ -1,4 +1,4 @@
-/**
+/*
  * This project is licensed under the Apache License, Version 2.0
  * if the following condition is met:
  * (otherwise it cannot be used by anyone but the author, Kevin, only)
@@ -29,27 +29,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
-
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
 
 /**
- * <pre>
- *     ___  _____                                _____
- *    /   \/    /_________  ___ ____ __ ______  /    /   ______  ______
- *   /        / /  ___ \  \/  //___// //     / /    /   /  ___ \/  ___ \
- *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
- * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
- * </pre>
  *
- * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
  */
-public interface JavaToJsonConverter
-{
-	String convertIntoJson(Object source) throws IllegalArgumentException, JsonStathamException, IllegalAccessException;
-
-	<T extends JsonConvertible> T convertIntoJsonConvertible(Object source) throws IllegalArgumentException,
-			JsonStathamException, IllegalAccessException;
-}
+package org.elixirian.jsonstatham.core.convertible;

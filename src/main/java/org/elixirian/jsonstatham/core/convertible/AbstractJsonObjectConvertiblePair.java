@@ -29,13 +29,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
+package org.elixirian.jsonstatham.core.convertible;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.reflect.TypeHolder;
+import org.elixirian.kommonlee.type.Pair;
 
 /**
  * <pre>
@@ -47,20 +43,8 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  * </pre>
  *
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2012-10-23)
  */
-public interface JsonToJavaConverter
+public abstract class AbstractJsonObjectConvertiblePair<L, R> implements Pair<L, R>
 {
-	<T> T convertFromJson(Class<T> targetClass, String jsonString) throws JsonStathamException, IllegalArgumentException,
-			InstantiationException, IllegalAccessException, InvocationTargetException;
-
-	<T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException,
-			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
-
-	<T> T convertFromJsonConvertible(Class<T> targetClass, JsonConvertible jsonConvertible) throws JsonStathamException,
-			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
-
-	<T> T convertFromJsonConvertible(TypeHolder<T> typeHolder, JsonConvertible jsonConvertible)
-			throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-			InvocationTargetException;
 }

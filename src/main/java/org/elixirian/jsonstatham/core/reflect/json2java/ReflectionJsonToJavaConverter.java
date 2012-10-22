@@ -65,6 +65,7 @@ import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJava
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray;
@@ -85,7 +86,7 @@ import org.json.JSONObject;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-08)
  * @version 0.0.2 (2010-12-23) refactored...
@@ -880,6 +881,33 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
 	private <T> Object resolveGenericTypeAndValue(final Type genericType, final Class<T> valueType, final Object value)
 	{
+		if (null != valueType)
+		{
+			final KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> knownTypeProcessorWithReflectionJsonToJavaConverter =
+				jsonToJavaKnownObjectTypeProcessorDecider.decide(valueType);
+			try
+			{
+				if (null != knownTypeProcessorWithReflectionJsonToJavaConverter)
+				{
+					return knownTypeProcessorWithReflectionJsonToJavaConverter.process(this, valueType, value);
+				}
+			}
+			catch (final IllegalArgumentException e)
+			{
+				throw new JsonStathamException(format("Attempt to process known type failed with IllegalArgumentException.\n"
+						+ "[Class<T> valueType: %s][Object value: %s]\n"
+						+ "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]", valueType, value,
+						knownTypeProcessorWithReflectionJsonToJavaConverter), e);
+			}
+			catch (final IllegalAccessException e)
+			{
+				throw new JsonStathamException(format("Attempt to process known type failed with IllegalAccessException.\n"
+						+ "[Class<T> valueType: %s][Object value: %s]\n"
+						+ "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]", valueType, value,
+						knownTypeProcessorWithReflectionJsonToJavaConverter), e);
+			}
+		}
+
 		final KnownTypeProcessorWithReflectionJsonToJavaConverter<Type> knownTypeProcessorWithReflectionJsonToJavaConverter2 =
 			jsonToJavaKnownDataStructureTypeProcessorDecider.decide(genericType);
 		try
@@ -1334,5 +1362,62 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 			}
 		}
 		throw new JsonStathamException(format("Unknown type: [TypeHolder: %s][JSON: %s]", typeHolder, jsonString));
+	}
+
+	@Override
+	public <T> T convertFromJsonConvertible(final Class<T> targetClass, final JsonConvertible jsonConvertible)
+			throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+			InvocationTargetException
+	{
+		if (null == jsonConvertible)
+		{
+			return null;
+		}
+
+		if (jsonConvertible instanceof JsonObject)
+		{
+			return createFromJsonObject(targetClass, (JsonObject) jsonConvertible);
+		}
+		else if (jsonConvertible instanceof JsonArray)
+		{
+			return createFromJsonArray(targetClass, (JsonArray) jsonConvertible);
+		}
+		else
+		{
+			throw new JsonStathamException(format(
+					"Unknown JsonConvertible object is given. It must be either JsonObject or JsonArray (it can also be null).\n"
+							+ "##Given JsonArray:\n%s", jsonConvertible));
+		}
+	}
+
+	@Override
+	public <T> T convertFromJsonConvertible(final TypeHolder<T> typeHolder, final JsonConvertible jsonConvertible)
+			throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+			InvocationTargetException
+	{
+		if (ParameterizedType.class.isAssignableFrom(typeHolder.getType()
+				.getClass()))
+		{
+			final ParameterizedType parameterizedType = (ParameterizedType) typeHolder.getType();
+			final Class<?> typeClass = (Class<?>) parameterizedType.getRawType();
+			if (Collection.class.isAssignableFrom(typeClass))
+			{
+				@SuppressWarnings("unchecked")
+				final T t =
+					(T) createCollectionWithValues((Class<Collection<T>>) typeClass,
+							parameterizedType.getActualTypeArguments()[0], (JsonArray) jsonConvertible);
+				return t;
+			}
+			if (Map.class.isAssignableFrom(typeClass))
+			{
+				@SuppressWarnings("unchecked")
+				final T t =
+					(T) createHashMapWithKeysAndValues((Class<Map<String, Object>>) typeClass,
+							parameterizedType.getActualTypeArguments()[1], (JsonObject) jsonConvertible);
+				return t;
+			}
+		}
+		throw new JsonStathamException(format("Unknown type: [TypeHolder: %s][JsonConvertible: %s]", typeHolder,
+				jsonConvertible));
 	}
 }

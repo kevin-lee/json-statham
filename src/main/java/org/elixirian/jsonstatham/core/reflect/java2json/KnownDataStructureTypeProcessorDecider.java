@@ -67,7 +67,8 @@ public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcesso
 			new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
 		tempMap.put(JsonArray.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
 			@Override
-			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+			public <T> Object process(
+					@SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
 					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{

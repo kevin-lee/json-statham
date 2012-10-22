@@ -31,6 +31,8 @@
  */
 package org.elixirian.jsonstatham.core.reflect.java2json;
 
+import static org.elixirian.kommonlee.util.Objects.*;
+
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -40,8 +42,10 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.convertible.AbstractJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.type.Pair;
 
 /**
  * <pre>
@@ -96,9 +100,23 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 			}
 
 		});
-		tempMap.put(JsonObject.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+		tempMap.put(AbstractJsonObjectConvertiblePair.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+					IllegalAccessException, JsonStathamException
+			{
+				final Pair<Object, Object> pair = (Pair<Object, Object>) value;
+				return reflectionJavaToJsonConverter.newJsonObjectConvertible()
+						.put(toStringOf(pair.getFirst()), reflectionJavaToJsonConverter.createJsonValue(pair.getSecond()));
+			}
+
+		});
+		tempMap.put(JsonObject.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+			@Override
+			public <T> Object process(
+					@SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
 					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
 					IllegalAccessException, JsonStathamException
 			{

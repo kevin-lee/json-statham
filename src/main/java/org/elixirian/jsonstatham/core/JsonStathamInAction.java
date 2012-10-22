@@ -37,6 +37,7 @@ import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
@@ -50,7 +51,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.0.2 (2009-12-07) It is refactored.
@@ -66,11 +67,10 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *          annotation, it uses the method specified with the {@link ValueAccessor} annotation in order to get the
  *          value.
  *          </p>
- * @version 0.0.6 (2010-02-03) {@link JsonObjectCreator} is added to create a new {@link org.json.JSONObject}
- *          .
- * @version 0.0.7 (2010-02-12) The name is changed from NonIndentedJsonStatham to JsonStathamInAction. When the
- *          Json is converted into JSON, if any fields annotated with @JsonField without the 'name' element
- *          explicitly set, it will use the actual field names as the JsonField names.
+ * @version 0.0.6 (2010-02-03) {@link JsonObjectCreator} is added to create a new {@link org.json.JSONObject} .
+ * @version 0.0.7 (2010-02-12) The name is changed from NonIndentedJsonStatham to JsonStathamInAction. When the Json is
+ *          converted into JSON, if any fields annotated with @JsonField without the 'name' element explicitly set, it
+ *          will use the actual field names as the JsonField names.
  * @version 0.0.8 (2010-03-02) refactoring...
  * @version 0.0.9 (2010-03-06)
  *          <ul>
@@ -101,104 +101,189 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  */
 public class JsonStathamInAction implements JsonStatham
 {
-  private final JavaToJsonConverter javaToJsonConverter;
-  private final JsonToJavaConverter jsonToJavaConverter;
+	private final JavaToJsonConverter javaToJsonConverter;
+	private final JsonToJavaConverter jsonToJavaConverter;
 
-  public JsonStathamInAction(JavaToJsonConverter javaToJsonConverter, JsonToJavaConverter jsonToJavaConverter)
-  {
-    this.javaToJsonConverter = javaToJsonConverter;
-    this.jsonToJavaConverter = jsonToJavaConverter;
-  }
+	public JsonStathamInAction(final JavaToJsonConverter javaToJsonConverter,
+			final JsonToJavaConverter jsonToJavaConverter)
+	{
+		this.javaToJsonConverter = javaToJsonConverter;
+		this.jsonToJavaConverter = jsonToJavaConverter;
+	}
 
-  public JavaToJsonConverter getJavaToJsonConverter()
-  {
-    return javaToJsonConverter;
-  }
+	public JavaToJsonConverter getJavaToJsonConverter()
+	{
+		return javaToJsonConverter;
+	}
 
-  public JsonToJavaConverter getJsonToJavaConverter()
-  {
-    return jsonToJavaConverter;
-  }
+	public JsonToJavaConverter getJsonToJavaConverter()
+	{
+		return jsonToJavaConverter;
+	}
 
-  @Override
-  public String convertIntoJson(Object source) throws JsonStathamException
-  {
-    try
-    {
-      return javaToJsonConverter.convertIntoJson(source);
-    }
-    catch (IllegalArgumentException e)
-    {
-      // throw new JsonStathamException(format(
-      // "Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation",
-      // source), e);
-      throw new JsonStathamException(e);
-    }
-    catch (IllegalAccessException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (JsonStathamException e)
-    {
-      throw e;
-    }
-  }
+	@Override
+	public String convertIntoJson(final Object source) throws JsonStathamException
+	{
+		try
+		{
+			return javaToJsonConverter.convertIntoJson(source);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			// throw new JsonStathamException(format(
+			// "Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation",
+			// source), e);
+			throw new JsonStathamException(e);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final JsonStathamException e)
+		{
+			throw e;
+		}
+	}
 
-  @Override
-  public <T> T convertFromJson(Class<T> type, String json) throws JsonStathamException
-  {
-    try
-    {
-      return jsonToJavaConverter.convertFromJson(type, json);
-    }
-    catch (IllegalArgumentException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (InstantiationException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (IllegalAccessException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (InvocationTargetException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (JsonStathamException e)
-    {
-      throw e;
-    }
-  }
+	@Override
+	public <T extends JsonConvertible> T convertIntoJsonConvertible(final Object target) throws JsonStathamException
+	{
+		try
+		{
+			return javaToJsonConverter.convertIntoJsonConvertible(target);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			// throw new JsonStathamException(format(
+			// "Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation",
+			// source), e);
+			throw new JsonStathamException(e);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final JsonStathamException e)
+		{
+			throw e;
+		}
+	}
 
-  @Override
-  public <T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException
-  {
-    try
-    {
-      return jsonToJavaConverter.convertFromJson(typeHolder, jsonString);
-    }
-    catch (IllegalArgumentException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (InstantiationException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (IllegalAccessException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (InvocationTargetException e)
-    {
-      throw new JsonStathamException(e);
-    }
-    catch (JsonStathamException e)
-    {
-      throw e;
-    }
-  }
+	@Override
+	public <T> T convertFromJson(final Class<T> type, final String json) throws JsonStathamException
+	{
+		try
+		{
+			return jsonToJavaConverter.convertFromJson(type, json);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InstantiationException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InvocationTargetException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final JsonStathamException e)
+		{
+			throw e;
+		}
+	}
+
+	@Override
+	public <T> T convertFromJson(final TypeHolder<T> typeHolder, final String jsonString) throws JsonStathamException
+	{
+		try
+		{
+			return jsonToJavaConverter.convertFromJson(typeHolder, jsonString);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InstantiationException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InvocationTargetException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final JsonStathamException e)
+		{
+			throw e;
+		}
+	}
+
+	@Override
+	public <T> T convertFromJsonConvertible(final Class<T> type, final JsonConvertible jsonConvertible)
+			throws JsonStathamException
+	{
+		try
+		{
+			return jsonToJavaConverter.convertFromJsonConvertible(type, jsonConvertible);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InstantiationException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InvocationTargetException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final JsonStathamException e)
+		{
+			throw e;
+		}
+	}
+
+	@Override
+	public <T> T convertFromJsonConvertible(final TypeHolder<T> typeHolder, final JsonConvertible jsonConvertible)
+			throws JsonStathamException
+	{
+		try
+		{
+			return jsonToJavaConverter.convertFromJsonConvertible(typeHolder, jsonConvertible);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InstantiationException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final IllegalAccessException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final InvocationTargetException e)
+		{
+			throw new JsonStathamException(e);
+		}
+		catch (final JsonStathamException e)
+		{
+			throw e;
+		}
+	}
 }

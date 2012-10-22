@@ -5,7 +5,7 @@
   <groupId>org.elixirian</groupId>
   <artifactId>json-statham</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.22-SNAPSHOT</version>
+  <version>0.2.23-SNAPSHOT</version>
   <name>json-statham</name>
   <url>http://projects.elixirian.org/json-statham</url>
 
