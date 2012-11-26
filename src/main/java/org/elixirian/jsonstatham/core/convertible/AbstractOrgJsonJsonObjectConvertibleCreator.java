@@ -71,7 +71,7 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
     /* @formatter:on */
 
 		@Override
-		public Object get(final String name)
+		public <T> T get(final String name)
 		{
 			throw new JsonStathamException(format(
 					"The name method in NullJsonObjectConvertible cannot used.\n[input] name: %s", name));
@@ -84,7 +84,7 @@ public abstract class AbstractOrgJsonJsonObjectConvertibleCreator implements Jso
 		}
 
 		@Override
-		public JsonObject put(final String name, final Object value) throws JsonStathamException
+		public <T> JsonObject put(final String name, final T value) throws JsonStathamException
 		{
 			throw new JsonStathamException(format(
 					"The put method in NullJsonObjectConvertible cannot used.\n[input] String name: %s, Object value: %s", name,

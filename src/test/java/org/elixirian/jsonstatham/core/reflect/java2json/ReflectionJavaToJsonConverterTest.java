@@ -159,7 +159,7 @@ public class ReflectionJavaToJsonConverterTest
           /* @formatter:on */
 
 				@Override
-				public Object get(@SuppressWarnings("unused") final String name)
+				public <T> T get(@SuppressWarnings("unused") final String name)
 				{
 					throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
 				}
@@ -171,8 +171,8 @@ public class ReflectionJavaToJsonConverterTest
 				}
 
 				@Override
-				public JsonObject put(@SuppressWarnings("unused") final String name,
-						@SuppressWarnings("unused") final Object value) throws JsonStathamException
+				public <T> JsonObject put(@SuppressWarnings("unused") final String name,
+						@SuppressWarnings("unused") final T value) throws JsonStathamException
 				{
 					throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
 				}

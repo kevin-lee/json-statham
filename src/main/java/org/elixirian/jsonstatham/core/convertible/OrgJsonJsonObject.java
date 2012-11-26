@@ -45,90 +45,92 @@ import org.json.JSONObject;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
 public final class OrgJsonJsonObject implements JsonObject
 {
-	private static final String[] EMPTY_NAMES = new String[0];
+  private static final String[] EMPTY_NAMES = new String[0];
 
-	private final JSONObject orgJsonObject;
+  private final JSONObject orgJsonObject;
 
-	public OrgJsonJsonObject(final JSONObject orgJsonObject)
-	{
-		this.orgJsonObject = orgJsonObject;
-	}
+  public OrgJsonJsonObject(final JSONObject orgJsonObject)
+  {
+    this.orgJsonObject = orgJsonObject;
+  }
 
-	@Override
-	public String[] getNames()
-	{
-		final String[] names = JSONObject.getNames(orgJsonObject);
-		return (null == names ? EMPTY_NAMES : names);
-	}
+  @Override
+  public String[] getNames()
+  {
+    final String[] names = JSONObject.getNames(orgJsonObject);
+    return (null == names ? EMPTY_NAMES : names);
+  }
 
-	@Override
-	public int fieldLength()
-	{
-		return orgJsonObject.length();
-	}
+  @Override
+  public int fieldLength()
+  {
+    return orgJsonObject.length();
+  }
 
-	@Override
-	public boolean containsName(final String name)
-	{
-		return orgJsonObject.has(name);
-	}
+  @Override
+  public boolean containsName(final String name)
+  {
+    return orgJsonObject.has(name);
+  }
 
-	@Override
-	public Object get(final String name) throws JsonStathamException
-	{
-		try
-		{
-			return orgJsonObject.get(name);
-		}
-		catch (final JSONException e)
-		{
-			throw new JsonStathamException(format("[input] String name: %s", name), e);
-		}
-	}
+  @Override
+  public <T> T get(final String name) throws JsonStathamException
+  {
+    try
+    {
+      @SuppressWarnings("unchecked")
+      final T value = (T) orgJsonObject.get(name);
+      return value;
+    }
+    catch (final JSONException e)
+    {
+      throw new JsonStathamException(format("[input] String name: %s", name), e);
+    }
+  }
 
-	@Override
-	public JsonObject put(final String name, final Object value) throws JsonStathamException
-	{
-		try
-		{
-			if (value instanceof JsonConvertible)
-			{
-				final Object actualObject = ((JsonConvertible) value).getActualObject();
-				orgJsonObject.put(name, actualObject);
-			}
-			else
-			{
-				orgJsonObject.put(name, value);
-			}
-			return this;
-		}
-		catch (final JSONException e)
-		{
-			throw new JsonStathamException(format("[input] String name: %s, Object value: %s", name, value), e);
-		}
-	}
+  @Override
+  public <T> JsonObject put(final String name, final T value) throws JsonStathamException
+  {
+    try
+    {
+      if (value instanceof JsonConvertible)
+      {
+        final Object actualObject = ((JsonConvertible) value).getActualObject();
+        orgJsonObject.put(name, actualObject);
+      }
+      else
+      {
+        orgJsonObject.put(name, value);
+      }
+      return this;
+    }
+    catch (final JSONException e)
+    {
+      throw new JsonStathamException(format("[input] String name: %s, Object value: %s", name, value), e);
+    }
+  }
 
-	@Override
-	public Object getActualObject()
-	{
-		return orgJsonObject;
-	}
+  @Override
+  public Object getActualObject()
+  {
+    return orgJsonObject;
+  }
 
-	@Override
-	public boolean isNull()
-	{
-		return false;
-	}
+  @Override
+  public boolean isNull()
+  {
+    return false;
+  }
 
-	@Override
-	public String toString()
-	{
-		return orgJsonObject.toString();
-	}
+  @Override
+  public String toString()
+  {
+    return orgJsonObject.toString();
+  }
 }

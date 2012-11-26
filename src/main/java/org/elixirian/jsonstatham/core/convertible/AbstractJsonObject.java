@@ -67,7 +67,7 @@ public abstract class AbstractJsonObject implements JsonObject
 		}
 
 		@Override
-		public JsonObject put(final String name, final Object value) throws JsonStathamException
+		public <T> JsonObject put(final String name, final T value) throws JsonStathamException
 		{
 			throw JsonStathamException.newJsonStathamException("The put method in NullJsonObject cannot used.\n"
 					+ "[input] String name: %s, Object value: %s", name, value);
@@ -91,7 +91,7 @@ public abstract class AbstractJsonObject implements JsonObject
     /* @formatter:on */
 
 		@Override
-		public Object get(final String name)
+		public <T> T get(final String name)
 		{
 			throw JsonStathamException.newJsonStathamException(
 					"The name method in NullJsonObject cannot used.\n[input] String name: %s", name);
@@ -333,19 +333,21 @@ public abstract class AbstractJsonObject implements JsonObject
 	}
 
 	@Override
-	public Object get(final String name)
+	public <T> T get(final String name)
 	{
-		return jsonFieldMap.get(name);
+		@SuppressWarnings("unchecked")
+    final T value = (T) jsonFieldMap.get(name);
+    return value;
 	}
 
 	@Override
-	public JsonObject put(final String name, final Object value) throws JsonStathamException
+	public <T> JsonObject put(final String name, final T value) throws JsonStathamException
 	{
 		put0(name, value);
 		return this;
 	}
 
-	private void put0(final String name, final Object value)
+	private <T> void put0(final String name, final T value)
 	{
 		if (null == name)
 			throw new JsonStathamException(format("The name must not be null.\n[input] String name: %s, Object value: %s]",

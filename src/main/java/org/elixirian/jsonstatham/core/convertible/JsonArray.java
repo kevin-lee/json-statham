@@ -46,7 +46,7 @@ package org.elixirian.jsonstatham.core.convertible;
  */
 public interface JsonArray extends JsonConvertible
 {
-  Object get(int index);
+  <T> T get(int index);
 
   <T> JsonArray put(T value);
 

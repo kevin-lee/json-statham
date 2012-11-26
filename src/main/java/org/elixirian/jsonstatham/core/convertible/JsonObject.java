@@ -53,9 +53,9 @@ public interface JsonObject extends JsonConvertible
 
 	boolean containsName(String name);
 
-	Object get(String name);
+	<T> T get(String name);
 
-	JsonObject put(String name, Object value) throws JsonStathamException;
+	<T> JsonObject put(String name, T value) throws JsonStathamException;
 
 	@Override
 	Object getActualObject();
