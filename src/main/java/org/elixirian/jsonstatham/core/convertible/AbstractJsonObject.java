@@ -44,6 +44,7 @@ import java.util.Set;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.util.NeoArrays;
 import org.elixirian.kommonlee.util.collect.Maps;
 
 /**
@@ -76,7 +77,7 @@ public abstract class AbstractJsonObject implements JsonObject
 		@Override
 		public String[] getNames()
 		{
-			throw new JsonStathamException("The getNames method in NullJsonObject cannot used.");
+			return EMPTY_NAMES;
 		}
 
 		@Override
@@ -132,13 +133,13 @@ public abstract class AbstractJsonObject implements JsonObject
 			return "null";
 		}
 	}
-
-	public static final JsonObject NULL_JSON_OBJECT = new NullJsonObject();
-
-	private static final String[] EMPTY_NAMES = new String[0];
+	
+	private static final String[] EMPTY_NAMES = NeoArrays.EMPTY_STRING_ARRAY;
 
 	private final Map<String, Object> jsonFieldMap;
 	private final boolean ordered;
+	
+	public static final JsonObject NULL_JSON_OBJECT = new NullJsonObject();
 
 	protected AbstractJsonObject(final JsonScanner jsonScanner, final boolean ordered)
 	{
