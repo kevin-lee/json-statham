@@ -41,6 +41,8 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -111,6 +113,7 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
 import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
+import org.elixirian.jsonstatham.json.json2java.Product;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitionHolder;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitions;
 import org.elixirian.jsonstatham.json.json2java.item.ItemVersion;
@@ -2033,5 +2036,93 @@ public class ReflectionJsonToJavaConverterTest
 
     /* then */
     assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public final void testConvertingToJavaHavingBigDecimal() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final Product expected = new Product(1L, "Product A", new BigDecimal(Double.valueOf(10.50D)
+        .toString()), new BigInteger(Long.valueOf(999)
+        .toString()));
+    System.out.println("expected:\n" + expected);
+
+    final String json = "{\"id\":1,\"name\":\"Product A\",\"price\":10.50,\"quantity\":999}";
+
+    /* when */
+    System.out.println("actual: ");
+    final Product result = reflectionJsonToJavaConverter.convertFromJson(Product.class, json);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public final void testConvertingToJavaHavingBigDecimal2() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final Product expected =
+      new Product(1L, "Product A", new BigDecimal(toStringOf(Double.MAX_VALUE)), new BigInteger(
+          toStringOf(Long.MAX_VALUE)));
+    System.out.println("expected:\n" + expected);
+
+    final String json =
+      "{\"id\":1,\"name\":\"Product A\",\"price\":" + toStringOf(Double.MAX_VALUE) + ",\"quantity\":" + Long.MAX_VALUE
+          + "}";
+
+    /* when */
+    System.out.println("actual: ");
+    final Product result = reflectionJsonToJavaConverter.convertFromJson(Product.class, json);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public final void testConvertingToJavaHavingBigDecimalAndPassingBigDecimalString()
+      throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    /* given */
+    final Product expected = new Product(1L, "Product A", new BigDecimal("10.50"), new BigInteger("999"));
+    System.out.println("expected:\n" + expected);
+
+    final String json = "{\"id\":1,\"name\":\"Product A\",\"price\":\"10.50\",\"quantity\":\"999\"}";
+
+    /* when */
+    System.out.println("actual: ");
+    final Product result = reflectionJsonToJavaConverter.convertFromJson(Product.class, json);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public final void testConvertingToJavaHavingBigDecimalAndPassingBigDecimalString2()
+      throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    /* given */
+    final Product expected =
+      new Product(1L, "Product A", new BigDecimal(toStringOf(Double.MAX_VALUE)), new BigInteger(
+          toStringOf(Long.MAX_VALUE)));
+    System.out.println("expected:\n" + expected);
+
+    final String json =
+      "{\"id\":1,\"name\":\"Product A\",\"price\":\"" + toStringOf(Double.MAX_VALUE) + "\",\"quantity\":\""
+          + Long.MAX_VALUE + "\"}";
+
+    /* when */
+    System.out.println("actual: ");
+    final Product result = reflectionJsonToJavaConverter.convertFromJson(Product.class, json);
+    System.out.println(result);
+
+    /* then */
+    assertThat(result, is(equalTo(expected)));
   }
 }
