@@ -54,7 +54,7 @@ import org.json.JSONObject;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-10-04)
  */
@@ -84,7 +84,41 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
           }
           return null;
         }
+
         final Class<?> actualValueType = value.getClass();
+
+        if (BigDecimal.class.equals(valueType))
+        {
+          if (null == value)
+          {
+            return null;
+          }
+          /* @formatter:off */
+          if (long.class.isAssignableFrom(actualValueType) || Long.class.isAssignableFrom(actualValueType) ||
+              int.class.isAssignableFrom(actualValueType) || Integer.class.isAssignableFrom(actualValueType))
+          {
+            return BigDecimal.valueOf(((Number) value).longValue());
+          }
+          /* @formatter:on */
+          return new BigDecimal(value.toString());
+        }
+
+        if (BigInteger.class.equals(valueType))
+        {
+          if (null == value)
+          {
+            return null;
+          }
+          /* @formatter:off */
+          if (long.class.isAssignableFrom(actualValueType) || Long.class.isAssignableFrom(actualValueType) ||
+              int.class.isAssignableFrom(actualValueType) || Integer.class.isAssignableFrom(actualValueType))
+          {
+            return BigInteger.valueOf(((Number) value).longValue());
+          }
+          /* @formatter:on */
+          return new BigInteger(value.toString());
+        }
+
         // if (valueType.isAssignableFrom(actualValueType))
         // {
         // return value;
@@ -96,6 +130,7 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
             return Long.valueOf(((Integer) value).intValue());
           }
         }
+
         if (String.class.equals(actualValueType))
         {
           if (valueType.isEnum())
