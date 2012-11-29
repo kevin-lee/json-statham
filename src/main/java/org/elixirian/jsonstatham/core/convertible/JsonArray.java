@@ -44,7 +44,7 @@ package org.elixirian.jsonstatham.core.convertible;
  * @version 0.0.1 (2010-06-02)
  * @version 0.0.2 (2010-09-13)
  */
-public interface JsonArray extends JsonConvertible
+public interface JsonArray extends JsonConvertible, Iterable<Object>
 {
   <T> T get(int index);
 

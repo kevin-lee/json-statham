@@ -215,4 +215,10 @@ public abstract class AbstractJsonArray implements JsonArray
     }
     return null;
   }
+
+  @Override
+  public Iterator<Object> iterator()
+  {
+    return list.iterator();
+  }
 }

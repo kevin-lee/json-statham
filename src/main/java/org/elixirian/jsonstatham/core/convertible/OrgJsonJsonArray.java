@@ -33,6 +33,8 @@ package org.elixirian.jsonstatham.core.convertible;
 
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 
+import java.util.Iterator;
+
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,5 +106,12 @@ public final class OrgJsonJsonArray implements JsonArray
   public String toString()
   {
     return orgJsonArray.toString();
+  }
+
+  @Override
+  public Iterator<Object> iterator()
+  {
+    // TODO Auto-generated function stub
+    throw new UnsupportedOperationException();
   }
 }
