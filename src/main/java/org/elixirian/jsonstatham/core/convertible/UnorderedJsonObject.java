@@ -57,7 +57,7 @@ public class UnorderedJsonObject extends AbstractJsonObject
 		super(jsonScanner, false);
 	}
 
-	protected UnorderedJsonObject(final Map<Object, Object> jsonFieldMap)
+	protected UnorderedJsonObject(final Map<?, Object> jsonFieldMap)
 	{
 		super(jsonFieldMap, false);
 	}
@@ -72,7 +72,7 @@ public class UnorderedJsonObject extends AbstractJsonObject
 		return new UnorderedJsonObject();
 	}
 
-	public static UnorderedJsonObject newJsonObject(final Map<Object, Object> jsonFieldMap)
+	public static UnorderedJsonObject newJsonObject(final Map<?, Object> jsonFieldMap)
 	{
 		return new UnorderedJsonObject(jsonFieldMap);
 	}

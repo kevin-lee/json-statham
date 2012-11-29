@@ -31,9 +31,13 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import java.lang.reflect.Field;
 import java.util.HashMap;
 
-import org.json.JSONObject;
+import org.junit.Test;
 
 /**
  * <pre>
@@ -47,16 +51,22 @@ import org.json.JSONObject;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-02-03)
  */
-public final class OrgJsonUnorderedJsonObjectCreator extends AbstractOrgJsonJsonObjectConvertibleCreator
+public class UnorderedJsonObjectCreatorTest
 {
-  /*
-   * (non-Javadoc)
-   * @see org.elixirian.jsonstatham.core.JsonObjectConvertibleCreator#newJSONObject()
-   */
-  @Override
-  public JsonObject newJsonObjectConvertible()
+  @Test
+  public void testNewJSONObject() throws SecurityException, NoSuchFieldException, IllegalArgumentException,
+      IllegalAccessException
   {
-    return new OrgJsonJsonObject(new JSONObject(new HashMap<String, Object>()));
-  }
+    final JsonObjectCreator jsonObjectCreator = new UnorderedJsonObjectCreator();
+    final JsonObject jsonObject = jsonObjectCreator.newJsonObjectConvertible();
 
+    final Field mapField = jsonObject.getClass()
+        .getSuperclass()
+        .getDeclaredField("jsonFieldMap");
+    mapField.setAccessible(true);
+    final Object mapObject = mapField.get(jsonObject);
+    assertThat(mapObject, notNullValue());
+    assertThat(mapObject, is(HashMap.class));
+    assertSame(mapObject.getClass(), HashMap.class);
+  }
 }

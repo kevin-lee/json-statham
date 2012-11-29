@@ -72,6 +72,7 @@ public abstract class AbstractJsonArray implements JsonArray
 
   private void map(final JsonScanner jsonScanner, final List<Object> list)
   {
+    mustNotBeNull(list);
     char c = jsonScanner.nextNonWhiteSpaceChar();
     if ('[' != c)
     {
@@ -220,5 +221,28 @@ public abstract class AbstractJsonArray implements JsonArray
   public Iterator<Object> iterator()
   {
     return list.iterator();
+  }
+
+  @Override
+  public List<Object> copyToList()
+  {
+    return newArrayList(list);
+  }
+
+  @Override
+  public boolean isEmpty()
+  {
+    return isEmpty0();
+  }
+
+  private boolean isEmpty0()
+  {
+    return list.isEmpty();
+  }
+
+  @Override
+  public boolean isNotEmpty()
+  {
+    return !isEmpty0();
   }
 }

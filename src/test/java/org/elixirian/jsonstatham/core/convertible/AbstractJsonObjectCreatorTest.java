@@ -34,13 +34,8 @@ package org.elixirian.jsonstatham.core.convertible;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.elixirian.jsonstatham.core.convertible.AbstractOrgJsonJsonObjectConvertibleCreator;
-import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.json.JSONObject;
 import org.junit.Test;
-
 
 /**
  * <pre>
@@ -54,7 +49,7 @@ import org.junit.Test;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-03)
  */
-public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
+public class AbstractJsonObjectCreatorTest
 {
 
   /**
@@ -65,19 +60,28 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
   @Test
   public final void testNewJsonObjectConvertible()
   {
-    final JsonObject jsonObject = new OrgJsonJsonObject(new JSONObject());
-    final AbstractOrgJsonJsonObjectConvertibleCreator orgJsonJsonObjectConvertibleCreator =
-      new AbstractOrgJsonJsonObjectConvertibleCreator() {
+    final JsonObject[] jsonObjectArray = new JsonObject[1];
+    final JsonObject jsonObject = new OrderedJsonObject();
+    final AbstractJsonObjectCreator orgJsonJsonObjectConvertibleCreator = new AbstractJsonObjectCreator() {
 
-        @Override
-        public JsonObject newJsonObjectConvertible()
-        {
-          return jsonObject;
-        }
-      };
+      @Override
+      public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
+      {
+        final JsonObject newJsonObject = OrderedJsonObject.newJsonObject(jsonString);
+        jsonObjectArray[0] = newJsonObject;
+        return newJsonObject;
+      }
 
-    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), is(jsonObject));
-    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), equalTo(jsonObject));
+      @Override
+      public JsonObject newJsonObjectConvertible()
+      {
+        return jsonObject;
+      }
+    };
+
+    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible("{\"name\":\"Kevin\"}"),
+        is(equalTo(jsonObjectArray[0])));
+    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), is(equalTo(jsonObject)));
   }
 
   /**
@@ -88,25 +92,40 @@ public class AbstractOrgJsonJsonObjectConvertibleCreatorTest
   @Test
   public final void testNullJsonObjectConvertible()
   {
-    final AbstractOrgJsonJsonObjectConvertibleCreator orgJsonJsonObjectConvertibleCreator =
-      new AbstractOrgJsonJsonObjectConvertibleCreator() {
+    final AbstractJsonObjectCreator abstractJsonObjectCreator = new AbstractJsonObjectCreator() {
+      @Override
+      public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
+      {
+        throw new UnsupportedOperationException();
+      }
 
-        @Override
-        public JsonObject newJsonObjectConvertible()
-        {
-          return null;
-        }
-      };
+      @Override
+      public JsonObject newJsonObjectConvertible()
+      {
+        throw new UnsupportedOperationException();
+      }
+    };
 
-    assertThat(orgJsonJsonObjectConvertibleCreator.nullJsonObjectConvertible(),
-        is(AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE));
-    assertThat(orgJsonJsonObjectConvertibleCreator.nullJsonObjectConvertible(),
-        equalTo(AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE));
+    assertThat(abstractJsonObjectCreator.nullJsonObjectConvertible(), is(equalTo(AbstractJsonObject.NULL_JSON_OBJECT)));
   }
 
   @Test(expected = JsonStathamException.class)
-  public void testAbstractOrgJsonJsonObjectConvertibleCreator$NULL_JSON_OBJECT_CONVERTIBLE() throws Exception
+  public void testAbstractJsonObjectCreator$NULL_JSON_OBJECT() throws Exception
   {
-    AbstractOrgJsonJsonObjectConvertibleCreator.NULL_JSON_OBJECT_CONVERTIBLE.put(null, null);
+    final AbstractJsonObjectCreator abstractJsonObjectCreator = new AbstractJsonObjectCreator() {
+      @Override
+      public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
+      {
+        throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public JsonObject newJsonObjectConvertible()
+      {
+        throw new UnsupportedOperationException();
+      }
+    };
+    abstractJsonObjectCreator.nullJsonObjectConvertible()
+        .put(null, null);
   }
 }

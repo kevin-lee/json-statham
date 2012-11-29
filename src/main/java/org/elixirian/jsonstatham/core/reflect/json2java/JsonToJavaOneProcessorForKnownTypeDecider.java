@@ -42,9 +42,9 @@ import java.util.Set;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.SimpleKnownTypeChecker;
+import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.reflect.Primitives;
-import org.json.JSONObject;
 
 /**
  * <pre>
@@ -74,7 +74,8 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
           final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
           JsonStathamException
       {
-        if (JSONObject.NULL.equals(value))
+        // if (JSONObject.NULL.equals(value))
+        if (AbstractJsonObject.NULL_JSON_OBJECT.equals(value))
         {
           if (Primitives.isPrimitive(valueType))
           {

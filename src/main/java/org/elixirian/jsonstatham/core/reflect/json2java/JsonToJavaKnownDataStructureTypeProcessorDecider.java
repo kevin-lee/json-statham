@@ -48,9 +48,7 @@ import java.util.Map.Entry;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArray;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.json.JSONArray;
 
 /**
  * <pre>
@@ -93,10 +91,10 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 				{
 					jsonArray = (JsonArray) value;
 				}
-				else if (JSONArray.class.isAssignableFrom(actualValueType))
-				{
-					jsonArray = new OrgJsonJsonArray((JSONArray) value);
-				}
+//				else if (JSONArray.class.isAssignableFrom(actualValueType))
+//				{
+//					jsonArray = new OrgJsonJsonArray((JSONArray) value);
+//				}
 				else
 				{
 					throw new JsonStathamException(
@@ -122,10 +120,10 @@ public final class JsonToJavaKnownDataStructureTypeProcessorDecider implements
 				{
 					jsonArray = (JsonArray) value;
 				}
-				else if (JSONArray.class.isAssignableFrom(actualValueType))
-				{
-					jsonArray = new OrgJsonJsonArray((JSONArray) value);
-				}
+//				else if (JSONArray.class.isAssignableFrom(actualValueType))
+//				{
+//					jsonArray = new OrgJsonJsonArray((JSONArray) value);
+//				}
 				else
 				{
 					throw new JsonStathamException(

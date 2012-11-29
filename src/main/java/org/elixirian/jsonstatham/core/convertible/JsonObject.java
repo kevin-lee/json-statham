@@ -31,7 +31,11 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import java.util.Map;
+
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.type.checkable.EmptinessCheckable;
+import org.elixirian.kommonlee.type.checkable.NotEmptinessCheckable;
 
 /**
  * <pre>
@@ -41,27 +45,35 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-02)
  */
-public interface JsonObject extends JsonConvertible
+public interface JsonObject extends JsonConvertible, EmptinessCheckable, NotEmptinessCheckable
 {
-	String[] getNames();
+  String[] getNames();
 
-	int fieldLength();
+  int fieldLength();
 
-	boolean containsName(String name);
+  boolean containsName(String name);
 
-	<T> T get(String name);
+  <T> T get(String name);
 
-	<T> JsonObject put(String name, T value) throws JsonStathamException;
+  <T> JsonObject put(String name, T value) throws JsonStathamException;
 
-	@Override
-	Object getActualObject();
+  @Override
+  Object getActualObject();
 
-	boolean isNull();
+  boolean isNull();
 
-	@Override
-	String toString();
+  @Override
+  String toString();
+
+  Map<String, Object> copyToMap();
+
+  @Override
+  boolean isEmpty();
+
+  @Override
+  boolean isNotEmpty();
 }

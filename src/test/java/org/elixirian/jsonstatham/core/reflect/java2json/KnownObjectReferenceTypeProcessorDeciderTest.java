@@ -44,12 +44,8 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayCreator;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectCreator;
-import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -86,7 +82,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(DATE.getClass()), is(not(nullValue())));
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(CALENDAR.getClass()), is(not(nullValue())));
 
-    for (Entry<String, String> entry : MAP.entrySet())
+    for (final Entry<String, String> entry : MAP.entrySet())
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(entry.getClass()), is(not(nullValue())));
     }
@@ -112,7 +108,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
       private final Long id;
       private final String name;
 
-      public TestClass(Long id, String name)
+      public TestClass(final Long id, final String name)
       {
         this.id = id;
         this.name = name;
@@ -126,8 +122,8 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
     map.put(TestClass.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
       @Override
       public <T> Object process(
-          @SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-          @SuppressWarnings("unused") final Class<T> valueType, Object value) throws IllegalArgumentException,
+          @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
         final TestClass testClassObject = (TestClass) value;
@@ -145,7 +141,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(DATE.getClass()), is(nullValue()));
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(CALENDAR.getClass()), is(nullValue()));
 
-    for (Entry<String, String> entry : MAP.entrySet())
+    for (final Entry<String, String> entry : MAP.entrySet())
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(entry.getClass()), is(nullValue()));
     }
@@ -172,8 +168,8 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
         new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
           @Override
           public <T> Object process(
-              @SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-              @SuppressWarnings("unused") final Class<T> valueType, Object value) throws IllegalArgumentException,
+              @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+              @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
               IllegalAccessException, JsonStathamException
           {
             return value;
@@ -181,8 +177,8 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectCreator(),
-          new OrgJsonJsonArrayCreator(), knownDataStructureTypeProcessorDecider,
+      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(),
+          new JsonArrayWithOrderedJsonObjectCreator(), knownDataStructureTypeProcessorDecider,
           new KnownObjectReferenceTypeProcessorDecider(), oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStathamInAction =
     // new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());
@@ -198,7 +194,7 @@ public class KnownObjectReferenceTypeProcessorDeciderTest
         equalTo(reflectionJavaToJsonConverter.createJsonValue(CALENDAR.getTime()
             .toString())));
 
-    for (Entry<String, String> entry : MAP.entrySet())
+    for (final Entry<String, String> entry : MAP.entrySet())
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(entry.getClass())
           .process(reflectionJavaToJsonConverter, entry.getClass(), entry)

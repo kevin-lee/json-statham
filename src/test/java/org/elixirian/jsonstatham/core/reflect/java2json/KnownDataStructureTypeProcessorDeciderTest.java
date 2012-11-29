@@ -46,13 +46,9 @@ import java.util.TreeSet;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
+import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonArrayCreator;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonOrderedJsonObjectCreator;
-import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.KnownObjectReferenceTypeProcessorDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -162,8 +158,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
           @Override
           public <T> Object process(
-              @SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-              Class<T> valueType, Object source) throws IllegalArgumentException, IllegalAccessException,
+              @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+              final Class<T> valueType, final Object source) throws IllegalArgumentException, IllegalAccessException,
               JsonStathamException
           {
             return source;
@@ -208,11 +204,11 @@ public class KnownDataStructureTypeProcessorDeciderTest
       @SuppressWarnings("unchecked")
       @Override
       public <T> Object process(
-          @SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, Class<T> valueType,
-          Object source) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+          @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Class<T> valueType,
+          final Object source) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
       {
-        JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-        for (Object each : (NavigableSet<Object>) source)
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        for (final Object each : (NavigableSet<Object>) source)
         {
           jsonArray.put(each);
         }
@@ -231,8 +227,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
           @Override
           public <T> Object process(
-              @SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-              Class<T> valueType, Object source) throws IllegalArgumentException, IllegalAccessException,
+              @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+              final Class<T> valueType, final Object source) throws IllegalArgumentException, IllegalAccessException,
               JsonStathamException
           {
             return source;
@@ -240,8 +236,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectCreator(),
-          new OrgJsonJsonArrayCreator(), knownDataStructureTypeProcessorDecider,
+      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(),
+          new JsonArrayWithOrderedJsonObjectCreator(), knownDataStructureTypeProcessorDecider,
           knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStatham = new JsonStathamInAction(reflectionJavaToJsonConverter, new
     // ReflectionJsonToJavaConverter());
@@ -251,8 +247,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
     testSet.add("Kevin");
     testSet.add("Lee");
 
-    JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (String each : testSet)
+    final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+    for (final String each : testSet)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -297,8 +293,8 @@ public class KnownDataStructureTypeProcessorDeciderTest
         new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
           @Override
           public <T> Object process(
-              @SuppressWarnings("unused") ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-              Class<T> valueType, Object source) throws IllegalArgumentException, IllegalAccessException,
+              @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+              final Class<T> valueType, final Object source) throws IllegalArgumentException, IllegalAccessException,
               JsonStathamException
           {
             return source;
@@ -306,14 +302,14 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrgJsonOrderedJsonObjectCreator(),
-          new OrgJsonJsonArrayCreator(), knownDataStructureTypeProcessorDecider,
+      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(),
+          new JsonArrayWithOrderedJsonObjectCreator(), knownDataStructureTypeProcessorDecider,
           knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStatham =
     // new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());
 
     JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (String each : strings)
+    for (final String each : strings)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -322,7 +318,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (int each : ints)
+    for (final int each : ints)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -331,7 +327,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (Integer each : integers)
+    for (final Integer each : integers)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -340,7 +336,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (String each : collection1)
+    for (final String each : collection1)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -349,7 +345,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (Integer each : collection2)
+    for (final Integer each : collection2)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -358,7 +354,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (String each : iterable1)
+    for (final String each : iterable1)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -367,7 +363,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (Integer each : iterable2)
+    for (final Integer each : iterable2)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(each));
     }
@@ -376,7 +372,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (Iterator<String> it = iterable1.iterator(); it.hasNext();)
+    for (final Iterator<String> it = iterable1.iterator(); it.hasNext();)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(it.next()));
     }
@@ -385,7 +381,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-    for (Iterator<Integer> it = iterable2.iterator(); it.hasNext();)
+    for (final Iterator<Integer> it = iterable2.iterator(); it.hasNext();)
     {
       jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(it.next()));
     }
@@ -394,7 +390,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
         .toString(), equalTo(jsonArray.toString()));
 
     final JsonObject jsonObject = reflectionJavaToJsonConverter.newJsonObjectConvertible();
-    for (Entry<Long, String> entry : map.entrySet())
+    for (final Entry<Long, String> entry : map.entrySet())
     {
       jsonObject.put(String.valueOf(entry.getKey()), entry.getValue());
     }

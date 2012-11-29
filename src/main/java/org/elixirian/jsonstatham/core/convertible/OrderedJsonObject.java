@@ -57,7 +57,7 @@ public class OrderedJsonObject extends AbstractJsonObject
 		super(jsonScanner, true);
 	}
 
-	protected OrderedJsonObject(final Map<Object, Object> jsonFieldMap)
+	protected OrderedJsonObject(final Map<?, Object> jsonFieldMap)
 	{
 		super(jsonFieldMap, true);
 	}
@@ -67,7 +67,7 @@ public class OrderedJsonObject extends AbstractJsonObject
 		super(javaBean, true);
 	}
 
-	public static OrderedJsonObject newJsonObject(final Map<Object, Object> fieldMap)
+	public static OrderedJsonObject newJsonObject(final Map<?, Object> fieldMap)
 	{
 		return new OrderedJsonObject(fieldMap);
 	}

@@ -231,6 +231,24 @@ public class ReflectionJsonToJavaConverterTest
         {
           return AbstractJsonObject.NULL_JSON_OBJECT.toString();
         }
+
+        @Override
+        public Map<String, Object> copyToMap()
+        {
+          return AbstractJsonObject.NULL_JSON_OBJECT.copyToMap();
+        }
+
+        @Override
+        public boolean isEmpty()
+        {
+          return true;
+        }
+
+        @Override
+        public boolean isNotEmpty()
+        {
+          return false;
+        }
       };
     }
 

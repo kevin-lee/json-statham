@@ -31,6 +31,11 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import java.util.List;
+
+import org.elixirian.kommonlee.type.checkable.EmptinessCheckable;
+import org.elixirian.kommonlee.type.checkable.NotEmptinessCheckable;
+
 /**
  * <pre>
  *     ___  _____                                _____
@@ -44,7 +49,7 @@ package org.elixirian.jsonstatham.core.convertible;
  * @version 0.0.1 (2010-06-02)
  * @version 0.0.2 (2010-09-13)
  */
-public interface JsonArray extends JsonConvertible, Iterable<Object>
+public interface JsonArray extends JsonConvertible, Iterable<Object>, EmptinessCheckable, NotEmptinessCheckable
 {
   <T> T get(int index);
 
@@ -57,4 +62,12 @@ public interface JsonArray extends JsonConvertible, Iterable<Object>
 
   @Override
   String toString();
+
+  List<Object> copyToList();
+
+  @Override
+  boolean isEmpty();
+
+  @Override
+  boolean isNotEmpty();
 }

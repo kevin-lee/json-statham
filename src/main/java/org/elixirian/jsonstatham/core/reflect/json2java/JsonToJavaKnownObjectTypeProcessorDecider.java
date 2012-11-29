@@ -47,10 +47,8 @@ import org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertible
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
-import org.elixirian.jsonstatham.core.convertible.OrgJsonJsonObject;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.json.JSONObject;
 
 /**
  * <pre>
@@ -106,15 +104,15 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 
 		});
 
-		map.put(JSONObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-			@Override
-			public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
-			{
-				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObject((JSONObject) value));
-			}
-		});
+//		map.put(JSONObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+//			@Override
+//			public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+//					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+//					JsonStathamException
+//			{
+//				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObject((JSONObject) value));
+//			}
+//		});
 
 		map.put(OrderedJsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
 			@Override

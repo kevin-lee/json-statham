@@ -31,11 +31,14 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.kommonlee.util.MessageFormatter.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.json.JSONArray;
-import org.json.JSONException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+import org.junit.Test;
 
 /**
  * <pre>
@@ -45,30 +48,27 @@ import org.json.JSONException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-06-02)
+ * @version 0.0.1 (2010-02-03)
  */
-public final class OrgJsonJsonArrayCreator implements JsonArrayCreator
+public class OrderedJsonObjectCreatorTest
 {
+  @Test
+  public void testNewJSONObject() throws SecurityException, NoSuchFieldException, IllegalArgumentException,
+      IllegalAccessException
+  {
+    final JsonObjectCreator jsonObjectCreator = new OrderedJsonObjectCreator();
+    final JsonObject jsonObject = jsonObjectCreator.newJsonObjectConvertible();
 
-	@Override
-	public JsonArray newJsonArrayConvertible()
-	{
-		return new OrgJsonJsonArray(new JSONArray());
-	}
-
-	@Override
-	public JsonArray newJsonArrayConvertible(final String jsonString)
-	{
-		try
-		{
-			return new OrgJsonJsonArray(new JSONArray(jsonString));
-		}
-		catch (final JSONException e)
-		{
-			throw new JsonStathamException(format("[input] String jsonString: %s", jsonString), e);
-		}
-	}
-
+    final Field mapField = jsonObject.getClass()
+        .getSuperclass()
+        .getDeclaredField("jsonFieldMap");
+    mapField.setAccessible(true);
+    final Object mapObject = mapField.get(jsonObject);
+    assertThat(mapObject, notNullValue());
+    assertThat(mapObject, is(instanceOf(LinkedHashMap.class)));
+    assertSame(mapObject.getClass(), LinkedHashMap.class);
+    assertNotSame(mapObject.getClass(), HashMap.class);
+  }
 }
