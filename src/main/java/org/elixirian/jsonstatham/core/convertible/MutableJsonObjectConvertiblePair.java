@@ -61,7 +61,7 @@ public class MutableJsonObjectConvertiblePair<L, R> extends AbstractJsonObjectCo
 	}
 
 	@Override
-	public L getFirst()
+	public L getValue1()
 	{
 		return first;
 	}
@@ -72,7 +72,7 @@ public class MutableJsonObjectConvertiblePair<L, R> extends AbstractJsonObjectCo
 	}
 
 	@Override
-	public R getSecond()
+	public R getValue2()
 	{
 		return second;
 	}
@@ -99,8 +99,8 @@ public class MutableJsonObjectConvertiblePair<L, R> extends AbstractJsonObjectCo
 			castIfInstanceOf(MutableJsonObjectConvertiblePair.class, jsonObjectConvertiblePair);
 		/* @formatter:off */
 		return null != that &&
-						(equal(this.first, that.getFirst()) &&
-						 equal(this.second, that.getSecond()));
+						(equal(this.first, that.getValue1()) &&
+						 equal(this.second, that.getValue2()));
 		/* @formatter:on */
 	}
 

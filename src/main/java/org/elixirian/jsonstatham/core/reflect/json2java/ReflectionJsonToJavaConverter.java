@@ -74,6 +74,7 @@ import org.elixirian.kommonlee.asm.analysis.AsmMethodAndConstructorAnalyser;
 import org.elixirian.kommonlee.asm.analysis.ConstructorAnalyser;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.elixirian.kommonlee.type.Pair;
+import org.elixirian.kommonlee.type.Tuple3;
 
 /**
  * <pre>
@@ -145,13 +146,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     @Override
-    public String getFirst()
+    public String getValue1()
     {
       return jsonFieldName;
     }
 
     @Override
-    public Field getSecond()
+    public Field getValue2()
     {
       return field;
     }
@@ -183,13 +184,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     @Override
-    public Map<String, Field> getFirst()
+    public Map<String, Field> getValue1()
     {
       return jsonFieldNameToFieldMap;
     }
 
     @Override
-    public Map<String, JsonFieldNameAndFieldPair> getSecond()
+    public Map<String, JsonFieldNameAndFieldPair> getValue2()
     {
       return fieldNameToJsonFieldNameAndFieldPairMap;
     }
@@ -316,13 +317,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
 
     @Override
-    public Constructor<T> getFirst()
+    public Constructor<T> getValue1()
     {
       return constructor;
     }
 
     @Override
-    public P getSecond()
+    public P getValue2()
     {
       return params;
     }
@@ -348,7 +349,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         {
           throw JsonStathamException.newJsonStathamException(e,
               "Attempt to process known type failed with IllegalArgumentException.\n"
-                  + "[Class<T> targetClass: %s][JsonObject jsonObjectConvertible: %s]\n"
+                  + "[Class<T> targetClass: %s][JsonObject jsonObject: %s]\n"
                   + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n"
                   + "found from knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList: %s",
               targetClass, jsonObject, knownTypeProcessorWithReflectionJsonToJavaConverter,
@@ -358,7 +359,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         {
           throw JsonStathamException.newJsonStathamException(e,
               "Attempt to process known type failed with IllegalAccessException.\n"
-                  + "[Class<T> targetClass: %s][JsonObject jsonObjectConvertible: %s]\n"
+                  + "[Class<T> targetClass: %s][JsonObject jsonObject: %s]\n"
                   + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n"
                   + "found from knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList: %s",
               targetClass, jsonObject, knownTypeProcessorWithReflectionJsonToJavaConverter,
@@ -418,10 +419,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
               jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
         if (null != constructorEntry2 && null != constructorEntry2.constructor)
         {
-          constructor = constructorEntry2.getFirst();
+          constructor = constructorEntry2.getValue1();
           final Map<String, Field> fieldNameToFieldMap =
-            jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getFirst();
-          for (final String jsonFieldName : constructorEntry2.getSecond())
+            jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue1();
+          for (final String jsonFieldName : constructorEntry2.getValue2())
           {
             final Field field = fieldNameToFieldMap.get(jsonFieldName);
             try
@@ -432,32 +433,69 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             }
             catch (final IllegalArgumentException e)
             {
-              throw new JsonStathamException(format("Invocation of resolveFieldValue failed.\n"
-                  + "[Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
-                  + "[jsonFieldName: %s]\n" + "[field: %s][field.getType(): %s]\n"
-                  + "[Incomplete argList: %s]\n" + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(),
-                  jsonFieldName, field, field.getType(), argList, jsonObject), e);
+              throw new JsonStathamException(format(
+                  "Invocation of resolveFieldValue failed.\n"
+                      + "[Class<T> targetClass: %s] failed with IllegalArgumentException.\n" + "[jsonFieldName: %s]\n"
+                      + "[field: %s][field.getType(): %s]\n" + "[Incomplete argList: %s]\n"
+                      + "[JsonObject jsonObject: %s]", targetClass.getName(), jsonFieldName, field, field.getType(),
+                  argList, jsonObject), e);
             }
           }
         }
         else
         {
-          constructor = null;
+          final ConstructorAndParamsPair<T, List<Tuple3<String, Class<?>, Field>>> constructorEntry3 =
+            findConstructorWithMatchingParamNames(constructorMap,
+                jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
+
+          if (null == constructorEntry3 || null == constructorEntry3.constructor)
+          {
+            constructor = null;
+          }
+          else
+          {
+            constructor = constructorEntry3.getValue1();
+            final Map<String, Field> fieldNameToFieldMap =
+              jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue1();
+            for (final Tuple3<String, Class<?>, Field> paramTuple : constructorEntry3.getValue2())
+            {
+              // final Field field = fieldNameToFieldMap.get(paramTuple.getValue1());
+              final Field field = paramTuple.getValue3();
+              final Class<?> constructorParamType = paramTuple.getValue2();
+              try
+              {
+                // final Object resolvedFieldValue =
+                // resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldName));
+
+                final Object resolvedFieldValue =
+                  resolveTypeAndValue(constructorParamType, jsonObject.get(paramTuple.getValue1()));
+                argList.add(resolvedFieldValue);
+              }
+              catch (final IllegalArgumentException e)
+              {
+                throw new JsonStathamException(format("Invocation of resolveFieldValue failed.\n"
+                    + "[Class<T> targetClass: %s] failed with IllegalArgumentException.\n" + "[jsonFieldName: %s]\n"
+                    + "[field: %s][field.getType(): %s][constructorParam: %s]\n" + "[Incomplete argList: %s]\n"
+                    + "[JsonObject jsonObject: %s]", targetClass.getName(), paramTuple.getValue1(), field,
+                    field.getType(), constructorParamType, argList, jsonObject), e);
+              }
+            }
+          }
         }
       }
       else
       {
-        constructor = constructorEntry.getFirst();
+        constructor = constructorEntry.getValue1();
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
-          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getSecond();
-        for (final String fieldName : constructorEntry.getSecond())
+          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue2();
+        for (final String fieldName : constructorEntry.getValue2())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
           final Field field = jsonFieldNameAndFieldPair.field;
           try
           {
             final Object resolvedFieldValue =
-              resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getFirst()));
+              resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getValue1()));
             argList.add(resolvedFieldValue);
           }
           catch (final IllegalArgumentException e)
@@ -465,7 +503,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             throw new JsonStathamException(format("Invocation of resolveFieldValue failed.\n"
                 + "[Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
                 + "[jsonFieldNameAndFieldPair: %s]\n" + "[field: %s][field.getType(): %s]\n"
-                + "[Incomplete argList: %s]\n" + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(),
+                + "[Incomplete argList: %s]\n" + "[JsonObject jsonObject: %s]", targetClass.getName(),
                 jsonFieldNameAndFieldPair, field, field.getType(), argList, jsonObject), e);
           }
         }
@@ -486,7 +524,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]\n" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final InstantiationException e)
@@ -494,7 +532,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with InstantiationException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final IllegalAccessException e)
@@ -502,7 +540,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with IllegalAccessException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final InvocationTargetException e)
@@ -510,7 +548,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with InvocationTargetException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
       }
@@ -525,20 +563,20 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       findMatchingConstructorForFieldNames(constructorWithoutJsonConstructorAnnotationMap,
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
 
-    if (null != constructorEntry && constructorEntry.getSecond().length == jsonObject.fieldLength())
+    if (null != constructorEntry && constructorEntry.getValue2().length == jsonObject.fieldLength())
     {/* if constructorEntry is null try with any available constructors. */
-      final Constructor<T> constructor = constructorEntry.getFirst();
+      final Constructor<T> constructor = constructorEntry.getValue1();
       if (null != constructor)
       {
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
-          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getSecond();
+          jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue2();
         final List<Object> argList = newArrayList();
-        for (final String fieldName : constructorEntry.getSecond())
+        for (final String fieldName : constructorEntry.getValue2())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
           final Field field = jsonFieldNameAndFieldPair.field;
           final Object arg =
-            resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getFirst()));
+            resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getValue1()));
           argList.add(arg);
         }
         constructor.setAccessible(true);
@@ -552,7 +590,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final InstantiationException e)
@@ -560,7 +598,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with InstantiationException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final IllegalAccessException e)
@@ -568,7 +606,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with IllegalAccessException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final InvocationTargetException e)
@@ -576,7 +614,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with InvocationTargetException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
       }
@@ -589,13 +627,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     if (null != constructorToParamsPair)
     {
-      final Constructor<T> constructor = constructorToParamsPair.getFirst();
+      final Constructor<T> constructor = constructorToParamsPair.getValue1();
       if (null != constructor)
       {
         constructor.setAccessible(true);
         /* @formatter:off */
         final Object[] argArray = constructorToParamsPair
-                                         .getSecond()
+                                         .getValue2()
                                            .toArray();
         /* @formatter:on */
         try
@@ -607,7 +645,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]\n" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final InstantiationException e)
@@ -615,7 +653,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with InstantiationException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final IllegalAccessException e)
@@ -623,7 +661,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with IllegalAccessException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
         catch (final InvocationTargetException e)
@@ -631,7 +669,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           throw new JsonStathamException(format(
               "Invocation of the constructor [%s] in the class [Class<T> targetClass: %s] failed with InvocationTargetException.\n"
                   + "[constructor.newInstance(Object[] argArray: %s)]" + "[arg details:\n%s\n]"
-                  + "[JsonObject jsonObjectConvertible: %s]", constructor, targetClass.getName(), toStringOf(argArray),
+                  + "[JsonObject jsonObject: %s]", constructor, targetClass.getName(), toStringOf(argArray),
               toArrayValueInfoString(argArray), jsonObject), e);
         }
       }
@@ -652,30 +690,30 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       {
         throw new JsonStathamException(format(
             "Invocation of the default constructor in the class [Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
-                + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(), jsonObject), e);
+                + "[JsonObject jsonObject: %s]", targetClass.getName(), jsonObject), e);
       }
       catch (final InstantiationException e)
       {
         throw new JsonStathamException(format(
             "Invocation of the default constructor in the class [Class<T> targetClass: %s] failed with InstantiationException.\n"
-                + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(), jsonObject), e);
+                + "[JsonObject jsonObject: %s]", targetClass.getName(), jsonObject), e);
       }
       catch (final IllegalAccessException e)
       {
         throw new JsonStathamException(format(
             "Invocation of the default constructor in the class [Class<T> targetClass: %s] failed with IllegalAccessException.\n"
-                + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(), jsonObject), e);
+                + "[JsonObject jsonObject: %s]", targetClass.getName(), jsonObject), e);
       }
       catch (final InvocationTargetException e)
       {
         throw new JsonStathamException(
             format(
                 "Invocation of the default constructor in the class [Class<T> targetClass: %s] failed with InvocationTargetException.\n"
-                    + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(), jsonObject), e);
+                    + "[JsonObject jsonObject: %s]", targetClass.getName(), jsonObject), e);
       }
 
       // set the values;
-      for (final Entry<String, Field> fieldEntry : jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getFirst()
+      for (final Entry<String, Field> fieldEntry : jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue1()
           .entrySet())
       {
         final Field field = fieldEntry.getValue();
@@ -690,23 +728,24 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         {
           throw new JsonStathamException(format("setting field [%s] failed with IllegalArgumentException.\n"
               + "field.set([t: %s], [resolvedFieldValue: %s])\n"
-              + "[Class<T> targetClass: %s][JsonObject jsonObjectConvertible: %s]", field, t, resolvedFieldValue,
+              + "[Class<T> targetClass: %s][JsonObject jsonObject: %s]", field, t, resolvedFieldValue,
               targetClass.getName(), jsonObject), e);
         }
         catch (final IllegalAccessException e)
         {
           throw new JsonStathamException(format("setting field [%s] failed with IllegalAccessException.\n"
               + "field.set([t: %s], [resolvedFieldValue: %s])\n"
-              + "[Class<T> targetClass: %s][JsonObject jsonObjectConvertible: %s]", field, t, resolvedFieldValue,
+              + "[Class<T> targetClass: %s][JsonObject jsonObject: %s]", field, t, resolvedFieldValue,
               targetClass.getName(), jsonObject), e);
         }
       }
       return t;
     }
 
-    throw new JsonStathamException(format(
-        "The target JSON class [class: %s] cannot be instantiated with the given JSON [targetClass: %s, json: %s].",
-        null == targetClass ? "null" : targetClass.getSimpleName(), targetClass, jsonObject));
+    throw new JsonStathamException(
+        format(
+            "The target JSON class [class: %s] cannot be instantiated with the given JSON [targetClass: %s, jsonObject: %s].",
+            null == targetClass ? "null" : targetClass.getSimpleName(), targetClass, jsonObject));
   }
 
   private String toArrayValueInfoString(final Object[] argArray)
@@ -832,19 +871,26 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         return knownTypeProcessorWithReflectionJsonToJavaConverter2.process(this, valueType, value);
       }
     }
+    catch (final ClassCastException e)
+    {
+      throw new JsonStathamException(format("Attempt to process known type failed with %s.\n"
+          + "[Class<T> valueType: %s][Object value: %s]\n"
+          + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n" + "[cause: %s]", e.getClass()
+          .getName(), valueType, value, knownTypeProcessorWithReflectionJsonToJavaConverter2, e.getMessage()), e);
+    }
     catch (final IllegalArgumentException e)
     {
-      throw new JsonStathamException(format("Attempt to process known type failed with IllegalArgumentException.\n"
+      throw new JsonStathamException(format("Attempt to process known type failed with %s.\n"
           + "[Class<T> valueType: %s][Object value: %s]\n"
-          + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]", valueType, value,
-          knownTypeProcessorWithReflectionJsonToJavaConverter2), e);
+          + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n" + "[cause: %s]", e.getClass()
+          .getName(), valueType, value, knownTypeProcessorWithReflectionJsonToJavaConverter2, e.getMessage()), e);
     }
     catch (final IllegalAccessException e)
     {
-      throw new JsonStathamException(format("Attempt to process known type failed with IllegalAccessException.\n"
+      throw new JsonStathamException(format("Attempt to process known type failed with %s.\n"
           + "[Class<T> valueType: %s][Object value: %s]\n"
-          + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]", valueType, value,
-          knownTypeProcessorWithReflectionJsonToJavaConverter2), e);
+          + "[KnownTypeProcessorWithReflectionJsonToJavaConverter: %s]\n" + "[cause: %s]", e.getClass()
+          .getName(), valueType, value, knownTypeProcessorWithReflectionJsonToJavaConverter2, e.getMessage()), e);
     }
 
     final KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> knownTypeProcessorWithReflectionJsonToJavaConverter3 =
@@ -1116,7 +1162,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             for (final String paramName : constructorParamNameSet)
             {
               if (paramTypes[i].equals(fieldNameToFieldMap.get(paramName)
-                  .getSecond()
+                  .getValue2()
                   .getType()))
               {
                 count++;
@@ -1160,15 +1206,11 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           final Set<String> constructorParamNameSet = newHashSet(constructorParamNames);
           for (int i = 0; i < fieldSize; i++)
           {
-            System.out.println("paramTypes[i]: " + paramTypes[i]);
-
             // final String paramName = constructorParamNames[i];
             for (final String paramName : constructorParamNameSet)
             {
               final Class<?> fieldType = fieldNameToFieldMap.get(paramName)
                   .getType();
-              System.out.println("paramName: " + paramName);
-              System.out.println("fieldType: " + fieldType);
               if (paramTypes[i].equals(fieldType))
               {
                 count++;
@@ -1177,9 +1219,116 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
               }
             }
           }
-          System.out.println("count: " + count);
           if (fieldSize == count)
             return new ConstructorAndParamsPair<T, String[]>(entryOfConstructor.getKey(), entryOfConstructor.getValue());
+        }
+      }
+    }
+    return null;
+  }
+
+  static class ParamTuple3<T1, T2, T3> implements Tuple3<T1, T2, T3>
+  {
+    private T1 value1;
+    private T2 value2;
+    private T3 value3;
+
+    public ParamTuple3(final T1 value1, final T2 value2, final T3 value3)
+    {
+      this.value1 = value1;
+      this.value2 = value2;
+      this.value3 = value3;
+    }
+
+    @Override
+    public T1 getValue1()
+    {
+      return value1;
+    }
+
+    @Override
+    public T2 getValue2()
+    {
+      return value2;
+    }
+
+    @Override
+    public T3 getValue3()
+    {
+      return value3;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      return hash(value1, value2, value3);
+    }
+
+    @Override
+    public boolean equals(final Object paramTuple)
+    {
+      if (this == paramTuple)
+      {
+        return true;
+      }
+      final ParamTuple3<?, ?, ?> that = castIfInstanceOf(ParamTuple3.class, paramTuple);
+      /* @formatter:off */
+      return null != that &&
+              (equal(this.value1, that.getValue1()) &&
+               equal(this.value2, that.getValue2()) &&
+               equal(this.value3, that.getValue3()));
+      /* @formatter:on */
+    }
+
+    @Override
+    public String toString()
+    {
+      /* @formatter:off */
+      return toStringBuilder(this)
+              .add("value1", value1)
+              .add("value2", value2)
+              .add("value3", value3)
+            .toString();
+      /* @formatter:on */
+    }
+  }
+
+  public <T> ConstructorAndParamsPair<T, List<Tuple3<String, Class<?>, Field>>> findConstructorWithMatchingParamNames(
+      final Map<Constructor<T>, String[]> constructorMap,
+      final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
+  {
+    final Map<String, Field> fieldNameToFieldMap = jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap;
+
+    final int fieldSize = fieldNameToFieldMap.size();
+    for (final Entry<Constructor<T>, String[]> entryOfConstructor : constructorMap.entrySet())
+    {
+      final String[] constructorParamNames = entryOfConstructor.getValue();
+      if (fieldSize == constructorParamNames.length)
+      {
+        int count = 0;
+        for (final String constructorParamName : constructorParamNames)
+        {
+          if (fieldNameToFieldMap.containsKey(constructorParamName))
+            count++;
+        }
+        if (fieldSize == count)
+        {
+          count = 0;
+          final Class<?>[] paramTypes = entryOfConstructor.getKey()
+              .getParameterTypes();
+
+          final List<Tuple3<String, Class<?>, Field>> paramList = newArrayList();
+
+          final int paramNameLength = constructorParamNames.length;
+          for (int i = 0; i < paramNameLength; i++)
+          {
+            final String paramName = constructorParamNames[i];
+            final Class<?> constructorParamType = paramTypes[i];
+            final Field field = fieldNameToFieldMap.get(paramName);
+            paramList.add(new ParamTuple3<String, Class<?>, Field>(paramName, constructorParamType, field));
+          }
+          return new ConstructorAndParamsPair<T, List<Tuple3<String, Class<?>, Field>>>(entryOfConstructor.getKey(),
+              paramList);
         }
       }
     }
@@ -1229,7 +1378,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           // if (paramTypes[i].equals(field.getType()))
           // {
           final Object resolvedFieldValue =
-            resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getFirst()));
+            resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getValue1()));
 
           // System.out.println("paramTypes[i]: " + paramTypes[i]);
           // final Object resolvedFieldValue = resolveFieldValue(field, paramTypes[i],

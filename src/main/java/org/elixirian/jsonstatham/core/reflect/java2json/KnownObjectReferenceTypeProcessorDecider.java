@@ -109,7 +109,7 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 			{
 				final Pair<Object, Object> pair = (Pair<Object, Object>) value;
 				return reflectionJavaToJsonConverter.newJsonObjectConvertible()
-						.put(toStringOf(pair.getFirst()), reflectionJavaToJsonConverter.createJsonValue(pair.getSecond()));
+						.put(toStringOf(pair.getValue1()), reflectionJavaToJsonConverter.createJsonValue(pair.getValue2()));
 			}
 
 		});

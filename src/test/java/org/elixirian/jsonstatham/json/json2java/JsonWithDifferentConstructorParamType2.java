@@ -17,22 +17,22 @@ import org.elixirian.jsonstatham.annotation.JsonField;
  * @version 0.0.1 (2012-12-09)
  */
 @Json
-public class JsonWithDifferentConstructorParamType
+public class JsonWithDifferentConstructorParamType2
 {
   @JsonField(name = "selectedServices")
-  private List<Long> selectedServiceIdList;
+  private Long[] selectedServiceIdList;
 
   @JsonField
   private String note;
 
   @JsonConstructor
-  public JsonWithDifferentConstructorParamType(final Long[] selectedServices, final String note)
+  public JsonWithDifferentConstructorParamType2(final List<Long> selectedServices, final String note)
   {
-    this.selectedServiceIdList = newArrayList(selectedServices);
+    this.selectedServiceIdList = selectedServices.toArray(new Long[selectedServices.size()]);
     this.note = note;
   }
 
-  public List<Long> getSelectedServiceIdList()
+  public Long[] getSelectedServiceIdList()
   {
     return selectedServiceIdList;
   }
@@ -55,11 +55,11 @@ public class JsonWithDifferentConstructorParamType
     {
       return true;
     }
-    final JsonWithDifferentConstructorParamType that =
-      castIfInstanceOf(JsonWithDifferentConstructorParamType.class, jsonWithNotOrderedConstructorParams);
+    final JsonWithDifferentConstructorParamType2 that =
+      castIfInstanceOf(JsonWithDifferentConstructorParamType2.class, jsonWithNotOrderedConstructorParams);
     /* @formatter:off */
     return null != that &&
-            (equal(this.selectedServiceIdList, that.getSelectedServiceIdList()) &&
+            (deepEqual(this.selectedServiceIdList, that.getSelectedServiceIdList()) &&
              equal(this.note, that.getNote()));
     /* @formatter:on */
   }
