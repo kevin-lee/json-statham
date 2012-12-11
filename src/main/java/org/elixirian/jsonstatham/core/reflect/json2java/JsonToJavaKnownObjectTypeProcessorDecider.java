@@ -44,6 +44,8 @@ import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJava
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair;
+import org.elixirian.jsonstatham.core.convertible.JsonArray;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
@@ -58,198 +60,261 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-10-04)
  */
 public final class JsonToJavaKnownObjectTypeProcessorDecider implements
-		KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>
+    KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>
 {
-	public static final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP;
+  public static final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP;
 
-	static
-	{
-		final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> map =
-			new LinkedHashMap<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>>();
-		map.put(Date.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-			@Override
-			public <T> Object process(
-					@SuppressWarnings("unused") final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
-			{
-				if (long.class.equals(value.getClass()) || Long.class.equals(value.getClass()))
-				{
-					return new Date(((Long) value).longValue());
-				}
-				throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
-			}
-		});
+  static
+  {
+    final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> map =
+      new LinkedHashMap<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>>();
+    map.put(Date.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(
+          @SuppressWarnings("unused") final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        if (long.class.equals(value.getClass()) || Long.class.equals(value.getClass()))
+        {
+          return new Date(((Long) value).longValue());
+        }
+        throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
+      }
+    });
 
-		map.put(Calendar.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-			@Override
-			public <T> Object process(
-					@SuppressWarnings("unused") final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
-			{
-				if (long.class.equals(value.getClass()) || Long.class.equals(value.getClass()))
-				{
-					final Calendar calendar = Calendar.getInstance();
-					calendar.setTimeInMillis(((Long) value).longValue());
-					return calendar;
-				}
-				throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
-			}
+    map.put(Calendar.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(
+          @SuppressWarnings("unused") final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        if (long.class.equals(value.getClass()) || Long.class.equals(value.getClass()))
+        {
+          final Calendar calendar = Calendar.getInstance();
+          calendar.setTimeInMillis(((Long) value).longValue());
+          return calendar;
+        }
+        throw new JsonStathamException(format("Unknown type [class: %s][object: %s]", valueType, value));
+      }
 
-		});
+    });
 
-//		map.put(JSONObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-//			@Override
-//			public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-//					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-//					JsonStathamException
-//			{
-//				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObject((JSONObject) value));
-//			}
-//		});
+    // map.put(JSONObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+    // @Override
+    // public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+    // final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+    // JsonStathamException
+    // {
+    // return reflectionJsonToJavaConverter.createFromJsonObject(valueType, new OrgJsonJsonObject((JSONObject) value));
+    // }
+    // });
 
-		map.put(OrderedJsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-			@Override
-			public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
-			{
-				final JsonObject castedValue = (JsonObject) value;
-				if (castedValue.isNull())
-				{
-					return null;
-				}
-				final JsonObject result = getJsonObject(valueType, castedValue);
-				if (null != result)
-				{
-					return result;
-				}
-				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (OrderedJsonObject) value);
-			}
+    map.put(OrderedJsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        final JsonObject castedValue = (JsonObject) value;
+        if (castedValue.isNull())
+        {
+          return null;
+        }
+        final JsonObject result = getJsonObject(valueType, castedValue);
+        if (null != result)
+        {
+          return result;
+        }
+        return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (OrderedJsonObject) value);
+      }
 
-		});
+    });
 
-		map.put(UnorderedJsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-			@Override
-			public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
-			{
-				final JsonObject castedValue = (JsonObject) value;
-				if (castedValue.isNull())
-				{
-					return null;
-				}
-				final JsonObject result = getJsonObject(valueType, castedValue);
-				if (null != result)
-				{
-					return result;
-				}
-				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (UnorderedJsonObject) value);
-			}
+    map.put(UnorderedJsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        final JsonObject castedValue = (JsonObject) value;
+        if (castedValue.isNull())
+        {
+          return null;
+        }
+        final JsonObject result = getJsonObject(valueType, castedValue);
+        if (null != result)
+        {
+          return result;
+        }
+        return reflectionJsonToJavaConverter.createFromJsonObject(valueType, (UnorderedJsonObject) value);
+      }
 
-		});
+    });
 
-		map.put(JsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-			@Override
-			public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-					final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-					JsonStathamException
-			{
-				final JsonObject castedValue = (JsonObject) value;
-				if (castedValue.isNull())
-				{
-					return null;
-				}
-				final JsonObject result = getJsonObject(valueType, castedValue);
-				if (null != result)
-				{
-					return result;
-				}
-				return reflectionJsonToJavaConverter.createFromJsonObject(valueType, castedValue);
-			}
+    map.put(JsonObject.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        final JsonObject castedValue = (JsonObject) value;
+        if (castedValue.isNull())
+        {
+          return null;
+        }
+        final JsonObject result = getJsonObject(valueType, castedValue);
+        if (null != result)
+        {
+          return result;
+        }
+        return reflectionJsonToJavaConverter.createFromJsonObject(valueType, castedValue);
+      }
 
-		});
+    });
 
-		map.put(AbstractJsonObjectConvertiblePair.class,
-				new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-					@Override
-					public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-							final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-							JsonStathamException
-					{
-						final JsonObject castedValue = (JsonObject) value;
-						if (castedValue.isNull())
-						{
-							return null;
-						}
-						if (0 == castedValue.fieldLength())
-						{
-							return null;
-						}
-						if (ImmutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
-						{
-							final String name = castedValue.getNames()[0];
-							final ImmutableJsonObjectConvertiblePair<?, ?> immutableJsonObjectConvertiblePair =
-								new ImmutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
-							return immutableJsonObjectConvertiblePair;
-						}
-						else if (MutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
-						{
-							final String name = castedValue.getNames()[0];
-							final MutableJsonObjectConvertiblePair<?, ?> mutableJsonObjectConvertiblePair =
-								new MutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
-							return mutableJsonObjectConvertiblePair;
-						}
-						else
-						{
-							throw new JsonStathamException(
-									format(
-											"Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
-													+ "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
-													+ "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
-											valueType, reflectionJsonToJavaConverter, valueType, value));
-						}
-					}
+    map.put(AbstractJsonObjectConvertiblePair.class,
+        new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+          @Override
+          public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+              final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+              JsonStathamException
+          {
+            final JsonObject castedValue = (JsonObject) value;
+            if (castedValue.isNull())
+            {
+              return null;
+            }
+            if (0 == castedValue.fieldLength())
+            {
+              return null;
+            }
+            if (ImmutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
+            {
+              final String name = castedValue.getNames()[0];
+              final ImmutableJsonObjectConvertiblePair<?, ?> immutableJsonObjectConvertiblePair =
+                new ImmutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
+              return immutableJsonObjectConvertiblePair;
+            }
+            else if (MutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
+            {
+              final String name = castedValue.getNames()[0];
+              final MutableJsonObjectConvertiblePair<?, ?> mutableJsonObjectConvertiblePair =
+                new MutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
+              return mutableJsonObjectConvertiblePair;
+            }
+            else
+            {
+              throw new JsonStathamException(
+                  format(
+                      "Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
+                          + "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
+                          + "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
+                      valueType, reflectionJsonToJavaConverter, valueType, value));
+            }
+          }
 
-				});
+        });
 
-		DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(map);
-	}
+    map.put(JsonConvertible.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        if (null == value)
+        {
+          return null;
+        }
+        if (value instanceof JsonObject)
+        {
+          final JsonObject castedValue = (JsonObject) value;
+          if (castedValue.isNull())
+          {
+            return null;
+          }
+          if (0 == castedValue.fieldLength())
+          {
+            return null;
+          }
+          return value;
+//          if (ImmutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
+//          {
+//            final String name = castedValue.getNames()[0];
+//            final ImmutableJsonObjectConvertiblePair<?, ?> immutableJsonObjectConvertiblePair =
+//              new ImmutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
+//            return immutableJsonObjectConvertiblePair;
+//          }
+//          else if (MutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
+//          {
+//            final String name = castedValue.getNames()[0];
+//            final MutableJsonObjectConvertiblePair<?, ?> mutableJsonObjectConvertiblePair =
+//              new MutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
+//            return mutableJsonObjectConvertiblePair;
+//          }
+//          else
+//          {
+//            throw new JsonStathamException(
+//                format(
+//                    "Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
+//                        + "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
+//                        + "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
+//                    valueType, reflectionJsonToJavaConverter, valueType, value));
+//          }
+        }
+        else if (value instanceof JsonArray)
+        {
+          return value;
+        }
+        else
+        {
+          throw new JsonStathamException(
+              format(
+                  "Unknown JsonConvertible (Class<?> valueType: %s) type! "
+                      + "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
+                      + "It must be an instance of either org.elixirian.jsonstatham.core.convertible.JsonObject or org.elixirian.jsonstatham.core.convertible.JsonArray.",
+                  valueType, reflectionJsonToJavaConverter, valueType, value));
+        }
+      }
 
-	private static JsonObject getJsonObject(final Class<?> valueType, final JsonObject value)
-	{
-		return JsonObject.class.isAssignableFrom(valueType) ? value : null;
-	}
+    });
 
-	public final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> KnownObjectTypeProcessorMap;
+    DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP = Collections.unmodifiableMap(map);
+  }
 
-	public JsonToJavaKnownObjectTypeProcessorDecider()
-	{
-		this.KnownObjectTypeProcessorMap = DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP;
-	}
+  private static JsonObject getJsonObject(final Class<?> valueType, final JsonObject value)
+  {
+    return JsonObject.class.isAssignableFrom(valueType) ? value : null;
+  }
 
-	@Override
-	public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(final Class<?> type)
-	{
-		/* @formatter:off */
+  public final Map<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> KnownObjectTypeProcessorMap;
+
+  public JsonToJavaKnownObjectTypeProcessorDecider()
+  {
+    this.KnownObjectTypeProcessorMap = DEFAULT_KNOWN_OBJECT_TYPE_PROCESSOR_MAP;
+  }
+
+  @Override
+  public KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>> decide(final Class<?> type)
+  {
+    /* @formatter:off */
     for (final Entry<Class<?>, KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>> entry :
             KnownObjectTypeProcessorMap.entrySet())
     {
       /* @formatter:on */
-			if (entry.getKey()
-					.isAssignableFrom(type))
-			{
-				return entry.getValue();
-			}
-		}
-		return null;
-	}
+      if (entry.getKey()
+          .isAssignableFrom(type))
+      {
+        return entry.getValue();
+      }
+    }
+    return null;
+  }
 
 }

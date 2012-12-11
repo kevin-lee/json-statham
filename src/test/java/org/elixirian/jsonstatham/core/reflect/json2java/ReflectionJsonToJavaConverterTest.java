@@ -112,6 +112,7 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.json.json2java.ObjectContainingJsonConvertible;
 import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.json.json2java.Product;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitionHolder;
@@ -2142,5 +2143,55 @@ public class ReflectionJsonToJavaConverterTest
 
     /* then */
     assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testInputFieldSetHavingJsonObject() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    final String expectedId = "/staff/*/basic";
+    final String jsonConvertibleJsonString = "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}";
+    final JsonObject expectedJsonObject = OrderedJsonObject.newJsonObject(jsonConvertibleJsonString);
+    final ObjectContainingJsonConvertible expected =
+      new ObjectContainingJsonConvertible(expectedId, expectedJsonObject);
+    System.out.println("expected:\n" + expected);
+
+    final String json = "{\"id\":\"" + expectedId + "\",\"jsonConvertible\":" + jsonConvertibleJsonString + "}";
+    final ObjectContainingJsonConvertible actual =
+      reflectionJsonToJavaConverter.convertFromJson(ObjectContainingJsonConvertible.class, json);
+    System.out.println("actual: ");
+    System.out.println(actual);
+    final String actualId = actual.getFsi();
+    final JsonObject actualJsonObject = actual.getJsonConvertible();
+
+    assertThat(actual, is(equalTo(expected)));
+    assertThat(actualId, is(equalTo(expectedId)));
+    assertThat(actualJsonObject, is(equalTo(expectedJsonObject)));
+  }
+
+  @Test
+  public void testInputFieldSetHavingJsonArray() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    final String expectedId = "/staff/*/basic";
+    final String jsonConvertibleJsonString =
+      "[" + "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}," + "{\"givenName\":\"Jason\",\"surname\":\"Bourne\"},"
+          + "{\"givenName\":\"John\",\"surname\":\"Doe\"}" + "]";
+    final JsonArray expectedJsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonConvertibleJsonString);
+
+    final ObjectContainingJsonConvertible expected = new ObjectContainingJsonConvertible(expectedId, expectedJsonArray);
+    System.out.println("expected:\n" + expected);
+
+    final String json = "{\"id\":\"" + expectedId + "\",\"jsonConvertible\":" + jsonConvertibleJsonString + "}";
+    final ObjectContainingJsonConvertible actual =
+      reflectionJsonToJavaConverter.convertFromJson(ObjectContainingJsonConvertible.class, json);
+    System.out.println("actual: ");
+    System.out.println(actual);
+    final String actualId = actual.getFsi();
+    final JsonArray actualJsonArray = actual.getJsonConvertible();
+
+    assertThat(actual, is(equalTo(expected)));
+    assertThat(actualId, is(equalTo(expectedId)));
+    assertThat(actualJsonArray, is(equalTo(expectedJsonArray)));
   }
 }

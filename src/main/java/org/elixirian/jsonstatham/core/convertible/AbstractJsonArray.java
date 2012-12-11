@@ -177,7 +177,11 @@ public abstract class AbstractJsonArray implements JsonArray
       return true;
     }
     final AbstractJsonArray that = castIfInstanceOf(AbstractJsonArray.class, jsonArray);
-    return null != that && (equal(this.list, that.getList()));
+    /* @formatter:off */
+    return null != that &&
+            (equal(this.list,
+                   that.getList()));
+    /* @formatter:on */
   }
 
   @Override
