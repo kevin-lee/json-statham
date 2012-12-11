@@ -2149,7 +2149,7 @@ public class ReflectionJsonToJavaConverterTest
   public void testInputFieldSetHavingJsonObject() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
       InstantiationException, IllegalAccessException, InvocationTargetException
   {
-    final String expectedId = "/staff/*/basic";
+    final String expectedId = "ID-kevin";
     final String jsonConvertibleJsonString = "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}";
     final JsonObject expectedJsonObject = OrderedJsonObject.newJsonObject(jsonConvertibleJsonString);
     final ObjectContainingJsonConvertible expected =
@@ -2173,7 +2173,7 @@ public class ReflectionJsonToJavaConverterTest
   public void testInputFieldSetHavingJsonArray() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
       InstantiationException, IllegalAccessException, InvocationTargetException
   {
-    final String expectedId = "/staff/*/basic";
+    final String expectedId = "ID-kevin";
     final String jsonConvertibleJsonString =
       "[" + "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}," + "{\"givenName\":\"Jason\",\"surname\":\"Bourne\"},"
           + "{\"givenName\":\"John\",\"surname\":\"Doe\"}" + "]";

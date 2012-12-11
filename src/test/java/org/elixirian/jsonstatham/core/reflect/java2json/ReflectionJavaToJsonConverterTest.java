@@ -90,6 +90,7 @@ import org.elixirian.jsonstatham.json.SubClassWithValueAccessor;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithAbstractMethod;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithOverriddenMethod;
 import org.elixirian.jsonstatham.json.SubClassWithValueAccessorWithoutItsName;
+import org.elixirian.jsonstatham.json.json2java.ObjectContainingJsonConvertible;
 import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
@@ -1329,6 +1330,47 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println(actual);
 
     /* then */
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testInputFieldSetHavingJsonObject() throws IllegalArgumentException, JsonStathamException,
+      IllegalAccessException
+  {
+    final String expectedId = "ID-kevin";
+    final String jsonConvertibleJsonString = "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}";
+    final String expected = "{\"id\":\"" + expectedId + "\",\"jsonConvertible\":" + jsonConvertibleJsonString + "}";
+    System.out.println("expected:\n" + expected);
+
+    final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonConvertibleJsonString);
+    final ObjectContainingJsonConvertible json = new ObjectContainingJsonConvertible(expectedId, jsonObject);
+
+    final String actual = reflectionJavaToJsonConverter.convertIntoJson(json);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testInputFieldSetHavingJsonArray() throws IllegalArgumentException, JsonStathamException,
+      IllegalAccessException
+  {
+    final String expectedId = "ID-kevin";
+    final String jsonConvertibleJsonString =
+      "[" + "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}," + "{\"givenName\":\"Jason\",\"surname\":\"Bourne\"},"
+          + "{\"givenName\":\"John\",\"surname\":\"Doe\"}" + "]";
+    final String expected = "{\"id\":\"" + expectedId + "\",\"jsonConvertible\":" + jsonConvertibleJsonString + "}";
+    System.out.println("expected:\n" + expected);
+
+    final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonConvertibleJsonString);
+
+    final ObjectContainingJsonConvertible json = new ObjectContainingJsonConvertible(expectedId, jsonArray);
+
+    final String actual = reflectionJavaToJsonConverter.convertIntoJson(json);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
     assertThat(actual, is(equalTo(expected)));
   }
 }
