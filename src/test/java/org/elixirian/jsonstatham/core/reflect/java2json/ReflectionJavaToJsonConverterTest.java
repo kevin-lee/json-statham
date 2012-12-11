@@ -1334,7 +1334,7 @@ public class ReflectionJavaToJsonConverterTest
   }
 
   @Test
-  public void testInputFieldSetHavingJsonObject() throws IllegalArgumentException, JsonStathamException,
+  public void testObjectContainingJsonConvertibleForJsonObject() throws IllegalArgumentException, JsonStathamException,
       IllegalAccessException
   {
     final String expectedId = "ID-kevin";
@@ -1353,7 +1353,7 @@ public class ReflectionJavaToJsonConverterTest
   }
 
   @Test
-  public void testInputFieldSetHavingJsonArray() throws IllegalArgumentException, JsonStathamException,
+  public void testObjectContainingJsonConvertibleForJsonArray() throws IllegalArgumentException, JsonStathamException,
       IllegalAccessException
   {
     final String expectedId = "ID-kevin";

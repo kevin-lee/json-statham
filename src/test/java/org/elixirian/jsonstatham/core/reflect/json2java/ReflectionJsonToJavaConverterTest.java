@@ -33,6 +33,7 @@ package org.elixirian.jsonstatham.core.reflect.json2java;
 
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
+import static org.elixirian.kommonlee.util.collect.Lists.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -112,6 +113,11 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
+import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamName;
+import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamType;
+import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamTypeAndName;
+import org.elixirian.jsonstatham.json.json2java.JsonWithNotOrderedConstructorParams;
+import org.elixirian.jsonstatham.json.json2java.JsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName;
 import org.elixirian.jsonstatham.json.json2java.ObjectContainingJsonConvertible;
 import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.json.json2java.Product;
@@ -2146,8 +2152,8 @@ public class ReflectionJsonToJavaConverterTest
   }
 
   @Test
-  public void testInputFieldSetHavingJsonObject() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-      InstantiationException, IllegalAccessException, InvocationTargetException
+  public void testObjectContainingJsonConvertibleForJsonObject() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     final String expectedId = "ID-kevin";
     final String jsonConvertibleJsonString = "{\"givenName\":\"Kevin\",\"surname\":\"Lee\"}";
@@ -2170,8 +2176,8 @@ public class ReflectionJsonToJavaConverterTest
   }
 
   @Test
-  public void testInputFieldSetHavingJsonArray() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-      InstantiationException, IllegalAccessException, InvocationTargetException
+  public void testObjectContainingJsonConvertibleForJsonArray() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     final String expectedId = "ID-kevin";
     final String jsonConvertibleJsonString =
@@ -2193,5 +2199,117 @@ public class ReflectionJsonToJavaConverterTest
     assertThat(actual, is(equalTo(expected)));
     assertThat(actualId, is(equalTo(expectedId)));
     assertThat(actualJsonArray, is(equalTo(expectedJsonArray)));
+  }
+
+  @Test
+  public void testJsonWithNotOrderedConstructorParams() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    @SuppressWarnings("boxing")
+    final Long[] expectedIds = { 1L, 3L, 7L, 10L };
+    final String expectedNote = "Some note";
+    final String jsonString =
+      "{\"selectedServices\":" + toStringOf(expectedIds) + ",\"note\":\"" + expectedNote + "\"}";
+    final JsonWithNotOrderedConstructorParams expected =
+      new JsonWithNotOrderedConstructorParams(expectedNote, expectedIds);
+
+    System.out.println("expected:\n" + expected);
+
+    final JsonWithNotOrderedConstructorParams actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithNotOrderedConstructorParams.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamName() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    @SuppressWarnings("boxing")
+    final Long[] expectedIds = { 1L, 3L, 7L, 10L };
+    final String expectedNote = "Some note";
+    final String jsonString =
+      "{\"selectedServices\":" + toStringOf(expectedIds) + ",\"note\":\"" + expectedNote + "\"}";
+    final JsonWithDifferentConstructorParamName expected =
+      new JsonWithDifferentConstructorParamName(newArrayList(expectedIds), expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    final JsonWithDifferentConstructorParamName actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamName.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    @SuppressWarnings("boxing")
+    final Long[] expectedIds = { 1L, 3L, 7L, 10L };
+    final String expectedNote = "Some note";
+    final String jsonString =
+      "{\"selectedServices\":" + toStringOf(expectedIds) + ",\"note\":\"" + expectedNote + "\"}";
+    final JsonWithDifferentConstructorParamType expected =
+      new JsonWithDifferentConstructorParamType(expectedIds, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    final JsonWithDifferentConstructorParamType actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamTypeAndName() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    @SuppressWarnings("boxing")
+    final Long[] expectedIds = { 1L, 3L, 7L, 10L };
+    final String expectedNote = "Some note";
+    final String jsonString =
+      "{\"selectedServices\":" + toStringOf(expectedIds) + ",\"note\":\"" + expectedNote + "\"}";
+    final JsonWithDifferentConstructorParamTypeAndName expected =
+      new JsonWithDifferentConstructorParamTypeAndName(expectedIds, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    final JsonWithDifferentConstructorParamTypeAndName actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamTypeAndName.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName()
+      throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    @SuppressWarnings("boxing")
+    final Long[] expectedIds = { 1L, 3L, 7L, 10L };
+    final String expectedNote = "Some note";
+    final String jsonString =
+      "{\"selectedServices\":" + toStringOf(expectedIds) + ",\"note\":\"" + expectedNote + "\"}";
+    final JsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName expected =
+      new JsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName(expectedNote, expectedIds);
+
+    System.out.println("expected:\n" + expected);
+
+    final JsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName actual =
+      reflectionJsonToJavaConverter.convertFromJson(
+          JsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    assertThat(actual, is(equalTo(expected)));
   }
 }

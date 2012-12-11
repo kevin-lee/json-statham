@@ -38,6 +38,7 @@ import static org.elixirian.kommonlee.util.Objects.*;
 import static org.elixirian.kommonlee.util.Strings.*;
 import static org.elixirian.kommonlee.util.collect.Lists.*;
 import static org.elixirian.kommonlee.util.collect.Maps.*;
+import static org.elixirian.kommonlee.util.collect.Sets.*;
 import static org.elixirian.kommonlee.validation.Assertions.*;
 
 import java.lang.annotation.Annotation;
@@ -404,34 +405,51 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
        * First, find the constructor with all the parameters matched with all the JSON field.
        */
       final ConstructorAndParamsPair<T, String[]> constructorEntry =
-        findMatchingConstructor(constructorMapWithJsonConstructorAnnotation,
+        findMatchingConstructorForFieldNames(constructorMapWithJsonConstructorAnnotation,
             jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
+
+      final Constructor<T> constructor;
+      final List<Object> argList = newArrayList();
+
       if (null == constructorEntry || null == constructorEntry.constructor)
       {
-        // if there is no matching one, it should check the rest constructors first then will check if there is
-        // one with minimum matching params. Check "find constructor with minimum matching params" part.
-        // TODO remove it
-        // /*
-        // * if there is no matching one, try to find the one annotated with @JsonConstructor having the fewest number
-        // of
-        // * non-matching parameters and the greatest number of matching parameters.
-        // */
-        // final ConstructorAndParamsPair<T, List<Object>> constructorToParamsPair =
-        // findConstructorWithMaxMatchingMinNonMatchingParams(constructorMapWithJsonConstructorAnnotation,
-        // jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObjectConvertible);
-        // if (null != constructorToParamsPair)
-        // {
-        // final Constructor<T> constructor =constructorToParamsPair.constructor;
-        // constructor.setAccessible(true);
-        // return constructor.newInstance(constructorToParamsPair.params.toArray());
-        // }
+        final ConstructorAndParamsPair<T, String[]> constructorEntry2 =
+          findMatchingConstructorForJsonFieldNames(constructorMap,
+              jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
+        if (null != constructorEntry2 && null != constructorEntry2.constructor)
+        {
+          constructor = constructorEntry2.getFirst();
+          final Map<String, Field> fieldNameToFieldMap =
+            jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getFirst();
+          for (final String jsonFieldName : constructorEntry2.getSecond())
+          {
+            final Field field = fieldNameToFieldMap.get(jsonFieldName);
+            try
+            {
+              final Object resolvedFieldValue =
+                resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldName));
+              argList.add(resolvedFieldValue);
+            }
+            catch (final IllegalArgumentException e)
+            {
+              throw new JsonStathamException(format("Invocation of resolveFieldValue failed.\n"
+                  + "[Class<T> targetClass: %s] failed with IllegalArgumentException.\n"
+                  + "[jsonFieldName: %s]\n" + "[field: %s][field.getType(): %s]\n"
+                  + "[Incomplete argList: %s]\n" + "[JsonObject jsonObjectConvertible: %s]", targetClass.getName(),
+                  jsonFieldName, field, field.getType(), argList, jsonObject), e);
+            }
+          }
+        }
+        else
+        {
+          constructor = null;
+        }
       }
       else
       {
-        final Constructor<T> constructor = constructorEntry.getFirst();
+        constructor = constructorEntry.getFirst();
         final Map<String, JsonFieldNameAndFieldPair> fieldNameToFieldMap =
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getSecond();
-        final List<Object> argList = newArrayList();
         for (final String fieldName : constructorEntry.getSecond())
         {
           final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair = fieldNameToFieldMap.get(fieldName);
@@ -451,6 +469,11 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
                 jsonFieldNameAndFieldPair, field, field.getType(), argList, jsonObject), e);
           }
         }
+      }
+
+      if (null != constructor)
+      {
+
         /* It is annotated with @JsonConstructor so it should be used even if it is a private constructor. */
         constructor.setAccessible(true);
         final Object[] argArray = argList.toArray();
@@ -499,7 +522,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     /* check if there is any constructor without @JsonConstructor annotation and matches with all the json field */
     final Pair<Constructor<T>, String[]> constructorEntry =
-      findMatchingConstructor(constructorWithoutJsonConstructorAnnotationMap,
+      findMatchingConstructorForFieldNames(constructorWithoutJsonConstructorAnnotationMap,
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
 
     if (null != constructorEntry && constructorEntry.getSecond().length == jsonObject.fieldLength())
@@ -1061,7 +1084,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return newArrayList();
   }
 
-  public <T> ConstructorAndParamsPair<T, String[]> findMatchingConstructor(
+  public <T> ConstructorAndParamsPair<T, String[]> findMatchingConstructorForFieldNames(
       final Map<Constructor<T>, String[]> constructorMap,
       final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
   {
@@ -1086,14 +1109,75 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           final Class<?>[] paramTypes = entryOfConstructor.getKey()
               .getParameterTypes();
 
+          final Set<String> constructorParamNameSet = newHashSet(constructorParamNames);
           for (int i = 0; i < fieldSize; i++)
           {
-            final String paramName = constructorParamNames[i];
-            if (paramTypes[i].equals(fieldNameToFieldMap.get(paramName)
-                .getSecond()
-                .getType()))
-              count++;
+            // final String paramName = constructorParamNames[i];
+            for (final String paramName : constructorParamNameSet)
+            {
+              if (paramTypes[i].equals(fieldNameToFieldMap.get(paramName)
+                  .getSecond()
+                  .getType()))
+              {
+                count++;
+                constructorParamNameSet.remove(paramName);
+                break;
+              }
+            }
           }
+          if (fieldSize == count)
+            return new ConstructorAndParamsPair<T, String[]>(entryOfConstructor.getKey(), entryOfConstructor.getValue());
+        }
+      }
+    }
+    return null;
+  }
+
+  public <T> ConstructorAndParamsPair<T, String[]> findMatchingConstructorForJsonFieldNames(
+      final Map<Constructor<T>, String[]> constructorMap,
+      final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldNameToFieldNameAndFieldPairMap)
+  {
+    final Map<String, Field> fieldNameToFieldMap = jsonFieldNameToFieldNameAndFieldPairMap.jsonFieldNameToFieldMap;
+
+    final int fieldSize = fieldNameToFieldMap.size();
+    for (final Entry<Constructor<T>, String[]> entryOfConstructor : constructorMap.entrySet())
+    {
+      final String[] constructorParamNames = entryOfConstructor.getValue();
+      if (fieldSize == constructorParamNames.length)
+      {
+        int count = 0;
+        for (final String constructorParamName : constructorParamNames)
+        {
+          if (fieldNameToFieldMap.containsKey(constructorParamName))
+            count++;
+        }
+        if (fieldSize == count)
+        {
+          count = 0;
+          final Class<?>[] paramTypes = entryOfConstructor.getKey()
+              .getParameterTypes();
+
+          final Set<String> constructorParamNameSet = newHashSet(constructorParamNames);
+          for (int i = 0; i < fieldSize; i++)
+          {
+            System.out.println("paramTypes[i]: " + paramTypes[i]);
+
+            // final String paramName = constructorParamNames[i];
+            for (final String paramName : constructorParamNameSet)
+            {
+              final Class<?> fieldType = fieldNameToFieldMap.get(paramName)
+                  .getType();
+              System.out.println("paramName: " + paramName);
+              System.out.println("fieldType: " + fieldType);
+              if (paramTypes[i].equals(fieldType))
+              {
+                count++;
+                constructorParamNameSet.remove(paramName);
+                break;
+              }
+            }
+          }
+          System.out.println("count: " + count);
           if (fieldSize == count)
             return new ConstructorAndParamsPair<T, String[]>(entryOfConstructor.getKey(), entryOfConstructor.getValue());
         }
