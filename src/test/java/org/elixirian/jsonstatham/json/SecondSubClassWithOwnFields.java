@@ -34,9 +34,8 @@ package org.elixirian.jsonstatham.json;
 import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -59,7 +58,8 @@ public class SecondSubClassWithOwnFields extends SubClass
   @JsonField(name = "comment")
   private String comment;
 
-  public SecondSubClassWithOwnFields(String name, int number, String email, Address address, String comment)
+  public SecondSubClassWithOwnFields(final String name, final int number, final String email, final Address address,
+      final String comment)
   {
     super(name, number, email);
     this.address = address;
@@ -78,7 +78,7 @@ public class SecondSubClassWithOwnFields extends SubClass
    * @param address
    *          the address to set
    */
-  public void setAddress(Address address)
+  public void setAddress(final Address address)
   {
     this.address = address;
   }
@@ -95,19 +95,20 @@ public class SecondSubClassWithOwnFields extends SubClass
    * @param comment
    *          the comment to set
    */
-  public void setComment(String comment)
+  public void setComment(final String comment)
   {
     this.comment = comment;
   }
 
+  @SuppressWarnings("boxing")
   @Override
   public int hashCode()
   {
-    return hashObjects(hash(hash(getName()), getNumber()), getEmail(), address, comment);
+    return hash(getName(), getNumber(), getEmail(), address, comment);
   }
 
   @Override
-  public boolean equals(Object secondSubClassWithOwnFields)
+  public boolean equals(final Object secondSubClassWithOwnFields)
   {
     if (identical(this, secondSubClassWithOwnFields))
     {

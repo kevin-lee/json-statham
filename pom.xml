@@ -5,7 +5,7 @@
   <groupId>org.elixirian</groupId>
   <artifactId>json-statham</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.32-SNAPSHOT</version>
+  <version>0.2.33-SNAPSHOT</version>
   <name>json-statham</name>
   <url>http://projects.elixirian.org/json-statham</url>
 
@@ -139,7 +139,7 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <version>3.16.1-GA</version>
+      <version>3.17.1-GA</version>
       <scope>test</scope>
     </dependency>
 
@@ -161,39 +161,39 @@
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-type</artifactId>
-      <version>0.0.16-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-util</artifactId>
-      <version>0.0.26-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.elixirian</groupId>
-    	<artifactId>kommonlee-exception</artifactId>
-    	<version>0.0.17-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-validation</artifactId>
-      <version>0.0.27-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-asm</artifactId>
       <version>0.0.18-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.elixirian</groupId>
+      <artifactId>kommonlee-util</artifactId>
+      <version>0.0.28-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.elixirian</groupId>
+    	<artifactId>kommonlee-exception</artifactId>
+    	<version>0.0.18-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.elixirian</groupId>
+      <artifactId>kommonlee-validation</artifactId>
+      <version>0.0.28-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.elixirian</groupId>
+      <artifactId>kommonlee-asm</artifactId>
+      <version>0.0.19-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-reflect</artifactId>
-      <version>0.0.16-SNAPSHOT</version>
+      <version>0.0.17-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-collection</artifactId>
-      <version>0.0.15-SNAPSHOT</version>
+      <version>0.0.16-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

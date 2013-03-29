@@ -42,7 +42,6 @@ import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 
-
 /**
  * <pre>
  *     ___  _____                                _____
@@ -103,7 +102,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param primaryKey
    *          the primaryKey to set
    */
-  public void setPrimaryKey(Long primaryKey)
+  public void setPrimaryKey(final Long primaryKey)
   {
     this.primaryKey = primaryKey;
   }
@@ -120,7 +119,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param name
    *          the name to set
    */
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -130,7 +129,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
     return registered;
   }
 
-  public void setRegistered(boolean registered)
+  public void setRegistered(final boolean registered)
   {
     this.registered = registered;
   }
@@ -140,7 +139,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
     return enabled;
   }
 
-  public void setEnabled(boolean enabled)
+  public void setEnabled(final boolean enabled)
   {
     this.enabled = enabled;
   }
@@ -157,7 +156,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param address
    *          the address to set
    */
-  public void setAddress(Address address)
+  public void setAddress(final Address address)
   {
     this.address = address;
   }
@@ -174,7 +173,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param date
    *          the date to set
    */
-  public void setDate(Date date)
+  public void setDate(final Date date)
   {
     this.date = date;
   }
@@ -199,7 +198,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param dateWithValueAccessor
    *          the dateWithValueAccessor to set
    */
-  public void setDateWithValueAccessor(Date dateWithValueAccessor)
+  public void setDateWithValueAccessor(final Date dateWithValueAccessor)
   {
     this.dateWithValueAccessor = dateWithValueAccessor;
   }
@@ -216,7 +215,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param calendar
    *          the calendar to set
    */
-  public void setCalendar(Calendar calendar)
+  public void setCalendar(final Calendar calendar)
   {
     this.calendar = calendar;
   }
@@ -238,7 +237,7 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
    * @param calendarWithValueAccessor
    *          the calendarWithValueAccessor to set
    */
-  public void setCalendarWithValueAccessor(Calendar calendarWithValueAccessor)
+  public void setCalendarWithValueAccessor(final Calendar calendarWithValueAccessor)
   {
     this.calendarWithValueAccessor = calendarWithValueAccessor;
   }
@@ -246,17 +245,12 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
   @Override
   public int hashCode()
   {
-    /* @formatter:off */
-		return hashObjects(
-					hashBooleans(
-						hash(primaryKey, name), 
-					registered, enabled), 
-				address, date, dateWithValueAccessor, calendar, calendarWithValueAccessor);
-		/* @formatter:on */
+    return hash(primaryKey, name, registered, enabled, address, date, dateWithValueAccessor, calendar,
+        calendarWithValueAccessor);
   }
 
   @Override
-  public boolean equals(Object complexJsonObjectWithValueAccessorWithoutItsName)
+  public boolean equals(final Object complexJsonObjectWithValueAccessorWithoutItsName)
   {
     if (identical(this, complexJsonObjectWithValueAccessorWithoutItsName))
     {

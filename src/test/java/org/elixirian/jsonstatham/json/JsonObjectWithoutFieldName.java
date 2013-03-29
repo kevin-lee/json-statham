@@ -3,9 +3,8 @@ package org.elixirian.jsonstatham.json;
 import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -31,21 +30,22 @@ public class JsonObjectWithoutFieldName
   @JsonField
   private final String address;
 
-  public JsonObjectWithoutFieldName(long id, String name, String address)
+  public JsonObjectWithoutFieldName(final long id, final String name, final String address)
   {
     this.id = id;
     this.name = name;
     this.address = address;
   }
 
+  @SuppressWarnings("boxing")
   @Override
   public int hashCode()
   {
-    return hashObjects(hash(id), name, address);
+    return hash(id, name, address);
   }
 
   @Override
-  public boolean equals(Object jsonObjectWithoutFieldName)
+  public boolean equals(final Object jsonObjectWithoutFieldName)
   {
     if (identical(this, jsonObjectWithoutFieldName))
     {
