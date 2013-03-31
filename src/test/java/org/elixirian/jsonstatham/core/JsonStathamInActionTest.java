@@ -59,7 +59,6 @@ import java.util.Set;
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.core.convertible.AbstractJsonObject;
-import org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
@@ -111,6 +110,9 @@ import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
 import org.elixirian.kommonlee.reflect.TypeHolder;
+import org.elixirian.kommonlee.type.Pair;
+import org.elixirian.kommonlee.type.Tuple2;
+import org.elixirian.kommonlee.util.type.ImmutableTuple2;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -2199,15 +2201,14 @@ public class JsonStathamInActionTest
   private static class ParamObject
   {
     @JsonField
-    ImmutableJsonObjectConvertiblePair<String, Object> first;
+    Pair<String, Object> first;
     @JsonField
-    ImmutableJsonObjectConvertiblePair<String, Object> second;
+    Tuple2<String, Object> second;
     @JsonField
-    ImmutableJsonObjectConvertiblePair<String, Object> third;
+    Pair<String, Object> third;
 
-    public ParamObject(final ImmutableJsonObjectConvertiblePair<String, Object> first,
-        final ImmutableJsonObjectConvertiblePair<String, Object> second,
-        final ImmutableJsonObjectConvertiblePair<String, Object> third)
+    public ParamObject(final Pair<String, Object> first, final Tuple2<String, Object> second,
+        final Pair<String, Object> third)
     {
       this.first = first;
       this.second = second;
@@ -2243,7 +2244,7 @@ public class JsonStathamInActionTest
     }
   }
 
-  private static class StringAndObjectPair extends ImmutableJsonObjectConvertiblePair<String, Object>
+  private static class StringAndObjectPair extends ImmutableTuple2<String, Object>
   {
     public StringAndObjectPair(final String first, final Object second)
     {

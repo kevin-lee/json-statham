@@ -42,15 +42,14 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
-import org.elixirian.jsonstatham.core.convertible.AbstractJsonObjectConvertiblePair;
-import org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
-import org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.type.Pair;
+import org.elixirian.kommonlee.util.type.Tuples;
 
 /**
  * <pre>
@@ -179,48 +178,33 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
 
     });
 
-    map.put(AbstractJsonObjectConvertiblePair.class,
-        new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
-          @Override
-          public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
-              final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
-              JsonStathamException
-          {
-            final JsonObject castedValue = (JsonObject) value;
-            if (castedValue.isNull())
-            {
-              return null;
-            }
-            if (0 == castedValue.fieldLength())
-            {
-              return null;
-            }
-            if (ImmutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
-            {
-              final String name = castedValue.getNames()[0];
-              final ImmutableJsonObjectConvertiblePair<?, ?> immutableJsonObjectConvertiblePair =
-                new ImmutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
-              return immutableJsonObjectConvertiblePair;
-            }
-            else if (MutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
-            {
-              final String name = castedValue.getNames()[0];
-              final MutableJsonObjectConvertiblePair<?, ?> mutableJsonObjectConvertiblePair =
-                new MutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
-              return mutableJsonObjectConvertiblePair;
-            }
-            else
-            {
-              throw new JsonStathamException(
-                  format(
-                      "Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
-                          + "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
-                          + "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
-                      valueType, reflectionJsonToJavaConverter, valueType, value));
-            }
-          }
+    // map.put(AbstractJsonObjectConvertiblePair.class,
+    map.put(Pair.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
+      @Override
+      public <T> Object process(final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter,
+          final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
+      {
+        final JsonObject castedValue = (JsonObject) value;
+        if (castedValue.isNull() || 0 == castedValue.fieldLength())
+        {
+          return null;
+        }
+        if (Pair.class.isAssignableFrom(valueType))
+        {
+          final String name = castedValue.getNames()[0];
+          return Tuples.tuple2(name, castedValue.get(name));
+        }
 
-        });
+        throw new JsonStathamException(
+            format(
+                "Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
+                    + "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
+                    + "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
+                valueType, reflectionJsonToJavaConverter, valueType, value));
+      }
+
+    });
 
     map.put(JsonConvertible.class, new KnownTypeProcessorWithReflectionJsonToJavaConverter<Class<?>>() {
       @Override
@@ -244,29 +228,31 @@ public final class JsonToJavaKnownObjectTypeProcessorDecider implements
             return null;
           }
           return value;
-//          if (ImmutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
-//          {
-//            final String name = castedValue.getNames()[0];
-//            final ImmutableJsonObjectConvertiblePair<?, ?> immutableJsonObjectConvertiblePair =
-//              new ImmutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
-//            return immutableJsonObjectConvertiblePair;
-//          }
-//          else if (MutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
-//          {
-//            final String name = castedValue.getNames()[0];
-//            final MutableJsonObjectConvertiblePair<?, ?> mutableJsonObjectConvertiblePair =
-//              new MutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
-//            return mutableJsonObjectConvertiblePair;
-//          }
-//          else
-//          {
-//            throw new JsonStathamException(
-//                format(
-//                    "Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
-//                        + "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
-//                        + "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
-//                    valueType, reflectionJsonToJavaConverter, valueType, value));
-//          }
+          // if (ImmutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
+          // {
+          // final String name = castedValue.getNames()[0];
+          // final ImmutableJsonObjectConvertiblePair<?, ?> immutableJsonObjectConvertiblePair =
+          // new ImmutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
+          // return immutableJsonObjectConvertiblePair;
+          // }
+          // else if (MutableJsonObjectConvertiblePair.class.isAssignableFrom(valueType))
+          // {
+          // final String name = castedValue.getNames()[0];
+          // final MutableJsonObjectConvertiblePair<?, ?> mutableJsonObjectConvertiblePair =
+          // new MutableJsonObjectConvertiblePair<Object, Object>(name, castedValue.get(name));
+          // return mutableJsonObjectConvertiblePair;
+          // }
+          // else
+          // {
+          // throw new JsonStathamException(
+          // format(
+          // "Unknown AbstractJsonObjectConvertiblePair (Class<?> valueType: %s) type! "
+          // +
+          // "[ReflectionJsonToJavaConverter reflectionJsonToJavaConverter: %s, Class<?> valueType: %s, Object value: %s] "
+          // +
+          // "It must be either org.elixirian.jsonstatham.core.convertible.ImmutableJsonObjectConvertiblePair or org.elixirian.jsonstatham.core.convertible.MutableJsonObjectConvertiblePair.",
+          // valueType, reflectionJsonToJavaConverter, valueType, value));
+          // }
         }
         else if (value instanceof JsonArray)
         {

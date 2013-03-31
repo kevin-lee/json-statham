@@ -74,8 +74,7 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
           final Class<?> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
           JsonStathamException
       {
-        // if (JSONObject.NULL.equals(value))
-        if (AbstractJsonObject.NULL_JSON_OBJECT.equals(value))
+        if (AbstractJsonObject.NULL_JSON_OBJECT.equals(value) || null == value)
         {
           if (Primitives.isPrimitive(valueType))
           {
@@ -90,10 +89,6 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
 
         if (BigDecimal.class.equals(valueType))
         {
-          if (null == value)
-          {
-            return null;
-          }
           /* @formatter:off */
           if (long.class.isAssignableFrom(actualValueType) || Long.class.isAssignableFrom(actualValueType) ||
               int.class.isAssignableFrom(actualValueType) || Integer.class.isAssignableFrom(actualValueType))
@@ -106,10 +101,6 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
 
         if (BigInteger.class.equals(valueType))
         {
-          if (null == value)
-          {
-            return null;
-          }
           /* @formatter:off */
           if (long.class.isAssignableFrom(actualValueType) || Long.class.isAssignableFrom(actualValueType) ||
               int.class.isAssignableFrom(actualValueType) || Integer.class.isAssignableFrom(actualValueType))
@@ -120,11 +111,15 @@ public class JsonToJavaOneProcessorForKnownTypeDecider implements
           return new BigInteger(value.toString());
         }
 
-        // if (valueType.isAssignableFrom(actualValueType))
-        // {
-        // return value;
-        // }
-        if (long.class.isAssignableFrom(valueType) || Long.class.isAssignableFrom(valueType))
+        if (long.class.isAssignableFrom(valueType))
+        {
+          if (int.class.isAssignableFrom(actualValueType) || Integer.class.isAssignableFrom(actualValueType))
+          {
+            return Long.valueOf(((Integer) value).intValue());
+          }
+        }
+
+        if (Long.class.isAssignableFrom(valueType))
         {
           if (int.class.isAssignableFrom(actualValueType) || Integer.class.isAssignableFrom(actualValueType))
           {

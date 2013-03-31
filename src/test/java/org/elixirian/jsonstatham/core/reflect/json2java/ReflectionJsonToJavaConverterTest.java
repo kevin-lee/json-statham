@@ -2074,12 +2074,12 @@ public class ReflectionJsonToJavaConverterTest
       IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     /* given */
-    final Product expected = new Product(1L, "Product A", new BigDecimal(Double.valueOf(10.50D)
+    final Product expected = new Product(Long.MAX_VALUE, "Product A", new BigDecimal(Double.valueOf(10.50D)
         .toString()), new BigInteger(Long.valueOf(999)
         .toString()));
     System.out.println("expected:\n" + expected);
 
-    final String json = "{\"id\":1,\"name\":\"Product A\",\"price\":10.50,\"quantity\":999}";
+    final String json = "{\"id\":" + Long.MAX_VALUE + ",\"name\":\"Product A\",\"price\":10.50,\"quantity\":999}";
 
     /* when */
     System.out.println("actual: ");
