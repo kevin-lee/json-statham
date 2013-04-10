@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
+import org.elixirian.jsonstatham.core.convertible.JsonNameValuePair;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.kommonlee.type.Pair;
@@ -100,14 +101,14 @@ public class KnownObjectReferenceTypeProcessorDecider implements KnownTypeProces
 
     });
     // tempMap.put(AbstractJsonObjectConvertiblePair.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-    tempMap.put(Pair.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+    tempMap.put(JsonNameValuePair.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
       @SuppressWarnings("unchecked")
       @Override
       public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
           @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
           IllegalAccessException, JsonStathamException
       {
-        final Pair<Object, Object> pair = (Pair<Object, Object>) value;
+        final JsonNameValuePair<Object, Object> pair = (JsonNameValuePair<Object, Object>) value;
         return reflectionJavaToJsonConverter.newJsonObjectConvertible()
             .put(toStringOf(pair.getValue1()), reflectionJavaToJsonConverter.createJsonValue(pair.getValue2()));
       }
