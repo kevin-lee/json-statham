@@ -5,7 +5,7 @@
   <groupId>org.elixirian</groupId>
   <artifactId>json-statham</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.36-SNAPSHOT</version>
+  <version>0.2.37-SNAPSHOT</version>
   <name>json-statham</name>
   <url>http://projects.elixirian.org/json-statham</url>
 
@@ -158,35 +158,8 @@
 
     <dependency>
       <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-type</artifactId>
-      <version>0.0.18-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-util</artifactId>
-      <version>0.0.29-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.elixirian</groupId>
-    	<artifactId>kommonlee-exception</artifactId>
-    	<version>0.0.19-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-validation</artifactId>
-      <version>0.0.29-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-collection</artifactId>
-      <version>0.0.17-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elixirian</groupId>
-      <artifactId>kommonlee-reflect</artifactId>
-      <version>0.0.18-SNAPSHOT</version>
+      <artifactId>kommonlee-core</artifactId>
+      <version>0.0.30-SNAPSHOT</version>
     </dependency>
 
     <dependency>
