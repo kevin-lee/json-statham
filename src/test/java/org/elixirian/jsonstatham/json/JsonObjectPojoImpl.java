@@ -31,16 +31,14 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Iterator;
 import java.util.Set;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -69,7 +67,7 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
   @JsonField(name = "addresses")
   private Set<Address> addressSet;
 
-  public JsonObjectPojoImpl(Long id, String name, Set<Address> addressSet)
+  public JsonObjectPojoImpl(final Long id, final String name, final Set<Address> addressSet)
   {
     this.id = id;
     this.name = name;
@@ -107,7 +105,7 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
   }
 
   @Override
-  public boolean equals(Object jsonObjectPojoImpl)
+  public boolean equals(final Object jsonObjectPojoImpl)
   {
     if (identical(this, jsonObjectPojoImpl))
     {
@@ -116,8 +114,8 @@ public class JsonObjectPojoImpl implements JsonObjectPojo
     final JsonObjectPojoImpl that = castIfInstanceOf(JsonObjectPojoImpl.class, jsonObjectPojoImpl);
     /* @formatter:off */
 		return isNotNull(that)	&& 
-						and(equal(this.id, that.getId()), 
-								equal(this.name, that.getName()),
+						   (equal(this.id, that.getId()) && 
+								equal(this.name, that.getName()) &&
 								equal(this.addressSet, that.getAddressSet()));
 		/* @formatter:on */
   }

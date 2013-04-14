@@ -1,12 +1,11 @@
 package org.elixirian.jsonstatham.json.json2java;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Map;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 
 /**
@@ -30,7 +29,7 @@ public class JsonPojoHavingMap
   @JsonField
   private final Map<String, Long> stringToLongMap;
 
-  public JsonPojoHavingMap(String name, Map<String, Long> stringToLongMap)
+  public JsonPojoHavingMap(final String name, final Map<String, Long> stringToLongMap)
   {
     this.name = name;
     this.stringToLongMap = stringToLongMap;
@@ -53,14 +52,18 @@ public class JsonPojoHavingMap
   }
 
   @Override
-  public boolean equals(Object jsonPojoHavingMap)
+  public boolean equals(final Object jsonPojoHavingMap)
   {
     if (identical(this, jsonPojoHavingMap))
     {
       return true;
     }
     final JsonPojoHavingMap that = castIfInstanceOf(JsonPojoHavingMap.class, jsonPojoHavingMap);
-    return isNotNull(that) && and(equal(this.name, that.name), equal(this.stringToLongMap, that.stringToLongMap));
+    /* @formatter:off */
+    return isNotNull(that) &&
+        (equal(this.name, that.name) &&
+         equal(this.stringToLongMap, that.stringToLongMap));
+    /* @formatter:on */
   }
 
   @Override

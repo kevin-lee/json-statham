@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -58,7 +56,7 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
   @JsonField(name = "email")
   private String email;
 
-  public SubClassWithValueAccessorWithAbstractMethod(String name, int number, String email)
+  public SubClassWithValueAccessorWithAbstractMethod(final String name, final int number, final String email)
   {
     super(name, number);
     this.email = email;
@@ -88,7 +86,7 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -100,7 +98,7 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
   }
 
   @Override
-  public boolean equals(Object subClassWithValueAccessorWithAbstractMethod)
+  public boolean equals(final Object subClassWithValueAccessorWithAbstractMethod)
   {
     if (identical(this, subClassWithValueAccessorWithAbstractMethod))
     {
@@ -110,7 +108,7 @@ public class SubClassWithValueAccessorWithAbstractMethod extends SuperClassWithV
       castIfInstanceOf(SubClassWithValueAccessorWithAbstractMethod.class, subClassWithValueAccessorWithAbstractMethod);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(subClassWithValueAccessorWithAbstractMethod), 
+						   (super.equals(subClassWithValueAccessorWithAbstractMethod) && 
 								equal(this.email, that.email));
 		/* @formatter:on */
   }

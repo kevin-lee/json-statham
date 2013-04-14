@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -58,7 +56,7 @@ public class SubClassWithValueAccessorWithOverriddenMethod extends SuperClassWit
   @JsonField(name = "email")
   private String email;
 
-  public SubClassWithValueAccessorWithOverriddenMethod(String name, int number, String email)
+  public SubClassWithValueAccessorWithOverriddenMethod(final String name, final int number, final String email)
   {
     super(name, number);
     this.email = email;
@@ -88,7 +86,7 @@ public class SubClassWithValueAccessorWithOverriddenMethod extends SuperClassWit
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -100,7 +98,7 @@ public class SubClassWithValueAccessorWithOverriddenMethod extends SuperClassWit
   }
 
   @Override
-  public boolean equals(Object subClassWithValueAccessorWithOverriddenMethod)
+  public boolean equals(final Object subClassWithValueAccessorWithOverriddenMethod)
   {
     if (identical(this, subClassWithValueAccessorWithOverriddenMethod))
     {
@@ -111,7 +109,7 @@ public class SubClassWithValueAccessorWithOverriddenMethod extends SuperClassWit
           subClassWithValueAccessorWithOverriddenMethod);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(subClassWithValueAccessorWithOverriddenMethod), 
+						   (super.equals(subClassWithValueAccessorWithOverriddenMethod) && 
 								equal(this.email, that.email));
 		/* @formatter:on */
   }

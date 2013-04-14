@@ -31,14 +31,12 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Set;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -61,7 +59,7 @@ public class JsonObjectContainingSet
   @JsonField(name = "valueSet")
   private final Set<String> set;
 
-  public JsonObjectContainingSet(String name, Set<String> set)
+  public JsonObjectContainingSet(final String name, final Set<String> set)
   {
     this.name = name;
     this.set = set;
@@ -74,7 +72,7 @@ public class JsonObjectContainingSet
   }
 
   @Override
-  public boolean equals(Object jsonObjectContainingSet)
+  public boolean equals(final Object jsonObjectContainingSet)
   {
     if (identical(this, jsonObjectContainingSet))
     {
@@ -83,7 +81,7 @@ public class JsonObjectContainingSet
     final JsonObjectContainingSet that = castIfInstanceOf(JsonObjectContainingSet.class, jsonObjectContainingSet);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
+						   (equal(this.name, that.name) && 
 								equal(this.set, that.set));
 		/* @formatter:on */
   }

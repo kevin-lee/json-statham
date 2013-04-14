@@ -31,17 +31,15 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -95,7 +93,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param primaryKey
    *          the primaryKey to set
    */
-  public void setPrimaryKey(Long primaryKey)
+  public void setPrimaryKey(final Long primaryKey)
   {
     this.primaryKey = primaryKey;
   }
@@ -112,7 +110,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param name
    *          the name to set
    */
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -129,7 +127,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param address
    *          the address to set
    */
-  public void setAddress(Address address)
+  public void setAddress(final Address address)
   {
     this.address = address;
   }
@@ -146,7 +144,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param date
    *          the date to set
    */
-  public void setDate(Date date)
+  public void setDate(final Date date)
   {
     this.date = date;
   }
@@ -163,7 +161,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param dateWithValueAccessor
    *          the dateWithValueAccessor to set
    */
-  public void setDateWithValueAccessor(Date dateWithValueAccessor)
+  public void setDateWithValueAccessor(final Date dateWithValueAccessor)
   {
     this.dateWithValueAccessor = dateWithValueAccessor;
   }
@@ -188,7 +186,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param calendar
    *          the calendar to set
    */
-  public void setCalendar(Calendar calendar)
+  public void setCalendar(final Calendar calendar)
   {
     this.calendar = calendar;
   }
@@ -205,7 +203,7 @@ public final class ComplexJsonObjectWithValueAccessor
    * @param calendarWithValueAccessor
    *          the calendarWithValueAccessor to set
    */
-  public void setCalendarWithValueAccessor(Calendar calendarWithValueAccessor)
+  public void setCalendarWithValueAccessor(final Calendar calendarWithValueAccessor)
   {
     this.calendarWithValueAccessor = calendarWithValueAccessor;
   }
@@ -222,7 +220,7 @@ public final class ComplexJsonObjectWithValueAccessor
   }
 
   @Override
-  public boolean equals(Object complexJsonObjectWithValueAccessor)
+  public boolean equals(final Object complexJsonObjectWithValueAccessor)
   {
     if (identical(this, complexJsonObjectWithValueAccessor))
     {
@@ -232,12 +230,12 @@ public final class ComplexJsonObjectWithValueAccessor
       castIfInstanceOf(ComplexJsonObjectWithValueAccessor.class, complexJsonObjectWithValueAccessor);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.primaryKey, that.getPrimaryKey()), 
-								equal(this.name, that.getName()), 
-								equal(this.address, that.getAddress()), 
-								equal(this.date, that.getDate()), 
-								equal(this.dateWithValueAccessor, that.getDateWithValueAccessor()),
-								equal(this.calendar, that.getCalendar()),
+						   (equal(this.primaryKey, that.getPrimaryKey()) && 
+								equal(this.name, that.getName()) &&
+								equal(this.address, that.getAddress()) && 
+								equal(this.date, that.getDate()) &&
+								equal(this.dateWithValueAccessor, that.getDateWithValueAccessor()) &&
+								equal(this.calendar, that.getCalendar()) &&
 								equal(this.calendarWithValueAccessor, that.getCalendarWithValueAccessor()));
 		/* @formatter:on */
   }

@@ -31,7 +31,6 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +39,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
 
 import org.elixirian.kommonlee.reflect.Classes;
@@ -63,12 +64,17 @@ public final class JsonObjectPojoProxyFactory
       final Collection<Address> addressCollection) throws IllegalArgumentException, NoSuchMethodException,
       InstantiationException, IllegalAccessException, InvocationTargetException
   {
-    ProxyFactory proxyFactory = new ProxyFactory();
+    final ProxyFactory proxyFactory = new ProxyFactory();
     proxyFactory.setSuperclass(jsonObjectPojo.getClass());
     final Set<Address> addressSet = new HashSet<Address>(addressCollection);
-    proxyFactory.setHandler(new MethodHandler() {
+    final JsonObjectPojo proxiedObject =
+      (JsonObjectPojo) proxyFactory.create(new Class[] { Long.class, String.class, Set.class }, new Object[] { null,
+          null, null });
+
+    ((Proxy) proxiedObject).setHandler(new MethodHandler() {
       @Override
-      public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
+      public Object invoke(final Object self, final Method thisMethod, final Method proceed, final Object[] args)
+          throws Throwable
       {
         final String methodName = thisMethod.getName();
 
@@ -101,11 +107,11 @@ public final class JsonObjectPojoProxyFactory
           }
           final JsonObjectPojo that = castIfInstanceOf(JsonObjectPojo.class, jsonObjectPojo);
           /* @formatter:off */
-					return Boolean.valueOf(isNotNull(that) && 
-									and(equal(id, that.getId()), 
-											equal(name, that.getName()),
-											equal(addressSet, that.getAddressSet())));
-					/* @formatter:on */
+          return Boolean.valueOf(isNotNull(that) && 
+                     (equal(id, that.getId()) && 
+                      equal(name, that.getName()) &&
+                      equal(addressSet, that.getAddressSet())));
+          /* @formatter:on */
         }
         else if ("toString".equals(methodName))
         {
@@ -120,8 +126,8 @@ public final class JsonObjectPojoProxyFactory
         }
       }
     });
-    return (JsonObjectPojo) proxyFactory.create(new Class[] { Long.class, String.class, Set.class }, new Object[] {
-        null, null, null });
+
+    return proxiedObject;
   }
 
   public static NestedJsonObjectWithValueAccessor newNestedJsonObjectWithValueAccessor(
@@ -129,11 +135,28 @@ public final class JsonObjectPojoProxyFactory
       final String name, final NestedJsonObjectWithValueAccessor parent) throws IllegalArgumentException,
       NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
-    ProxyFactory proxyFactory = new ProxyFactory();
+    final ProxyFactory proxyFactory = new ProxyFactory();
     proxyFactory.setSuperclass(nestedJsonObjectWithValueAccessor.getClass());
-    proxyFactory.setHandler(new MethodHandler() {
+
+    proxyFactory.setFilter(new MethodFilter() {
+
       @Override
-      public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
+      public boolean isHandled(final Method m)
+      {
+        return !m.getName()
+            .equals("finalize");
+      }
+    });
+
+    final NestedJsonObjectWithValueAccessor proxiedObject =
+      (NestedJsonObjectWithValueAccessor) proxyFactory.create(
+          Classes.classArrayOf(Long.class, String.class, NestedJsonObjectWithValueAccessor.class),
+          Classes.objectArrayOf(null, null, null));
+
+    ((Proxy) proxiedObject).setHandler(new MethodHandler() {
+      @Override
+      public Object invoke(final Object self, final Method thisMethod, final Method proceed, final Object[] args)
+          throws Throwable
       {
         final String methodName = thisMethod.getName();
 
@@ -151,7 +174,7 @@ public final class JsonObjectPojoProxyFactory
         }
         else if ("hashCode".equals(methodName))
         {
-          return Integer.valueOf(hash(hash(hash(primaryKey), name), parent));
+          return Integer.valueOf(hash(primaryKey, name, parent));
         }
         else if ("equals".equals(methodName))
         {
@@ -163,11 +186,11 @@ public final class JsonObjectPojoProxyFactory
           final NestedJsonObjectWithValueAccessor that =
             castIfInstanceOf(NestedJsonObjectWithValueAccessor.class, nestedJsonObjectWithValueAccessor);
           /* @formatter:off */
-					return Boolean.valueOf(isNotNull(that) && 
-									and(equal(primaryKey, that.getPrimaryKey()), 
-											equal(name, that.getName()),
-											equal(parent, that.getParent())));
-					/* @formatter:on */
+          return Boolean.valueOf(isNotNull(that) && 
+                     (equal(primaryKey, that.getPrimaryKey()) &&
+                      equal(name, that.getName()) &&
+                      equal(parent, that.getParent())));
+          /* @formatter:on */
         }
         else
         {
@@ -175,8 +198,7 @@ public final class JsonObjectPojoProxyFactory
         }
       }
     });
-    return (NestedJsonObjectWithValueAccessor) proxyFactory.create(
-        Classes.classArrayOf(Long.class, String.class, NestedJsonObjectWithValueAccessor.class),
-        Classes.objectArrayOf(null, null, null));
+
+    return proxiedObject;
   }
 }

@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json.json2java;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.Json;
-
 
 /**
  * <pre>
@@ -70,7 +68,8 @@ public class AddressWithJsonConstructor
   private String postcode;
 
   @JsonConstructor
-  public AddressWithJsonConstructor(String street, String suburb, String city, String state, String postcode)
+  public AddressWithJsonConstructor(final String street, final String suburb, final String city, final String state,
+      final String postcode)
   {
     this.street = street;
     this.suburb = suburb;
@@ -91,7 +90,7 @@ public class AddressWithJsonConstructor
    * @param street
    *          the street to set
    */
-  public void setStreet(String street)
+  public void setStreet(final String street)
   {
     this.street = street;
   }
@@ -108,7 +107,7 @@ public class AddressWithJsonConstructor
    * @param suburb
    *          the suburb to set
    */
-  public void setSuburb(String suburb)
+  public void setSuburb(final String suburb)
   {
     this.suburb = suburb;
   }
@@ -125,7 +124,7 @@ public class AddressWithJsonConstructor
    * @param city
    *          the city to set
    */
-  public void setCity(String city)
+  public void setCity(final String city)
   {
     this.city = city;
   }
@@ -142,7 +141,7 @@ public class AddressWithJsonConstructor
    * @param state
    *          the state to set
    */
-  public void setState(String state)
+  public void setState(final String state)
   {
     this.state = state;
   }
@@ -159,7 +158,7 @@ public class AddressWithJsonConstructor
    * @param postcode
    *          the postcode to set
    */
-  public void setPostcode(String postcode)
+  public void setPostcode(final String postcode)
   {
     this.postcode = postcode;
   }
@@ -171,7 +170,7 @@ public class AddressWithJsonConstructor
   }
 
   @Override
-  public boolean equals(Object address)
+  public boolean equals(final Object address)
   {
     if (identical(this, address))
     {
@@ -180,10 +179,10 @@ public class AddressWithJsonConstructor
     final AddressWithJsonConstructor that = castIfInstanceOf(AddressWithJsonConstructor.class, address);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.street, that.getStreet()), 
-								equal(this.suburb, that.getSuburb()),
-								equal(this.city, that.getCity()), 
-								equal(this.state, that.getState()),
+						   (equal(this.street, that.getStreet()) && 
+								equal(this.suburb, that.getSuburb()) &&
+								equal(this.city, that.getCity()) &&
+								equal(this.state, that.getState()) &&
 								equal(this.postcode, that.getPostcode()));
 		/* @formatter:on */
   }

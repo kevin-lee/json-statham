@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -77,7 +75,7 @@ public final class JsonObjectWithDuplicateKeys
    * @param username
    *          the username to set
    */
-  public void setUsername(String username)
+  public void setUsername(final String username)
   {
     this.username = username;
   }
@@ -94,7 +92,7 @@ public final class JsonObjectWithDuplicateKeys
    * @param fullName
    *          the fullName to set
    */
-  public void setFullName(String fullName)
+  public void setFullName(final String fullName)
   {
     this.fullName = fullName;
   }
@@ -111,7 +109,7 @@ public final class JsonObjectWithDuplicateKeys
    * @param name
    *          the name to set
    */
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -128,7 +126,7 @@ public final class JsonObjectWithDuplicateKeys
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -140,7 +138,7 @@ public final class JsonObjectWithDuplicateKeys
   }
 
   @Override
-  public boolean equals(Object jsonObjectWithDuplicateKeys)
+  public boolean equals(final Object jsonObjectWithDuplicateKeys)
   {
     if (identical(this, jsonObjectWithDuplicateKeys))
     {
@@ -150,9 +148,9 @@ public final class JsonObjectWithDuplicateKeys
       castIfInstanceOf(JsonObjectWithDuplicateKeys.class, jsonObjectWithDuplicateKeys);
     /* @formatter:off */
 		return isNotNull(that)	&& 
-						and(equal(this.username, that.getUsername()), 
-								equal(this.fullName, that.getFullName()),
-								equal(this.name, that.getName()), 
+						   (equal(this.username, that.getUsername()) && 
+								equal(this.fullName, that.getFullName()) &&
+								equal(this.name, that.getName()) &&
 								equal(this.email, that.getEmail()));
 		/* @formatter:on */
   }

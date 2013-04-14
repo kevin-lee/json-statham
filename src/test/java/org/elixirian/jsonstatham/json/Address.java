@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -72,7 +70,7 @@ public class Address
   {
   }
 
-  public Address(String street, String suburb, String city, String state, String postcode)
+  public Address(final String street, final String suburb, final String city, final String state, final String postcode)
   {
     this.street = street;
     this.suburb = suburb;
@@ -93,7 +91,7 @@ public class Address
    * @param street
    *          the street to set
    */
-  public void setStreet(String street)
+  public void setStreet(final String street)
   {
     this.street = street;
   }
@@ -110,7 +108,7 @@ public class Address
    * @param suburb
    *          the suburb to set
    */
-  public void setSuburb(String suburb)
+  public void setSuburb(final String suburb)
   {
     this.suburb = suburb;
   }
@@ -127,7 +125,7 @@ public class Address
    * @param city
    *          the city to set
    */
-  public void setCity(String city)
+  public void setCity(final String city)
   {
     this.city = city;
   }
@@ -144,7 +142,7 @@ public class Address
    * @param state
    *          the state to set
    */
-  public void setState(String state)
+  public void setState(final String state)
   {
     this.state = state;
   }
@@ -161,7 +159,7 @@ public class Address
    * @param postcode
    *          the postcode to set
    */
-  public void setPostcode(String postcode)
+  public void setPostcode(final String postcode)
   {
     this.postcode = postcode;
   }
@@ -173,7 +171,7 @@ public class Address
   }
 
   @Override
-  public boolean equals(Object address)
+  public boolean equals(final Object address)
   {
     if (identical(this, address))
     {
@@ -182,10 +180,10 @@ public class Address
     final Address that = castIfInstanceOf(Address.class, address);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.street, that.getStreet()), 
-								equal(this.suburb, that.getSuburb()),
-								equal(this.city, that.getCity()), 
-								equal(this.state, that.getState()),
+						   (equal(this.street, that.getStreet()) && 
+								equal(this.suburb, that.getSuburb()) &&
+								equal(this.city, that.getCity()) &&
+								equal(this.state, that.getState()) &&
 								equal(this.postcode, that.getPostcode()));
 		/* @formatter:on */
   }

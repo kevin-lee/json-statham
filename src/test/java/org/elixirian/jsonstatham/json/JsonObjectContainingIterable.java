@@ -31,14 +31,12 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Iterator;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
 
 /**
  * <pre>
@@ -61,7 +59,7 @@ public class JsonObjectContainingIterable
   @JsonField(name = "valueIterable")
   private final Iterable<String> iterable;
 
-  public JsonObjectContainingIterable(String name, Iterable<String> iterable)
+  public JsonObjectContainingIterable(final String name, final Iterable<String> iterable)
   {
     this.name = name;
     this.iterable = iterable;
@@ -84,7 +82,7 @@ public class JsonObjectContainingIterable
       castIfInstanceOf(JsonObjectContainingIterable.class, jsonObjectContainingIterable);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
+						   (equal(this.name, that.name) &&
 								iterableEquals(this.iterable, that.iterable));
 		/* @formatter:on */
   }

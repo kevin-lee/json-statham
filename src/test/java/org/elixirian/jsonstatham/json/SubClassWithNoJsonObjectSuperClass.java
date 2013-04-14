@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -56,7 +54,7 @@ public class SubClassWithNoJsonObjectSuperClass extends SuperClassWithoutJsonObj
   @JsonField(name = "email")
   private String email;
 
-  public SubClassWithNoJsonObjectSuperClass(String name, int number, String email)
+  public SubClassWithNoJsonObjectSuperClass(final String name, final int number, final String email)
   {
     super(name, number);
     this.email = email;
@@ -74,7 +72,7 @@ public class SubClassWithNoJsonObjectSuperClass extends SuperClassWithoutJsonObj
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -82,11 +80,11 @@ public class SubClassWithNoJsonObjectSuperClass extends SuperClassWithoutJsonObj
   @Override
   public int hashCode()
   {
-    return hash(hash(hash(getName()), getNumber()), email);
+    return hash(getName(), getNumber(), email);
   }
 
   @Override
-  public boolean equals(Object subClassWithNoJsonObjectSuperClass)
+  public boolean equals(final Object subClassWithNoJsonObjectSuperClass)
   {
     if (identical(this, subClassWithNoJsonObjectSuperClass))
     {
@@ -96,7 +94,7 @@ public class SubClassWithNoJsonObjectSuperClass extends SuperClassWithoutJsonObj
       castIfInstanceOf(SubClassWithNoJsonObjectSuperClass.class, subClassWithNoJsonObjectSuperClass);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(subClassWithNoJsonObjectSuperClass), 
+						   (super.equals(subClassWithNoJsonObjectSuperClass) && 
 								equal(this.email, that.getEmail()));
 		/* @formatter:on */
   }

@@ -31,7 +31,6 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.Json;
@@ -118,8 +117,8 @@ public class SecondSubClassWithOwnFields extends SubClass
       castIfInstanceOf(SecondSubClassWithOwnFields.class, secondSubClassWithOwnFields);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(secondSubClassWithOwnFields), 
-								equal(this.address, that.getAddress()),
+						   (super.equals(secondSubClassWithOwnFields) && 
+								equal(this.address, that.getAddress()) &&
 								equal(this.comment, that.getComment()));
 		/* @formatter:on */
   }

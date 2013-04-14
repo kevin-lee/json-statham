@@ -31,14 +31,12 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Iterator;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -61,7 +59,7 @@ public class JsonObjectContainingIterator
   @JsonField(name = "valueIterator")
   private final Iterator<String> iterator;
 
-  public JsonObjectContainingIterator(String name, Iterator<String> iterator)
+  public JsonObjectContainingIterator(final String name, final Iterator<String> iterator)
   {
     this.name = name;
     this.iterator = iterator;
@@ -84,7 +82,7 @@ public class JsonObjectContainingIterator
   }
 
   @Override
-  public boolean equals(Object jsonObjectContainingIterator)
+  public boolean equals(final Object jsonObjectContainingIterator)
   {
     if (identical(this, jsonObjectContainingIterator))
     {
@@ -94,12 +92,12 @@ public class JsonObjectContainingIterator
       castIfInstanceOf(JsonObjectContainingIterator.class, jsonObjectContainingIterator);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
+						   (equal(this.name, that.name) && 
 								iteratorEquals(this.iterator, that.iterator));
 		/* @formatter:on */
   }
 
-  private boolean iteratorEquals(Iterator<String> iterator1, Iterator<String> iterator2)
+  private boolean iteratorEquals(final Iterator<String> iterator1, final Iterator<String> iterator2)
   {
     if (iterator1.hasNext() != iterator2.hasNext())
     {

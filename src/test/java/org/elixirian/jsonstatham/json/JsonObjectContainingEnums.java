@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -64,7 +62,7 @@ public final class JsonObjectContainingEnums
 
     private final String value;
 
-    private Access(String value)
+    private Access(final String value)
     {
       this.value = value;
     }
@@ -90,7 +88,8 @@ public final class JsonObjectContainingEnums
   @JsonField
   private final Access[] access;
 
-  public JsonObjectContainingEnums(String name, int number, boolean passed, Role role, Access... access)
+  public JsonObjectContainingEnums(final String name, final int number, final boolean passed, final Role role,
+      final Access... access)
   {
     this.name = name;
     this.number = number;
@@ -106,7 +105,7 @@ public final class JsonObjectContainingEnums
   }
 
   @Override
-  public boolean equals(Object jsonObjectContainingEnums)
+  public boolean equals(final Object jsonObjectContainingEnums)
   {
     if (identical(this, jsonObjectContainingEnums))
     {
@@ -115,10 +114,10 @@ public final class JsonObjectContainingEnums
     final JsonObjectContainingEnums that = castIfInstanceOf(JsonObjectContainingEnums.class, jsonObjectContainingEnums);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
-								equal(this.number, that.number), 
-								equal(this.passed, that.passed), 
-								equal(this.role, that.role), 
+						   (equal(this.name, that.name) && 
+								equal(this.number, that.number) && 
+								equal(this.passed, that.passed) &&
+								equal(this.role, that.role) &&
 								deepEqual(this.access, that.access));
 		/* @formatter:on */
   }

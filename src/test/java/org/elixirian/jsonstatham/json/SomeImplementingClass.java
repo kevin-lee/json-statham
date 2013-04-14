@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -62,7 +60,7 @@ public class SomeImplementingClass implements SomeInterface
   @JsonField(name = "email")
   private String email;
 
-  public SomeImplementingClass(String name, int number, String email)
+  public SomeImplementingClass(final String name, final int number, final String email)
   {
     this.name = name;
     this.number = number;
@@ -83,7 +81,7 @@ public class SomeImplementingClass implements SomeInterface
    *          the name to set
    */
   @Override
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -102,7 +100,7 @@ public class SomeImplementingClass implements SomeInterface
    *          the number to set
    */
   @Override
-  public void setNumber(int number)
+  public void setNumber(final int number)
   {
     this.number = number;
   }
@@ -121,7 +119,7 @@ public class SomeImplementingClass implements SomeInterface
    *          the email to set
    */
   @Override
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -129,11 +127,11 @@ public class SomeImplementingClass implements SomeInterface
   @Override
   public int hashCode()
   {
-    return hash(hash(hash(name), number), email);
+    return hash(name, number, email);
   }
 
   @Override
-  public boolean equals(Object someImplementingClass)
+  public boolean equals(final Object someImplementingClass)
   {
     if (identical(this, someImplementingClass))
     {
@@ -142,8 +140,8 @@ public class SomeImplementingClass implements SomeInterface
     final SomeImplementingClass that = castIfInstanceOf(SomeImplementingClass.class, someImplementingClass);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.getName()), 
-								equal(this.number, that.getNumber()),
+						   (equal(this.name, that.getName()) && 
+								equal(this.number, that.getNumber()) &&
 								equal(this.email, that.getEmail()));
 		/* @formatter:on */
   }

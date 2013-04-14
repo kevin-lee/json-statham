@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -62,7 +60,7 @@ public abstract class SuperClassWithValueAccessorWithOverriddenMethod
   @JsonField(name = "number")
   private int number;
 
-  public SuperClassWithValueAccessorWithOverriddenMethod(String name, int number)
+  public SuperClassWithValueAccessorWithOverriddenMethod(final String name, final int number)
   {
     this.name = name;
     this.number = number;
@@ -80,7 +78,7 @@ public abstract class SuperClassWithValueAccessorWithOverriddenMethod
    * @param name
    *          the name to set
    */
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -97,7 +95,7 @@ public abstract class SuperClassWithValueAccessorWithOverriddenMethod
    * @param number
    *          the number to set
    */
-  public void setNumber(int number)
+  public void setNumber(final int number)
   {
     this.number = number;
   }
@@ -105,11 +103,11 @@ public abstract class SuperClassWithValueAccessorWithOverriddenMethod
   @Override
   public int hashCode()
   {
-    return hash(hash(name), number);
+    return hash(name, number);
   }
 
   @Override
-  public boolean equals(Object superClassWithValueAccessorWithOverriddenMethod)
+  public boolean equals(final Object superClassWithValueAccessorWithOverriddenMethod)
   {
     if (identical(this, superClassWithValueAccessorWithOverriddenMethod))
     {
@@ -120,7 +118,7 @@ public abstract class SuperClassWithValueAccessorWithOverriddenMethod
           superClassWithValueAccessorWithOverriddenMethod);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
+						   (equal(this.name, that.name) && 
 								equal(this.number, that.number));
 		/* @formatter:on */
   }

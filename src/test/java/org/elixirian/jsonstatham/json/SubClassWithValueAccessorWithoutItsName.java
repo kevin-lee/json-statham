@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -58,7 +56,7 @@ public class SubClassWithValueAccessorWithoutItsName extends SuperClassWithValue
   @JsonField(name = "email")
   private String email;
 
-  public SubClassWithValueAccessorWithoutItsName(String name, int number, String email)
+  public SubClassWithValueAccessorWithoutItsName(final String name, final int number, final String email)
   {
     super(name, number);
     this.email = email;
@@ -76,7 +74,7 @@ public class SubClassWithValueAccessorWithoutItsName extends SuperClassWithValue
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -88,7 +86,7 @@ public class SubClassWithValueAccessorWithoutItsName extends SuperClassWithValue
   }
 
   @Override
-  public boolean equals(Object subClassWithValueAccessorWithoutItsName)
+  public boolean equals(final Object subClassWithValueAccessorWithoutItsName)
   {
     if (identical(this, subClassWithValueAccessorWithoutItsName))
     {
@@ -98,7 +96,7 @@ public class SubClassWithValueAccessorWithoutItsName extends SuperClassWithValue
       castIfInstanceOf(getClass(), subClassWithValueAccessorWithoutItsName);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(subClassWithValueAccessorWithoutItsName), 
+						   (super.equals(subClassWithValueAccessorWithoutItsName) && 
 								equal(this.email, that.email));
 		/* @formatter:on */
   }

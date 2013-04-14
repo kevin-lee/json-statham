@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -72,7 +70,7 @@ public final class NestedJsonObject
   {
   }
 
-  public NestedJsonObject(Long primaryKey, String name, Address address, int intNumber, double doubleNumber)
+  public NestedJsonObject(final Long primaryKey, final String name, final Address address, final int intNumber, final double doubleNumber)
   {
     this.primaryKey = primaryKey;
     this.name = name;
@@ -93,7 +91,7 @@ public final class NestedJsonObject
    * @param primaryKey
    *          the primaryKey to set
    */
-  public void setPrimaryKey(Long primaryKey)
+  public void setPrimaryKey(final Long primaryKey)
   {
     this.primaryKey = primaryKey;
   }
@@ -110,7 +108,7 @@ public final class NestedJsonObject
    * @param name
    *          the name to set
    */
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -127,7 +125,7 @@ public final class NestedJsonObject
    * @param address
    *          the address to set
    */
-  public void setAddress(Address address)
+  public void setAddress(final Address address)
   {
     this.address = address;
   }
@@ -137,7 +135,7 @@ public final class NestedJsonObject
     return intNumber;
   }
 
-  public void setIntNumber(int intNumber)
+  public void setIntNumber(final int intNumber)
   {
     this.intNumber = intNumber;
   }
@@ -147,7 +145,7 @@ public final class NestedJsonObject
     return doubleNumber;
   }
 
-  public void setDoubleNumber(double doubleNumber)
+  public void setDoubleNumber(final double doubleNumber)
   {
     this.doubleNumber = doubleNumber;
   }
@@ -159,7 +157,7 @@ public final class NestedJsonObject
   }
 
   @Override
-  public boolean equals(Object nestedJsonObject)
+  public boolean equals(final Object nestedJsonObject)
   {
     if (identical(this, nestedJsonObject))
     {
@@ -168,10 +166,10 @@ public final class NestedJsonObject
     final NestedJsonObject that = castIfInstanceOf(NestedJsonObject.class, nestedJsonObject);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.primaryKey, that.getPrimaryKey()), 
-								equal(this.name, that.getName()),
-								equal(this.address, that.getAddress()),
-								equal(this.intNumber, that.getIntNumber()),
+						   (equal(this.primaryKey, that.getPrimaryKey()) &&
+								equal(this.name, that.getName()) &&
+								equal(this.address, that.getAddress()) &&
+								equal(this.intNumber, that.getIntNumber()) &&
 								equal(this.doubleNumber, that.getDoubleNumber()));
 		/* @formatter:on */
   }

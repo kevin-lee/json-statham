@@ -31,15 +31,13 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -62,7 +60,7 @@ public class JsonObjectContainingMapEntrySet
   @JsonField(name = "valueMapEntrySet")
   private final Set<Entry<String, Address>> mapEntrySet;
 
-  public JsonObjectContainingMapEntrySet(String name, Set<Entry<String, Address>> mapEntrySet)
+  public JsonObjectContainingMapEntrySet(final String name, final Set<Entry<String, Address>> mapEntrySet)
   {
     this.name = name;
     this.mapEntrySet = mapEntrySet;
@@ -75,7 +73,7 @@ public class JsonObjectContainingMapEntrySet
   }
 
   @Override
-  public boolean equals(Object jsonObjectContainingMapEntrySet)
+  public boolean equals(final Object jsonObjectContainingMapEntrySet)
   {
     if (identical(this, jsonObjectContainingMapEntrySet))
     {
@@ -85,7 +83,7 @@ public class JsonObjectContainingMapEntrySet
       castIfInstanceOf(JsonObjectContainingMapEntrySet.class, jsonObjectContainingMapEntrySet);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
+						   (equal(this.name, that.name) && 
 								equal(this.mapEntrySet, that.mapEntrySet));
 		/* @formatter:on */
   }

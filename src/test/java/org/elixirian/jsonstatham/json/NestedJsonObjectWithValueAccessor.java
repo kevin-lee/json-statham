@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -66,7 +64,7 @@ public class NestedJsonObjectWithValueAccessor
   @JsonField(name = "parent")
   private NestedJsonObjectWithValueAccessor parent;
 
-  public NestedJsonObjectWithValueAccessor(Long primaryKey, String name, NestedJsonObjectWithValueAccessor parent)
+  public NestedJsonObjectWithValueAccessor(final Long primaryKey, final String name, final NestedJsonObjectWithValueAccessor parent)
   {
     this.primaryKey = primaryKey;
     this.name = name;
@@ -78,7 +76,7 @@ public class NestedJsonObjectWithValueAccessor
     return primaryKey;
   }
 
-  public void setPrimaryKey(Long primaryKey)
+  public void setPrimaryKey(final Long primaryKey)
   {
     this.primaryKey = primaryKey;
   }
@@ -88,7 +86,7 @@ public class NestedJsonObjectWithValueAccessor
     return name;
   }
 
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -98,7 +96,7 @@ public class NestedJsonObjectWithValueAccessor
     return parent;
   }
 
-  public void setParent(NestedJsonObjectWithValueAccessor parent)
+  public void setParent(final NestedJsonObjectWithValueAccessor parent)
   {
     this.parent = parent;
   }
@@ -110,7 +108,7 @@ public class NestedJsonObjectWithValueAccessor
   }
 
   @Override
-  public boolean equals(Object nestedJsonObjectWithValueAccessor)
+  public boolean equals(final Object nestedJsonObjectWithValueAccessor)
   {
     if (identical(this, nestedJsonObjectWithValueAccessor))
     {
@@ -120,8 +118,8 @@ public class NestedJsonObjectWithValueAccessor
       castIfInstanceOf(NestedJsonObjectWithValueAccessor.class, nestedJsonObjectWithValueAccessor);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.primaryKey, that.getPrimaryKey()), 
-								equal(this.name, that.getName()),
+						   (equal(this.primaryKey, that.getPrimaryKey()) &&
+								equal(this.name, that.getName()) &&
 								equal(this.parent, that.getParent()));
 		/* @formatter:on */
   }

@@ -31,14 +31,12 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.List;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -61,7 +59,7 @@ public class JsonObjectContainingList
   @JsonField(name = "valueList")
   private final List<String> list;
 
-  public JsonObjectContainingList(String name, List<String> list)
+  public JsonObjectContainingList(final String name, final List<String> list)
   {
     this.name = name;
     this.list = list;
@@ -74,7 +72,7 @@ public class JsonObjectContainingList
   }
 
   @Override
-  public boolean equals(Object jsonObjectContainingList)
+  public boolean equals(final Object jsonObjectContainingList)
   {
     if (identical(this, jsonObjectContainingList))
     {
@@ -83,7 +81,7 @@ public class JsonObjectContainingList
     final JsonObjectContainingList that = castIfInstanceOf(JsonObjectContainingList.class, jsonObjectContainingList);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.name), 
+						   (equal(this.name, that.name) && 
 								equal(this.list, that.list));
 		/* @formatter:on */
   }

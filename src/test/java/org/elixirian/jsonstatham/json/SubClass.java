@@ -31,12 +31,10 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.jsonstatham.annotation.JsonField;
 
 /**
  * <pre>
@@ -56,7 +54,7 @@ public class SubClass extends SuperClass
   @JsonField(name = "email")
   private String email;
 
-  public SubClass(String name, int number, String email)
+  public SubClass(final String name, final int number, final String email)
   {
     super(name, number);
     this.email = email;
@@ -74,7 +72,7 @@ public class SubClass extends SuperClass
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -82,11 +80,11 @@ public class SubClass extends SuperClass
   @Override
   public int hashCode()
   {
-    return hash(hash(hash(getName()), getNumber()), email);
+    return hash(getName(), getNumber(), email);
   }
 
   @Override
-  public boolean equals(Object subClass)
+  public boolean equals(final Object subClass)
   {
     if (identical(this, subClass))
     {
@@ -95,7 +93,7 @@ public class SubClass extends SuperClass
     final SubClass that = castIfInstanceOf(SubClass.class, subClass);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(subClass), 
+						   (super.equals(subClass) && 
 								equal(this.email, that.getEmail()));
 		/* @formatter:on */
   }

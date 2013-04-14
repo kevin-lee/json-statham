@@ -31,11 +31,9 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.JsonField;
-
 
 /**
  * <pre>
@@ -57,7 +55,7 @@ public abstract class SuperClassWithoutJsonObject
   @JsonField(name = "number")
   private int number;
 
-  public SuperClassWithoutJsonObject(String name, int number)
+  public SuperClassWithoutJsonObject(final String name, final int number)
   {
     this.name = name;
     this.number = number;
@@ -75,7 +73,7 @@ public abstract class SuperClassWithoutJsonObject
    * @param name
    *          the name to set
    */
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
@@ -92,7 +90,7 @@ public abstract class SuperClassWithoutJsonObject
    * @param number
    *          the number to set
    */
-  public void setNumber(int number)
+  public void setNumber(final int number)
   {
     this.number = number;
   }
@@ -100,11 +98,11 @@ public abstract class SuperClassWithoutJsonObject
   @Override
   public int hashCode()
   {
-    return hash(hash(name), number);
+    return hash(name, number);
   }
 
   @Override
-  public boolean equals(Object superClassWithoutJsonObject)
+  public boolean equals(final Object superClassWithoutJsonObject)
   {
     if (identical(this, superClassWithoutJsonObject))
     {
@@ -114,7 +112,7 @@ public abstract class SuperClassWithoutJsonObject
       castIfInstanceOf(SuperClassWithoutJsonObject.class, superClassWithoutJsonObject);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.getName()), 
+						   (equal(this.name, that.getName()) && 
 								equal(this.number, that.getNumber()));
 		/* @formatter:on */
   }

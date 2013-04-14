@@ -31,13 +31,11 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
-
 
 /**
  * <pre>
@@ -58,7 +56,7 @@ public class SubClassWithValueAccessor extends SuperClassWithValueAccessor
   @JsonField(name = "email")
   private String email;
 
-  public SubClassWithValueAccessor(String name, int number, String email)
+  public SubClassWithValueAccessor(final String name, final int number, final String email)
   {
     super(name, number);
     this.email = email;
@@ -76,7 +74,7 @@ public class SubClassWithValueAccessor extends SuperClassWithValueAccessor
    * @param email
    *          the email to set
    */
-  public void setEmail(String email)
+  public void setEmail(final String email)
   {
     this.email = email;
   }
@@ -88,7 +86,7 @@ public class SubClassWithValueAccessor extends SuperClassWithValueAccessor
   }
 
   @Override
-  public boolean equals(Object subClassWithValueAccessor)
+  public boolean equals(final Object subClassWithValueAccessor)
   {
     if (identical(this, subClassWithValueAccessor))
     {
@@ -97,7 +95,7 @@ public class SubClassWithValueAccessor extends SuperClassWithValueAccessor
     final SubClassWithValueAccessor that = castIfInstanceOf(SubClassWithValueAccessor.class, subClassWithValueAccessor);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(super.equals(subClassWithValueAccessor), 
+						   (super.equals(subClassWithValueAccessor) && 
 								equal(this.email, that.email));
 		/* @formatter:on */
   }

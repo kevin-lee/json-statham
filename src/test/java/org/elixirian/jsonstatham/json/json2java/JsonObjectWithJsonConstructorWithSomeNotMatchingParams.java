@@ -31,15 +31,13 @@
  */
 package org.elixirian.jsonstatham.json.json2java;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.util.Map;
 
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.Json;
-
 
 /**
  * <pre>
@@ -65,8 +63,8 @@ public class JsonObjectWithJsonConstructorWithSomeNotMatchingParams
   private final Map<String, String> parameterMap;
 
   @JsonConstructor
-  public JsonObjectWithJsonConstructorWithSomeNotMatchingParams(String name, String uri,
-      Map<String, String> parameterMap)
+  public JsonObjectWithJsonConstructorWithSomeNotMatchingParams(final String name, final String uri,
+      final Map<String, String> parameterMap)
   {
     this.name = name;
     this.uri = uri;
@@ -95,7 +93,7 @@ public class JsonObjectWithJsonConstructorWithSomeNotMatchingParams
   }
 
   @Override
-  public boolean equals(Object address)
+  public boolean equals(final Object address)
   {
     if (identical(this, address))
     {
@@ -105,8 +103,8 @@ public class JsonObjectWithJsonConstructorWithSomeNotMatchingParams
       castIfInstanceOf(JsonObjectWithJsonConstructorWithSomeNotMatchingParams.class, address);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.name, that.getName()), 
-								equal(this.uri, that.getUri()),
+						   (equal(this.name, that.getName()) && 
+								equal(this.uri, that.getUri()) &&
 								equal(this.parameterMap, that.getParameterMap()));
 		/* @formatter:on */
   }

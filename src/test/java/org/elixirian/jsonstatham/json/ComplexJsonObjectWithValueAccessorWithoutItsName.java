@@ -31,15 +31,14 @@
  */
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.ValueAccessor;
 
 /**
@@ -261,14 +260,14 @@ public final class ComplexJsonObjectWithValueAccessorWithoutItsName
           complexJsonObjectWithValueAccessorWithoutItsName);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.primaryKey, that.getPrimaryKey()),
-								equal(this.name, that.getName()), 
-								equal(this.registered, that.isRegistered()), 
-								equal(this.enabled, that.getEnabled()), 
-								equal(this.address, that.getAddress()), 
-								equal(this.date, that.date), 
-								equal(this.dateWithValueAccessor, that.dateWithValueAccessor), 
-								equal(this.calendar, that.calendar), 
+						   (equal(this.primaryKey, that.getPrimaryKey()) &&
+								equal(this.name, that.getName()) &&
+								equal(this.registered, that.isRegistered()) && 
+								equal(this.enabled, that.getEnabled()) &&
+								equal(this.address, that.getAddress()) &&
+								equal(this.date, that.date) &&
+								equal(this.dateWithValueAccessor, that.dateWithValueAccessor) && 
+								equal(this.calendar, that.calendar) &&
 								equal(this.calendarWithValueAccessor, that.calendarWithValueAccessor));
 		/* @formatter:on */
   }

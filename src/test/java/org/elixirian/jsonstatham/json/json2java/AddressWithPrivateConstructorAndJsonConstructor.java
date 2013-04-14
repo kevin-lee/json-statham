@@ -31,14 +31,12 @@
  */
 package org.elixirian.jsonstatham.json.json2java;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
-import org.elixirian.kommonlee.util.Objects;
+import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonConstructor;
 import org.elixirian.jsonstatham.annotation.JsonField;
-import org.elixirian.jsonstatham.annotation.Json;
-
+import org.elixirian.kommonlee.util.Objects;
 
 /**
  * <pre>
@@ -71,8 +69,8 @@ public class AddressWithPrivateConstructorAndJsonConstructor
   private String postcode;
 
   @JsonConstructor
-  private AddressWithPrivateConstructorAndJsonConstructor(String street, String suburb, String city, String state,
-      String postcode)
+  private AddressWithPrivateConstructorAndJsonConstructor(final String street, final String suburb, final String city, final String state,
+      final String postcode)
   {
     this.street = street;
     this.suburb = suburb;
@@ -93,7 +91,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
    * @param street
    *          the street to set
    */
-  public void setStreet(String street)
+  public void setStreet(final String street)
   {
     this.street = street;
   }
@@ -110,7 +108,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
    * @param suburb
    *          the suburb to set
    */
-  public void setSuburb(String suburb)
+  public void setSuburb(final String suburb)
   {
     this.suburb = suburb;
   }
@@ -127,7 +125,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
    * @param city
    *          the city to set
    */
-  public void setCity(String city)
+  public void setCity(final String city)
   {
     this.city = city;
   }
@@ -144,7 +142,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
    * @param state
    *          the state to set
    */
-  public void setState(String state)
+  public void setState(final String state)
   {
     this.state = state;
   }
@@ -161,7 +159,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
    * @param postcode
    *          the postcode to set
    */
-  public void setPostcode(String postcode)
+  public void setPostcode(final String postcode)
   {
     this.postcode = postcode;
   }
@@ -173,7 +171,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
   }
 
   @Override
-  public boolean equals(Object address)
+  public boolean equals(final Object address)
   {
     if (identical(this, address))
     {
@@ -183,10 +181,10 @@ public class AddressWithPrivateConstructorAndJsonConstructor
       castIfInstanceOf(AddressWithPrivateConstructorAndJsonConstructor.class, address);
     /* @formatter:off */
 		return isNotNull(that) &&
-						and(equal(this.street, that.getStreet()), 
-								equal(this.suburb, that.getSuburb()),
-								equal(this.city, that.getCity()), 
-								equal(this.state, that.getState()),
+						   (equal(this.street, that.getStreet()) && 
+								equal(this.suburb, that.getSuburb()) &&
+								equal(this.city, that.getCity()) &&
+								equal(this.state, that.getState()) &&
 								equal(this.postcode, that.getPostcode()));
 		/* @formatter:on */
   }
@@ -203,7 +201,7 @@ public class AddressWithPrivateConstructorAndJsonConstructor
   }
 
   public static AddressWithPrivateConstructorAndJsonConstructor newAddressWithPrivateConstructorAndJsonConstructor(
-      String street, String suburb, String city, String state, String postcode)
+      final String street, final String suburb, final String city, final String state, final String postcode)
   {
     return new AddressWithPrivateConstructorAndJsonConstructor(street, suburb, city, state, postcode);
   }

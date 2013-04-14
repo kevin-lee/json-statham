@@ -1,6 +1,5 @@
 package org.elixirian.jsonstatham.json;
 
-import static org.elixirian.kommonlee.util.Conditional.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 
 import org.elixirian.jsonstatham.annotation.Json;
@@ -55,8 +54,8 @@ public class JsonObjectWithoutFieldName
       castIfInstanceOf(JsonObjectWithoutFieldName.class, jsonObjectWithoutFieldName);
     /* @formatter:off */
 		return isNotNull(that) && 
-						and(equal(this.id, that.id), 
-								equal(this.name, that.name), 
+						   (equal(this.id, that.id) && 
+								equal(this.name, that.name) && 
 								equal(this.address, that.address));
 		/* @formatter:on */
   }
