@@ -47,7 +47,7 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public class JsonArrayWithUnorderedJsonObject<T> extends AbstractJsonArray
+public class JsonArrayWithUnorderedJsonObject extends AbstractJsonArray
 {
   protected JsonArrayWithUnorderedJsonObject()
   {
