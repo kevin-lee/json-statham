@@ -34,6 +34,7 @@ package org.elixirian.jsonstatham.core.reflect.json2java;
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 import static org.elixirian.kommonlee.util.collect.Lists.*;
+import static org.elixirian.kommonlee.util.collect.Sets.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.annotation.JsonField;
@@ -77,7 +79,6 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
 import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
 import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessorWithoutItsName;
-import org.elixirian.jsonstatham.json.InteractionConfig;
 import org.elixirian.jsonstatham.json.JsonObjectContainingCollection;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums;
 import org.elixirian.jsonstatham.json.JsonObjectContainingEnums.Access;
@@ -122,6 +123,7 @@ import org.elixirian.jsonstatham.json.json2java.JsonWithNotOrderedConstructorPar
 import org.elixirian.jsonstatham.json.json2java.ObjectContainingJsonConvertible;
 import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArray;
 import org.elixirian.jsonstatham.json.json2java.Product;
+import org.elixirian.jsonstatham.json.json2java.interaction.InteractionConfig;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitionHolder;
 import org.elixirian.jsonstatham.json.json2java.item.ItemDefinitions;
 import org.elixirian.jsonstatham.json.json2java.item.ItemVersion;
@@ -131,6 +133,7 @@ import org.elixirian.jsonstatham.test.ItemConfigWithPrivateConstructor;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
+import org.elixirian.kommonlee.functional.Functions;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.elixirian.kommonlee.test.CauseCheckableExpectedException;
 import org.junit.After;
@@ -2370,5 +2373,117 @@ public class ReflectionJsonToJavaConverterTest
 
     /* then */
     assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testInteractionConfig() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final String value = "{\"submitMessage\":null,\"pageBreaks\":[0,1,2,4,5,7]}";
+
+    final String expectedSubmitMessage = null;
+    final String expectedSubmitRedirectUrl = null;
+    final SortedSet<Integer> expectedPageBreaks =
+      newTreeSet(Functions.INTEGER_ASCENDING_ORDER, Arrays.asList(0, 1, 2, 4, 5, 7));
+
+    /* when */
+    final InteractionConfig interactionConfig =
+      reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, value);
+
+    /* then */
+    assertThat(interactionConfig.getSubmitMessage(), is(equalTo(expectedSubmitMessage)));
+    assertThat(interactionConfig.getSubmitRedirectUrl(), is(equalTo(expectedSubmitRedirectUrl)));
+    assertThat(interactionConfig.getPageBreaks(), is(equalTo(expectedPageBreaks)));
+  }
+
+  @Test
+  public void testInteractionConfig2() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final String value =
+      "{\"submitMessage\":null,\"submitRedirectUrl\":\"http://google.com\",\"pageBreaks\":[0,1,2,4,5,7]}";
+
+    final String expectedSubmitMessage = null;
+    final String expectedSubmitRedirectUrl = "http://google.com";
+    final SortedSet<Integer> expectedPageBreaks =
+      newTreeSet(Functions.INTEGER_ASCENDING_ORDER, Arrays.asList(0, 1, 2, 4, 5, 7));
+
+    /* when */
+    final InteractionConfig interactionConfig =
+      reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, value);
+
+    /* then */
+    assertThat(interactionConfig.getSubmitMessage(), is(equalTo(expectedSubmitMessage)));
+    assertThat(interactionConfig.getSubmitRedirectUrl(), is(equalTo(expectedSubmitRedirectUrl)));
+    assertThat(interactionConfig.getPageBreaks(), is(equalTo(expectedPageBreaks)));
+  }
+
+  @Test
+  public void testInteractionConfig3() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final String value =
+      "{\"submitMessage\":\"Thank you for your answers\",\"submitRedirectUrl\":\"http://google.com\",\"pageBreaks\":[0,1,2,4,5,7]}";
+
+    final String expectedSubmitMessage = "Thank you for your answers";
+    final String expectedSubmitRedirectUrl = "http://google.com";
+    final SortedSet<Integer> expectedPageBreaks =
+      newTreeSet(Functions.INTEGER_ASCENDING_ORDER, Arrays.asList(0, 1, 2, 4, 5, 7));
+
+    /* when */
+    final InteractionConfig interactionConfig =
+      reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, value);
+
+    /* then */
+    assertThat(interactionConfig.getSubmitMessage(), is(equalTo(expectedSubmitMessage)));
+    assertThat(interactionConfig.getSubmitRedirectUrl(), is(equalTo(expectedSubmitRedirectUrl)));
+    assertThat(interactionConfig.getPageBreaks(), is(equalTo(expectedPageBreaks)));
+  }
+
+  @Test
+  public void testInteractionConfig4() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final String value =
+      "{\"submitMessage\":\"Thank you for your answers\",\"submitRedirectUrl\":\"http://google.com\",\"pageBreaks\":null}";
+
+    final String expectedSubmitMessage = "Thank you for your answers";
+    final String expectedSubmitRedirectUrl = "http://google.com";
+    final SortedSet<Integer> expectedPageBreaks = newTreeSet();
+
+    /* when */
+    final InteractionConfig interactionConfig =
+      reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, value);
+
+    /* then */
+    assertThat(interactionConfig.getSubmitMessage(), is(equalTo(expectedSubmitMessage)));
+    assertThat(interactionConfig.getSubmitRedirectUrl(), is(equalTo(expectedSubmitRedirectUrl)));
+    assertThat(interactionConfig.getPageBreaks(), is(equalTo(expectedPageBreaks)));
+  }
+
+  @Test
+  public void testInteractionConfig5() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    /* given */
+    final String value =
+      "{\"submitMessage\":\"Thank you for your answers\",\"submitRedirectUrl\":\"http://google.com\",\"pageBreaks\":[]}";
+
+    final String expectedSubmitMessage = "Thank you for your answers";
+    final String expectedSubmitRedirectUrl = "http://google.com";
+    final SortedSet<Integer> expectedPageBreaks = newTreeSet();
+
+    /* when */
+    final InteractionConfig interactionConfig =
+      reflectionJsonToJavaConverter.convertFromJson(InteractionConfig.class, value);
+
+    /* then */
+    assertThat(interactionConfig.getSubmitMessage(), is(equalTo(expectedSubmitMessage)));
+    assertThat(interactionConfig.getSubmitRedirectUrl(), is(equalTo(expectedSubmitRedirectUrl)));
+    assertThat(interactionConfig.getPageBreaks(), is(equalTo(expectedPageBreaks)));
   }
 }

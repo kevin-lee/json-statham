@@ -620,7 +620,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       }
     }
 
-    /* find constructor with minimum matching params. */
+    /* find constructor with minimum non matching params. */
     final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
       findConstructorWithMaxMatchingMinNonMatchingParams(constructorMap,
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObject);
@@ -1400,30 +1400,46 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     if (null != foundConstructor)
     {
-      final Constructor<T> constructor = foundConstructor.getKey();
-      final Class<?>[] paramTypes = constructor.getParameterTypes();
-      final String[] paramNames = foundConstructor.getValue();
 
-      for (int i = 0, size = paramTypes.length; i < size; i++)
+      final Constructor<T> constructor = foundConstructor.getKey();
+      final Class<?>[] constructorParamTypes = constructor.getParameterTypes();
+      final String[] constructorParamNames = foundConstructor.getValue();
+
+      for (int i = 0, size = constructorParamTypes.length; i < size; i++)
       {
-        final String paramName = paramNames[i];
+        final String paramName = constructorParamNames[i];
         final JsonFieldNameAndFieldPair jsonFieldNameAndFieldPair =
           fieldNameToJsonFieldNameAndFieldPairMap.get(paramName);
+
+        final Class<?> constructorParamType = constructorParamTypes[i];
+
         if (null == jsonFieldNameAndFieldPair)
         {
-          paramValues.add(getDefaultValue(paramTypes[i]));
+          paramValues.add(getDefaultValue(constructorParamType));
         }
         else
         {
           final Field field = jsonFieldNameAndFieldPair.field;
-          if (paramTypes[i].equals(field.getType()))
+
+          final Class<?> fieldType = field.getType();
+
+          if (constructorParamType.equals(fieldType))
           {
-            paramValues.add(resolveFieldValue(field, field.getType(),
+            /* exactly matching type is found (constructorParamType equals fieldType) */
+            paramValues.add(resolveFieldValue(field, fieldType, jsonObject.get(jsonFieldNameAndFieldPair.jsonFieldName)));
+          }
+          else if (fieldType.isAssignableFrom(constructorParamType) || constructorParamType.isAssignableFrom(fieldType))
+          {
+            /*
+             * No exactly matching type but fieldType is assignable from constructorParamType or vice versa. It means
+             * constructorParamType extends fieldType or fieldType extends constructorParamType.
+             */
+            paramValues.add(resolveFieldValue(field, constructorParamType,
                 jsonObject.get(jsonFieldNameAndFieldPair.jsonFieldName)));
           }
           else
           {
-            paramValues.add(getDefaultValue(paramTypes[i]));
+            paramValues.add(getDefaultValue(constructorParamType));
           }
         }
       }
