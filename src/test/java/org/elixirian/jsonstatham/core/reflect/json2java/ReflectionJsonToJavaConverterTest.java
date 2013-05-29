@@ -45,6 +45,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -117,6 +118,8 @@ import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
 import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamName;
 import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamType;
 import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamType2;
+import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamType3;
+import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamType4;
 import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamTypeAndName;
 import org.elixirian.jsonstatham.json.json2java.JsonWithNotOrderedConstructorParams;
 import org.elixirian.jsonstatham.json.json2java.JsonWithNotOrderedConstructorParamsAndDifferentConstructorParamTypeAndName;
@@ -2321,6 +2324,164 @@ public class ReflectionJsonToJavaConverterTest
 
     /* otherwise-fail */
     fail();
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType3() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+      ParseException
+  {
+    /* given */
+    @SuppressWarnings("boxing")
+    final Long expectedId = 999L;
+    final String expectedDate = "2013-01-05";
+    final String expectedNote = "Test blah blah";
+    final String jsonString =
+      format("{\"id\":%s,\"date\":\"%s\",\"note\":\"%s\"}", expectedId, expectedDate, expectedNote);
+    final JsonWithDifferentConstructorParamType3 expected =
+      new JsonWithDifferentConstructorParamType3(expectedId, expectedDate, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    final JsonWithDifferentConstructorParamType3 actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType3.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType3_1() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+      ParseException
+  {
+    /* given */
+    @SuppressWarnings("boxing")
+    final Long expectedId = 999L;
+    final String expectedDate = "2013-01-05";
+    final String expectedNote = null;
+    final String jsonString = format("{\"id\":%s,\"date\":\"%s\"}", expectedId, expectedDate, expectedNote);
+    final JsonWithDifferentConstructorParamType3 expected =
+      new JsonWithDifferentConstructorParamType3(expectedId, expectedDate, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    final JsonWithDifferentConstructorParamType3 actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType3.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType4() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+      ParseException
+  {
+    /* given */
+    @SuppressWarnings("boxing")
+    final Long expectedId = 999L;
+    final String expectedDate = "2013-01-05";
+    final String expectedNote = "Test blah blah";
+    final String jsonString =
+      format("{\"id\":%s,\"theDate\":\"%s\",\"note\":\"%s\"}", expectedId, expectedDate, expectedNote);
+    final JsonWithDifferentConstructorParamType4 expected =
+      new JsonWithDifferentConstructorParamType4(expectedId, expectedDate, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    final JsonWithDifferentConstructorParamType4 actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType4.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType4_1() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+      ParseException
+  {
+    /* given */
+    @SuppressWarnings("boxing")
+    final Long expectedId = 999L;
+    final String expectedDate = "2013-01-05";
+    final String expectedNote = null;
+    final String jsonString = format("{\"id\":%s,\"theDate\":\"%s\"}", expectedId, expectedDate);
+    final JsonWithDifferentConstructorParamType4 expected =
+      new JsonWithDifferentConstructorParamType4(expectedId, expectedDate, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    final JsonWithDifferentConstructorParamType4 actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType4.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType4_2() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+      ParseException
+  {
+    /* given */
+    @SuppressWarnings("boxing")
+    final Long expectedId = null;
+    final String expectedDate = "2013-01-05";
+    final String expectedNote = null;
+    final String jsonString = format("{\"theDate\":\"%s\"}", expectedDate);
+    final JsonWithDifferentConstructorParamType4 expected =
+      new JsonWithDifferentConstructorParamType4(expectedId, expectedDate, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    final JsonWithDifferentConstructorParamType4 actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType4.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonWithDifferentConstructorParamType4_3() throws ArrayIndexOutOfBoundsException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+      ParseException
+  {
+    /* given */
+    @SuppressWarnings("boxing")
+    final Long expectedId = 999L;
+    final String expectedDate = null;
+    final String expectedNote = null;
+    final String jsonString = format("{\"id\":%s}", expectedId);
+    final JsonWithDifferentConstructorParamType4 expected =
+      new JsonWithDifferentConstructorParamType4(expectedId, expectedDate, expectedNote);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    final JsonWithDifferentConstructorParamType4 actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType4.class, jsonString);
+    System.out.println("actual: ");
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test

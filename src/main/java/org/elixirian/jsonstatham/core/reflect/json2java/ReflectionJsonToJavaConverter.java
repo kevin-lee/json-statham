@@ -382,14 +382,15 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       extractJsonFieldNames(eachClass, jsonObject, jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
     }
 
-    final Map<Constructor<T>, String[]> constructorMap =
+    final Map<Constructor<T>, String[]> constructorToParamNamesMap =
       constructorAnalyser.findConstructorsWithParameterNames(targetClass);
 
-    final Map<Constructor<T>, String[]> constructorWithoutJsonConstructorAnnotationMap = newHashMap(constructorMap);
+    final Map<Constructor<T>, String[]> constructorWithoutJsonConstructorAnnotationMap =
+      newHashMap(constructorToParamNamesMap);
 
     @SuppressWarnings("unchecked")
     final Map<Constructor<T>, String[]> constructorMapWithJsonConstructorAnnotation =
-      extractAllConstructorsWithAnnotations(constructorMap, JsonConstructor.class);
+      extractAllConstructorsWithAnnotations(constructorToParamNamesMap, JsonConstructor.class);
 
     if (!constructorMapWithJsonConstructorAnnotation.isEmpty())
     {
@@ -415,7 +416,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       if (null == constructorEntry || null == constructorEntry.constructor)
       {
         final ConstructorAndParamsPair<T, String[]> constructorEntry2 =
-          findMatchingConstructorForJsonFieldNames(constructorMap,
+          findMatchingConstructorForJsonFieldNames(constructorToParamNamesMap,
               jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
         if (null != constructorEntry2 && null != constructorEntry2.constructor)
         {
@@ -445,7 +446,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
         else
         {
           final ConstructorAndParamsPair<T, List<Tuple3<String, Class<?>, Field>>> constructorEntry3 =
-            findConstructorWithMatchingParamNames(constructorMap,
+            findConstructorWithMatchingParamNames(constructorToParamNamesMap,
                 jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair);
 
           if (null == constructorEntry3 || null == constructorEntry3.constructor)
@@ -455,8 +456,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           else
           {
             constructor = constructorEntry3.getValue1();
-            final Map<String, Field> fieldNameToFieldMap =
-              jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue1();
+
+            // final Map<String, Field> fieldNameToFieldMap =
+            // jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair.getValue1();
+
             for (final Tuple3<String, Class<?>, Field> paramTuple : constructorEntry3.getValue2())
             {
               // final Field field = fieldNameToFieldMap.get(paramTuple.getValue1());
@@ -622,7 +625,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
     /* find constructor with minimum non matching params. */
     final Pair<Constructor<T>, List<Object>> constructorToParamsPair =
-      findConstructorWithMaxMatchingMinNonMatchingParams(constructorMap,
+      findConstructorWithMaxMatchingMinNonMatchingParams(constructorToParamNamesMap,
           jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair, jsonObject);
 
     if (null != constructorToParamsPair)
@@ -1336,7 +1339,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   }
 
   public <T> ConstructorAndParamsPair<T, List<Object>> findConstructorWithMaxMatchingMinNonMatchingParams(
-      final Map<Constructor<T>, String[]> constructorMap,
+      final Map<Constructor<T>, String[]> constructorToParamNamesMap,
       final JsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair jsonFieldName2FieldNFieldName2JsonFieldNameAndFieldPairMapsPair,
       final JsonObject jsonObject) throws JsonStathamException
   {
@@ -1347,9 +1350,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     final int fieldSize = fieldNameToJsonFieldNameAndFieldPairMap.size();
     int max = 0;
     Entry<Constructor<T>, String[]> foundConstructor = null;
-    for (final Entry<Constructor<T>, String[]> entry : constructorMap.entrySet())
+    for (final Entry<Constructor<T>, String[]> constructorToParamNamesEntry : constructorToParamNamesMap.entrySet())
     {
-      final String[] paramNames = entry.getValue();
+      final String[] paramNames = constructorToParamNamesEntry.getValue();
       int allFieldCount = 0;
       int matchingFieldCount = 0;
       for (final String paramName : paramNames)
@@ -1362,8 +1365,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       }
       if (fieldSize == allFieldCount && fieldSize == matchingFieldCount)
       {
-        // final Class<?>[] paramTypes = entry.getKey()
-        // .getParameterTypes();
+        final Constructor<T> constructor = constructorToParamNamesEntry.getKey();
+        final Class<?>[] paramTypes = constructor
+            .getParameterTypes();
 
         for (int i = 0; i < fieldSize; i++)
         {
@@ -1375,26 +1379,36 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
            * using this method means there is no perfect matching constructor found so just use the one with the same
            * number of parameters with the same names as the JsonField names
            */
-          // if (paramTypes[i].equals(field.getType()))
-          // {
-          final Object resolvedFieldValue =
-            resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getValue1()));
+          final Class<?> constructorParamType = paramTypes[i];
+          if (constructorParamType.equals(field.getType()))
+          {
+            final Object resolvedFieldValue =
+              resolveFieldValue(field, field.getType(), jsonObject.get(jsonFieldNameAndFieldPair.getValue1()));
 
-          // System.out.println("paramTypes[i]: " + paramTypes[i]);
-          // final Object resolvedFieldValue = resolveFieldValue(field, paramTypes[i],
-          // jsonObjectConvertible.get(jsonFieldNameAndFieldPair.getFirst()));
-          // System.out.println("class: " +(null == resolvedFieldValue ? "null" : resolvedFieldValue.getClass())+
-          // " | resolvedFieldValue:" + resolvedFieldValue);
+            // System.out.println("constructorParamType: " + constructorParamType);
+            // System.out.println("class: " + (null == resolvedFieldValue ? "null" : resolvedFieldValue.getClass())
+            // + " | resolvedFieldValue:" + resolvedFieldValue);
 
-          paramValues.add(resolvedFieldValue);
-          // }
+            paramValues.add(resolvedFieldValue);
+          }
+          else
+          {
+            final Object resolvedFieldValue =
+              resolveFieldValue(field, constructorParamType, jsonObject.get(jsonFieldNameAndFieldPair.getValue1()));
+
+            // System.out.println("constructorParamType: " + constructorParamType);
+            // System.out.println("class: " + (null == resolvedFieldValue ? "null" : resolvedFieldValue.getClass())
+            // + " | resolvedFieldValue:" + resolvedFieldValue);
+
+            paramValues.add(resolvedFieldValue);
+          }
         }
-        return new ConstructorAndParamsPair<T, List<Object>>(entry.getKey(), paramValues);
+        return new ConstructorAndParamsPair<T, List<Object>>(constructor, paramValues);
       }
       else if (fieldSize < allFieldCount && max < allFieldCount)
       {
         max = allFieldCount;
-        foundConstructor = entry;
+        foundConstructor = constructorToParamNamesEntry;
       }
     }
 
@@ -1428,7 +1442,9 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             /* exactly matching type is found (constructorParamType equals fieldType) */
             paramValues.add(resolveFieldValue(field, fieldType, jsonObject.get(jsonFieldNameAndFieldPair.jsonFieldName)));
           }
-          else if (fieldType.isAssignableFrom(constructorParamType) || constructorParamType.isAssignableFrom(fieldType))
+          // else if (fieldType.isAssignableFrom(constructorParamType) ||
+          // constructorParamType.isAssignableFrom(fieldType))
+          else
           {
             /*
              * No exactly matching type but fieldType is assignable from constructorParamType or vice versa. It means
@@ -1437,10 +1453,10 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             paramValues.add(resolveFieldValue(field, constructorParamType,
                 jsonObject.get(jsonFieldNameAndFieldPair.jsonFieldName)));
           }
-          else
-          {
-            paramValues.add(getDefaultValue(constructorParamType));
-          }
+          // else
+          // {
+          // paramValues.add(getDefaultValue(constructorParamType));
+          // }
         }
       }
       return new ConstructorAndParamsPair<T, List<Object>>(constructor, paramValues);
