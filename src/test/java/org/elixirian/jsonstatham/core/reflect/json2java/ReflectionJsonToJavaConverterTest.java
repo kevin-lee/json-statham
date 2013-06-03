@@ -114,6 +114,7 @@ import org.elixirian.jsonstatham.json.json2java.JsonObjectWithJsonConstructorWit
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithListImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithMapImplementation;
 import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSetImplementation;
+import org.elixirian.jsonstatham.json.json2java.JsonObjectWithSpecialChars;
 import org.elixirian.jsonstatham.json.json2java.JsonPojoHavingMap;
 import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamName;
 import org.elixirian.jsonstatham.json.json2java.JsonWithDifferentConstructorParamType;
@@ -2647,4 +2648,49 @@ public class ReflectionJsonToJavaConverterTest
     assertThat(interactionConfig.getSubmitRedirectUrl(), is(equalTo(expectedSubmitRedirectUrl)));
     assertThat(interactionConfig.getPageBreaks(), is(equalTo(expectedPageBreaks)));
   }
+
+  @Test
+  public void testJsonObjectWithSpecialChars() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    System.out.println("\n## ReflectionJsonToJavaConverterTest.testJsonObjectWithSpecialChars()");
+    /* given */
+    final String token = "#$@$%#!@";
+    final String json = "{\"token\":\"" + token + "\"}";
+    final JsonObjectWithSpecialChars expected = JsonObjectWithSpecialChars.newInstance(token);
+    System.out.println("expected: ");
+    System.out.println(expected);
+
+    /* when */
+    final JsonObjectWithSpecialChars actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithSpecialChars.class, json);
+
+    /* then */
+    System.out.println("actual: ");
+    System.out.println(actual);
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void testJsonObjectWithSpecialChars2() throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    System.out.println("\n## ReflectionJsonToJavaConverterTest.testJsonObjectWithSpecialChars2()");
+    /* given */
+    final String token = "%23%24%40%24%25%23!%40";
+    final String json = "{\"token\":\"" + token + "\"}";
+    final JsonObjectWithSpecialChars expected = JsonObjectWithSpecialChars.newInstance(token);
+    System.out.println("expected: ");
+    System.out.println(expected);
+
+    /* when */
+    final JsonObjectWithSpecialChars actual =
+      reflectionJsonToJavaConverter.convertFromJson(JsonObjectWithSpecialChars.class, json);
+
+    /* then */
+    System.out.println("actual: ");
+    System.out.println(actual);
+    assertThat(actual, is(equalTo(expected)));
+  }
+
 }
