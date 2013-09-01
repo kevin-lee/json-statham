@@ -45,22 +45,24 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-08)
  */
 public interface JsonToJavaConverter
 {
-	<T> T convertFromJson(Class<T> targetClass, String jsonString) throws JsonStathamException, IllegalArgumentException,
-			InstantiationException, IllegalAccessException, InvocationTargetException;
+  <T> T convertFromJson(Class<T> targetClass, String jsonString) throws JsonStathamException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException;
 
-	<T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException,
-			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+  <T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
 
-	<T> T convertFromJsonConvertible(Class<T> targetClass, JsonConvertible jsonConvertible) throws JsonStathamException,
-			IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+  <T> T convertFromJsonConvertible(Class<T> targetClass, JsonConvertible jsonConvertible) throws JsonStathamException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
 
-	<T> T convertFromJsonConvertible(TypeHolder<T> typeHolder, JsonConvertible jsonConvertible)
-			throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-			InvocationTargetException;
+  <T> T convertFromJsonConvertible(TypeHolder<T> typeHolder, JsonConvertible jsonConvertible)
+      throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException;
+
+  JsonConvertible convertJsonStringIntoJsonConvertible(String json) throws JsonStathamException;
 }

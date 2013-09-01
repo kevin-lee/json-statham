@@ -1366,8 +1366,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       if (fieldSize == allFieldCount && fieldSize == matchingFieldCount)
       {
         final Constructor<T> constructor = constructorToParamNamesEntry.getKey();
-        final Class<?>[] paramTypes = constructor
-            .getParameterTypes();
+        final Class<?>[] paramTypes = constructor.getParameterTypes();
 
         for (int i = 0; i < fieldSize; i++)
         {
@@ -1680,5 +1679,36 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     }
     throw new JsonStathamException(format("Unknown type: [TypeHolder: %s][JsonConvertible: %s]", typeHolder,
         jsonConvertible));
+  }
+
+  @Override
+  public JsonConvertible convertJsonStringIntoJsonConvertible(final String json) throws JsonStathamException
+  {
+    final String jsonString = toStringOf(json).trim();
+    if (jsonString.isEmpty())
+    {
+      throw new JsonStathamException(
+          "Invalid JSON String is given. It must start with '{' (JSON object) or '[' (JSON array) or must be null,"
+              + " but the given JSON String is an empty String");
+    }
+
+    if ('{' == jsonString.charAt(0))
+    {
+      return jsonObjectCreator.newJsonObjectConvertible(jsonString);
+    }
+    else if ('[' == jsonString.charAt(0))
+    {
+      return jsonArrayCreator.newJsonArrayConvertible(jsonString);
+    }
+    else if ("null".equals(jsonString))
+    {
+      return null;
+    }
+    else
+    {
+      throw new JsonStathamException(format(
+          "Invalid JSON String is given. It must start with '{' (JSON object) or '[' (JSON array) or must be null.\n"
+              + "##Given JSON String:\n%s", json));
+    }
   }
 }

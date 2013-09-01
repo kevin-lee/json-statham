@@ -33,6 +33,7 @@ package org.elixirian.jsonstatham.core;
 
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
+import static org.fest.assertions.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -63,6 +64,7 @@ import org.elixirian.jsonstatham.core.convertible.ImmutableJsonNameValuePair;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonNameValuePair;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
@@ -112,8 +114,6 @@ import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
 import org.elixirian.kommonlee.reflect.TypeHolder;
-import org.elixirian.kommonlee.type.Pair;
-import org.elixirian.kommonlee.type.Tuple2;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -2415,7 +2415,7 @@ public class JsonStathamInActionTest
     System.out.println(toStringOf(actual));
 
     /* then */
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
@@ -2473,6 +2473,69 @@ public class JsonStathamInActionTest
     System.out.println(toStringOf(actual));
 
     /* then */
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public final void testConvertJsonStringIntoJsonConvertible()
+  {
+    /* given */
+    final String jsonObjectString =
+      "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+    final String jsonArrayString =
+      "["
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+          + "]";
+    final String json =
+      "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+    System.out.println("json:\n" + json);
+
+    final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
+    final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+    final JsonObject expected = OrderedJsonObject.newJsonObject();
+    expected.put("name", "test");
+    expected.put("jsonObject", jsonObject);
+    expected.put("jsonArray", jsonArray);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    System.out.println("actual:");
+    final JsonConvertible actual = jsonStatham.convertJsonStringIntoJsonConvertible(json);
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual).isEqualTo(expected);
+    assertThat(actual.isJsonObject()).isTrue();
+    assertThat(actual.isJsonArray()).isFalse();
+  }
+
+  @Test
+  public final void testConvertJsonStringIntoJsonConvertibleWithJsonArray()
+  {
+    /* given */
+    final String json =
+      "["
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+          + "]";
+    System.out.println("json:\n" + json);
+
+    final JsonArray expected = JsonArrayWithOrderedJsonObject.newJsonArray(json);
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    System.out.println("actual:");
+    final JsonConvertible actual = jsonStatham.convertJsonStringIntoJsonConvertible(json);
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual).isEqualTo(expected);
+    assertThat(actual.isJsonObject()).isFalse();
+    assertThat(actual.isJsonArray()).isTrue();
   }
 }

@@ -35,6 +35,7 @@ import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
 import static org.elixirian.kommonlee.util.collect.Lists.*;
 import static org.elixirian.kommonlee.util.collect.Sets.*;
+import static org.fest.assertions.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -72,6 +73,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
@@ -2099,6 +2101,7 @@ public class ReflectionJsonToJavaConverterTest
       IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     /* given */
+    @SuppressWarnings("boxing")
     final Product expected = new Product(Long.MAX_VALUE, "Product A", new BigDecimal(Double.valueOf(10.50D)
         .toString()), new BigInteger(Long.valueOf(999)
         .toString()));
@@ -2120,11 +2123,13 @@ public class ReflectionJsonToJavaConverterTest
       IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     /* given */
+    @SuppressWarnings("boxing")
     final Product expected =
       new Product(1L, "Product A", new BigDecimal(toStringOf(Double.MAX_VALUE)), new BigInteger(
           toStringOf(Long.MAX_VALUE)));
     System.out.println("expected:\n" + expected);
 
+    @SuppressWarnings("boxing")
     final String json =
       "{\"id\":1,\"name\":\"Product A\",\"price\":" + toStringOf(Double.MAX_VALUE) + ",\"quantity\":" + Long.MAX_VALUE
           + "}";
@@ -2144,6 +2149,7 @@ public class ReflectionJsonToJavaConverterTest
       InvocationTargetException
   {
     /* given */
+    @SuppressWarnings("boxing")
     final Product expected = new Product(1L, "Product A", new BigDecimal("10.50"), new BigInteger("999"));
     System.out.println("expected:\n" + expected);
 
@@ -2164,11 +2170,13 @@ public class ReflectionJsonToJavaConverterTest
       InvocationTargetException
   {
     /* given */
+    @SuppressWarnings("boxing")
     final Product expected =
       new Product(1L, "Product A", new BigDecimal(toStringOf(Double.MAX_VALUE)), new BigInteger(
           toStringOf(Long.MAX_VALUE)));
     System.out.println("expected:\n" + expected);
 
+    @SuppressWarnings("boxing")
     final String json =
       "{\"id\":1,\"name\":\"Product A\",\"price\":\"" + toStringOf(Double.MAX_VALUE) + "\",\"quantity\":\""
           + Long.MAX_VALUE + "\"}";
@@ -2338,6 +2346,7 @@ public class ReflectionJsonToJavaConverterTest
         .expectCauseMessageContains("java.lang.Class cannot be cast to java.lang.reflect.ParameterizedType");
 
     /* when */
+    @SuppressWarnings("unused")
     final JsonWithDifferentConstructorParamType2 actual =
       reflectionJsonToJavaConverter.convertFromJson(JsonWithDifferentConstructorParamType2.class, jsonString);
 
@@ -2457,7 +2466,6 @@ public class ReflectionJsonToJavaConverterTest
       ParseException
   {
     /* given */
-    @SuppressWarnings("boxing")
     final Long expectedId = null;
     final String expectedDate = "2013-01-05";
     final String expectedNote = null;
@@ -2564,6 +2572,7 @@ public class ReflectionJsonToJavaConverterTest
 
     final String expectedSubmitMessage = null;
     final String expectedSubmitRedirectUrl = null;
+    @SuppressWarnings("boxing")
     final SortedSet<Integer> expectedPageBreaks =
       newTreeSet(Functions.INTEGER_ASCENDING_ORDER, Arrays.asList(0, 1, 2, 4, 5, 7));
 
@@ -2587,6 +2596,7 @@ public class ReflectionJsonToJavaConverterTest
 
     final String expectedSubmitMessage = null;
     final String expectedSubmitRedirectUrl = "http://google.com";
+    @SuppressWarnings("boxing")
     final SortedSet<Integer> expectedPageBreaks =
       newTreeSet(Functions.INTEGER_ASCENDING_ORDER, Arrays.asList(0, 1, 2, 4, 5, 7));
 
@@ -2610,6 +2620,7 @@ public class ReflectionJsonToJavaConverterTest
 
     final String expectedSubmitMessage = "Thank you for your answers";
     final String expectedSubmitRedirectUrl = "http://google.com";
+    @SuppressWarnings("boxing")
     final SortedSet<Integer> expectedPageBreaks =
       newTreeSet(Functions.INTEGER_ASCENDING_ORDER, Arrays.asList(0, 1, 2, 4, 5, 7));
 
@@ -2711,4 +2722,66 @@ public class ReflectionJsonToJavaConverterTest
     assertThat(actual, is(equalTo(expected)));
   }
 
+  @Test
+  public final void testConvertJsonStringIntoJsonConvertible()
+  {
+    /* given */
+    final String jsonObjectString =
+      "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+    final String jsonArrayString =
+      "["
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+          + "]";
+    final String json =
+      "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+    System.out.println("json:\n" + json);
+
+    final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
+    final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
+
+    final JsonObject expected = OrderedJsonObject.newJsonObject();
+    expected.put("name", "test");
+    expected.put("jsonObject", jsonObject);
+    expected.put("jsonArray", jsonArray);
+
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    System.out.println("actual:");
+    final JsonConvertible actual = reflectionJsonToJavaConverter.convertJsonStringIntoJsonConvertible(json);
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual).isEqualTo(expected);
+    assertThat(actual.isJsonObject()).isTrue();
+    assertThat(actual.isJsonArray()).isFalse();
+  }
+
+  @Test
+  public final void testConvertJsonStringIntoJsonConvertibleWithJsonArray()
+  {
+    /* given */
+    final String json =
+      "["
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
+          + "]";
+    System.out.println("json:\n" + json);
+
+    final JsonArray expected = JsonArrayWithOrderedJsonObject.newJsonArray(json);
+    System.out.println("expected:\n" + expected);
+
+    /* when */
+    System.out.println("actual:");
+    final JsonConvertible actual = reflectionJsonToJavaConverter.convertJsonStringIntoJsonConvertible(json);
+    System.out.println(actual);
+
+    /* then */
+    assertThat(actual).isEqualTo(expected);
+    assertThat(actual.isJsonObject()).isFalse();
+    assertThat(actual.isJsonArray()).isTrue();
+  }
 }

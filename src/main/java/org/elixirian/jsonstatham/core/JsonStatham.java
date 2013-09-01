@@ -47,7 +47,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.1.0 (2010-09-08) {@link #convertFromJson(Class, String)} is added.
@@ -55,55 +55,67 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  */
 public interface JsonStatham
 {
-	/**
-	 * Returns String value containing JSON text. It turns the given target object which must be annotated with
-	 * {@link Json} into JSON text. If the target object is not annotated with {@link Json}, it throws
-	 * {@link IllegalStateException}.
-	 *
-	 * @param target
-	 *          the target object.
-	 * @return String value which contains JSON text created based on the given target object.
-	 * @throws JsonStathamException
-	 *           TODO: finish it!
-	 */
-	String convertIntoJson(Object target) throws JsonStathamException;
+  /**
+   * Returns String value containing JSON text. It turns the given target object which must be annotated with
+   * {@link Json} into JSON text. If the target object is not annotated with {@link Json}, it throws
+   * {@link IllegalStateException}.
+   * 
+   * @param target
+   *          the target object.
+   * @return String value which contains JSON text created based on the given target object.
+   * @throws JsonStathamException
+   *           TODO: finish it!
+   */
+  String convertIntoJson(Object target) throws JsonStathamException;
 
-	<T extends JsonConvertible> T convertIntoJsonConvertible(Object target) throws JsonStathamException;
+  /**
+   * Return a {@link JsonConvertible} object converted from the given JSON object which is annotated with {@link Json}
+   * or any object that can be converted into {@link JsonConvertible}.
+   * 
+   * @param target
+   *          the given JSON object which is annotated with {@link Json} or any object that can be converted into
+   *          {@link JsonConvertible}.
+   * @return a {@link JsonConvertible} object converted from the given JSON object.
+   * @throws JsonStathamException
+   */
+  <T extends JsonConvertible> T convertIntoJsonConvertible(Object target) throws JsonStathamException;
 
-	/**
-	 * Returns an object of the given type. It extracts all the data from the given JSON String then creates the given
-	 * type object based on the data.
-	 *
-	 * @param <T>
-	 *          the type of the object to be created.
-	 * @param type
-	 *          the given type.
-	 * @param json
-	 *          the given JSON String used to create the given type object.
-	 * @return T type object containing the data extracted from the JSON String.
-	 * @throws JsonStathamException
-	 *           TODO: finish it!
-	 */
-	<T> T convertFromJson(Class<T> type, String json) throws JsonStathamException;
+  JsonConvertible convertJsonStringIntoJsonConvertible(String json) throws JsonStathamException;
 
-	/**
-	 * Returns an object of the type which the given {@link TypeHolder} contains. It extracts all the data from the given
-	 * JSON String then creates the given type object based on the data. This method is useful to create array,
-	 * {@link Collection} and {@link Map} objects directly from JSON.
-	 *
-	 * @param <T>
-	 *          the type of the object to be created.
-	 * @param typeHolder
-	 *          the {@link TypeHolder} object containing the type to be created.
-	 * @param jsonString
-	 *          the given JSON String used to create the given type object.
-	 * @return T type object containing the data extracted from the JSON String.
-	 * @throws JsonStathamException
-	 */
-	<T> T convertFromJson(final TypeHolder<T> typeHolder, final String jsonString) throws JsonStathamException;
+  /**
+   * Returns an object of the given type. It extracts all the data from the given JSON String then creates the given
+   * type object based on the data.
+   * 
+   * @param <T>
+   *          the type of the object to be created.
+   * @param type
+   *          the given type.
+   * @param json
+   *          the given JSON String used to create the given type object.
+   * @return T type object containing the data extracted from the JSON String.
+   * @throws JsonStathamException
+   *           TODO: finish it!
+   */
+  <T> T convertFromJson(Class<T> type, String json) throws JsonStathamException;
 
-	<T> T convertFromJsonConvertible(Class<T> type, JsonConvertible jsonConvertible) throws JsonStathamException;
+  /**
+   * Returns an object of the type which the given {@link TypeHolder} contains. It extracts all the data from the given
+   * JSON String then creates the given type object based on the data. This method is useful to create array,
+   * {@link Collection} and {@link Map} objects directly from JSON.
+   * 
+   * @param <T>
+   *          the type of the object to be created.
+   * @param typeHolder
+   *          the {@link TypeHolder} object containing the type to be created.
+   * @param jsonString
+   *          the given JSON String used to create the given type object.
+   * @return T type object containing the data extracted from the JSON String.
+   * @throws JsonStathamException
+   */
+  <T> T convertFromJson(final TypeHolder<T> typeHolder, final String jsonString) throws JsonStathamException;
 
-	<T> T convertFromJsonConvertible(final TypeHolder<T> typeHolder, final JsonConvertible jsonConvertible)
-			throws JsonStathamException;
+  <T> T convertFromJsonConvertible(Class<T> type, JsonConvertible jsonConvertible) throws JsonStathamException;
+
+  <T> T convertFromJsonConvertible(final TypeHolder<T> typeHolder, final JsonConvertible jsonConvertible)
+      throws JsonStathamException;
 }
