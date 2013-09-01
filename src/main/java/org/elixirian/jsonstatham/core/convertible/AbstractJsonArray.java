@@ -55,7 +55,7 @@ import org.elixirian.kommonlee.util.NeoArrays;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public abstract class AbstractJsonArray implements JsonArray
+public abstract class AbstractJsonArray extends AbstractJsonConvertible implements JsonArray
 {
   private final List<Object> list;
 
@@ -132,6 +132,18 @@ public abstract class AbstractJsonArray implements JsonArray
   }
 
   @Override
+  public boolean isJsonObject()
+  {
+    return false;
+  }
+
+  @Override
+  public boolean isJsonArray()
+  {
+    return true;
+  }
+
+  @Override
   public <T> T get(final int index)
   {
     @SuppressWarnings("unchecked")
@@ -150,12 +162,6 @@ public abstract class AbstractJsonArray implements JsonArray
   public int length()
   {
     return list.size();
-  }
-
-  @Override
-  public Object getActualObject()
-  {
-    return this;
   }
 
   protected List<Object> getList()

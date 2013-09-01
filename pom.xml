@@ -137,6 +137,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert-core</artifactId>
+      <version>2.0M10</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <version>3.17.1-GA</version>

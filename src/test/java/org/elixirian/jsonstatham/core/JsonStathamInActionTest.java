@@ -241,6 +241,24 @@ public class JsonStathamInActionTest
         {
           return false;
         }
+
+        @Override
+        public boolean isJsonObject()
+        {
+          return true;
+        }
+
+        @Override
+        public boolean isJsonArray()
+        {
+          return false;
+        }
+
+        @Override
+        public Class<?> getActualType()
+        {
+          return getActualObject().getClass();
+        }
       };
     }
   };

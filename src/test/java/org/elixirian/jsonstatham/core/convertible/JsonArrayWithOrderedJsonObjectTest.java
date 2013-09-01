@@ -31,6 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import static org.fest.assertions.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -62,6 +63,20 @@ public class JsonArrayWithOrderedJsonObjectTest
     final JsonArray jsonArray = new JsonArrayWithOrderedJsonObject();
     assertThat(jsonArray.getActualObject(), is(instanceOf(JsonArray.class)));
     assertThat(((JsonArray) jsonArray.getActualObject()), is(equalTo(jsonArray)));
+  }
+
+  @Test
+  public final void testIsJsonArray()
+  {
+    final JsonArray jsonArray = new JsonArrayWithOrderedJsonObject();
+    assertThat(jsonArray.isJsonArray()).isTrue();
+  }
+
+  @Test
+  public final void testIsJsonObject()
+  {
+    final JsonArray jsonArray = new JsonArrayWithOrderedJsonObject();
+    assertThat(jsonArray.isJsonObject()).isFalse();
   }
 
   @Test

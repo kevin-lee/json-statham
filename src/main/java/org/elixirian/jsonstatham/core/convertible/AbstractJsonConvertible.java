@@ -41,18 +41,19 @@ package org.elixirian.jsonstatham.core.convertible;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-06-02)
+ * @version 0.0.1 (2013-09-01)
  */
-public interface JsonConvertible
+public abstract class AbstractJsonConvertible implements JsonConvertible
 {
-  boolean isJsonObject();
-
-  boolean isJsonArray();
-
-  Class<?> getActualType();
-  
-  Object getActualObject();
+  @Override
+  public Class<?> getActualType()
+  {
+    return getActualObject().getClass();
+  }
 
   @Override
-  String toString();
+  public Object getActualObject()
+  {
+    return this;
+  }
 }

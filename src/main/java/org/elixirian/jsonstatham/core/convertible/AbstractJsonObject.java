@@ -61,12 +61,24 @@ import org.elixirian.kommonlee.util.collect.Maps;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
-public abstract class AbstractJsonObject implements JsonObject
+public abstract class AbstractJsonObject extends AbstractJsonConvertible implements JsonObject
 {
-  private static final class NullJsonObject implements JsonObject
+  private static final class NullJsonObject extends AbstractJsonConvertible implements JsonObject
   {
     private NullJsonObject()
     {
+    }
+
+    @Override
+    public boolean isJsonObject()
+    {
+      return true;
+    }
+
+    @Override
+    public boolean isJsonArray()
+    {
+      return false;
     }
 
     @Override
@@ -333,6 +345,18 @@ public abstract class AbstractJsonObject implements JsonObject
   }
 
   @Override
+  public boolean isJsonObject()
+  {
+    return true;
+  }
+
+  @Override
+  public boolean isJsonArray()
+  {
+    return false;
+  }
+
+  @Override
   public String[] getNames()
   {
     if (0 == jsonFieldMap.size())
@@ -409,7 +433,7 @@ public abstract class AbstractJsonObject implements JsonObject
   @Override
   public int hashCode()
   {
-    return hash(hash(ordered), jsonFieldMap);
+    return hashObjectWithSeed(hash(ordered), jsonFieldMap);
   }
 
   @Override
