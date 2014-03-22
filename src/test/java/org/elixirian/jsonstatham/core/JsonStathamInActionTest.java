@@ -31,9 +31,9 @@
  */
 package org.elixirian.jsonstatham.core;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
-import static org.fest.assertions.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;

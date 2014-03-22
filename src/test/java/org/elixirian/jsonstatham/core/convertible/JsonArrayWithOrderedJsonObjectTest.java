@@ -31,7 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
