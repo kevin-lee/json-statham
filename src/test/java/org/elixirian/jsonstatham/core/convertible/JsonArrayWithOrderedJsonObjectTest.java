@@ -32,8 +32,6 @@
 package org.elixirian.jsonstatham.core.convertible;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 import java.util.LinkedHashMap;
 
@@ -61,8 +59,8 @@ public class JsonArrayWithOrderedJsonObjectTest
   public final void testOrgJsonJsonArrayConvertible()
   {
     final JsonArray jsonArray = new JsonArrayWithOrderedJsonObject();
-    assertThat(jsonArray.getActualObject(), is(instanceOf(JsonArray.class)));
-    assertThat(((JsonArray) jsonArray.getActualObject()), is(equalTo(jsonArray)));
+    assertThat(jsonArray.getActualObject()).isInstanceOf(JsonArray.class);
+    assertThat((JsonArray) jsonArray.getActualObject()).isEqualTo(jsonArray);
   }
 
   @Test
@@ -90,7 +88,7 @@ public class JsonArrayWithOrderedJsonObjectTest
     final JsonArray jsonArray2 = new JsonArrayWithOrderedJsonObject(jsonArray.copyToList());
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      assertThat(jsonArray2.get(i), is(equalTo(VALUES[i])));
+      assertThat(jsonArray2.get(i)).isEqualTo(VALUES[i]);
     }
   }
 
@@ -104,7 +102,7 @@ public class JsonArrayWithOrderedJsonObjectTest
     }
     for (int i = 0, size = VALUES.length; i < size; i++)
     {
-      assertThat(jsonArray.get(i), is(equalTo(VALUES[i])));
+      assertThat(jsonArray.get(i)).isEqualTo(VALUES[i]);
     }
 
     final JsonArray jsonArrayConvertible2 = new JsonArrayWithOrderedJsonObject();
@@ -140,16 +138,15 @@ public class JsonArrayWithOrderedJsonObjectTest
       final Object object = valueObjects[i];
       if (object instanceof JsonConvertible)
       {
-        assertThat(jsonArrayConvertible2.get(i), is(equalTo(((JsonConvertible) object).getActualObject())));
+        assertThat(jsonArrayConvertible2.get(i)).isEqualTo(((JsonConvertible) object).getActualObject());
       }
       else
       {
-        assertThat(jsonArrayConvertible2.get(i), is(equalTo(valueObjects[i])));
+        assertThat(jsonArrayConvertible2.get(i)).isEqualTo(valueObjects[i]);
       }
     }
   }
 
-  @SuppressWarnings("boxing")
   @Test
   public final void testLength()
   {
@@ -158,14 +155,14 @@ public class JsonArrayWithOrderedJsonObjectTest
     {
       jsonArray.put(VALUES[i]);
     }
-    assertThat(jsonArray.length(), is(equalTo(VALUES.length)));
+    assertThat(jsonArray.length()).isEqualTo(VALUES.length);
   }
 
   @Test
   public final void testGetActualObject()
   {
     final JsonArray jsonArray = new JsonArrayWithOrderedJsonObject();
-    assertThat(jsonArray.getActualObject(), is(equalTo((Object) jsonArray)));
+    assertThat(jsonArray.getActualObject()).isEqualTo(jsonArray);
   }
 
   @Test
@@ -176,7 +173,7 @@ public class JsonArrayWithOrderedJsonObjectTest
     {
       jsonArray.put(VALUES[i]);
     }
-    assertThat(jsonArray.toString(), is(equalTo(VALUES_STRING)));
+    assertThat(jsonArray.toString()).isEqualTo(VALUES_STRING);
   }
 
 }

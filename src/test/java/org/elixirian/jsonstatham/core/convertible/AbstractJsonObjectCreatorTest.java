@@ -31,8 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.junit.Test;
@@ -79,9 +78,9 @@ public class AbstractJsonObjectCreatorTest
       }
     };
 
-    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible("{\"name\":\"Kevin\"}"),
-        is(equalTo(jsonObjectArray[0])));
-    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible(), is(equalTo(jsonObject)));
+    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible("{\"name\":\"Kevin\"}")).isEqualTo(
+        jsonObjectArray[0]);
+    assertThat(orgJsonJsonObjectConvertibleCreator.newJsonObjectConvertible()).isEqualTo(jsonObject);
   }
 
   /**
@@ -106,7 +105,7 @@ public class AbstractJsonObjectCreatorTest
       }
     };
 
-    assertThat(abstractJsonObjectCreator.nullJsonObjectConvertible(), is(equalTo(AbstractJsonObject.NULL_JSON_OBJECT)));
+    assertThat(abstractJsonObjectCreator.nullJsonObjectConvertible()).isEqualTo(AbstractJsonObject.NULL_JSON_OBJECT);
   }
 
   @Test(expected = JsonStathamException.class)

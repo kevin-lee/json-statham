@@ -31,8 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.reflect.java2json;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -45,11 +44,8 @@ import java.util.Set;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.SimpleKnownTypeChecker;
-import org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider;
-import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.junit.Test;
-
 
 /**
  * <pre>
@@ -158,8 +154,7 @@ public class OneProcessorForKnownTypeDeciderTest
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider()}
-   * .
+   * {@link org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#KnownBasicTypeDecider()} .
    */
   @Test
   public final void testKnownBasicTypeDecider()
@@ -167,64 +162,64 @@ public class OneProcessorForKnownTypeDeciderTest
     final KnownTypeProcessorDeciderForJavaToJson knownTypeProcessorDeciderForJavaToJson =
       new OneProcessorForKnownTypeDecider();
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class)).isNotNull();
 
-    for (Integer value : integers)
+    for (final Integer value : integers)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(long.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(long.class)).isNotNull();
 
-    for (Long value : longObjects)
+    for (final Long value : longObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    for (BigInteger value : bigIntegers)
+    for (final BigInteger value : bigIntegers)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(float.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(float.class)).isNotNull();
 
-    for (Float value : floatObjects)
+    for (final Float value : floatObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(double.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(double.class)).isNotNull();
 
-    for (Double value : doubleObjects)
+    for (final Double value : doubleObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    for (BigDecimal value : bigDecimals)
+    for (final BigDecimal value : bigDecimals)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    for (Number value : numbers)
+    for (final Number value : numbers)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(boolean.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(boolean.class)).isNotNull();
 
-    for (Boolean value : booleanObjects)
+    for (final Boolean value : booleanObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    for (String value : strings)
+    for (final String value : strings)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
 
-    for (TestEnum value : TestEnum.values())
+    for (final TestEnum value : TestEnum.values())
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(not(nullValue())));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNotNull();
     }
   }
 
@@ -251,90 +246,89 @@ public class OneProcessorForKnownTypeDeciderTest
         @Override
         public <T> Object process(
             @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-            final Class<T> valueType, @SuppressWarnings("unused") final Object value) throws IllegalArgumentException,
-            IllegalAccessException, JsonStathamException
+            @SuppressWarnings("unused") final Class<T> valueType, @SuppressWarnings("unused") final Object value)
+            throws IllegalArgumentException, IllegalAccessException, JsonStathamException
         {
           return Boolean.TRUE;
         }
       }, set1, set2, new SimpleKnownTypeChecker[0]);
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Date.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Date.class)).isNotNull();
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Date.class)
-        .process(null, null, null), is((Object) Boolean.TRUE));
+        .process(null, null, null)).isSameAs(Boolean.TRUE);
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Calendar.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Calendar.class)).isNotNull();
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(Calendar.class)
-        .process(null, null, null), is((Object) Boolean.TRUE));
+        .process(null, null, null)).isSameAs(Boolean.TRUE);
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(GregorianCalendar.class), is(not(nullValue())));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(GregorianCalendar.class)).isNotNull();
     assertThat(knownTypeProcessorDeciderForJavaToJson.decide(GregorianCalendar.class)
-        .process(null, null, null), is((Object) Boolean.TRUE));
+        .process(null, null, null)).isSameAs(Boolean.TRUE);
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class), is(nullValue()));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class)).isNull();
 
-    for (Integer value : integers)
+    for (final Integer value : integers)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(long.class), is(nullValue()));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(long.class)).isNull();
 
-    for (Long value : longObjects)
+    for (final Long value : longObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    for (BigInteger value : bigIntegers)
+    for (final BigInteger value : bigIntegers)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(float.class), is(nullValue()));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(float.class)).isNull();
 
-    for (Float value : floatObjects)
+    for (final Float value : floatObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(double.class), is(nullValue()));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(double.class)).isNull();
 
-    for (Double value : doubleObjects)
+    for (final Double value : doubleObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    for (BigDecimal value : bigDecimals)
+    for (final BigDecimal value : bigDecimals)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    for (Number value : numbers)
+    for (final Number value : numbers)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(boolean.class), is(nullValue()));
+    assertThat(knownTypeProcessorDeciderForJavaToJson.decide(boolean.class)).isNull();
 
-    for (Boolean value : booleanObjects)
+    for (final Boolean value : booleanObjects)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    for (String value : strings)
+    for (final String value : strings)
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
 
-    for (TestEnum value : TestEnum.values())
+    for (final TestEnum value : TestEnum.values())
     {
-      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass()), is(nullValue()));
+      assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())).isNull();
     }
   }
 
   /**
    * Test method for
-   * {@link org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#decide(java.lang.Class)}
-   * .
+   * {@link org.elixirian.jsonstatham.core.reflect.java2json.OneProcessorForKnownTypeDecider#decide(java.lang.Class)} .
    * 
    * @throws IllegalAccessException
    * @throws JsonStathamException
@@ -347,94 +341,94 @@ public class OneProcessorForKnownTypeDeciderTest
     final KnownTypeProcessorDeciderForJavaToJson knownTypeProcessorDeciderForJavaToJson =
       new OneProcessorForKnownTypeDecider();
 
-    for (int value : ints)
+    for (final int value : ints)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(int.class)
-          .process(null, int.class, value), equalTo((Object) value));
+          .process(null, int.class, value)).isEqualTo(value);
     }
 
-    for (Integer value : integers)
+    for (final Integer value : integers)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (long value : longs)
+    for (final long value : longs)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(long.class)
-          .process(null, long.class, value), equalTo((Object) value));
+          .process(null, long.class, value)).isEqualTo(value);
     }
 
-    for (Long value : longObjects)
+    for (final Long value : longObjects)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, Long.class, value), equalTo((Object) value));
+          .process(null, Long.class, value)).isEqualTo(value);
     }
 
-    for (BigInteger value : bigIntegers)
+    for (final BigInteger value : bigIntegers)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (float value : floats)
+    for (final float value : floats)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(float.class)
-          .process(null, float.class, value), equalTo((Object) value));
+          .process(null, float.class, value)).isEqualTo(value);
     }
 
-    for (Float value : floatObjects)
+    for (final Float value : floatObjects)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (double value : doubles)
+    for (final double value : doubles)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(double.class)
-          .process(null, double.class, value), equalTo((Object) value));
+          .process(null, double.class, value)).isEqualTo(value);
     }
 
-    for (Double value : doubleObjects)
+    for (final Double value : doubleObjects)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (BigDecimal value : bigDecimals)
+    for (final BigDecimal value : bigDecimals)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (Number value : numbers)
+    for (final Number value : numbers)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (boolean value : booleans)
+    for (final boolean value : booleans)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(boolean.class)
-          .process(null, boolean.class, value), equalTo((Object) value));
+          .process(null, boolean.class, value)).isEqualTo(value);
     }
 
-    for (Boolean value : booleanObjects)
+    for (final Boolean value : booleanObjects)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (String value : strings)
+    for (final String value : strings)
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
 
-    for (TestEnum value : TestEnum.values())
+    for (final TestEnum value : TestEnum.values())
     {
       assertThat(knownTypeProcessorDeciderForJavaToJson.decide(value.getClass())
-          .process(null, value.getClass(), value), equalTo((Object) value));
+          .process(null, value.getClass(), value)).isEqualTo(value);
     }
   }
 

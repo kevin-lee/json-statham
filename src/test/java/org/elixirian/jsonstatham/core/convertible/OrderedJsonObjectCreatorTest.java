@@ -31,8 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -66,9 +65,9 @@ public class OrderedJsonObjectCreatorTest
         .getDeclaredField("jsonFieldMap");
     mapField.setAccessible(true);
     final Object mapObject = mapField.get(jsonObject);
-    assertThat(mapObject, notNullValue());
-    assertThat(mapObject, is(instanceOf(LinkedHashMap.class)));
-    assertSame(mapObject.getClass(), LinkedHashMap.class);
-    assertNotSame(mapObject.getClass(), HashMap.class);
+    assertThat(mapObject).isNotNull();
+    assertThat(mapObject).isInstanceOf(LinkedHashMap.class);
+    assertThat(mapObject.getClass()).isSameAs(LinkedHashMap.class);
+    assertThat(mapObject.getClass()).isNotSameAs(HashMap.class);
   }
 }

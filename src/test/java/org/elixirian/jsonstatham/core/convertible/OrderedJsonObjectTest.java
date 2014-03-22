@@ -32,8 +32,6 @@
 package org.elixirian.jsonstatham.core.convertible;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 import java.util.LinkedHashMap;
 
@@ -63,8 +61,8 @@ public class OrderedJsonObjectTest
   public final void testOrgJsonJsonObjectConvertible()
   {
     final JsonObject jsonObject = new OrderedJsonObject();
-    assertThat(jsonObject.getActualObject(), is(instanceOf(JsonObject.class)));
-    assertThat(((JsonObject) jsonObject.getActualObject()), is(equalTo(jsonObject)));
+    assertThat(jsonObject.getActualObject()).isInstanceOf(JsonObject.class);
+    assertThat(((JsonObject) jsonObject.getActualObject())).isEqualTo(jsonObject);
   }
 
   @Test
@@ -90,7 +88,7 @@ public class OrderedJsonObjectTest
     {
       jsonObject.put(NAMES[i], VALUES[i]);
     }
-    assertThat(jsonObject.getNames(), is(equalTo(NAMES)));
+    assertThat(jsonObject.getNames()).isEqualTo(NAMES);
   }
 
   @Test
@@ -104,7 +102,7 @@ public class OrderedJsonObjectTest
     }
     for (int i = 0, size = NAMES.length; i < size; i++)
     {
-      assertThat(jsonObject.get(NAMES[i]), is(equalTo(VALUES[i])));
+      assertThat(jsonObject.get(NAMES[i])).isEqualTo(VALUES[i]);
     }
   }
 
@@ -117,13 +115,13 @@ public class OrderedJsonObjectTest
     final JsonObject jsonObjectConvertible2 = new OrderedJsonObject();
     jsonObjectConvertible2.put("jsonObjectConvertible1", jsonObjectConvertible1);
 
-    assertThat(((JsonObject) jsonObjectConvertible2.getActualObject()).get("jsonObjectConvertible1"),
-        is(instanceOf(JsonConvertible.class)));
+    assertThat(((JsonObject) jsonObjectConvertible2.getActualObject()).get("jsonObjectConvertible1")).isInstanceOf(
+        JsonConvertible.class);
 
-    assertThat(((JsonObject) jsonObjectConvertible2.getActualObject()).get("jsonObjectConvertible1"),
-        is(instanceOf(JsonObject.class)));
-    assertThat(((JsonObject) jsonObjectConvertible2.get("jsonObjectConvertible1")), is(jsonObjectConvertible1));
-    assertThat(((JsonObject) jsonObjectConvertible2.get("jsonObjectConvertible1")), equalTo(jsonObjectConvertible1));
+    assertThat(((JsonObject) jsonObjectConvertible2.getActualObject()).get("jsonObjectConvertible1")).isInstanceOf(
+        JsonObject.class);
+    assertThat(((JsonObject) jsonObjectConvertible2.get("jsonObjectConvertible1"))).isSameAs(jsonObjectConvertible1);
+    assertThat(((JsonObject) jsonObjectConvertible2.get("jsonObjectConvertible1"))).isEqualTo(jsonObjectConvertible1);
 
     final JsonObject jsonObjectConvertible3 = new OrderedJsonObject();
     final String idName = "id";
@@ -137,12 +135,12 @@ public class OrderedJsonObjectTest
     jsonObjectConvertible3.put(surnameName, surnameValue);
     jsonObjectConvertible3.put(givenNameName, givenNameValue);
 
-    assertThat(((JsonObject) jsonObjectConvertible3.getActualObject()), is(equalTo(jsonObjectConvertible3)));
+    assertThat((JsonObject) jsonObjectConvertible3.getActualObject()).isEqualTo(jsonObjectConvertible3);
 
-    assertThat(jsonObjectConvertible3.<Integer> get(idName), is(equalTo(idValue)));
-    assertThat((String) jsonObjectConvertible3.get(surnameName), is(equalTo(surnameValue)));
-    assertThat((String) jsonObjectConvertible3.get(givenNameName), is(equalTo(givenNameValue)));
-    assertThat(jsonObjectConvertible3.toString(), is(equalTo(jsonObjectConvertible3String)));
+    assertThat(jsonObjectConvertible3.<Integer> get(idName)).isEqualTo(idValue);
+    assertThat((String) jsonObjectConvertible3.get(surnameName)).isEqualTo(surnameValue);
+    assertThat((String) jsonObjectConvertible3.get(givenNameName)).isEqualTo(givenNameValue);
+    assertThat(jsonObjectConvertible3.toString()).isEqualTo(jsonObjectConvertible3String);
   }
 
   @Test(expected = JsonStathamException.class)
@@ -160,8 +158,8 @@ public class OrderedJsonObjectTest
     final JsonObject jsonObjectConvertible2 = new OrderedJsonObject();
     jsonObjectConvertible2.put("jsonObjectConvertible1", jsonObjectConvertible1);
 
-    assertThat(jsonObjectConvertible2.getActualObject(), is(instanceOf(JsonObject.class)));
-    assertThat((JsonObject) jsonObjectConvertible2.getActualObject(), is(equalTo(jsonObjectConvertible2)));
+    assertThat(jsonObjectConvertible2.getActualObject()).isInstanceOf(JsonObject.class);
+    assertThat((JsonObject) jsonObjectConvertible2.getActualObject()).isEqualTo(jsonObjectConvertible2);
 
     final JsonObject jsonObjectConvertible3 = new OrderedJsonObject();
     final String idName = "id";
@@ -174,8 +172,8 @@ public class OrderedJsonObjectTest
         .put(surnameName, surnameValue)
         .put(givenNameName, givenNameValue);
 
-    assertThat(jsonObjectConvertible3.getActualObject(), is(instanceOf(JsonObject.class)));
-    assertThat(((JsonObject) jsonObjectConvertible3.getActualObject()), is(equalTo(jsonObjectConvertible3)));
+    assertThat(jsonObjectConvertible3.getActualObject()).isInstanceOf(JsonObject.class);
+    assertThat(((JsonObject) jsonObjectConvertible3.getActualObject())).isEqualTo(jsonObjectConvertible3);
   }
 
   @Test
@@ -188,7 +186,7 @@ public class OrderedJsonObjectTest
     jsonObjectConvertible2.put("jsonObjectConvertible1", jsonObjectConvertible1);
     final String jsonObjectConvertible2String = "{\"jsonObjectConvertible1\":{\"name\":\"Kevin Lee\"}}";
 
-    assertThat(jsonObjectConvertible2.toString(), is(equalTo(jsonObjectConvertible2String)));
+    assertThat(jsonObjectConvertible2.toString()).isEqualTo(jsonObjectConvertible2String);
 
     final JsonObject jsonObjectConvertible3 = new OrderedJsonObject();
     jsonObjectConvertible3.put("id", Integer.valueOf(999))
@@ -196,7 +194,6 @@ public class OrderedJsonObjectTest
         .put("givenName", "Kevin");
     final String jsonObjectConvertible3String = "{\"id\":999,\"surname\":\"Lee\",\"givenName\":\"Kevin\"}";
 
-    assertThat(jsonObjectConvertible3.toString(), is(equalTo(jsonObjectConvertible3String)));
+    assertThat(jsonObjectConvertible3.toString()).isEqualTo(jsonObjectConvertible3String);
   }
-
 }

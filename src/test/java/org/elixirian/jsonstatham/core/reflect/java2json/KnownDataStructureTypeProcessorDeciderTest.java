@@ -31,8 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.reflect.java2json;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -56,7 +55,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 
 /**
  * <pre>
@@ -172,17 +170,17 @@ public class KnownDataStructureTypeProcessorDeciderTest
     // knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider), new
     // ReflectionJsonToJavaConverter());
 
-    assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(integers.getClass()), is(not(nullValue())));
+    assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(integers.getClass())).isNotNull();
 
-    assertThat(knownDataStructureTypeProcessorDecider.decide(collection1.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(collection2.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable1.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable2.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator1.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator2.getClass()), is(not(nullValue())));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(map.getClass()), is(not(nullValue())));
+    assertThat(knownDataStructureTypeProcessorDecider.decide(collection1.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(collection2.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable1.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable2.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator1.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator2.getClass())).isNotNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(map.getClass())).isNotNull();
   }
 
   /**
@@ -204,8 +202,9 @@ public class KnownDataStructureTypeProcessorDeciderTest
       @SuppressWarnings("unchecked")
       @Override
       public <T> Object process(
-          @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter, final Class<T> valueType,
-          final Object source) throws IllegalArgumentException, IllegalAccessException, JsonStathamException
+          @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          final Class<T> valueType, final Object source) throws IllegalArgumentException, IllegalAccessException,
+          JsonStathamException
       {
         final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
         for (final Object each : (NavigableSet<Object>) source)
@@ -236,9 +235,9 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(),
-          new JsonArrayWithOrderedJsonObjectCreator(), knownDataStructureTypeProcessorDecider,
-          knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
+      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(), new JsonArrayWithOrderedJsonObjectCreator(),
+          knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
+          oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStatham = new JsonStathamInAction(reflectionJavaToJsonConverter, new
     // ReflectionJsonToJavaConverter());
 
@@ -254,19 +253,19 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(testSet.getClass())
         .process(reflectionJavaToJsonConverter, testSet.getClass(), testSet)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
-    assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(integers.getClass()), is(nullValue()));
+    assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(integers.getClass())).isNull();
 
-    assertThat(knownDataStructureTypeProcessorDecider.decide(collection1.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(collection2.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable1.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable2.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator1.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator2.getClass()), is(nullValue()));
-    assertThat(knownDataStructureTypeProcessorDecider.decide(map.getClass()), is(nullValue()));
+    assertThat(knownDataStructureTypeProcessorDecider.decide(collection1.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(collection2.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable1.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterable2.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator1.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(iterator2.getClass())).isNull();
+    assertThat(knownDataStructureTypeProcessorDecider.decide(map.getClass())).isNull();
   }
 
   /**
@@ -302,9 +301,9 @@ public class KnownDataStructureTypeProcessorDeciderTest
         });
 
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(),
-          new JsonArrayWithOrderedJsonObjectCreator(), knownDataStructureTypeProcessorDecider,
-          knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
+      new ReflectionJavaToJsonConverter(new OrderedJsonObjectCreator(), new JsonArrayWithOrderedJsonObjectCreator(),
+          knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
+          oneProcessorForKnownTypeDecider);
     // final JsonStathamInAction jsonStatham =
     // new JsonStathamInAction(reflectionJavaToJsonConverter, new ReflectionJsonToJavaConverter());
 
@@ -315,7 +314,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(strings.getClass())
         .process(reflectionJavaToJsonConverter, strings.getClass(), strings)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final int each : ints)
@@ -324,7 +323,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(ints.getClass())
         .process(reflectionJavaToJsonConverter, ints.getClass(), ints)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final Integer each : integers)
@@ -333,7 +332,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(integers.getClass())
         .process(reflectionJavaToJsonConverter, integers.getClass(), integers)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final String each : collection1)
@@ -342,7 +341,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(collection1.getClass())
         .process(reflectionJavaToJsonConverter, collection1.getClass(), collection1)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final Integer each : collection2)
@@ -351,7 +350,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(collection2.getClass())
         .process(reflectionJavaToJsonConverter, collection2.getClass(), collection2)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final String each : iterable1)
@@ -360,7 +359,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(iterable1.getClass())
         .process(reflectionJavaToJsonConverter, iterable1.getClass(), iterable1)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final Integer each : iterable2)
@@ -369,7 +368,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(iterable2.getClass())
         .process(reflectionJavaToJsonConverter, iterable2.getClass(), iterable2)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final Iterator<String> it = iterable1.iterator(); it.hasNext();)
@@ -378,7 +377,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(iterator1.getClass())
         .process(reflectionJavaToJsonConverter, iterable1.getClass(), iterator1)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
     for (final Iterator<Integer> it = iterable2.iterator(); it.hasNext();)
@@ -387,7 +386,7 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(iterator2.getClass())
         .process(reflectionJavaToJsonConverter, iterator2.getClass(), iterator2)
-        .toString(), equalTo(jsonArray.toString()));
+        .toString()).isEqualTo(jsonArray.toString());
 
     final JsonObject jsonObject = reflectionJavaToJsonConverter.newJsonObjectConvertible();
     for (final Entry<Long, String> entry : map.entrySet())
@@ -396,6 +395,6 @@ public class KnownDataStructureTypeProcessorDeciderTest
     }
     assertThat(knownDataStructureTypeProcessorDecider.decide(map.getClass())
         .process(reflectionJavaToJsonConverter, map.getClass(), map)
-        .toString(), equalTo(jsonObject.toString()));
+        .toString()).isEqualTo(jsonObject.toString());
   }
 }

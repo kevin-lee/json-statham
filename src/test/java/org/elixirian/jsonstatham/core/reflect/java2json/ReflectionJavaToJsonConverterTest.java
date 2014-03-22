@@ -31,8 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.reflect.java2json;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -326,11 +325,11 @@ public class ReflectionJavaToJsonConverterTest
     /* test convertIntoJson */
     final String result1_1 = reflectionJavaToJsonConverter.convertIntoJson(null);
     System.out.println(result1_1);
-    assertThat(result1_1, is(equalTo(expected.toString())));
+    assertThat(result1_1).isEqualTo(expected.toString());
 
     /* test convertFromJson */
     // final Object result1_2 = jsonStatham.convertFromJson(null, expected);
-    // assertThat(result1_2, is(nullValue()));
+    // assertThat(result1_2, is(nullValue();
   }
 
   @Test
@@ -340,7 +339,6 @@ public class ReflectionJavaToJsonConverterTest
     @Json
     class TestPojo
     {
-      @SuppressWarnings("unused")
       @JsonField
       private Object object = null;
     }
@@ -349,7 +347,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result2 = reflectionJavaToJsonConverter.convertIntoJson(new TestPojo());
     System.out.println(result2);
-    assertEquals(expected2.toString(), result2);
+    assertThat(result2).isEqualTo(expected2.toString());
 
   }
 
@@ -388,13 +386,13 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String resultIntArray = reflectionJavaToJsonConverter.convertIntoJson(new int[] {});
     System.out.println(resultIntArray);
-    assertThat(resultIntArray, is(equalTo(expected)));
+    assertThat(resultIntArray).isEqualTo(expected);
 
     System.out.println("\nexpected:\n" + expected);
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(new Object[0]);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -407,7 +405,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String resultIntArray = reflectionJavaToJsonConverter.convertIntoJson(new int[] { 1, 2, 3, 4, 5, 8, 23, 56 });
     System.out.println(resultIntArray);
-    assertThat(resultIntArray, is(equalTo(expectedIntArray)));
+    assertThat(resultIntArray).isEqualTo(expectedIntArray);
 
     final String expectedDoubleArray = "[1.2,2.6,3.3,4.8,5.234,8.567,23.48754,56.0547]";
     System.out.println("\nexpected:\n" + expectedDoubleArray);
@@ -415,7 +413,7 @@ public class ReflectionJavaToJsonConverterTest
     final String resultDoubleArray =
       reflectionJavaToJsonConverter.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 });
     System.out.println(resultDoubleArray);
-    assertThat(resultDoubleArray, is(equalTo(expectedDoubleArray)));
+    assertThat(resultDoubleArray).isEqualTo(expectedDoubleArray);
 
     final String expectedBooleanArray = "[true,false,false,true,false,true,false,true,true]";
     System.out.println("\nexpected:\n" + expectedBooleanArray);
@@ -424,7 +422,7 @@ public class ReflectionJavaToJsonConverterTest
       reflectionJavaToJsonConverter.convertIntoJson(new boolean[] { true, false, false, true, false, true, false, true,
           true });
     System.out.println(resultBooleanArray);
-    assertThat(resultBooleanArray, is(equalTo(expectedBooleanArray)));
+    assertThat(resultBooleanArray).isEqualTo(expectedBooleanArray);
   }
 
   @Test
@@ -437,7 +435,7 @@ public class ReflectionJavaToJsonConverterTest
     final String result =
       reflectionJavaToJsonConverter.convertIntoJson(addressList.toArray(new Address[addressList.size()]));
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -454,7 +452,7 @@ public class ReflectionJavaToJsonConverterTest
       reflectionJavaToJsonConverter.convertIntoJson(new String[] { stringList.get(0), stringList.get(1),
           stringList.get(2) });
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -470,7 +468,7 @@ public class ReflectionJavaToJsonConverterTest
       reflectionJavaToJsonConverter.convertIntoJson(Arrays.asList(stringList.get(0), stringList.get(1),
           stringList.get(2)));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   /**
@@ -490,7 +488,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(addressList);
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   private String getAddressMapString()
@@ -536,7 +534,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(addressMap);
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -562,7 +560,7 @@ public class ReflectionJavaToJsonConverterTest
     surnameToGivenNameMap.put("Wayne", "Bruce");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(surnameToGivenNameMap);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
   }
 
@@ -578,7 +576,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(nestedMap);
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   @SuppressWarnings({ "boxing", "unchecked" })
@@ -605,7 +603,7 @@ public class ReflectionJavaToJsonConverterTest
 		/* @formatter:on */
     final String result = reflectionJavaToJsonConverter.convertIntoJson(map);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   /**
@@ -627,7 +625,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(address);
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   /**
@@ -659,7 +657,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     final Long id2 = Long.valueOf(id + 100);
     final String name2 = name + "4Testing";
@@ -680,7 +678,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result2 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result2);
-    assertThat(result2, is(equalTo(expected2)));
+    assertThat(result2).isEqualTo(expected2);
 
     final Long id3 = Long.valueOf(id + 100);
     final String name3 = name + "4Testing";
@@ -701,7 +699,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result3 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result3);
-    assertThat(result3, is(equalTo(expected3)));
+    assertThat(result3).isEqualTo(expected3);
 
     jsonObject.setPrimaryKey(Long.valueOf(id));
     jsonObject.setName(name);
@@ -719,7 +717,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result4 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result4);
-    assertThat(result4, is(equalTo(expected4)));
+    assertThat(result4).isEqualTo(expected4);
 
     jsonObject.setPrimaryKey(Long.valueOf(id));
     jsonObject.setName(name);
@@ -737,7 +735,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result5 = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result5);
-    assertThat(result5, is(equalTo(expected5)));
+    assertThat(result5).isEqualTo(expected5);
   }
 
   @Test(expected = JsonStathamException.class)
@@ -778,7 +776,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectWithoutFieldName);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -809,7 +807,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -843,7 +841,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   private String getExpectedJsonArray(final String name, final String value, final String setName)
@@ -892,7 +890,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingCollection);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -909,7 +907,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingList);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -926,7 +924,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingSet);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -964,7 +962,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingSet);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -983,7 +981,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingCollection);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1007,7 +1005,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectContainingCollection);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1024,7 +1022,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1041,7 +1039,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1058,7 +1056,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1081,7 +1079,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1098,7 +1096,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1117,7 +1115,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1137,7 +1135,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1157,7 +1155,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1177,7 +1175,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1197,7 +1195,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(jsonObjectPojo);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1224,7 +1222,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     final String result = reflectionJavaToJsonConverter.convertIntoJson(nestedJsonObjectWithValueAccessor);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1240,7 +1238,7 @@ public class ReflectionJavaToJsonConverterTest
     String result =
       reflectionJavaToJsonConverter.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     expected =
       "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
@@ -1251,7 +1249,7 @@ public class ReflectionJavaToJsonConverterTest
       reflectionJavaToJsonConverter.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER,
           Access.BLOG, Access.EMAIL));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     expected =
       "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
@@ -1262,7 +1260,7 @@ public class ReflectionJavaToJsonConverterTest
       reflectionJavaToJsonConverter.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER,
           Access.BLOG, Access.WIKI, Access.EMAIL, Access.TWITTER));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1289,7 +1287,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println(result);
 
     /* then */
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1316,7 +1314,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println(result);
 
     /* then */
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -1348,7 +1346,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println(actual);
 
     /* then */
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
@@ -1367,7 +1365,7 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     System.out.println(actual);
 
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
@@ -1389,6 +1387,6 @@ public class ReflectionJavaToJsonConverterTest
     System.out.println("actual: ");
     System.out.println(actual);
 
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isEqualTo(expected);
   }
 }

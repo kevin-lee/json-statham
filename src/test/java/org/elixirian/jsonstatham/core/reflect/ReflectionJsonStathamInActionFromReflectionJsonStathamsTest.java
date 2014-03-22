@@ -31,9 +31,9 @@
  */
 package org.elixirian.jsonstatham.core.reflect;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -54,8 +54,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.annotation.Json;
+import org.elixirian.jsonstatham.annotation.JsonField;
 import org.elixirian.jsonstatham.core.JsonStatham;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
@@ -201,7 +201,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     /* test convertIntoJson */
     final String result1_1 = jsonStatham.convertIntoJson(null);
     System.out.println(result1_1);
-    assertThat(result1_1, is(equalTo(expected.toString())));
+    assertThat(result1_1).isEqualTo(expected.toString());
   }
 
   @Test
@@ -212,7 +212,6 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     @Json
     class TestPojo
     {
-      @SuppressWarnings("unused")
       @JsonField
       private Object object = null;
     }
@@ -262,7 +261,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String resultIntArray = jsonStatham.convertIntoJson(new int[] { 1, 2, 3, 4, 5, 8, 23, 56 });
     System.out.println(resultIntArray);
-    assertThat(resultIntArray, is(equalTo(expectedIntArray)));
+    assertThat(resultIntArray).isEqualTo(expectedIntArray);
 
     final String expectedDoubleArray = "[1.2,2.6,3.3,4.8,5.234,8.567,23.48754,56.0547]";
     System.out.println("\nexpected:\n" + expectedDoubleArray);
@@ -270,7 +269,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final String resultDoubleArray =
       jsonStatham.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 });
     System.out.println(resultDoubleArray);
-    assertThat(resultDoubleArray, is(equalTo(expectedDoubleArray)));
+    assertThat(resultDoubleArray).isEqualTo(expectedDoubleArray);
 
     final String expectedBooleanArray = "[true,false,false,true,false,true,false,true,true]";
     System.out.println("\nexpected:\n" + expectedBooleanArray);
@@ -278,7 +277,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final String resultBooleanArray =
       jsonStatham.convertIntoJson(new boolean[] { true, false, false, true, false, true, false, true, true });
     System.out.println(resultBooleanArray);
-    assertThat(resultBooleanArray, is(equalTo(expectedBooleanArray)));
+    assertThat(resultBooleanArray).isEqualTo(expectedBooleanArray);
   }
 
   @Test
@@ -409,7 +408,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     final Long id2 = Long.valueOf(id + 100);
     final String name2 = name + "4Testing";
@@ -430,7 +429,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result2 = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result2);
-    assertThat(result2, is(equalTo(expected2)));
+    assertThat(result2).isEqualTo(expected2);
 
     final Long id3 = Long.valueOf(id + 100);
     final String name3 = name + "4Testing";
@@ -451,7 +450,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result3 = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result3);
-    assertThat(result3, is(equalTo(expected3)));
+    assertThat(result3).isEqualTo(expected3);
 
     jsonObject.setPrimaryKey(Long.valueOf(id));
     jsonObject.setName(name);
@@ -469,7 +468,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result4 = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result4);
-    assertThat(result4, is(equalTo(expected4)));
+    assertThat(result4).isEqualTo(expected4);
 
     jsonObject.setPrimaryKey(Long.valueOf(id));
     jsonObject.setName(name);
@@ -487,7 +486,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result5 = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result5);
-    assertThat(result5, is(equalTo(expected5)));
+    assertThat(result5).isEqualTo(expected5);
   }
 
   @Test(expected = JsonStathamException.class)
@@ -527,7 +526,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectWithoutFieldName);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -557,7 +556,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -590,7 +589,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   private String getExpectedJsonArray(final String name, final String value, final String setName)
@@ -638,7 +637,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -654,7 +653,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectContainingList);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -670,7 +669,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -707,7 +706,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectContainingSet);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -725,7 +724,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -748,7 +747,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectContainingCollection);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -764,7 +763,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -780,7 +779,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -796,7 +795,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -818,7 +817,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -834,7 +833,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -852,7 +851,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -871,7 +870,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -890,7 +889,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -909,7 +908,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -929,7 +928,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectPojo);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -956,7 +955,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(nestedJsonObjectWithValueAccessor);
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -970,7 +969,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("actual: ");
     String result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     expected =
       "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
@@ -981,7 +980,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
       jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
           Access.EMAIL));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     expected =
       "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
@@ -992,7 +991,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
       jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
           Access.WIKI, Access.EMAIL, Access.TWITTER));
     System.out.println(result);
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 
   // JSON2Java
@@ -1023,7 +1022,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
 
     final Object result = jsonStatham.convertFromJson((Class<Object>) null, json);
     System.out.println(result);
-    assertThat(result, is(nullValue()));
+    assertThat(result).isNull();
   }
 
   @Test
@@ -1036,7 +1035,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
 
     final Object result = jsonStatham.convertFromJson((Class<Object>) null, json);
     System.out.println(result);
-    assertThat(result, is(nullValue()));
+    assertThat(result).isNull();
   }
 
   @Test(expected = JsonStathamException.class)
@@ -1160,7 +1159,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final int[] resultIntArray = jsonStatham.convertFromJson(int[].class, intArrayJson);
     System.out.println(toString(resultIntArray));
-    assertThat(resultIntArray, is(equalTo(intArray)));
+    assertThat(resultIntArray).isEqualTo(intArray);
 
     final String doubleArrayJson = "[1.2,2.6,3.3,4.8,5.234,8.567,23.48754,56.0547]";
     final double[] doubleArray = new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 };
@@ -1168,7 +1167,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final double[] resultDoubleArray = jsonStatham.convertFromJson(double[].class, doubleArrayJson);
     System.out.println(toString(resultDoubleArray));
-    assertThat(resultDoubleArray, is(equalTo(doubleArray)));
+    assertThat(resultDoubleArray).isEqualTo(doubleArray);
 
     final String booleanArrayJson = "[true,false,false,true,false,true,false,true,true]";
     final boolean[] booleanArray = new boolean[] { true, false, false, true, false, true, false, true, true };
@@ -1176,7 +1175,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final boolean[] resultBooleanArray = jsonStatham.convertFromJson(boolean[].class, booleanArrayJson);
     System.out.println(toString(resultBooleanArray));
-    assertThat(resultBooleanArray, is(equalTo(booleanArray)));
+    assertThat(resultBooleanArray).isEqualTo(booleanArray);
   }
 
   @Test
@@ -1188,7 +1187,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final Address[] addresses = jsonStatham.convertFromJson(Address[].class, json);
     System.out.println(toString(addresses));
-    assertThat(addresses, is(equalTo(addressList.toArray(new Address[addressList.size()]))));
+    assertThat(addresses).isEqualTo(addressList.toArray(new Address[addressList.size()]));
   }
 
   @Test
@@ -1201,7 +1200,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
 
     final List<Address> result = jsonStatham.convertFromJson(new TypeHolder<List<Address>>() {}, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(addressList)));
+    assertThat(result).isEqualTo(addressList);
   }
 
   @Test
@@ -1214,7 +1213,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
 
     final Map<String, Address> result = jsonStatham.convertFromJson(new TypeHolder<Map<String, Address>>() {}, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(addressMap)));
+    assertThat(result).isEqualTo(addressMap);
   }
 
   @Test
@@ -1231,7 +1230,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final Map<String, Map<String, Address>> result =
       jsonStatham.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>() {}, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(nestedMap)));
+    assertThat(result).isEqualTo(nestedMap);
   }
 
   @Test
@@ -1246,7 +1245,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final Address result = jsonStatham.convertFromJson(Address.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(address)));
+    assertThat(result).isEqualTo(address);
   }
 
   @Test
@@ -1271,7 +1270,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final NestedJsonObject result = jsonStatham.convertFromJson(NestedJsonObject.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
 
     final Long id2 = Long.valueOf(id + 100);
     final String name2 = name + "4Testing";
@@ -1292,7 +1291,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final NestedJsonObject result2 = jsonStatham.convertFromJson(NestedJsonObject.class, json2);
     System.out.println(result2);
-    assertThat(result2, is(equalTo(jsonObject)));
+    assertThat(result2).isEqualTo(jsonObject);
 
     final Long id3 = Long.valueOf(id + 100);
     final String name3 = name + "4Testing";
@@ -1313,7 +1312,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final NestedJsonObject result3 = jsonStatham.convertFromJson(NestedJsonObject.class, json3);
     System.out.println(result3);
-    assertThat(result3, is(equalTo(jsonObject)));
+    assertThat(result3).isEqualTo(jsonObject);
 
     jsonObject.setPrimaryKey(Long.valueOf(id));
     jsonObject.setName(name);
@@ -1331,7 +1330,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final NestedJsonObject result4 = jsonStatham.convertFromJson(NestedJsonObject.class, json4);
     System.out.println(result4);
-    assertThat(result4, is(equalTo(jsonObject)));
+    assertThat(result4).isEqualTo(jsonObject);
 
     jsonObject.setPrimaryKey(Long.valueOf(id));
     jsonObject.setName(name);
@@ -1349,7 +1348,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final NestedJsonObject result5 = jsonStatham.convertFromJson(NestedJsonObject.class, json5);
     System.out.println(result5);
-    assertThat(result5, is(equalTo(jsonObject)));
+    assertThat(result5).isEqualTo(jsonObject);
   }
 
   @Test(expected = JsonStathamException.class)
@@ -1389,7 +1388,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final JsonObjectWithoutFieldName result = jsonStatham.convertFromJson(JsonObjectWithoutFieldName.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectWithoutFieldName)));
+    assertThat(result).isEqualTo(jsonObjectWithoutFieldName);
   }
 
   @SuppressWarnings("deprecation")
@@ -1430,7 +1429,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final ComplexJsonObjectWithValueAccessor result =
       jsonStatham.convertFromJson(ComplexJsonObjectWithValueAccessor.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1468,7 +1467,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final ComplexJsonObjectWithValueAccessorWithoutItsName result =
       jsonStatham.convertFromJson(ComplexJsonObjectWithValueAccessorWithoutItsName.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1487,7 +1486,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final JsonObjectContainingCollection result =
       jsonStatham.convertFromJson(JsonObjectContainingCollection.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectContainingCollection)));
+    assertThat(result).isEqualTo(jsonObjectContainingCollection);
   }
 
   @Test
@@ -1503,7 +1502,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final JsonObjectContainingList result = jsonStatham.convertFromJson(JsonObjectContainingList.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectContainingList)));
+    assertThat(result).isEqualTo(jsonObjectContainingList);
   }
 
   @Test
@@ -1519,7 +1518,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final JsonObjectContainingSet result = jsonStatham.convertFromJson(JsonObjectContainingSet.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectContainingSet)));
+    assertThat(result).isEqualTo(jsonObjectContainingSet);
   }
 
   @Test
@@ -1557,7 +1556,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final JsonObjectContainingMapEntrySet result =
       jsonStatham.convertFromJson(JsonObjectContainingMapEntrySet.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectContainingSet)));
+    assertThat(result).isEqualTo(jsonObjectContainingSet);
 
     final String json2 = "{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[]}";
     final JsonObjectContainingMapEntrySet jsonObjectContainingSet2 =
@@ -1567,7 +1566,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final JsonObjectContainingMapEntrySet result2 =
       jsonStatham.convertFromJson(JsonObjectContainingMapEntrySet.class, json2);
     System.out.println(result2);
-    assertThat(result2, is(equalTo(jsonObjectContainingSet2)));
+    assertThat(result2).isEqualTo(jsonObjectContainingSet2);
 
   }
 
@@ -1583,7 +1582,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final JsonPojoHavingMap jsonPojoHavingMap = new JsonPojoHavingMap("Kevin", map);
     final String json = "{\"stringToLongMap\":{\"Kevin Lee\":3,\"Lee\":2,\"Kevin\":1},\"name\":\"Kevin\"}";
     final JsonPojoHavingMap result = jsonStatham.convertFromJson(JsonPojoHavingMap.class, json);
-    assertThat(result, is(equalTo(jsonPojoHavingMap)));
+    assertThat(result).isEqualTo(jsonPojoHavingMap);
   }
 
   @Test
@@ -1601,7 +1600,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final JsonObjectContainingIterator result = jsonStatham.convertFromJson(JsonObjectContainingIterator.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectContainingCollection)));
+    assertThat(result).isEqualTo(jsonObjectContainingCollection);
 
   }
 
@@ -1625,7 +1624,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final JsonObjectContainingIterable result = jsonStatham.convertFromJson(JsonObjectContainingIterable.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectContainingCollection)));
+    assertThat(result).isEqualTo(jsonObjectContainingCollection);
   }
 
   @Test
@@ -1658,7 +1657,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final JsonObjectHavingNestedGenericTypes result =
       jsonStatham.convertFromJson(JsonObjectHavingNestedGenericTypes.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObjectHavingNestedGenericTypes)));
+    assertThat(result).isEqualTo(jsonObjectHavingNestedGenericTypes);
   }
 
   @Test
@@ -1674,7 +1673,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final SomeInterface result = jsonStatham.convertFromJson(SomeImplementingClass.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1690,7 +1689,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final SubClass result = jsonStatham.convertFromJson(SubClass.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1706,7 +1705,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final SubClass result = jsonStatham.convertFromJson(SubClass.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1728,7 +1727,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final SecondSubClassWithOwnFields result = jsonStatham.convertFromJson(SecondSubClassWithOwnFields.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1743,7 +1742,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final SubClassWithNoJsonObjectSuperClass result =
       jsonStatham.convertFromJson(SubClassWithNoJsonObjectSuperClass.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1759,7 +1758,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     final SubClassWithValueAccessor result = jsonStatham.convertFromJson(SubClassWithValueAccessor.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1777,7 +1776,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final SubClassWithValueAccessorWithoutItsName result =
       jsonStatham.convertFromJson(SubClassWithValueAccessorWithoutItsName.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1796,7 +1795,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final SubClassWithValueAccessorWithAbstractMethod result =
       jsonStatham.convertFromJson(SubClassWithValueAccessorWithAbstractMethod.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1814,7 +1813,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final SubClassWithValueAccessorWithOverriddenMethod result =
       jsonStatham.convertFromJson(SubClassWithValueAccessorWithOverriddenMethod.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(jsonObject)));
+    assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
@@ -1829,7 +1828,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     JsonObjectContainingEnums result = jsonStatham.convertFromJson(JsonObjectContainingEnums.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN))));
+    assertThat(result).isEqualTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
 
     json =
       "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
@@ -1838,8 +1837,8 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     result = jsonStatham.convertFromJson(JsonObjectContainingEnums.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
-        Access.EMAIL))));
+    assertThat(result).isEqualTo(
+        new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.EMAIL));
 
     json =
       "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
@@ -1848,8 +1847,9 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println("java: ");
     result = jsonStatham.convertFromJson(JsonObjectContainingEnums.class, json);
     System.out.println(result);
-    assertThat(result, is(equalTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
-        Access.WIKI, Access.EMAIL, Access.TWITTER))));
+    assertThat(result).isEqualTo(
+        new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.WIKI, Access.EMAIL,
+            Access.TWITTER));
   }
 
   @Test
@@ -1873,7 +1873,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println(result);
 
     /* then */
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     /* given */
     final JsonStatham jsonStatham2 = ReflectionJsonStathams.newReflectionJsonStathamInAction();
@@ -1886,7 +1886,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println(result2);
 
     /* then */
-    assertThat(result2, is(equalTo(expected)));
+    assertThat(result2).isEqualTo(expected);
   }
 
   @Test
@@ -1912,7 +1912,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println(result);
 
     /* then */
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
 
     /* given */
     final JsonStatham jsonStatham2 = ReflectionJsonStathams.newReflectionJsonStathamInAction();
@@ -1925,7 +1925,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println(result2);
 
     /* then */
-    assertThat(result2, is(equalTo(expected)));
+    assertThat(result2).isEqualTo(expected);
   }
 
   @Test
@@ -1945,6 +1945,6 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     System.out.println(result);
 
     /* then */
-    assertThat(result, is(equalTo(expected)));
+    assertThat(result).isEqualTo(expected);
   }
 }
