@@ -39,21 +39,25 @@ package org.elixirian.jsonstatham.core.convertible;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2012-08-18)
  */
 public interface JsonScanner
 {
-	String getJsonString();
+  String getJsonString();
 
-	void backToPrevious();
+  void backToPrevious();
 
-	char nextChar();
+  char nextChar();
 
-	char nextNonWhiteSpaceChar();
+  char nextNonWhiteSpaceChar();
 
-	Object nextValue();
+  Object nextValue();
 
-	String getPreviousCharInfo();
+  String getPreviousCharInfo();
+
+  boolean isEnded();
+
+  boolean isNotEnded();
 }

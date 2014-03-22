@@ -166,15 +166,15 @@ public final class JsonUtil
 
   public interface JsonObjectAndArrayCreator
   {
-    JsonObject newJsonObject(Map<Object, Object> map);
+    JsonObject newJsonObject(final Map<Object, Object> map);
 
-    JsonObject newJsonObject(Object value);
+    JsonObject newJsonObject(final Object value);
 
-    JsonArray newJsonArray(Object[] elements);
+    JsonArray newJsonArray(final Object[] elements);
 
-    JsonArray newJsonArray(Collection<?> elements);
+    JsonArray newJsonArray(final Collection<?> elements);
 
-    JsonArray newJsonArray(Object value);
+    JsonArray newJsonArray(final Object value);
   }
 
   public static JsonObjectAndArrayCreator getJsonObjectAndArrayCreator(final JsonObject jsonObject)
@@ -456,12 +456,18 @@ public final class JsonUtil
     }
     catch (final Throwable e)
     {
+      /* @formatter:off */
       System.out.println(format(
           "log from %s (%s.java:%s)\nException is thrown when converting value [%s] into another object.\n"
               + "This should be just ignored.\n[paramInfo-> Object value: %s, JsonObjectAndArrayCreator jsonObjectAndArrayCreator: %s]"
               + "[Message from Throwable: %s]", JsonUtil.class, JsonUtil.class.getSimpleName(),
-          Integer.valueOf(Thread.currentThread()
-              .getStackTrace()[1].getLineNumber()), value, value, jsonObjectAndArrayCreator, e.getMessage()));
+          Integer.valueOf(Thread
+                           .currentThread()
+                           .getStackTrace()[1]
+                           .getLineNumber()),
+                          value, value, jsonObjectAndArrayCreator,
+                          e.getMessage()));
+      /* @formatter:on */
       return null;
     }
   }
@@ -479,5 +485,43 @@ public final class JsonUtil
   public static <N, V> ImmutableJsonNameValuePair<V> newJsonNameValuePair(final String name, final V value)
   {
     return new ImmutableJsonNameValuePair<V>(name, value);
+  }
+
+  public static String toPrintable(final char c)
+  {
+    String result;
+    switch (c)
+    {
+      case '\\':
+        result = "\\";
+        break;
+      case '\b':
+        result = "\\b";
+        break;
+      case '\f':
+        result = "\\f";
+        break;
+      case '\n':
+        result = "\\n";
+        break;
+      case '\r':
+        result = "\\r";
+        break;
+      case '\t':
+        result = "\\t";
+        break;
+      default:
+        if (' ' > c || (('\u0080' <= c & '\u00a0' > c) | ('\u2000' <= c & '\u2100' > c)))
+        {
+          final String hex = "000" + Integer.toHexString(c);
+          result = "\\u" + hex.substring(hex.length() - 4);
+        }
+        else
+        {
+          result = String.valueOf(c);
+        }
+        break;
+    }
+    return result;
   }
 }
