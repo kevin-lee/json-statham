@@ -66,6 +66,8 @@ import org.elixirian.jsonstatham.json.Address;
 import org.elixirian.jsonstatham.json.PersonJson;
 import org.elixirian.kommonlee.io.CharReadable;
 import org.elixirian.kommonlee.io.CharReadableFromInputStream;
+import org.elixirian.kommonlee.io.IoCommonConstants;
+import org.elixirian.kommonlee.io.util.IoUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -346,6 +348,8 @@ public class JsonStathamInActionWithCharReadableTest
     final PersonJson expected =
       new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
           cityList.get(0), stateList.get(0), postcodeList.get(0)));
+    
+//    System.out.println(new String(IoUtil.readInputStreamToByteArray(inputStream, IoCommonConstants.BUFFER_SIZE_32Ki)));
 
     /* when */
     final PersonJson actual = jsonStatham.convertFromJson(PersonJson.class, inputStream);

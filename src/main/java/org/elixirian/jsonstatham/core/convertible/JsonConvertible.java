@@ -31,6 +31,8 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import org.elixirian.kommonlee.io.CharAndStringWritable;
+
 /**
  * <pre>
  *     ___  _____                                _____
@@ -55,4 +57,6 @@ public interface JsonConvertible
 
   @Override
   String toString();
+  
+//  void write(final CharAndStringWritable charAndStringWritable);
 }
