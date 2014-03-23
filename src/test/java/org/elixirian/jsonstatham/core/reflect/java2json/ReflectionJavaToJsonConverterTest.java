@@ -94,6 +94,7 @@ import org.elixirian.jsonstatham.json.json2java.ObjectHavingJsonObjectAndJsonArr
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -223,6 +224,12 @@ public class ReflectionJavaToJsonConverterTest
         public Class<?> getActualType()
         {
           return getActualObject().getClass();
+        }
+
+        @Override
+        public void write(final CharAndStringWritable charAndStringWritable)
+        {
+          AbstractJsonObject.NULL_JSON_OBJECT.write(charAndStringWritable);
         }
       };
     }

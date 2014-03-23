@@ -46,6 +46,9 @@ import java.util.Set;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
+import org.elixirian.kommonlee.io.CharAndStringWritableToStringBuilder;
+import org.elixirian.kommonlee.io.util.IoUtil;
 import org.elixirian.kommonlee.util.NeoArrays;
 import org.elixirian.kommonlee.util.collect.Maps;
 
@@ -163,6 +166,12 @@ public abstract class AbstractJsonObject extends AbstractJsonConvertible impleme
     public boolean isNotEmpty()
     {
       return false;
+    }
+
+    @Override
+    public void write(final CharAndStringWritable charAndStringWritable)
+    {
+      charAndStringWritable.write("null");
     }
   }
 
@@ -454,32 +463,42 @@ public abstract class AbstractJsonObject extends AbstractJsonConvertible impleme
   @Override
   public String toString()
   {
-    final StringBuilder stringBuilder = new StringBuilder("{");
+    final StringBuilder stringBuilder = new StringBuilder();
+    final CharAndStringWritableToStringBuilder charAndStringWritable =
+      new CharAndStringWritableToStringBuilder(stringBuilder);
+    write(charAndStringWritable);
+    IoUtil.closeQuietly(charAndStringWritable);
+    return stringBuilder.toString();
+  }
+
+  @Override
+  public void write(final CharAndStringWritable charAndStringWritable)
+  {
+    charAndStringWritable.write("{");
     final Iterator<Entry<String, Object>> iterator = jsonFieldMap.entrySet()
         .iterator();
 
     if (iterator.hasNext())
     {
       final Entry<String, Object> field = iterator.next();
-
-      final String value = JsonUtil.toStringValue(field.getValue(), this);
-
-      stringBuilder.append(doubleQuote(field.getKey()))
-          .append(':')
-          .append(value);
+      /* name */
+      doubleQuote(charAndStringWritable, field.getKey());
+      charAndStringWritable.write(':');
+      /* value */
+      JsonUtil.writeValue(charAndStringWritable, field.getValue(), this);
     }
 
     while (iterator.hasNext())
     {
       final Entry<String, Object> field = iterator.next();
-      final String value = JsonUtil.toStringValue(field.getValue(), this);
-      stringBuilder.append(',')
-          .append(doubleQuote(field.getKey()))
-          .append(':')
-          .append(value);
+      charAndStringWritable.write(',');
+      /* name */
+      doubleQuote(charAndStringWritable, field.getKey());
+      charAndStringWritable.write(':');
+      /* value */
+      JsonUtil.writeValue(charAndStringWritable, field.getValue(), this);
     }
-    return stringBuilder.append('}')
-        .toString();
+    charAndStringWritable.write('}');
   }
 
   @Override

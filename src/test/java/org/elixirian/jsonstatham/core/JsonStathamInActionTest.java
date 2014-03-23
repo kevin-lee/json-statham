@@ -114,6 +114,7 @@ import org.elixirian.jsonstatham.test.ItemConfig;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
 import org.elixirian.kommonlee.io.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.junit.After;
@@ -265,6 +266,12 @@ public class JsonStathamInActionTest
         {
           return getActualObject().getClass();
         }
+
+        @Override
+        public void write(final CharAndStringWritable charAndStringWritable)
+        {
+          AbstractJsonObject.NULL_JSON_OBJECT.write(charAndStringWritable);
+        }
       };
     }
   };
@@ -293,7 +300,7 @@ public class JsonStathamInActionTest
   private JsonStatham jsonStatham;
 
   private Address address;
-  
+
   @Mock
   private JsonScannerCreator jsonScannerCreator;
 
@@ -328,51 +335,51 @@ public class JsonStathamInActionTest
   public void setUp() throws Exception
   {
     when(jsonScannerCreator.newJsonScanner(any(CharReadable.class))).thenReturn(new JsonScanner() {
-      
+
       @Override
       public Object nextValue()
       {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public char nextNonWhiteSpaceChar()
       {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public char nextChar()
       {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public boolean isNotEnded()
       {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public boolean isEnded()
       {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public String getPreviousCharInfo()
       {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public void backToPrevious()
       {
         throw new UnsupportedOperationException();
-        
+
       }
     });
-    
+
     when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
     when(jsonObjectCreator.newJsonObjectConvertible(anyString())).thenAnswer(
         ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
@@ -388,7 +395,8 @@ public class JsonStathamInActionTest
           new OneProcessorForKnownTypeDecider());
 
     final ReflectionJsonToJavaConverter jsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator, jsonArrayCreator)
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator,
+          jsonArrayCreator)
           .build());
 
     jsonStatham = new JsonStathamInAction(javaToJsonConverter, jsonToJavaConverter);

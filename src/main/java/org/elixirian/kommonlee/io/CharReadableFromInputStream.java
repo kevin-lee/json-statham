@@ -31,14 +31,9 @@
  */
 package org.elixirian.kommonlee.io;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-
-import org.elixirian.kommonlee.io.IoCommonConstants;
-import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
  * <pre>
@@ -52,10 +47,8 @@ import org.elixirian.kommonlee.io.exception.RuntimeIoException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2014-03-23)
  */
-public class CharReadableFromInputStream implements CharReadable
+public class CharReadableFromInputStream extends AbstractCharReadableFromReader
 {
-  private final BufferedReader reader;
-
   public CharReadableFromInputStream(final InputStream inputStream)
   {
     this(inputStream, IoCommonConstants.UTF_8);
@@ -63,25 +56,6 @@ public class CharReadableFromInputStream implements CharReadable
 
   public CharReadableFromInputStream(final InputStream inputStream, final Charset charset)
   {
-    this.reader = new BufferedReader(new InputStreamReader(inputStream, charset));
-  }
-
-  @Override
-  public int read() throws RuntimeIoException
-  {
-    try
-    {
-      return reader.read();
-    }
-    catch (final IOException e)
-    {
-      throw new RuntimeIoException(e);
-    }
-  }
-
-  @Override
-  public void close() throws IOException
-  {
-    reader.close();
+    super(new InputStreamReader(inputStream, charset));
   }
 }

@@ -29,11 +29,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
+package org.elixirian.kommonlee.io;
 
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.io.CharAndStringWritable;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+
+import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
  * <pre>
@@ -45,15 +47,38 @@ import org.elixirian.kommonlee.io.CharAndStringWritable;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JavaToJsonConverter
+public abstract class AbstractCharReadableFromReader implements CharReadable
 {
-  String convertIntoJson(final Object source) throws IllegalArgumentException, JsonStathamException, IllegalAccessException;
+  private final BufferedReader reader;
 
-  <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws IllegalArgumentException,
-      JsonStathamException, IllegalAccessException;
+  public AbstractCharReadableFromReader(final Reader reader)
+  {
+    this.reader = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+  }
 
-  void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
-      throws IllegalArgumentException, IllegalAccessException, JsonStathamException;
+  protected Reader getReader()
+  {
+    return reader;
+  }
+
+  @Override
+  public int read() throws RuntimeIoException
+  {
+    try
+    {
+      return reader.read();
+    }
+    catch (final IOException e)
+    {
+      throw new RuntimeIoException(e);
+    }
+  }
+
+  @Override
+  public void close() throws IOException
+  {
+    reader.close();
+  }
 }

@@ -43,9 +43,11 @@ import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
+import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
@@ -196,12 +198,12 @@ public class KnownDataStructureTypeProcessorDeciderTest
   public final void testKnownDataStructureTypeProcessorDeciderMapOfClassOfQKnownTypeProcessor()
       throws IllegalArgumentException, JsonStathamException, IllegalAccessException
   {
-    final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownDataStructuresProcessorMap =
-      new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
-    knownDataStructuresProcessorMap.put(NavigableSet.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
+    final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter> knownDataStructuresProcessorMap =
+      new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter>();
+    knownDataStructuresProcessorMap.put(NavigableSet.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
       @SuppressWarnings("unchecked")
       @Override
-      public <T> Object process(
+      public <T> JsonConvertible process(
           @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
           final Class<T> valueType, final Object source) throws IllegalArgumentException, IllegalAccessException,
           JsonStathamException

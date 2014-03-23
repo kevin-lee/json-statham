@@ -41,6 +41,9 @@ import java.util.List;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
+import org.elixirian.kommonlee.io.CharAndStringWritableToStringBuilder;
+import org.elixirian.kommonlee.io.util.IoUtil;
 import org.elixirian.kommonlee.util.NeoArrays;
 
 /**
@@ -191,25 +194,32 @@ public abstract class AbstractJsonArray extends AbstractJsonConvertible implemen
   }
 
   @Override
-  public String toString()
+  public void write(final CharAndStringWritable charAndStringWritable)
   {
-    final StringBuilder stringBuilder = new StringBuilder("[");
+    charAndStringWritable.write("[");
     final Iterator<Object> iterator = list.iterator();
 
     if (iterator.hasNext())
     {
-      final String value = JsonUtil.toStringValue(iterator.next(), this);
-      stringBuilder.append(value);
+      JsonUtil.writeValue(charAndStringWritable, iterator.next(), this);
     }
 
     while (iterator.hasNext())
     {
-      final String value = JsonUtil.toStringValue(iterator.next(), this);
-      stringBuilder.append(',')
-          .append(value);
+      charAndStringWritable.write(',');
+      JsonUtil.writeValue(charAndStringWritable, iterator.next(), this);
     }
-    return stringBuilder.append(']')
-        .toString();
+    charAndStringWritable.write(']');
+  }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder stringBuilder = new StringBuilder();
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToStringBuilder(stringBuilder);
+    write(charAndStringWritable);
+    IoUtil.closeQuietly(charAndStringWritable);
+    return stringBuilder.toString();
   }
 
   public static Object[] convertToArrayIfArray(final Object possibleArray)

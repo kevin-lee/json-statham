@@ -52,11 +52,11 @@ public interface JsonConvertible
   boolean isJsonArray();
 
   Class<?> getActualType();
-  
+
   Object getActualObject();
 
   @Override
   String toString();
-  
-//  void write(final CharAndStringWritable charAndStringWritable);
+
+  void write(final CharAndStringWritable charAndStringWritable);
 }

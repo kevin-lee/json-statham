@@ -40,8 +40,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.elixirian.jsonstatham.core.KnownTypeProcessorDeciderForJavaToJson;
+import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.core.convertible.JsonArray;
+import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 
@@ -53,137 +55,137 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-10)
  */
 public class KnownDataStructureTypeProcessorDecider implements KnownTypeProcessorDeciderForJavaToJson
 {
-	public static final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP;
+  public static final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter> DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP;
 
-	static
-	{
-		final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> tempMap =
-			new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter>();
-		tempMap.put(JsonArray.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-			@Override
-			public <T> Object process(
-					@SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				return value;
-			}
-		});
-		tempMap.put(Array.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-			@Override
-			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-				for (int i = 0, size = Array.getLength(value); i < size; i++)
-				{
-					jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(Array.get(value, i)));
-				}
-				return jsonArray;
-			}
-		});
+  static
+  {
+    final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter> tempMap =
+      new HashMap<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter>();
+    tempMap.put(JsonArray.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
+      @Override
+      public <T> JsonConvertible process(
+          @SuppressWarnings("unused") final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
+      {
+        return (JsonArray) value;
+      }
+    });
+    tempMap.put(Array.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
+      @Override
+      public <T> JsonConvertible process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
+      {
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        for (int i = 0, size = Array.getLength(value); i < size; i++)
+        {
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(Array.get(value, i)));
+        }
+        return jsonArray;
+      }
+    });
 
-		tempMap.put(Collection.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-				for (final Object eachElement : (Collection<Object>) value)
-				{
-					jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
-				}
-				return jsonArray;
-			}
-		});
-		tempMap.put(Iterable.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-				for (final Object eachElement : (Iterable<Object>) value)
-				{
-					jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
-				}
-				return jsonArray;
-			}
-		});
-		tempMap.put(Iterator.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
-				for (final Iterator<Object> iterator = (Iterator<Object>) value; iterator.hasNext();)
-				{
-					jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(iterator.next()));
-				}
-				return jsonArray;
-			}
-		});
-		tempMap.put(Map.class, new KnownTypeProcessorWithReflectionJavaToJsonConverter() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public <T> Object process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
-					@SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
-					IllegalAccessException, JsonStathamException
-			{
-				final JsonObject jsonObject = reflectionJavaToJsonConverter.newJsonObjectConvertible();
-				for (final Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet())
-				{
-					jsonObject.put(String.valueOf(entry.getKey()),
-							reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
-				}
-				return jsonObject;
-			}
-		});
-		DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
-	}
+    tempMap.put(Collection.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> JsonConvertible process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
+      {
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        for (final Object eachElement : (Collection<Object>) value)
+        {
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
+        }
+        return jsonArray;
+      }
+    });
+    tempMap.put(Iterable.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> JsonConvertible process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
+      {
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        for (final Object eachElement : (Iterable<Object>) value)
+        {
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(eachElement));
+        }
+        return jsonArray;
+      }
+    });
+    tempMap.put(Iterator.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> JsonConvertible process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
+      {
+        final JsonArray jsonArray = reflectionJavaToJsonConverter.newJsonArrayConvertible();
+        for (final Iterator<Object> iterator = (Iterator<Object>) value; iterator.hasNext();)
+        {
+          jsonArray.put(reflectionJavaToJsonConverter.createJsonValue(iterator.next()));
+        }
+        return jsonArray;
+      }
+    });
+    tempMap.put(Map.class, new KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> JsonConvertible process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+          @SuppressWarnings("unused") final Class<T> valueType, final Object value) throws IllegalArgumentException,
+          IllegalAccessException, JsonStathamException
+      {
+        final JsonObject jsonObject = reflectionJavaToJsonConverter.newJsonObjectConvertible();
+        for (final Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet())
+        {
+          jsonObject.put(String.valueOf(entry.getKey()),
+              reflectionJavaToJsonConverter.createJsonValue(entry.getValue()));
+        }
+        return jsonObject;
+      }
+    });
+    DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP = Collections.unmodifiableMap(tempMap);
+  }
 
-	private final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownDataStructuresProcessorMap;
+  private final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter> knownDataStructuresProcessorMap;
 
-	public KnownDataStructureTypeProcessorDecider()
-	{
-		knownDataStructuresProcessorMap = DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP;
-	}
+  public KnownDataStructureTypeProcessorDecider()
+  {
+    knownDataStructuresProcessorMap = DEFAULT_KNOWN_DATA_STRUCTURES_PROCESSOR_MAP;
+  }
 
-	public KnownDataStructureTypeProcessorDecider(
-			final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> knownDataStructuresProcessorMap)
-	{
-		this.knownDataStructuresProcessorMap = Collections.unmodifiableMap(knownDataStructuresProcessorMap);
-	}
+  public KnownDataStructureTypeProcessorDecider(
+      final Map<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter> knownDataStructuresProcessorMap)
+  {
+    this.knownDataStructuresProcessorMap = Collections.unmodifiableMap(knownDataStructuresProcessorMap);
+  }
 
-	@Override
-	public <T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(final Class<T> type)
-	{
-		if (type.isArray())
-		{
-			return knownDataStructuresProcessorMap.get(Array.class);
-		}
+  @Override
+  public <T> KnownTypeProcessorWithReflectionJavaToJsonConverter decide(final Class<T> type)
+  {
+    if (type.isArray())
+    {
+      return knownDataStructuresProcessorMap.get(Array.class);
+    }
 
-		for (final Entry<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConverter> entry : knownDataStructuresProcessorMap.entrySet())
-		{
-			if (entry.getKey()
-					.isAssignableFrom(type))
-			{
-				return entry.getValue();
-			}
-		}
-		return null;
-	}
+    for (final Entry<Class<?>, KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter> entry : knownDataStructuresProcessorMap.entrySet())
+    {
+      if (entry.getKey()
+          .isAssignableFrom(type))
+      {
+        return entry.getValue();
+      }
+    }
+    return null;
+  }
 
 }

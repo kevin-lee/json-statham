@@ -35,8 +35,11 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,13 +68,17 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
 import org.elixirian.jsonstatham.json.PersonJson;
 import org.elixirian.kommonlee.io.CharAndStringWritable;
+import org.elixirian.kommonlee.io.CharAndStringWritableToOutputStream;
 import org.elixirian.kommonlee.io.CharReadable;
-import org.elixirian.kommonlee.io.CharReadableFromInputStream;
+import org.elixirian.kommonlee.io.IoCommonConstants;
+import org.elixirian.kommonlee.nio.util.NioUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -93,7 +100,7 @@ import org.mockito.stubbing.Answer;
  * @version 0.0.3 (2010-05-10) test case for testing enum type fields is added.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class JsonStathamInActionWithCharReadableTest
+public class JsonStathamInActionWithCharAndStringWritableTest
 {
   private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St", "1 AAA St",
       "AAA 123 RD", "111 ABCDEF LN");
@@ -244,6 +251,9 @@ public class JsonStathamInActionWithCharReadableTest
     }
   };
 
+  @Rule
+  public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
   private JsonStatham jsonStatham;
 
   @Mock
@@ -261,7 +271,7 @@ public class JsonStathamInActionWithCharReadableTest
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    System.out.println("###  JsonStathamInActionWithCharReadableTest starts ###");
+    System.out.println("###  JsonStathamInActionWithCharAndStringWritableTest starts ###");
   }
 
   /**
@@ -270,7 +280,7 @@ public class JsonStathamInActionWithCharReadableTest
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    System.out.println("\n### JsonStathamInActionWithCharReadableTest ends ###");
+    System.out.println("\n### JsonStathamInActionWithCharAndStringWritableTest ends ###");
   }
 
   /**
@@ -347,290 +357,31 @@ public class JsonStathamInActionWithCharReadableTest
   }
 
   @Test
-  public void testWithInputStream()
+  public void testWithOutputStream() throws FileNotFoundException
   {
     /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/person.json");
     final PersonJson expected =
       new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
           cityList.get(0), stateList.get(0), postcodeList.get(0)));
 
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-person.json");
+
     /* when */
-    final PersonJson actual = jsonStatham.convertFromJson(PersonJson.class, inputStream);
+    jsonStatham.convertIntoJsonAndWrite(expected, new FileOutputStream(testFile));
 
     /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithInputStream2()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/people.json");
-    /* @formatter:off */
-    int i = 0;
-    final List<PersonJson> expected =
-      Arrays.asList(
-          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(2L, "Tom", "tom@another-email.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(3L, "John", "john.doe@test-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(5L, "Sean", "sean@abcde.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))));
-    /* @formatter:on */
-
-    /* when */
-    final List<PersonJson> actual = Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class, inputStream));
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithInputStream3()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/person.json");
-    final PersonJson expected =
-      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
-          cityList.get(0), stateList.get(0), postcodeList.get(0)));
-
-    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
-
-    /* when */
-    final PersonJson actual = jsonStatham.convertFromJson(PersonJson.class, inputStream);
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithInputStream4()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/people.json");
-    /* @formatter:off */
-    int i = 0;
-    final List<PersonJson> expected =
-      Arrays.asList(
-          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(2L, "Tom", "tom@another-email.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(3L, "John", "john.doe@test-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(5L, "Sean", "sean@abcde.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))));
-    /* @formatter:on */
-    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
-
-    /* when */
-    final List<PersonJson> actual = Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class, inputStream));
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithReader()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/person.json");
-    final PersonJson expected =
-      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
-          cityList.get(0), stateList.get(0), postcodeList.get(0)));
-
-    /* when */
-    final PersonJson actual = jsonStatham.convertFromJson(PersonJson.class, new InputStreamReader(inputStream));
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithReader2()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/people.json");
-    /* @formatter:off */
-    int i = 0;
-    final List<PersonJson> expected =
-      Arrays.asList(
-          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(2L, "Tom", "tom@another-email.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(3L, "John", "john.doe@test-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(5L, "Sean", "sean@abcde.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))));
-    /* @formatter:on */
-
-    /* when */
-    final List<PersonJson> actual =
-      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class, new InputStreamReader(inputStream)));
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithReader3()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/person.json");
-    final PersonJson expected =
-      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
-          cityList.get(0), stateList.get(0), postcodeList.get(0)));
-    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
-
-    /* when */
-    final PersonJson actual = jsonStatham.convertFromJson(PersonJson.class, new InputStreamReader(inputStream));
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithReader4()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/people.json");
-    /* @formatter:off */
-    int i = 0;
-    final List<PersonJson> expected =
-      Arrays.asList(
-          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(2L, "Tom", "tom@another-email.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(3L, "John", "john.doe@test-email.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))),
-          new PersonJson(5L, "Sean", "sean@abcde.com", false,
-                         new Address(streetList.get(i),
-                                     suburbList.get(i),
-                                     cityList.get(i),
-                                     stateList.get(i),
-                                     postcodeList.get(i++))));
-    /* @formatter:on */
-    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
-
-    /* when */
-    final List<PersonJson> actual =
-      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class, new InputStreamReader(inputStream)));
-
-    /* then */
-    assertThat(actual).isEqualTo(expected);
-  }
-
-  @Test
-  public void testWithCharReadable()
-  {
-    /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/person.json");
-    final PersonJson expected =
-      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
-          cityList.get(0), stateList.get(0), postcodeList.get(0)));
-
-    /* when */
     final PersonJson actual =
-      jsonStatham.convertFromJson(PersonJson.class, new CharReadableFromInputStream(inputStream));
+      jsonStatham.convertFromJson(PersonJson.class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki)));
 
-    /* then */
     assertThat(actual).isEqualTo(expected);
   }
 
   @Test
-  public void testWithCharReadable2()
+  public void testWithOutputStream2() throws FileNotFoundException
   {
     /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/people.json");
     /* @formatter:off */
     int i = 0;
     final List<PersonJson> expected =
@@ -667,37 +418,54 @@ public class JsonStathamInActionWithCharReadableTest
                                      postcodeList.get(i++))));
     /* @formatter:on */
 
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-people.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
     /* when */
-    final List<PersonJson> actual =
-      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class, new CharReadableFromInputStream(inputStream)));
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
 
     /* then */
+    final List<PersonJson> actual =
+      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki))));
+
     assertThat(actual).isEqualTo(expected);
   }
 
   @Test
-  public void testWithCharReadable3()
+  public void testWithOutputStream3() throws FileNotFoundException
   {
     /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/person.json");
     final PersonJson expected =
       new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
           cityList.get(0), stateList.get(0), postcodeList.get(0)));
+
     final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
 
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-person.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
     /* when */
-    final PersonJson actual =
-      jsonStatham.convertFromJson(PersonJson.class, new CharReadableFromInputStream(inputStream));
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
 
     /* then */
+    final PersonJson actual =
+      jsonStatham.convertFromJson(PersonJson.class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki)));
+
     assertThat(actual).isEqualTo(expected);
   }
 
   @Test
-  public void testWithCharReadable4()
+  public void testWithOutputStream4() throws FileNotFoundException
   {
     /* given */
-    final InputStream inputStream = getClass().getResourceAsStream("/people.json");
     /* @formatter:off */
     int i = 0;
     final List<PersonJson> expected =
@@ -733,13 +501,351 @@ public class JsonStathamInActionWithCharReadableTest
                                      stateList.get(i),
                                      postcodeList.get(i++))));
     /* @formatter:on */
+
     final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
 
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-people.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
     /* when */
-    final List<PersonJson> actual =
-      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class, new CharReadableFromInputStream(inputStream)));
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
 
     /* then */
+    final List<PersonJson> actual =
+      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki))));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithWriter() throws IOException
+  {
+    /* given */
+    final PersonJson expected =
+      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
+          cityList.get(0), stateList.get(0), postcodeList.get(0)));
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-person.json");
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, new FileWriter(testFile));
+
+    /* then */
+    final PersonJson actual =
+      jsonStatham.convertFromJson(PersonJson.class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki)));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithWriter2() throws JsonStathamException, IOException
+  {
+    /* given */
+    /* @formatter:off */
+    int i = 0;
+    final List<PersonJson> expected =
+      Arrays.asList(
+          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(2L, "Tom", "tom@another-email.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(3L, "John", "john.doe@test-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(5L, "Sean", "sean@abcde.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))));
+    /* @formatter:on */
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-people.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, new FileWriter(testFile));
+
+    /* then */
+    final List<PersonJson> actual =
+      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki))));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithWriter3() throws JsonStathamException, IOException
+  {
+    /* given */
+    final PersonJson expected =
+      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
+          cityList.get(0), stateList.get(0), postcodeList.get(0)));
+
+    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-person.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, new FileWriter(testFile));
+
+    /* then */
+    final PersonJson actual =
+      jsonStatham.convertFromJson(PersonJson.class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki)));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithWriter4() throws JsonStathamException, IOException
+  {
+    /* given */
+    /* @formatter:off */
+    int i = 0;
+    final List<PersonJson> expected =
+      Arrays.asList(
+          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(2L, "Tom", "tom@another-email.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(3L, "John", "john.doe@test-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(5L, "Sean", "sean@abcde.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))));
+    /* @formatter:on */
+
+    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-people.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, new FileWriter(testFile));
+
+    /* then */
+    final List<PersonJson> actual =
+      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki))));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithCharAndStringWritable() throws FileNotFoundException
+  {
+    /* given */
+    final PersonJson expected =
+      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
+          cityList.get(0), stateList.get(0), postcodeList.get(0)));
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-person.json");
+
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
+
+    /* then */
+    final PersonJson actual =
+      jsonStatham.convertFromJson(PersonJson.class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki)));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithCharAndStringWritable2() throws FileNotFoundException
+  {
+    /* given */
+    /* @formatter:off */
+    int i = 0;
+    final List<PersonJson> expected =
+      Arrays.asList(
+          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(2L, "Tom", "tom@another-email.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(3L, "John", "john.doe@test-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(5L, "Sean", "sean@abcde.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))));
+    /* @formatter:on */
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-people.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
+
+    /* then */
+    final List<PersonJson> actual =
+      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki))));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithCharAndStringWritable3() throws FileNotFoundException
+  {
+    /* given */
+    final PersonJson expected =
+      new PersonJson(1L, "Kevin", "kevin@some-email.com", true, new Address(streetList.get(0), suburbList.get(0),
+          cityList.get(0), stateList.get(0), postcodeList.get(0)));
+
+    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-person.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
+
+    /* then */
+    final PersonJson actual =
+      jsonStatham.convertFromJson(PersonJson.class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki)));
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  public void testWithCharAndStringWritable4() throws FileNotFoundException
+  {
+    /* given */
+    /* @formatter:off */
+    int i = 0;
+    final List<PersonJson> expected =
+      Arrays.asList(
+          new PersonJson(1L, "Kevin", "kevin@some-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(2L, "Tom", "tom@another-email.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(3L, "John", "john.doe@test-email.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(4L, "Mark", "mk@aaaa.bbb.com", true,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))),
+          new PersonJson(5L, "Sean", "sean@abcde.com", false,
+                         new Address(streetList.get(i),
+                                     suburbList.get(i),
+                                     cityList.get(i),
+                                     stateList.get(i),
+                                     postcodeList.get(i++))));
+    /* @formatter:on */
+
+    final JsonStatham jsonStatham = ReflectionJsonStathams.newReflectionJsonStathamInAction();
+
+    final File testFolder = temporaryFolder.newFolder("json-statham-test" + System.currentTimeMillis());
+    final File testFile = new File(testFolder, "test-with-OutputStream-people.json");
+    final FileOutputStream fileOutputStream = new FileOutputStream(testFile);
+
+    final CharAndStringWritable charAndStringWritable = new CharAndStringWritableToOutputStream(fileOutputStream);
+
+    /* when */
+    jsonStatham.convertIntoJsonAndWrite(expected, charAndStringWritable);
+
+    /* then */
+    final List<PersonJson> actual =
+      Arrays.asList(jsonStatham.convertFromJson(PersonJson[].class,
+          new String(NioUtil.readFileToByteArray(testFile, IoCommonConstants.BUFFER_SIZE_8Ki))));
+
     assertThat(actual).isEqualTo(expected);
   }
 }

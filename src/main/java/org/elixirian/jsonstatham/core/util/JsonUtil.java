@@ -48,6 +48,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObject;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
 import org.elixirian.kommonlee.util.CommonConstants;
 import org.elixirian.kommonlee.util.NeoArrays;
 
@@ -70,11 +71,11 @@ public final class JsonUtil
     throw new IllegalAccessException(getClass().getName() + CommonConstants.CANNOT_BE_INSTANTIATED);
   }
 
-  public static String doubleQuote(final String value)
+  public static void doubleQuote(final CharAndStringWritable charAndStringWritable, final String value)
   {
     final int length = value.length();
     char c = 0;
-    final StringBuilder quotedStringBuilder = new StringBuilder("\"");
+    charAndStringWritable.write("\"");
     for (int i = 0; i < length; i++)
     {
       final char previous = c;
@@ -83,48 +84,103 @@ public final class JsonUtil
       {
         case '"':
         case '\\':
-          quotedStringBuilder.append('\\')
-              .append(c);
+          charAndStringWritable.write('\\')
+              .write(c);
           break;
         case '/':
           if ('<' == previous)
           {
-            quotedStringBuilder.append('\\');
+            charAndStringWritable.write('\\');
           }
-          quotedStringBuilder.append(c);
+          charAndStringWritable.write(c);
           break;
         case '\b':
-          quotedStringBuilder.append("\\b");
+          charAndStringWritable.write("\\b");
           break;
         case '\f':
-          quotedStringBuilder.append("\\f");
+          charAndStringWritable.write("\\f");
           break;
         case '\n':
-          quotedStringBuilder.append("\\n");
+          charAndStringWritable.write("\\n");
           break;
         case '\r':
-          quotedStringBuilder.append("\\r");
+          charAndStringWritable.write("\\r");
           break;
         case '\t':
-          quotedStringBuilder.append("\\t");
+          charAndStringWritable.write("\\t");
           break;
         default:
           if (' ' > c || (('\u0080' <= c & '\u00a0' > c) | ('\u2000' <= c & '\u2100' > c)))
           {
             final String hex = "000" + Integer.toHexString(c);
-            quotedStringBuilder.append("\\u")
-                .append(hex.substring(hex.length() - 4));
+            charAndStringWritable.write("\\u")
+                .write(hex.substring(hex.length() - 4));
           }
           else
           {
-            quotedStringBuilder.append(c);
+            charAndStringWritable.write(c);
           }
           break;
       }
     }
-    return quotedStringBuilder.append('"')
-        .toString();
+    charAndStringWritable.write('"');
   }
+
+  // public static String doubleQuote(final String value)
+  // {
+  // final int length = value.length();
+  // char c = 0;
+  // final StringBuilder quotedStringBuilder = new StringBuilder("\"");
+  // for (int i = 0; i < length; i++)
+  // {
+  // final char previous = c;
+  // c = value.charAt(i);
+  // switch (c)
+  // {
+  // case '"':
+  // case '\\':
+  // quotedStringBuilder.append('\\')
+  // .append(c);
+  // break;
+  // case '/':
+  // if ('<' == previous)
+  // {
+  // quotedStringBuilder.append('\\');
+  // }
+  // quotedStringBuilder.append(c);
+  // break;
+  // case '\b':
+  // quotedStringBuilder.append("\\b");
+  // break;
+  // case '\f':
+  // quotedStringBuilder.append("\\f");
+  // break;
+  // case '\n':
+  // quotedStringBuilder.append("\\n");
+  // break;
+  // case '\r':
+  // quotedStringBuilder.append("\\r");
+  // break;
+  // case '\t':
+  // quotedStringBuilder.append("\\t");
+  // break;
+  // default:
+  // if (' ' > c || (('\u0080' <= c & '\u00a0' > c) | ('\u2000' <= c & '\u2100' > c)))
+  // {
+  // final String hex = "000" + Integer.toHexString(c);
+  // quotedStringBuilder.append("\\u")
+  // .append(hex.substring(hex.length() - 4));
+  // }
+  // else
+  // {
+  // quotedStringBuilder.append(c);
+  // }
+  // break;
+  // }
+  // }
+  // return quotedStringBuilder.append('"')
+  // .toString();
+  // }
 
   public static void validate(final Object value)
   {
@@ -267,42 +323,53 @@ public final class JsonUtil
       }
     };
 
-  public static String toStringValue(final Object value, final JsonObject jsonObject)
+  public static void writeValue(final CharAndStringWritable charAndStringWritable, final Object value,
+      final JsonObject jsonObject)
   {
     final JsonObjectAndArrayCreator jsonObjectAndArrayCreator = getJsonObjectAndArrayCreator(jsonObject);
-    return toStringValue(value, jsonObjectAndArrayCreator);
+    // return writeValue(value, jsonObjectAndArrayCreator);
+    writeValue(charAndStringWritable, value, jsonObjectAndArrayCreator);
   }
 
-  public static String toStringValue(final Object value, final JsonArray jsonArray)
+  public static void writeValue(final CharAndStringWritable charAndStringWritable, final Object value,
+      final JsonArray jsonArray)
   {
     final JsonObjectAndArrayCreator jsonObjectAndArrayCreator = getJsonObjectAndArrayCreator(jsonArray);
-    return toStringValue(value, jsonObjectAndArrayCreator);
+    // return writeValue(value, jsonObjectAndArrayCreator);
+    writeValue(charAndStringWritable, value, jsonObjectAndArrayCreator);
   }
 
-  public static String toStringValue(final Object value, final JsonObjectAndArrayCreator withJsonObjectAndArrayCreator)
+  public static void writeValue(final CharAndStringWritable charAndStringWritable, final Object value,
+      final JsonObjectAndArrayCreator withJsonObjectAndArrayCreator)
   {
     if (null == value)
-      return AbstractJsonObject.NULL_JSON_OBJECT.toString();
+    {
+      charAndStringWritable.write(AbstractJsonObject.NULL_JSON_OBJECT.toString());
 
-    if (value instanceof JsonConvertible || value instanceof Boolean)
-      return value.toString();
-
-    if (value instanceof Number)
-      return toStringValue((Number) value);
-
-    if (value instanceof Map)
+    }
+    else if (value instanceof JsonConvertible)
+    {
+      ((JsonConvertible) value).write(charAndStringWritable);
+    }
+    else if (value instanceof Boolean)
+    {
+      charAndStringWritable.write(value.toString());
+    }
+    else if (value instanceof Number)
+      charAndStringWritable.write(toStringValue((Number) value));
+    else if (value instanceof Map)
     {
       @SuppressWarnings("unchecked")
       final Map<Object, Object> map = (Map<Object, Object>) value;
-      return withJsonObjectAndArrayCreator.newJsonObject(map)
-          .toString();
+      withJsonObjectAndArrayCreator.newJsonObject(map)
+          .write(charAndStringWritable);
     }
-
-    if (value instanceof Collection)
-      return withJsonObjectAndArrayCreator.newJsonArray((Collection<?>) value)
-          .toString();
-
-    if (value.getClass()
+    else if (value instanceof Collection)
+    {
+      withJsonObjectAndArrayCreator.newJsonArray((Collection<?>) value)
+          .write(charAndStringWritable);
+    }
+    else if (value.getClass()
         .isArray())
     {
       final int length = Array.getLength(value);
@@ -311,10 +378,14 @@ public final class JsonUtil
       {
         objects[i] = Array.get(value, i);
       }
-      return withJsonObjectAndArrayCreator.newJsonArray(objects)
-          .toString();
+      withJsonObjectAndArrayCreator.newJsonArray(objects)
+          .write(charAndStringWritable);
     }
-    return doubleQuote(value.toString());
+    else
+    {
+      // return doubleQuote(value.toString());
+      doubleQuote(charAndStringWritable, value.toString());
+    }
   }
 
   /**

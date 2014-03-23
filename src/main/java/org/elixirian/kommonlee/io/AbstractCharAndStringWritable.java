@@ -29,11 +29,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
+package org.elixirian.kommonlee.io;
 
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.io.CharAndStringWritable;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.Writer;
+
+import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
  * <pre>
@@ -45,15 +47,53 @@ import org.elixirian.kommonlee.io.CharAndStringWritable;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JavaToJsonConverter
+public abstract class AbstractCharAndStringWritable implements CharAndStringWritable
 {
-  String convertIntoJson(final Object source) throws IllegalArgumentException, JsonStathamException, IllegalAccessException;
+  private final BufferedWriter writer;
 
-  <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws IllegalArgumentException,
-      JsonStathamException, IllegalAccessException;
+  public AbstractCharAndStringWritable(final Writer writer)
+  {
+    this.writer = writer instanceof BufferedWriter ? (BufferedWriter) writer : new BufferedWriter(writer);
+  }
 
-  void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
-      throws IllegalArgumentException, IllegalAccessException, JsonStathamException;
+  protected Writer getWriter()
+  {
+    return writer;
+  }
+
+  @Override
+  public AbstractCharAndStringWritable write(final int c) throws RuntimeIoException
+  {
+    try
+    {
+      writer.write(c);
+    }
+    catch (final IOException e)
+    {
+      throw new RuntimeIoException(e);
+    }
+    return this;
+  }
+
+  @Override
+  public AbstractCharAndStringWritable write(final String value) throws RuntimeIoException
+  {
+    try
+    {
+      writer.write(value);
+    }
+    catch (final IOException e)
+    {
+      throw new RuntimeIoException(e);
+    }
+    return this;
+  }
+
+  @Override
+  public void close() throws IOException
+  {
+    writer.close();
+  }
 }

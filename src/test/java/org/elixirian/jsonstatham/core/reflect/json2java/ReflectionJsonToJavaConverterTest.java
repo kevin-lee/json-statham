@@ -141,6 +141,7 @@ import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
 import org.elixirian.kommonlee.functional.Functions;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.elixirian.kommonlee.test.CauseCheckableExpectedException;
 import org.junit.After;
@@ -290,6 +291,12 @@ public class ReflectionJsonToJavaConverterTest
         public Class<?> getActualType()
         {
           return getActualObject().getClass();
+        }
+
+        @Override
+        public void write(final CharAndStringWritable charAndStringWritable)
+        {
+          AbstractJsonObject.NULL_JSON_OBJECT.write(charAndStringWritable);
         }
       };
     }

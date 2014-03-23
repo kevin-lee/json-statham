@@ -29,11 +29,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
+package org.elixirian.kommonlee.io;
 
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.io.CharAndStringWritable;
+import java.io.Writer;
 
 /**
  * <pre>
@@ -45,15 +43,12 @@ import org.elixirian.kommonlee.io.CharAndStringWritable;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JavaToJsonConverter
+public class CharAndStringWritableToWriter extends AbstractCharAndStringWritable
 {
-  String convertIntoJson(final Object source) throws IllegalArgumentException, JsonStathamException, IllegalAccessException;
-
-  <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws IllegalArgumentException,
-      JsonStathamException, IllegalAccessException;
-
-  void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
-      throws IllegalArgumentException, IllegalAccessException, JsonStathamException;
+  public CharAndStringWritableToWriter(final Writer writer)
+  {
+    super(writer);
+  }
 }

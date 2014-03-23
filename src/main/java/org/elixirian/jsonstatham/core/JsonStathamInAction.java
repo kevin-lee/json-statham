@@ -32,7 +32,9 @@
 package org.elixirian.jsonstatham.core;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 
 import org.elixirian.jsonstatham.annotation.Json;
@@ -43,6 +45,9 @@ import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.kommonlee.io.CharAndStringWritable;
+import org.elixirian.kommonlee.io.CharAndStringWritableToOutputStream;
+import org.elixirian.kommonlee.io.CharAndStringWritableToWriter;
 import org.elixirian.kommonlee.io.CharReadable;
 import org.elixirian.kommonlee.io.CharReadableFromInputStream;
 import org.elixirian.kommonlee.io.CharReadableFromReader;
@@ -152,11 +157,11 @@ public class JsonStathamInAction implements JsonStatham
   }
 
   @Override
-  public <T extends JsonConvertible> T convertIntoJsonConvertible(final Object target) throws JsonStathamException
+  public <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws JsonStathamException
   {
     try
     {
-      return javaToJsonConverter.convertIntoJsonConvertible(target);
+      return javaToJsonConverter.convertIntoJsonConvertible(source);
     }
     catch (final IllegalArgumentException e)
     {
@@ -173,6 +178,47 @@ public class JsonStathamInAction implements JsonStatham
     {
       throw e;
     }
+  }
+
+  @Override
+  public void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
+      throws JsonStathamException
+  {
+    try
+    {
+      javaToJsonConverter.convertIntoJsonAndWrite(source, charAndStringWritable);
+    }
+    catch (final IllegalArgumentException e)
+    {
+      // throw new JsonStathamException(format(
+      // "Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation",
+      // source), e);
+      throw new JsonStathamException(e);
+    }
+    catch (final IllegalAccessException e)
+    {
+      throw new JsonStathamException(e);
+    }
+    catch (final JsonStathamException e)
+    {
+      throw e;
+    }
+    finally
+    {
+      IoUtil.closeQuietly(charAndStringWritable);
+    }
+  }
+
+  @Override
+  public void convertIntoJsonAndWrite(final Object source, final Writer writer) throws JsonStathamException
+  {
+    convertIntoJsonAndWrite(source, new CharAndStringWritableToWriter(writer));
+  }
+
+  @Override
+  public void convertIntoJsonAndWrite(final Object source, final OutputStream outputStream)
+  {
+    convertIntoJsonAndWrite(source, new CharAndStringWritableToOutputStream(outputStream));
   }
 
   @Override
@@ -333,14 +379,15 @@ public class JsonStathamInAction implements JsonStatham
   }
 
   @Override
+  public <T> T convertFromJson(final Class<T> type, final Reader reader)
+  {
+    return convertFromJson(type, new CharReadableFromReader(reader));
+  }
+
+  @Override
   public <T> T convertFromJson(final Class<T> type, final InputStream inputStream)
   {
     return convertFromJson(type, new CharReadableFromInputStream(inputStream));
   }
 
-  @Override
-  public <T> T convertFromJson(final Class<T> type, final Reader reader)
-  {
-    return convertFromJson(type, new CharReadableFromReader(reader));
-  }
 }

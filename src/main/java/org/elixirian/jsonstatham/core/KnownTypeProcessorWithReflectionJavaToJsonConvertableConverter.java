@@ -32,8 +32,8 @@
 package org.elixirian.jsonstatham.core;
 
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
+import org.elixirian.jsonstatham.core.reflect.java2json.ReflectionJavaToJsonConverter;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.io.CharAndStringWritable;
 
 /**
  * <pre>
@@ -45,15 +45,13 @@ import org.elixirian.kommonlee.io.CharAndStringWritable;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2010-06-10)
  */
-public interface JavaToJsonConverter
+public interface KnownTypeProcessorWithReflectionJavaToJsonConvertableConverter extends
+    KnownTypeProcessorWithReflectionJavaToJsonConverter
 {
-  String convertIntoJson(final Object source) throws IllegalArgumentException, JsonStathamException, IllegalAccessException;
-
-  <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws IllegalArgumentException,
-      JsonStathamException, IllegalAccessException;
-
-  void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
-      throws IllegalArgumentException, IllegalAccessException, JsonStathamException;
+  @Override
+  <T> JsonConvertible process(final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter,
+      final Class<T> valueType, final Object value) throws IllegalArgumentException, IllegalAccessException,
+      JsonStathamException;
 }

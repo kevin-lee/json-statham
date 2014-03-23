@@ -29,11 +29,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core;
+package org.elixirian.kommonlee.io;
 
-import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
-import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.kommonlee.io.CharAndStringWritable;
+import java.io.IOException;
 
 /**
  * <pre>
@@ -45,15 +43,33 @@ import org.elixirian.kommonlee.io.CharAndStringWritable;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-09-08)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JavaToJsonConverter
+public class CharAndStringWritableToStringBuilder implements CharAndStringWritable
 {
-  String convertIntoJson(final Object source) throws IllegalArgumentException, JsonStathamException, IllegalAccessException;
+  private final StringBuilder stringBuilder;
 
-  <T extends JsonConvertible> T convertIntoJsonConvertible(final Object source) throws IllegalArgumentException,
-      JsonStathamException, IllegalAccessException;
+  public CharAndStringWritableToStringBuilder(final StringBuilder stringBuilder)
+  {
+    this.stringBuilder = stringBuilder;
+  }
 
-  void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
-      throws IllegalArgumentException, IllegalAccessException, JsonStathamException;
+  @Override
+  public CharAndStringWritableToStringBuilder write(final int c)
+  {
+    stringBuilder.append((char) c);
+    return this;
+  }
+
+  @Override
+  public CharAndStringWritableToStringBuilder write(final String value)
+  {
+    stringBuilder.append(value);
+    return this;
+  }
+
+  @Override
+  public void close() throws IOException
+  {
+  }
 }
