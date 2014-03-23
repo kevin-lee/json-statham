@@ -31,12 +31,15 @@
  */
 package org.elixirian.jsonstatham.core;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.Map;
 
 import org.elixirian.jsonstatham.annotation.Json;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.jsonstatham.type.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**
@@ -66,7 +69,7 @@ public interface JsonStatham
    * @throws JsonStathamException
    *           TODO: finish it!
    */
-  String convertIntoJson(Object target) throws JsonStathamException;
+  String convertIntoJson(final Object target) throws JsonStathamException;
 
   /**
    * Return a {@link JsonConvertible} object converted from the given JSON object which is annotated with {@link Json}
@@ -78,9 +81,9 @@ public interface JsonStatham
    * @return a {@link JsonConvertible} object converted from the given JSON object.
    * @throws JsonStathamException
    */
-  <T extends JsonConvertible> T convertIntoJsonConvertible(Object target) throws JsonStathamException;
+  <T extends JsonConvertible> T convertIntoJsonConvertible(final Object target) throws JsonStathamException;
 
-  JsonConvertible convertJsonStringIntoJsonConvertible(String json) throws JsonStathamException;
+  JsonConvertible convertJsonStringIntoJsonConvertible(final String json) throws JsonStathamException;
 
   /**
    * Returns an object of the given type. It extracts all the data from the given JSON String then creates the given
@@ -96,7 +99,7 @@ public interface JsonStatham
    * @throws JsonStathamException
    *           TODO: finish it!
    */
-  <T> T convertFromJson(Class<T> type, String json) throws JsonStathamException;
+  <T> T convertFromJson(final Class<T> type, final String json) throws JsonStathamException;
 
   /**
    * Returns an object of the type which the given {@link TypeHolder} contains. It extracts all the data from the given
@@ -114,8 +117,14 @@ public interface JsonStatham
    */
   <T> T convertFromJson(final TypeHolder<T> typeHolder, final String jsonString) throws JsonStathamException;
 
-  <T> T convertFromJsonConvertible(Class<T> type, JsonConvertible jsonConvertible) throws JsonStathamException;
+  <T> T convertFromJsonConvertible(final Class<T> type, final JsonConvertible jsonConvertible) throws JsonStathamException;
 
   <T> T convertFromJsonConvertible(final TypeHolder<T> typeHolder, final JsonConvertible jsonConvertible)
       throws JsonStathamException;
+
+  <T> T convertFromJson(final Class<T> type, final CharReadable charReadable);
+  
+  <T> T convertFromJson(final Class<T> type, final InputStream inputStream);
+  
+  <T> T convertFromJson(final Class<T> type, final Reader reader);
 }

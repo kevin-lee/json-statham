@@ -75,8 +75,10 @@ import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonScannerCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.OrderedJsonScannerCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
 import org.elixirian.jsonstatham.json.ComplexJsonObjectWithValueAccessor;
@@ -147,7 +149,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -162,6 +167,7 @@ import org.mockito.stubbing.Answer;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-08)
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ReflectionJsonToJavaConverterTest
 {
   private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
@@ -315,6 +321,15 @@ public class ReflectionJsonToJavaConverterTest
 
   private Address address;
 
+  @Mock
+  private JsonScannerCreator jsonScannerCreator;
+
+  @Mock
+  private JsonObjectCreator jsonObjectCreator;
+
+  @Mock
+  private JsonArrayCreator jsonArrayCreator;
+
   @Rule
   public CauseCheckableExpectedException expectedException = CauseCheckableExpectedException.none();
 
@@ -342,19 +357,18 @@ public class ReflectionJsonToJavaConverterTest
   @Before
   public void setUp() throws Exception
   {
-    final JsonObjectCreator jsonObjectCreator = mock(JsonObjectCreator.class);
     when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
     when(jsonObjectCreator.newJsonObjectConvertible(anyString())).thenAnswer(
         ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
     when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
 
-    final JsonArrayCreator jsonArrayCreator = mock(JsonArrayCreator.class);
     when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
     when(jsonArrayCreator.newJsonArrayConvertible(anyString())).thenAnswer(
         ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
 
     reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator, jsonArrayCreator)
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator,
+          jsonArrayCreator)
           .build());
     address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
@@ -1971,8 +1985,8 @@ public class ReflectionJsonToJavaConverterTest
   {
 
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
-          new JsonArrayWithOrderedJsonObjectCreator())
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonScannerCreator(),
+          new OrderedJsonObjectCreator(), new JsonArrayWithOrderedJsonObjectCreator())
           .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
           .build());
 
@@ -2004,8 +2018,8 @@ public class ReflectionJsonToJavaConverterTest
   {
 
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
-          new JsonArrayWithOrderedJsonObjectCreator())
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonScannerCreator(),
+          new OrderedJsonObjectCreator(), new JsonArrayWithOrderedJsonObjectCreator())
           .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
           .build());
 
@@ -2033,8 +2047,8 @@ public class ReflectionJsonToJavaConverterTest
       IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
-          new JsonArrayWithOrderedJsonObjectCreator())
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonScannerCreator(),
+          new OrderedJsonObjectCreator(), new JsonArrayWithOrderedJsonObjectCreator())
           .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
           .build());
 
@@ -2062,8 +2076,8 @@ public class ReflectionJsonToJavaConverterTest
   {
     /* given */
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonObjectCreator(),
-          new JsonArrayWithOrderedJsonObjectCreator())
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(new OrderedJsonScannerCreator(),
+          new OrderedJsonObjectCreator(), new JsonArrayWithOrderedJsonObjectCreator())
           .addKnownTypeProcessor(CUSTOM_TYPE_PROCESSOR_FOR_ITEM_DEFINITION)
           .build());
 

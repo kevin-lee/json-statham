@@ -29,9 +29,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core.convertible;
+package org.elixirian.jsonstatham.type;
 
-import org.elixirian.jsonstatham.exception.JsonStathamException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+
+import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
  * <pre>
@@ -43,15 +47,33 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-02-03)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JsonObjectCreator
+public class CharReadableFromReader implements CharReadable
 {
-  JsonObject newJsonObjectConvertible();
+  private final BufferedReader reader;
 
-  JsonObject nullJsonObjectConvertible();
-  
-  JsonObject newJsonObjectConvertible(JsonScanner jsonScanner) throws JsonStathamException;
+  public CharReadableFromReader(final Reader reader)
+  {
+    this.reader = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+  }
 
-  JsonObject newJsonObjectConvertible(String jsonString) throws JsonStathamException;
+  @Override
+  public int read() throws RuntimeIoException
+  {
+    try
+    {
+      return reader.read();
+    }
+    catch (final IOException e)
+    {
+      throw new RuntimeIoException(e);
+    }
+  }
+
+  @Override
+  public void close() throws IOException
+  {
+    reader.close();    
+  }
 }

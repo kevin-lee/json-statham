@@ -31,6 +31,8 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
+import org.elixirian.jsonstatham.type.CharReadable;
+
 /**
  * <pre>
  *     ___  _____                                _____
@@ -39,26 +41,32 @@ package org.elixirian.jsonstatham.core.convertible;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- *
+ * 
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2012-08-18)
  */
 public class JsonScannerForUnorderedJsonObject extends AbstractJsonScanner
 {
-	public JsonScannerForUnorderedJsonObject(final String jsonString)
-	{
-		super(jsonString);
-	}
 
-	@Override
-	protected UnorderedJsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
-	{
-		return new UnorderedJsonObject(jsonScanner);
-	}
+  public JsonScannerForUnorderedJsonObject(final CharReadable charReadable)
+  {
+    super(charReadable);
+  }
 
-	@Override
-	protected JsonArrayWithUnorderedJsonObject newJsonArrayConvertible(final JsonScanner jsonScanner)
-	{
-		return new JsonArrayWithUnorderedJsonObject(jsonScanner);
-	}
+  public JsonScannerForUnorderedJsonObject(final String jsonString)
+  {
+    super(jsonString);
+  }
+
+  @Override
+  protected UnorderedJsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
+  {
+    return new UnorderedJsonObject(jsonScanner);
+  }
+
+  @Override
+  protected JsonArrayWithUnorderedJsonObject newJsonArrayConvertible(final JsonScanner jsonScanner)
+  {
+    return new JsonArrayWithUnorderedJsonObject(jsonScanner);
+  }
 }

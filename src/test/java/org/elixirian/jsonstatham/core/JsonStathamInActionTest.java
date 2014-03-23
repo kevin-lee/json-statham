@@ -67,6 +67,8 @@ import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonNameValuePair;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonScanner;
+import org.elixirian.jsonstatham.core.convertible.JsonScannerCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.core.reflect.ReflectionJsonStathams;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
@@ -112,13 +114,17 @@ import org.elixirian.jsonstatham.test.ItemConfig;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
+import org.elixirian.jsonstatham.type.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -135,6 +141,7 @@ import org.mockito.stubbing.Answer;
  * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
  * @version 0.0.3 (2010-05-10) test case for testing enum type fields is added.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class JsonStathamInActionTest
 {
   private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
@@ -286,6 +293,15 @@ public class JsonStathamInActionTest
   private JsonStatham jsonStatham;
 
   private Address address;
+  
+  @Mock
+  private JsonScannerCreator jsonScannerCreator;
+
+  @Mock
+  private JsonObjectCreator jsonObjectCreator;
+
+  @Mock
+  private JsonArrayCreator jsonArrayCreator;
 
   /**
    * @throws java.lang.Exception
@@ -293,7 +309,7 @@ public class JsonStathamInActionTest
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    System.out.println("###  ReflectionJavaToJsonConverterTest starts ###");
+    System.out.println("###  JsonStathamInActionTest starts ###");
   }
 
   /**
@@ -302,7 +318,7 @@ public class JsonStathamInActionTest
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    System.out.println("\n### ReflectionJavaToJsonConverterTest ends ###");
+    System.out.println("\n### JsonStathamInActionTest ends ###");
   }
 
   /**
@@ -311,13 +327,57 @@ public class JsonStathamInActionTest
   @Before
   public void setUp() throws Exception
   {
-    final JsonObjectCreator jsonObjectCreator = mock(JsonObjectCreator.class);
+    when(jsonScannerCreator.newJsonScanner(any(CharReadable.class))).thenReturn(new JsonScanner() {
+      
+      @Override
+      public Object nextValue()
+      {
+        throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public char nextNonWhiteSpaceChar()
+      {
+        throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public char nextChar()
+      {
+        throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public boolean isNotEnded()
+      {
+        throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public boolean isEnded()
+      {
+        throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public String getPreviousCharInfo()
+      {
+        throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public void backToPrevious()
+      {
+        throw new UnsupportedOperationException();
+        
+      }
+    });
+    
     when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
     when(jsonObjectCreator.newJsonObjectConvertible(anyString())).thenAnswer(
         ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
     when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
 
-    final JsonArrayCreator jsonArrayCreator = mock(JsonArrayCreator.class);
     when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
     when(jsonArrayCreator.newJsonArrayConvertible(anyString())).thenAnswer(
         ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
@@ -328,7 +388,7 @@ public class JsonStathamInActionTest
           new OneProcessorForKnownTypeDecider());
 
     final ReflectionJsonToJavaConverter jsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator, jsonArrayCreator)
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator, jsonArrayCreator)
           .build());
 
     jsonStatham = new JsonStathamInAction(javaToJsonConverter, jsonToJavaConverter);

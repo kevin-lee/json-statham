@@ -36,6 +36,7 @@ import java.util.List;
 import org.elixirian.jsonstatham.core.KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonScannerCreator;
 
 /**
  * <pre>
@@ -51,9 +52,11 @@ import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
  */
 public interface JsonToJavaConfig
 {
-	JsonObjectCreator getJsonObjectConvertibleCreator();
+  JsonScannerCreator getJsonScannerCreator();
 
-	JsonArrayCreator getJsonArrayConvertibleCreator();
+  JsonObjectCreator getJsonObjectConvertibleCreator();
 
-	List<KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>> getKnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList();
+  JsonArrayCreator getJsonArrayConvertibleCreator();
+
+  List<KnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJava<Class<?>>> getKnownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList();
 }

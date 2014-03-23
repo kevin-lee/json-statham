@@ -1,0 +1,67 @@
+[
+  {
+    "id":1,
+    "name":"Kevin",
+    email: "kevin@some-email.com",
+    'verified':     true,
+    "address": {
+		  "street":"ABC Street",
+		  "suburb":  "",
+		  "city":"Sydney",
+		  "state":"NSW",
+		  "postcode": "2000"
+		}
+  },
+  {
+    "id":2,
+    "name":"Tom",
+    email: "tom@another-email.com",
+    'verified': false,
+    "address": {
+      street:"90/120 Swanston St",
+      "suburb": "Test Suburb",
+      'city': "Melbourne",
+      "state": "VIC",
+      "postcode": "3000"
+    }
+  },
+  {
+    'id':       3,
+    "name":			"John",
+    email: "john.doe@test-email.com"         ,
+    'verified':    		 	  	true,
+    "address": {
+      "street":"1 AAA St",
+      suburb: "Another",
+      "city":  "Brisbane",
+      "state": 'QLD',
+      'postcode': "4000"
+    }
+  },
+  {
+    id:4,
+    "name":"Mark",
+    "email": "mk@aaaa.bbb.com"				,
+    'verified':     true,
+    "address": {
+      'street':"AAA 123 RD",
+      'suburb': 'Blah',
+      "city":   'Sydney',
+      "state": 'NSW',
+      "postcode": "2000"
+    }
+  },
+  {
+    "id":5,
+    "name":"Sean",
+    'email': "sean@abcde.com",
+    verified:     false  	,
+    'address': {
+      'street':'111 ABCDEF LN',
+      'suburb': 'LAST',
+      'city':    'Melbourne',
+      'state': 'VIC',
+      'postcode': '3000'
+    }
+  }
+]

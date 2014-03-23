@@ -47,6 +47,12 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  */
 public class OrderedJsonObjectCreator extends AbstractJsonObjectCreator
 {
+  @Override
+  public JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner) throws JsonStathamException
+  {
+    return OrderedJsonObject.newJsonObject(jsonScanner);
+  }
+  
 	@Override
 	public OrderedJsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
 	{

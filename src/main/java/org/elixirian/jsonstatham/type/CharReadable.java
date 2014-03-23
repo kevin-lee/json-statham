@@ -29,9 +29,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core.convertible;
+package org.elixirian.jsonstatham.type;
 
-import org.elixirian.jsonstatham.exception.JsonStathamException;
+import java.io.Closeable;
+
+import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
  * <pre>
@@ -43,15 +45,9 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-02-03)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JsonObjectCreator
+public interface CharReadable extends Closeable
 {
-  JsonObject newJsonObjectConvertible();
-
-  JsonObject nullJsonObjectConvertible();
-  
-  JsonObject newJsonObjectConvertible(JsonScanner jsonScanner) throws JsonStathamException;
-
-  JsonObject newJsonObjectConvertible(String jsonString) throws JsonStathamException;
+  int read() throws RuntimeIoException;
 }

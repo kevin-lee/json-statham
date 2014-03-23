@@ -114,57 +114,57 @@ public class AbstractJsonScannerTest
   {
   }
 
-  @Test
-  public final void testAbstractJsonScanner() throws Exception
-  {
-    /* given */
-    final String expected = jsonString;
-    /* when */
+  // @Test
+  // public final void testAbstractJsonScanner() throws Exception
+  // {
+  // /* given */
+  // final String expected = jsonString;
+  // /* when */
+  //
+  // final AbstractJsonScanner actual = new AbstractJsonScanner(expected) {
+  //
+  // @Override
+  // protected JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
+  // {
+  // return new OrderedJsonObject(jsonScanner);
+  // }
+  //
+  // @Override
+  // protected AbstractJsonArray newJsonArrayConvertible(final JsonScanner jsonScanner)
+  // {
+  // return JsonArrayWithOrderedJsonObject.newJsonArray(jsonScanner);
+  // }
+  // };
+  //
+  // /* then */
+  // assertThat(actual.getJsonString()).isEqualTo(expected);
+  // }
 
-    final AbstractJsonScanner actual = new AbstractJsonScanner(expected) {
-
-      @Override
-      protected JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
-      {
-        return new OrderedJsonObject(jsonScanner);
-      }
-
-      @Override
-      protected AbstractJsonArray newJsonArrayConvertible(final JsonScanner jsonScanner)
-      {
-        return JsonArrayWithOrderedJsonObject.newJsonArray(jsonScanner);
-      }
-    };
-
-    /* then */
-    assertThat(actual.getJsonString()).isEqualTo(expected);
-  }
-
-  @Test
-  public final void testGetJsonString() throws Exception
-  {
-    /* given */
-    final String expected = jsonString;
-    /* when */
-
-    final AbstractJsonScanner actual = new AbstractJsonScanner(expected) {
-
-      @Override
-      protected JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
-      {
-        return new OrderedJsonObject(jsonScanner);
-      }
-
-      @Override
-      protected AbstractJsonArray newJsonArrayConvertible(final JsonScanner jsonScanner)
-      {
-        return JsonArrayWithOrderedJsonObject.newJsonArray(jsonScanner);
-      }
-    };
-
-    /* then */
-    assertThat(actual.getJsonString()).isEqualTo(expected);
-  }
+  // @Test
+  // public final void testGetJsonString() throws Exception
+  // {
+  // /* given */
+  // final String expected = jsonString;
+  // /* when */
+  //
+  // final AbstractJsonScanner actual = new AbstractJsonScanner(expected) {
+  //
+  // @Override
+  // protected JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner)
+  // {
+  // return new OrderedJsonObject(jsonScanner);
+  // }
+  //
+  // @Override
+  // protected AbstractJsonArray newJsonArrayConvertible(final JsonScanner jsonScanner)
+  // {
+  // return JsonArrayWithOrderedJsonObject.newJsonArray(jsonScanner);
+  // }
+  // };
+  //
+  // /* then */
+  // assertThat(actual.getJsonString()).isEqualTo(expected);
+  // }
 
   @Test
   public final void testNextChar() throws Exception
@@ -344,7 +344,8 @@ public class AbstractJsonScannerTest
     char previous = 0;
     boolean ended = false;
 
-    assertThat(jsonScanner.getPreviousCharInfo()).isEqualTo("Not started![index: 0, length: " + length + "]");
+    // assertThat(jsonScanner.getPreviousCharInfo()).isEqualTo("Not started![index: 0, length: " + length + "]");
+    assertThat(jsonScanner.getPreviousCharInfo()).isEqualTo("Not started![index: 0]");
 
     char c = expectedChars[0];
 
@@ -363,8 +364,11 @@ public class AbstractJsonScannerTest
 
       final String expected =
         format(
-            "[char: '%s', index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
-            JsonUtil.toPrintable(c), i - 1, previousInLine, line, length, ended);
+            // "[char: '%s', index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
+            "[char: '%s', index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, ended: %s]",
+            JsonUtil.toPrintable(c), i - 1, previousInLine, line,
+            // length,
+            ended);
       previous = jsonScanner.nextChar();
 
       /* when */
@@ -392,7 +396,8 @@ public class AbstractJsonScannerTest
   {
     /* given */
     final String expected =
-      "{length=95, index=0, previousCharInt=0, previousChar=\\u0000, previousCharRequiredAlready=false, previousPositionInLine=0, currentLine=1, ended=false}";
+    // "{length=95, index=0, previousCharInt=0, previousChar=\\u0000, previousCharRequiredAlready=false, previousPositionInLine=0, currentLine=1, ended=false}";
+      "{index=0, previousCharInt=0, previousChar=\\u0000, previousCharRequiredAlready=false, previousPositionInLine=0, currentLine=1, ended=false}";
 
     /* when */
     final String actual = jsonScanner.toString();
@@ -402,7 +407,8 @@ public class AbstractJsonScannerTest
 
     /* given */
     final String expected2 =
-      "{length=95, index=1, previousCharInt=123, previousChar={, previousCharRequiredAlready=false, previousPositionInLine=1, currentLine=1, ended=false}";
+    // "{length=95, index=1, previousCharInt=123, previousChar={, previousCharRequiredAlready=false, previousPositionInLine=1, currentLine=1, ended=false}";
+      "{index=1, previousCharInt=123, previousChar={, previousCharRequiredAlready=false, previousPositionInLine=1, currentLine=1, ended=false}";
     jsonScanner.nextChar();
 
     /* when */

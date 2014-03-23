@@ -179,23 +179,26 @@ public class Address
     }
     final Address that = castIfInstanceOf(Address.class, address);
     /* @formatter:off */
-		return isNotNull(that) && 
-						   (equal(this.street, that.getStreet()) && 
-								equal(this.suburb, that.getSuburb()) &&
-								equal(this.city, that.getCity()) &&
-								equal(this.state, that.getState()) &&
-								equal(this.postcode, that.getPostcode()));
+		return null != that && 
+						   (equal(this.street,    that.getStreet()) && 
+								equal(this.suburb,    that.getSuburb()) &&
+								equal(this.city,      that.getCity()) &&
+								equal(this.state,     that.getState()) &&
+								equal(this.postcode,  that.getPostcode()));
 		/* @formatter:on */
   }
 
   @Override
   public String toString()
   {
-    return toStringBuilder(this).add("street", street)
-        .add("suburb", suburb)
-        .add("city", city)
-        .add("state", state)
-        .add("postcode", postcode)
-        .toString();
+    /* @formatter:off */
+    return toStringBuilder(this)
+            .add("street", street)
+            .add("suburb", suburb)
+            .add("city", city)
+            .add("state", state)
+            .add("postcode", postcode)
+          .toString();
+    /* @formatter:on */
   }
 }

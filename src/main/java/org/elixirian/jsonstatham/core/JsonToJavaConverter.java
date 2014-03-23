@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.jsonstatham.type.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**
@@ -55,6 +56,12 @@ public interface JsonToJavaConverter
       InstantiationException, IllegalAccessException, InvocationTargetException;
 
   <T> T convertFromJson(TypeHolder<T> typeHolder, String jsonString) throws JsonStathamException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+
+  <T> T convertFromJson(Class<T> targetClass, CharReadable charReadable) throws JsonStathamException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+
+  <T> T convertFromJson(TypeHolder<T> typeHolder, CharReadable charReadable) throws JsonStathamException,
       IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
 
   <T> T convertFromJsonConvertible(Class<T> targetClass, JsonConvertible jsonConvertible) throws JsonStathamException,

@@ -50,6 +50,12 @@ public class JsonArrayWithUnorderedJsonObjectCreator implements JsonArrayCreator
 	{
 		return JsonArrayWithUnorderedJsonObject.newJsonArray();
 	}
+	
+	@Override
+	public JsonArray newJsonArrayConvertible(final JsonScanner jsonScanner)
+	{
+	  return JsonArrayWithUnorderedJsonObject.newJsonArray(jsonScanner);
+	}
 
 	@Override
 	public JsonArray newJsonArrayConvertible(final String jsonString)

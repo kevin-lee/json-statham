@@ -31,6 +31,8 @@
  */
 package org.elixirian.jsonstatham.core;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 
 import org.elixirian.jsonstatham.annotation.Json;
@@ -41,6 +43,10 @@ import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.jsonstatham.type.CharReadable;
+import org.elixirian.jsonstatham.type.CharReadableFromInputStream;
+import org.elixirian.jsonstatham.type.CharReadableFromReader;
+import org.elixirian.kommonlee.io.util.IoUtil;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**
@@ -291,5 +297,50 @@ public class JsonStathamInAction implements JsonStatham
     {
       throw e;
     }
+  }
+
+  @Override
+  public <T> T convertFromJson(final Class<T> type, final CharReadable charReadable)
+  {
+    try
+    {
+      return jsonToJavaConverter.convertFromJson(type, charReadable);
+    }
+    catch (final IllegalArgumentException e)
+    {
+      throw new JsonStathamException(e);
+    }
+    catch (final InstantiationException e)
+    {
+      throw new JsonStathamException(e);
+    }
+    catch (final IllegalAccessException e)
+    {
+      throw new JsonStathamException(e);
+    }
+    catch (final InvocationTargetException e)
+    {
+      throw new JsonStathamException(e);
+    }
+    catch (final JsonStathamException e)
+    {
+      throw e;
+    }
+    finally
+    {
+      IoUtil.closeQuietly(charReadable);
+    }
+  }
+
+  @Override
+  public <T> T convertFromJson(final Class<T> type, final InputStream inputStream)
+  {
+    return convertFromJson(type, new CharReadableFromInputStream(inputStream));
+  }
+
+  @Override
+  public <T> T convertFromJson(final Class<T> type, final Reader reader)
+  {
+    return convertFromJson(type, new CharReadableFromReader(reader));
   }
 }

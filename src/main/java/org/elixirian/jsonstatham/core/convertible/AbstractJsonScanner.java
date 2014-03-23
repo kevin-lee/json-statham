@@ -36,6 +36,8 @@ import static org.elixirian.kommonlee.util.Objects.toStringBuilder;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.jsonstatham.type.CharReadable;
+import org.elixirian.jsonstatham.type.CharReadableFromString;
 
 /**
  * <pre>
@@ -51,8 +53,9 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  */
 public abstract class AbstractJsonScanner implements JsonScanner
 {
-  private final String jsonString;
-  private final int length;
+  private final CharReadable charReadable;
+  // private final String jsonString;
+  // private final int length;
   private int index = 0;
   private char previousChar;
   private boolean previousCharRequiredAlready = false;
@@ -60,17 +63,21 @@ public abstract class AbstractJsonScanner implements JsonScanner
   private int currentLine = 1;
   private boolean ended;
 
-  public AbstractJsonScanner(final String jsonString)
+  public AbstractJsonScanner(final CharReadable charReadable)
   {
-    this.jsonString = jsonString;
-    this.length = jsonString.length();
+    this.charReadable = charReadable;
   }
 
-  @Override
-  public String getJsonString()
+  public AbstractJsonScanner(final String jsonString)
   {
-    return jsonString;
+    this(new CharReadableFromString(jsonString));
   }
+
+  // @Override
+  // public String getJsonString()
+  // {
+  // return jsonString;
+  // }
 
   @Override
   public char nextChar()
@@ -80,23 +87,39 @@ public abstract class AbstractJsonScanner implements JsonScanner
 
   private char nextChar0()
   {
-    char c;
+    int c;
     if (previousCharRequiredAlready)
     {
       previousCharRequiredAlready = false;
-      c = jsonString.charAt(index);
+      // c = jsonString.charAt(index);
+      c = previousChar;
     }
     else
     {
-      if (length <= index)
+      if (ended)
       {
-        c = 0;
+        return 0;
+      }
+      // if (length <= index)
+      // {
+      // c = 0;
+      // ended = true;
+      // }
+      // else
+      // {
+      // c = jsonString.charAt(index);
+      c = charReadable.read();
+
+      if (0 >= c)
+      {
+        index++;
+        previousPositionInLine++;
         ended = true;
+        previousChar = 0;
+        return previousChar;
       }
-      else
-      {
-        c = jsonString.charAt(index);
-      }
+
+      // }
     }
 
     if ('\r' == c)
@@ -116,7 +139,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
     {
       previousPositionInLine++;
     }
-    previousChar = c;
+    previousChar = (char) c;
     index++;
     return previousChar;
   }
@@ -135,9 +158,11 @@ public abstract class AbstractJsonScanner implements JsonScanner
       if (ended)
       {
         throw new JsonStathamException(format(
-            "Getting next %s char%s failed.[param: index howMany: %s][index: %s, length: %s, ended: %s]",
-            Integer.valueOf(howMany), 1 < howMany ? "s" : "", Integer.valueOf(howMany), Integer.valueOf(index),
-            Integer.valueOf(length), Boolean.valueOf(ended)));
+            // "Getting next %s char%s failed.[param: index howMany: %s][index: %s, length: %s, ended: %s]",
+            "Getting next %s char%s failed.[param: index howMany: %s][index: %s, ended: %s]", Integer.valueOf(howMany),
+            1 < howMany ? "s" : "", Integer.valueOf(howMany), Integer.valueOf(index),
+            // Integer.valueOf(length),
+            Boolean.valueOf(ended)));
       }
       index++;
     }
@@ -155,7 +180,11 @@ public abstract class AbstractJsonScanner implements JsonScanner
     while (true)
     {
       final char c = nextChar0();
-      if (0 == c || ' ' < c)
+      if (0 >= c)
+      {
+        return 0;
+      }
+      if (' ' < c)
       {
         return c;
       }
@@ -276,7 +305,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
     }
     index--;
     previousPositionInLine--;
-    previousChar = 0 == index ? 0 : jsonString.charAt(index - 1);
+    // previousChar = 0 == index ? 0 : jsonString.charAt(index - 1);
 
     previousCharRequiredAlready = true;
     ended = false;
@@ -285,13 +314,13 @@ public abstract class AbstractJsonScanner implements JsonScanner
   @Override
   public boolean isEnded()
   {
-    return ended;
+    return ended && !previousCharRequiredAlready;
   }
 
   @Override
   public boolean isNotEnded()
   {
-    return !ended;
+    return !isEnded();
   }
 
   protected abstract JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner);
@@ -303,12 +332,16 @@ public abstract class AbstractJsonScanner implements JsonScanner
   {
     if (0 == index)
     {
-      return "Not started![index: 0, length: " + length + "]";
+      // return "Not started![index: 0, length: " + length + "]";
+      return "Not started![index: 0]";
     }
     return format(
-        "[char: '%s', index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
+        // "[char: '%s', index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, length: %s, ended: %s]",
+        "[char: '%s', index (start: 0): %s, previousPositionInLine (start: 1): %s, currentLine: %s, ended: %s]",
         JsonUtil.toPrintable(previousChar), Integer.valueOf(index - 1), Integer.valueOf(previousPositionInLine),
-        Integer.valueOf(currentLine), Integer.valueOf(length), Boolean.valueOf(ended));
+        Integer.valueOf(currentLine),
+        // Integer.valueOf(length),
+        Boolean.valueOf(isEnded()));
   }
 
   @Override
@@ -316,7 +349,7 @@ public abstract class AbstractJsonScanner implements JsonScanner
   {
     /* @formatter:off */
 		return toStringBuilder(this)
-				.add("length", length)
+//				.add("length", length)
 				.add("index", index)
 				.add("previousCharInt", previousChar)
 				.add("previousChar", JsonUtil.toPrintable(previousChar))

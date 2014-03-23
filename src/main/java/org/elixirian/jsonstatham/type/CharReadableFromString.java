@@ -29,9 +29,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.core.convertible;
+package org.elixirian.jsonstatham.type;
 
-import org.elixirian.jsonstatham.exception.JsonStathamException;
+import java.io.IOException;
+
+import org.elixirian.kommonlee.type.checkable.LengthCheckable;
 
 /**
  * <pre>
@@ -43,15 +45,50 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-02-03)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JsonObjectCreator
+public class CharReadableFromString implements CharReadable, LengthCheckable
 {
-  JsonObject newJsonObjectConvertible();
+  private final String value;
+  private final int length;
+  private int index = 0;
 
-  JsonObject nullJsonObjectConvertible();
-  
-  JsonObject newJsonObjectConvertible(JsonScanner jsonScanner) throws JsonStathamException;
+  public CharReadableFromString(final String value)
+  {
+    this.value = value;
+    this.length = value.length();
+  }
 
-  JsonObject newJsonObjectConvertible(String jsonString) throws JsonStathamException;
+  @Override
+  public int read()
+  {
+    if (isEnded())
+    {
+      return -1;
+    }
+    final char c = value.charAt(index);
+    index++;
+    return c;
+  }
+
+  public boolean isEnded()
+  {
+    return index >= length;
+  }
+
+  public boolean isNotEnded()
+  {
+    return index < length;
+  }
+
+  @Override
+  public int length()
+  {
+    return length;
+  }
+
+  @Override
+  public void close() throws IOException
+  {
+  }
 }

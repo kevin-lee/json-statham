@@ -34,7 +34,6 @@ package org.elixirian.jsonstatham.core.reflect;
 import static org.assertj.core.api.Assertions.*;
 import static org.elixirian.kommonlee.test.CommonTestHelper.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
@@ -44,6 +43,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonArrayWithUnorderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonScannerCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.convertible.UnorderedJsonObjectCreator;
 import org.elixirian.jsonstatham.core.reflect.java2json.KnownDataStructureTypeProcessorDecider;
@@ -58,6 +58,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * <pre>
@@ -71,8 +74,26 @@ import org.junit.Test;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-06-14)
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ReflectionJsonStathamsTest
 {
+  @Mock
+  private JsonScannerCreator jsonScannerCreator;
+
+  @Mock
+  private JsonObjectCreator jsonObjectCreator;
+
+  @Mock
+  private JsonArrayCreator jsonArrayCreator;
+
+  @Mock
+  private KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider;
+
+  @Mock
+  private KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider;
+
+  @Mock
+  private OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider;
 
   /**
    * @throws java.lang.Exception
@@ -121,20 +142,11 @@ public class ReflectionJsonStathamsTest
   @Test
   public final void testNewJsonStathamInActionJsonObjectConvertibleCreatorJsonArrayConvertibleCreatorKnownDataStructureTypeProcessorDeciderKnownObjectReferenceTypeProcessorDeciderOneProcessorForKnownTypeDecider()
   {
-    final JsonObjectCreator jsonObjectCreator = mock(JsonObjectCreator.class);
-    final JsonArrayCreator jsonArrayCreator = mock(JsonArrayCreator.class);
-    final KnownDataStructureTypeProcessorDecider knownDataStructureTypeProcessorDecider =
-      mock(KnownDataStructureTypeProcessorDecider.class);
-    final KnownObjectReferenceTypeProcessorDecider knownObjectReferenceTypeProcessorDecider =
-      mock(KnownObjectReferenceTypeProcessorDecider.class);
-    final OneProcessorForKnownTypeDecider oneProcessorForKnownTypeDecider = mock(OneProcessorForKnownTypeDecider.class);
-
     final ReflectionJavaToJsonConverter reflectionJavaToJsonConverter =
-      new ReflectionJavaToJsonConverter(jsonObjectCreator, jsonArrayCreator,
-          knownDataStructureTypeProcessorDecider, knownObjectReferenceTypeProcessorDecider,
-          oneProcessorForKnownTypeDecider);
+      new ReflectionJavaToJsonConverter(jsonObjectCreator, jsonArrayCreator, knownDataStructureTypeProcessorDecider,
+          knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider);
     final ReflectionJsonToJavaConverter reflectionJsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonObjectCreator,
+      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator,
           jsonArrayCreator)
           .build());
 
@@ -151,9 +163,12 @@ public class ReflectionJsonStathamsTest
     // final ReflectionJsonToJavaConverter reflectionJsonToJavaConverterFromJsonStathamInAction =
     // (ReflectionJsonToJavaConverter) jsonStathamInAction.getJsonToJavaConverter();
 
-    assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator()).isEqualTo(jsonObjectCreator);
-    assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator()).isEqualTo(jsonArrayCreator);
-    assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider()).isEqualTo(knownDataStructureTypeProcessorDecider);
+    assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonObjectConvertibleCreator()).isEqualTo(
+        jsonObjectCreator);
+    assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getJsonArrayConvertibleCreator()).isEqualTo(
+        jsonArrayCreator);
+    assertThat(reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownDataStructureTypeProcessorDecider()).isEqualTo(
+        knownDataStructureTypeProcessorDecider);
     assertTrue(Arrays.deepEquals(new KnownTypeProcessorDeciderForJavaToJson[] { knownDataStructureTypeProcessorDecider,
         knownObjectReferenceTypeProcessorDecider, oneProcessorForKnownTypeDecider },
         reflectionJavaToJsonConverterFromJsonStathamInAction.getKnownTypeProcessorDeciders()));

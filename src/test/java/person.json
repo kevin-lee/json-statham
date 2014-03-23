@@ -1,0 +1,13 @@
+{
+  "id":1,
+  "name":"Kevin",
+  email: "kevin@some-email.com",
+  'verified':     true,
+  "address": {
+    'street': "ABC Street",
+    "suburb": "",
+    city:"Sydney",
+    "state":        "NSW"    ,
+    "postcode":"2000"
+  }
+}

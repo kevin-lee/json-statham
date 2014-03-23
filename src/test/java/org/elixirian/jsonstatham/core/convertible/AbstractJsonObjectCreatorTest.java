@@ -64,6 +64,12 @@ public class AbstractJsonObjectCreatorTest
     final AbstractJsonObjectCreator orgJsonJsonObjectConvertibleCreator = new AbstractJsonObjectCreator() {
 
       @Override
+      public JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner) throws JsonStathamException
+      {
+        return OrderedJsonObject.newJsonObject(jsonScanner);
+      }
+
+      @Override
       public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
       {
         final JsonObject newJsonObject = OrderedJsonObject.newJsonObject(jsonString);
@@ -93,6 +99,12 @@ public class AbstractJsonObjectCreatorTest
   {
     final AbstractJsonObjectCreator abstractJsonObjectCreator = new AbstractJsonObjectCreator() {
       @Override
+      public JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner) throws JsonStathamException
+      {
+        throw new UnsupportedOperationException();
+      }
+
+      @Override
       public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
       {
         throw new UnsupportedOperationException();
@@ -112,6 +124,12 @@ public class AbstractJsonObjectCreatorTest
   public void testAbstractJsonObjectCreator$NULL_JSON_OBJECT() throws Exception
   {
     final AbstractJsonObjectCreator abstractJsonObjectCreator = new AbstractJsonObjectCreator() {
+      @Override
+      public JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner) throws JsonStathamException
+      {
+        throw new UnsupportedOperationException();
+      }
+
       @Override
       public JsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException
       {

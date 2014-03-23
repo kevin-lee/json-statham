@@ -52,6 +52,12 @@ public final class UnorderedJsonObjectCreator extends AbstractJsonObjectCreator
 	{
 		return UnorderedJsonObject.newJsonObject();
 	}
+	
+	@Override
+	public JsonObject newJsonObjectConvertible(final JsonScanner jsonScanner) throws JsonStathamException
+	{
+	  return UnorderedJsonObject.newJsonObject(jsonScanner);
+	}
 
 	@Override
 	public UnorderedJsonObject newJsonObjectConvertible(final String jsonString) throws JsonStathamException

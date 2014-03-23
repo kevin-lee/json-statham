@@ -45,7 +45,7 @@ package org.elixirian.jsonstatham.core.convertible;
  */
 public interface JsonScanner
 {
-  String getJsonString();
+//  String getJsonString();
 
   void backToPrevious();
 

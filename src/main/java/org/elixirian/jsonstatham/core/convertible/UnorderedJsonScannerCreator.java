@@ -31,7 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.jsonstatham.type.CharReadable;
 
 /**
  * <pre>
@@ -43,15 +43,19 @@ import org.elixirian.jsonstatham.exception.JsonStathamException;
  * </pre>
  * 
  * @author Lee, SeongHyun (Kevin)
- * @version 0.0.1 (2010-02-03)
+ * @version 0.0.1 (2014-03-23)
  */
-public interface JsonObjectCreator
+public class UnorderedJsonScannerCreator implements JsonScannerCreator
 {
-  JsonObject newJsonObjectConvertible();
+  @Override
+  public JsonScanner newJsonScanner(final CharReadable charReadable)
+  {
+    return new JsonScannerForUnorderedJsonObject(charReadable);
+  }
 
-  JsonObject nullJsonObjectConvertible();
-  
-  JsonObject newJsonObjectConvertible(JsonScanner jsonScanner) throws JsonStathamException;
-
-  JsonObject newJsonObjectConvertible(String jsonString) throws JsonStathamException;
+  @Override
+  public JsonScanner newJsonScanner(final String jsonString)
+  {
+    return new JsonScannerForUnorderedJsonObject(jsonString);
+  }
 }

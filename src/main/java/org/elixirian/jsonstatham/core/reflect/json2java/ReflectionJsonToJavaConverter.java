@@ -69,7 +69,10 @@ import org.elixirian.jsonstatham.core.convertible.JsonArrayCreator;
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonScanner;
+import org.elixirian.jsonstatham.core.convertible.JsonScannerCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
+import org.elixirian.jsonstatham.type.CharReadable;
 import org.elixirian.kommonlee.asm.analysis.AsmMethodAndConstructorAnalyser;
 import org.elixirian.kommonlee.asm.analysis.ConstructorAnalyser;
 import org.elixirian.kommonlee.reflect.TypeHolder;
@@ -95,6 +98,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
   private final ConstructorAnalyser constructorAnalyser = new AsmMethodAndConstructorAnalyser();
 
+  private final JsonScannerCreator jsonScannerCreator;
   private final JsonObjectCreator jsonObjectCreator;
   private final JsonArrayCreator jsonArrayCreator;
 
@@ -111,6 +115,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
 
   public ReflectionJsonToJavaConverter(final JsonToJavaConfig javaConfig)
   {
+    this.jsonScannerCreator = javaConfig.getJsonScannerCreator();
     this.jsonObjectCreator = javaConfig.getJsonObjectConvertibleCreator();
     this.jsonArrayCreator = javaConfig.getJsonArrayConvertibleCreator();
     this.knownTypeProcessorWithReflectionJsonToJavaConverterDeciderForJsonToJavaList =
@@ -782,6 +787,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
       throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
     final JsonObject jsonObject = jsonObjectCreator.newJsonObjectConvertible(jsonString);
+    return createFromJsonObject(targetClass, jsonObject);
+  }
+
+  private <T> T convertFromJsonObject(final Class<T> targetClass, final JsonScanner jsonScanner)
+      throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
+  {
+    final JsonObject jsonObject = jsonObjectCreator.newJsonObjectConvertible(jsonScanner);
     return createFromJsonObject(targetClass, jsonObject);
   }
 
@@ -1523,6 +1535,13 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return createFromJsonArray(targetClass, jsonArrayCreator.newJsonArrayConvertible(jsonString));
   }
 
+  private <T> T convertFromJsonArray(final Class<T> targetClass, final JsonScanner jsonScanner)
+      throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    return createFromJsonArray(targetClass, jsonArrayCreator.newJsonArrayConvertible(jsonScanner));
+  }
+
   public <T, E> T createFromJsonArray(final Class<T> targetClass, final JsonArray jsonArray)
       throws IllegalArgumentException, JsonStathamException, IllegalAccessException, InstantiationException
   {
@@ -1710,5 +1729,51 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
           "Invalid JSON String is given. It must start with '{' (JSON object) or '[' (JSON array) or must be null.\n"
               + "##Given JSON String:\n%s", json));
     }
+  }
+
+  @Override
+  public <T> T convertFromJson(final Class<T> targetClass, final CharReadable charReadable)
+      throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    final JsonScanner jsonScanner = jsonScannerCreator.newJsonScanner(charReadable);
+
+    final char c = jsonScanner.nextNonWhiteSpaceChar();
+
+    if (0 >= c)
+    {
+      throw new JsonStathamException(
+          "Invalid JSON String is given. It must start with '{' (JSON object) or '[' (JSON array) or must be null,"
+              + " but the given JSON String is an empty String");
+    }
+
+    jsonScanner.backToPrevious();
+    if ('{' == c)
+    {
+      return convertFromJsonObject(targetClass, jsonScanner);
+    }
+    else if ('[' == c)
+    {
+      return convertFromJsonArray(targetClass, jsonScanner);
+    }
+    else if ('n' == c)
+    {
+      if ("null".equals(jsonScanner.nextValue()))
+      {
+        return null;
+      }
+    }
+    throw new JsonStathamException(format(
+        "Invalid JSON String is given. It must start with '{' (JSON object) or '[' (JSON array) or must be null.\n"
+            + "##Given jsonScanner:\n%s", jsonScanner));
+  }
+
+  @Override
+  public <T> T convertFromJson(final TypeHolder<T> typeHolder, final CharReadable charReadable)
+      throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    // TODO Auto-generated function stub
+    throw new UnsupportedOperationException();
   }
 }
