@@ -43,9 +43,9 @@ import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.jsonstatham.type.CharReadable;
-import org.elixirian.jsonstatham.type.CharReadableFromInputStream;
-import org.elixirian.jsonstatham.type.CharReadableFromReader;
+import org.elixirian.kommonlee.io.CharReadable;
+import org.elixirian.kommonlee.io.CharReadableFromInputStream;
+import org.elixirian.kommonlee.io.CharReadableFromReader;
 import org.elixirian.kommonlee.io.util.IoUtil;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 

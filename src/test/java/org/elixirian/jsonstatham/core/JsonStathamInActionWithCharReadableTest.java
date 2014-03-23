@@ -64,8 +64,8 @@ import org.elixirian.jsonstatham.core.reflect.json2java.ReflectionJsonToJavaConv
 import org.elixirian.jsonstatham.exception.JsonStathamException;
 import org.elixirian.jsonstatham.json.Address;
 import org.elixirian.jsonstatham.json.PersonJson;
-import org.elixirian.jsonstatham.type.CharReadable;
-import org.elixirian.jsonstatham.type.CharReadableFromInputStream;
+import org.elixirian.kommonlee.io.CharReadable;
+import org.elixirian.kommonlee.io.CharReadableFromInputStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

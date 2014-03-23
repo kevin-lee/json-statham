@@ -36,8 +36,8 @@ import static org.elixirian.kommonlee.util.Objects.toStringBuilder;
 
 import org.elixirian.jsonstatham.core.util.JsonUtil;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.jsonstatham.type.CharReadable;
-import org.elixirian.jsonstatham.type.CharReadableFromString;
+import org.elixirian.kommonlee.io.CharReadable;
+import org.elixirian.kommonlee.io.CharReadableFromString;
 
 /**
  * <pre>

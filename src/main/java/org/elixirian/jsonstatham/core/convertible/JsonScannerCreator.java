@@ -31,7 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import org.elixirian.jsonstatham.type.CharReadable;
+import org.elixirian.kommonlee.io.CharReadable;
 
 /**
  * <pre>

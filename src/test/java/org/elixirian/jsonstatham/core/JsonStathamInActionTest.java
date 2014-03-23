@@ -114,7 +114,7 @@ import org.elixirian.jsonstatham.test.ItemConfig;
 import org.elixirian.jsonstatham.test.ItemDefinition;
 import org.elixirian.jsonstatham.test.MultipleSelectionItem;
 import org.elixirian.jsonstatham.test.Option;
-import org.elixirian.jsonstatham.type.CharReadable;
+import org.elixirian.kommonlee.io.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -35,7 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.exception.JsonStathamException;
-import org.elixirian.jsonstatham.type.CharReadable;
+import org.elixirian.kommonlee.io.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 
 /**

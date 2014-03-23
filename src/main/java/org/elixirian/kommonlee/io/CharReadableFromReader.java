@@ -29,15 +29,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.elixirian.jsonstatham.type;
+package org.elixirian.kommonlee.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.io.Reader;
 
-import org.elixirian.kommonlee.io.IoCommonConstants;
 import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
@@ -52,18 +49,13 @@ import org.elixirian.kommonlee.io.exception.RuntimeIoException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2014-03-23)
  */
-public class CharReadableFromInputStream implements CharReadable
+public class CharReadableFromReader implements CharReadable
 {
   private final BufferedReader reader;
 
-  public CharReadableFromInputStream(final InputStream inputStream)
+  public CharReadableFromReader(final Reader reader)
   {
-    this(inputStream, IoCommonConstants.UTF_8);
-  }
-
-  public CharReadableFromInputStream(final InputStream inputStream, final Charset charset)
-  {
-    this.reader = new BufferedReader(new InputStreamReader(inputStream, charset));
+    this.reader = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
   }
 
   @Override
@@ -82,6 +74,6 @@ public class CharReadableFromInputStream implements CharReadable
   @Override
   public void close() throws IOException
   {
-    reader.close();
+    reader.close();    
   }
 }
