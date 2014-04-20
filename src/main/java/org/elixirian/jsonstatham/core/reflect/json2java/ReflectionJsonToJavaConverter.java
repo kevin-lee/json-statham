@@ -77,7 +77,9 @@ import org.elixirian.kommonlee.asm.analysis.ConstructorAnalyser;
 import org.elixirian.kommonlee.io.CharReadable;
 import org.elixirian.kommonlee.reflect.TypeHolder;
 import org.elixirian.kommonlee.type.Pair;
+import org.elixirian.kommonlee.type.Tuple2;
 import org.elixirian.kommonlee.type.Tuple3;
+import org.elixirian.kommonlee.util.type.ImmutableTuple3;
 
 /**
  * <pre>
@@ -87,7 +89,7 @@ import org.elixirian.kommonlee.type.Tuple3;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-08)
  * @version 0.0.2 (2010-12-23) refactored...
@@ -139,7 +141,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return jsonArrayCreator;
   }
 
-  private static class JsonFieldNameAndFieldPair implements Pair<String, Field>
+  private static class JsonFieldNameAndFieldPair implements Tuple2<String, Field>
   {
     final String jsonFieldName;
     final Field field;
@@ -153,11 +155,23 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     @Override
     public String getValue1()
     {
+      return _1();
+    }
+
+    @Override
+    public String _1()
+    {
       return jsonFieldName;
     }
 
     @Override
     public Field getValue2()
+    {
+      return _2();
+    }
+
+    @Override
+    public Field _2()
     {
       return field;
     }
@@ -191,11 +205,23 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     @Override
     public Map<String, Field> getValue1()
     {
+      return _1();
+    }
+
+    @Override
+    public Map<String, Field> _1()
+    {
       return jsonFieldNameToFieldMap;
     }
 
     @Override
     public Map<String, JsonFieldNameAndFieldPair> getValue2()
+    {
+      return _2();
+    }
+
+    @Override
+    public Map<String, JsonFieldNameAndFieldPair> _2()
     {
       return fieldNameToJsonFieldNameAndFieldPairMap;
     }
@@ -324,11 +350,23 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     @Override
     public Constructor<T> getValue1()
     {
+      return _1();
+    }
+
+    @Override
+    public Constructor<T> _1()
+    {
       return constructor;
     }
 
     @Override
     public P getValue2()
+    {
+      return _2();
+    }
+
+    @Override
+    public P _2()
     {
       return params;
     }
@@ -1242,69 +1280,11 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
     return null;
   }
 
-  static class ParamTuple3<T1, T2, T3> implements Tuple3<T1, T2, T3>
+  static class ParamTuple3 extends ImmutableTuple3<String, Class<?>, Field> implements Tuple3<String, Class<?>, Field>
   {
-    private T1 value1;
-    private T2 value2;
-    private T3 value3;
-
-    public ParamTuple3(final T1 value1, final T2 value2, final T3 value3)
+    public ParamTuple3(final String value1, final Class<?> value2, final Field value3)
     {
-      this.value1 = value1;
-      this.value2 = value2;
-      this.value3 = value3;
-    }
-
-    @Override
-    public T1 getValue1()
-    {
-      return value1;
-    }
-
-    @Override
-    public T2 getValue2()
-    {
-      return value2;
-    }
-
-    @Override
-    public T3 getValue3()
-    {
-      return value3;
-    }
-
-    @Override
-    public int hashCode()
-    {
-      return hash(value1, value2, value3);
-    }
-
-    @Override
-    public boolean equals(final Object paramTuple)
-    {
-      if (this == paramTuple)
-      {
-        return true;
-      }
-      final ParamTuple3<?, ?, ?> that = castIfInstanceOf(ParamTuple3.class, paramTuple);
-      /* @formatter:off */
-      return null != that &&
-              (equal(this.value1, that.getValue1()) &&
-               equal(this.value2, that.getValue2()) &&
-               equal(this.value3, that.getValue3()));
-      /* @formatter:on */
-    }
-
-    @Override
-    public String toString()
-    {
-      /* @formatter:off */
-      return toStringBuilder(this)
-              .add("value1", value1)
-              .add("value2", value2)
-              .add("value3", value3)
-            .toString();
-      /* @formatter:on */
+      super(value1, value2, value3);
     }
   }
 
@@ -1340,7 +1320,7 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             final String paramName = constructorParamNames[i];
             final Class<?> constructorParamType = paramTypes[i];
             final Field field = fieldNameToFieldMap.get(paramName);
-            paramList.add(new ParamTuple3<String, Class<?>, Field>(paramName, constructorParamType, field));
+            paramList.add(new ParamTuple3(paramName, constructorParamType, field));
           }
           return new ConstructorAndParamsPair<T, List<Tuple3<String, Class<?>, Field>>>(entryOfConstructor.getKey(),
               paramList);
@@ -1618,29 +1598,8 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
   public <T> T convertFromJson(final TypeHolder<T> typeHolder, final String jsonString) throws JsonStathamException,
       IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
   {
-    if (ParameterizedType.class.isAssignableFrom(typeHolder.getType()
-        .getClass()))
-    {
-      final ParameterizedType parameterizedType = (ParameterizedType) typeHolder.getType();
-      final Class<?> typeClass = (Class<?>) parameterizedType.getRawType();
-      if (Collection.class.isAssignableFrom(typeClass))
-      {
-        @SuppressWarnings("unchecked")
-        final T t =
-          (T) createCollectionWithValues((Class<Collection<T>>) typeClass,
-              parameterizedType.getActualTypeArguments()[0], jsonArrayCreator.newJsonArrayConvertible(jsonString));
-        return t;
-      }
-      if (Map.class.isAssignableFrom(typeClass))
-      {
-        @SuppressWarnings("unchecked")
-        final T t =
-          (T) createHashMapWithKeysAndValues((Class<Map<String, Object>>) typeClass,
-              parameterizedType.getActualTypeArguments()[1], jsonObjectCreator.newJsonObjectConvertible(jsonString));
-        return t;
-      }
-    }
-    throw new JsonStathamException(format("Unknown type: [TypeHolder: %s][JSON: %s]", typeHolder, jsonString));
+    final JsonScanner jsonScanner = jsonScannerCreator.newJsonScanner(jsonString);
+    return convertFromJson(typeHolder, jsonScanner);
   }
 
   @Override
@@ -1768,12 +1727,41 @@ public class ReflectionJsonToJavaConverter implements JsonToJavaConverter
             + "##Given jsonScanner:\n%s", jsonScanner));
   }
 
+  public <T> T convertFromJson(final TypeHolder<T> typeHolder, final JsonScanner jsonScanner)
+      throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException
+  {
+    if (ParameterizedType.class.isAssignableFrom(typeHolder.getType()
+        .getClass()))
+    {
+      final ParameterizedType parameterizedType = (ParameterizedType) typeHolder.getType();
+      final Class<?> typeClass = (Class<?>) parameterizedType.getRawType();
+      if (Collection.class.isAssignableFrom(typeClass))
+      {
+        @SuppressWarnings("unchecked")
+        final T t =
+          (T) createCollectionWithValues((Class<Collection<T>>) typeClass,
+              parameterizedType.getActualTypeArguments()[0], jsonArrayCreator.newJsonArrayConvertible(jsonScanner));
+        return t;
+      }
+      if (Map.class.isAssignableFrom(typeClass))
+      {
+        @SuppressWarnings("unchecked")
+        final T t =
+          (T) createHashMapWithKeysAndValues((Class<Map<String, Object>>) typeClass,
+              parameterizedType.getActualTypeArguments()[1], jsonObjectCreator.newJsonObjectConvertible(jsonScanner));
+        return t;
+      }
+    }
+    throw new JsonStathamException(format("Unknown type: [TypeHolder: %s][JSON: %s]", typeHolder, jsonScanner));
+  }
+
   @Override
   public <T> T convertFromJson(final TypeHolder<T> typeHolder, final CharReadable charReadable)
       throws JsonStathamException, IllegalArgumentException, InstantiationException, IllegalAccessException,
       InvocationTargetException
   {
-    // TODO Auto-generated function stub
-    throw new UnsupportedOperationException();
+    final JsonScanner jsonScanner = jsonScannerCreator.newJsonScanner(charReadable);
+    return convertFromJson(typeHolder, jsonScanner);
   }
 }

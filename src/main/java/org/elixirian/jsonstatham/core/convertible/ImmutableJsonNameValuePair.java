@@ -31,7 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import static org.elixirian.kommonlee.util.Objects.*;
+import org.elixirian.kommonlee.util.type.ImmutableTuple2;
 
 /**
  * <pre>
@@ -41,61 +41,29 @@ import static org.elixirian.kommonlee.util.Objects.*;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2013-04-10)
  */
-public class ImmutableJsonNameValuePair<V> implements JsonNameValuePair<String, V>
+public class ImmutableJsonNameValuePair<V> extends ImmutableTuple2<String, V> implements JsonNameValuePair<String, V>
 {
-  private final String name;
-  private final V value;
 
-  public ImmutableJsonNameValuePair(final String name, final V value)
+  public ImmutableJsonNameValuePair(final String value1, final V value2)
   {
-    this.name = name;
-    this.value = value;
-  }
-
-  @Override
-  public String getValue1()
-  {
-    return name;
-  }
-
-  @Override
-  public V getValue2()
-  {
-    return value;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return hash(name, value);
-  }
-
-  @Override
-  public boolean equals(final Object pair)
-  {
-    if (this == pair)
-    {
-      return true;
-    }
-    final JsonNameValuePair<?, ?> that = castIfInstanceOf(JsonNameValuePair.class, pair);
-    /* @formatter:off */
-    return null != that &&
-        (equal(this.name, that.getValue1()) &&
-         equal(this.value, that.getValue2()));
-    /* @formatter:on */
+    super(value1, value2);
   }
 
   @Override
   public String toString()
   {
     /* @formatter:off */
-    return toStringBuilder(this)
-            .add("name", name)
-            .add("value", value)
+    return new StringBuilder("{")
+            .append("name: ")
+            .append(_1())
+            .append(", ")
+            .append("value: ")
+            .append(_2())
+            .append("}")
           .toString();
     /* @formatter:on */
   }

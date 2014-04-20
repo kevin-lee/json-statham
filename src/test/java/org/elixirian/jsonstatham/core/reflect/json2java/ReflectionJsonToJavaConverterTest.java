@@ -75,6 +75,7 @@ import org.elixirian.jsonstatham.core.convertible.JsonArrayWithOrderedJsonObject
 import org.elixirian.jsonstatham.core.convertible.JsonConvertible;
 import org.elixirian.jsonstatham.core.convertible.JsonObject;
 import org.elixirian.jsonstatham.core.convertible.JsonObjectCreator;
+import org.elixirian.jsonstatham.core.convertible.JsonScanner;
 import org.elixirian.jsonstatham.core.convertible.JsonScannerCreator;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObject;
 import org.elixirian.jsonstatham.core.convertible.OrderedJsonObjectCreator;
@@ -164,7 +165,7 @@ import org.mockito.stubbing.Answer;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-09-08)
  */
@@ -200,7 +201,22 @@ public class ReflectionJsonToJavaConverterTest
           throw new JsonStathamException(e);
         }
       }
+    };
 
+  private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_SCANNER =
+    new Answer<JsonObject>() {
+      @Override
+      public JsonObject answer(final InvocationOnMock invocation) throws Throwable
+      {
+        try
+        {
+          return OrderedJsonObject.newJsonObject((JsonScanner) invocation.getArguments()[0]);
+        }
+        catch (final Exception e)
+        {
+          throw new JsonStathamException(e);
+        }
+      }
     };
 
   private static final Answer<JsonObject> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObject>() {
@@ -320,6 +336,14 @@ public class ReflectionJsonToJavaConverterTest
     }
   };
 
+  private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_SCANNER = new Answer<JsonArray>() {
+    @Override
+    public JsonArray answer(final InvocationOnMock invocation) throws Throwable
+    {
+      return JsonArrayWithOrderedJsonObject.newJsonArray((JsonScanner) invocation.getArguments()[0]);
+    }
+  };
+
   private List<Address> addressList;
 
   private Map<String, Address> addressMap;
@@ -368,10 +392,16 @@ public class ReflectionJsonToJavaConverterTest
     when(jsonObjectCreator.newJsonObjectConvertible(anyString())).thenAnswer(
         ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
     when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
+    when(jsonObjectCreator.newJsonObjectConvertible(any(JsonScanner.class))).thenAnswer(
+        ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_SCANNER);
 
     when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
     when(jsonArrayCreator.newJsonArrayConvertible(anyString())).thenAnswer(
         ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
+    when(jsonArrayCreator.newJsonArrayConvertible(any(JsonScanner.class))).thenAnswer(
+        ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_SCANNER);
+
+    jsonScannerCreator = new OrderedJsonScannerCreator();
 
     reflectionJsonToJavaConverter =
       new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator,

@@ -31,7 +31,7 @@
  */
 package org.elixirian.jsonstatham.core.convertible;
 
-import org.elixirian.kommonlee.type.Pair;
+import org.elixirian.kommonlee.type.Tuple2;
 
 /**
  * <pre>
@@ -41,10 +41,10 @@ import org.elixirian.kommonlee.type.Pair;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2013-04-10)
  */
-public interface JsonNameValuePair<N, V> extends Pair<N, V>
+public interface JsonNameValuePair<N, V> extends Tuple2<N, V>
 {
 }
