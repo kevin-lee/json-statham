@@ -5,7 +5,7 @@
   <groupId>org.elixirian</groupId>
   <artifactId>json-statham</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.50-SNAPSHOT</version>
+  <version>0.2.51-SNAPSHOT</version>
   <name>json-statham</name>
   <url>http://projects.elixirian.org/json-statham</url>
 
@@ -166,13 +166,13 @@
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-core</artifactId>
-      <version>0.0.41-SNAPSHOT</version>
+      <version>0.0.43-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.elixirian</groupId>
       <artifactId>kommonlee-asm</artifactId>
-      <version>0.0.30-SNAPSHOT</version>
+      <version>0.0.31-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
