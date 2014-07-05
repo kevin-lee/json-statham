@@ -34,7 +34,6 @@ package org.elixirian.jsonstatham.core;
 import static org.assertj.core.api.Assertions.*;
 import static org.elixirian.kommonlee.util.MessageFormatter.*;
 import static org.elixirian.kommonlee.util.Objects.*;
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -144,8 +143,7 @@ import org.mockito.stubbing.Answer;
  * @version 0.0.3 (2010-05-10) test case for testing enum type fields is added.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class JsonStathamInActionTest
-{
+public class JsonStathamInActionTest {
   private static final List<String> streetList = Arrays.asList("ABC Street", "90/120 Swanston St");
   private static final List<String> suburbList = Arrays.asList("", "Test Suburb");
   private static final List<String> cityList = Arrays.asList("Sydney", "Melbourne");
@@ -155,60 +153,48 @@ public class JsonStathamInActionTest
 
   private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObject>() {
     @Override
-    public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable
-    {
+    public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable {
       return OrderedJsonObject.newJsonObject(new LinkedHashMap<String, Object>());
     }
   };
 
-  private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING =
-    new Answer<JsonObject>() {
-      @Override
-      public JsonObject answer(final InvocationOnMock invocation) throws Throwable
-      {
-        try
-        {
-          return OrderedJsonObject.newJsonObject((String) invocation.getArguments()[0]);
-        }
-        catch (final Exception e)
-        {
-          throw new JsonStathamException(e);
-        }
+  private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING = new Answer<JsonObject>() {
+    @Override
+    public JsonObject answer(final InvocationOnMock invocation) throws Throwable {
+      try {
+        return OrderedJsonObject.newJsonObject((String) invocation.getArguments()[0]);
       }
-
-    };
-
-  private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_SCANNER =
-    new Answer<JsonObject>() {
-      @Override
-      public JsonObject answer(final InvocationOnMock invocation) throws Throwable
-      {
-        try
-        {
-          return OrderedJsonObject.newJsonObject((JsonScanner) invocation.getArguments()[0]);
-        }
-        catch (final Exception e)
-        {
-          throw new JsonStathamException(e);
-        }
+      catch (final Exception e) {
+        throw new JsonStathamException(e);
       }
-    };
+    }
+
+  };
+
+  private static final Answer<JsonObject> ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_SCANNER = new Answer<JsonObject>() {
+    @Override
+    public JsonObject answer(final InvocationOnMock invocation) throws Throwable {
+      try {
+        return OrderedJsonObject.newJsonObject((JsonScanner) invocation.getArguments()[0]);
+      }
+      catch (final Exception e) {
+        throw new JsonStathamException(e);
+      }
+    }
+  };
 
   private static final Answer<JsonObject> ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE = new Answer<JsonObject>() {
 
     @Override
-    public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable
-    {
+    public JsonObject answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable {
       return new JsonObject() {
         @Override
-        public String[] getNames()
-        {
+        public String[] getNames() {
           throw new JsonStathamException("The getNames method in NullJsonObjectConvertible cannot be used.");
         }
 
         @Override
-        public int fieldLength()
-        {
+        public int fieldLength() {
           return 0;
         }
 
@@ -218,75 +204,63 @@ public class JsonStathamInActionTest
           /* @formatter:on */
 
         @Override
-        public <T> T get(@SuppressWarnings("unused") final String name)
-        {
+        public <T> T get(@SuppressWarnings("unused") final String name) {
           throw new JsonStathamException("The get method in NullJsonObjectConvertible cannot be used.");
         }
 
         @Override
-        public Object getActualObject()
-        {
+        public Object getActualObject() {
           return AbstractJsonObject.NULL_JSON_OBJECT;
         }
 
         @Override
-        public <T> JsonObject put(@SuppressWarnings("unused") final String name,
-            @SuppressWarnings("unused") final T value) throws JsonStathamException
-        {
+        public <T> JsonObject put(@SuppressWarnings("unused") final String name, @SuppressWarnings("unused") final T value)
+            throws JsonStathamException {
           throw new JsonStathamException("The put method in NullJsonObjectConvertible cannot used.");
         }
 
         @Override
-        public boolean isNull()
-        {
+        public boolean isNull() {
           return true;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
           return AbstractJsonObject.NULL_JSON_OBJECT.toString();
         }
 
         @Override
-        public Map<String, Object> copyToMap()
-        {
+        public Map<String, Object> copyToMap() {
           return AbstractJsonObject.NULL_JSON_OBJECT.copyToMap();
         }
 
         @Override
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
           return true;
         }
 
         @Override
-        public boolean isNotEmpty()
-        {
+        public boolean isNotEmpty() {
           return false;
         }
 
         @Override
-        public boolean isJsonObject()
-        {
+        public boolean isJsonObject() {
           return true;
         }
 
         @Override
-        public boolean isJsonArray()
-        {
+        public boolean isJsonArray() {
           return false;
         }
 
         @Override
-        public Class<?> getActualType()
-        {
+        public Class<?> getActualType() {
           return getActualObject().getClass();
         }
 
         @Override
-        public void write(final CharAndStringWritable charAndStringWritable)
-        {
+        public void write(final CharAndStringWritable charAndStringWritable) {
           AbstractJsonObject.NULL_JSON_OBJECT.write(charAndStringWritable);
         }
       };
@@ -296,24 +270,21 @@ public class JsonStathamInActionTest
   private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE = new Answer<JsonArray>() {
 
     @Override
-    public JsonArray answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable
-    {
+    public JsonArray answer(@SuppressWarnings("unused") final InvocationOnMock invocation) throws Throwable {
       return JsonArrayWithOrderedJsonObject.newJsonArray();
     }
   };
 
   private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING = new Answer<JsonArray>() {
     @Override
-    public JsonArray answer(final InvocationOnMock invocation) throws Throwable
-    {
+    public JsonArray answer(final InvocationOnMock invocation) throws Throwable {
       return JsonArrayWithOrderedJsonObject.newJsonArray((String) invocation.getArguments()[0]);
     }
   };
 
   private static final Answer<JsonArray> ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_SCANNER = new Answer<JsonArray>() {
     @Override
-    public JsonArray answer(final InvocationOnMock invocation) throws Throwable
-    {
+    public JsonArray answer(final InvocationOnMock invocation) throws Throwable {
       return JsonArrayWithOrderedJsonObject.newJsonArray((JsonScanner) invocation.getArguments()[0]);
     }
   };
@@ -339,8 +310,7 @@ public class JsonStathamInActionTest
    * @throws java.lang.Exception
    */
   @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {
+  public static void setUpBeforeClass() throws Exception {
     System.out.println("###  JsonStathamInActionTest starts ###");
   }
 
@@ -348,8 +318,7 @@ public class JsonStathamInActionTest
    * @throws java.lang.Exception
    */
   @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {
+  public static void tearDownAfterClass() throws Exception {
     System.out.println("\n### JsonStathamInActionTest ends ###");
   }
 
@@ -357,94 +326,77 @@ public class JsonStathamInActionTest
    * @throws java.lang.Exception
    */
   @Before
-  public void setUp() throws Exception
-  {
+  public void setUp() throws Exception {
     when(jsonScannerCreator.newJsonScanner(any(CharReadable.class))).thenReturn(new JsonScanner() {
 
       @Override
-      public Object nextValue()
-      {
+      public Object nextValue() {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public char nextNonWhiteSpaceChar()
-      {
+      public char nextNonWhiteSpaceChar() {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public char nextChar()
-      {
+      public char nextChar() {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public boolean isNotEnded()
-      {
+      public boolean isNotEnded() {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public boolean isEnded()
-      {
+      public boolean isEnded() {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public String getPreviousCharInfo()
-      {
+      public String getPreviousCharInfo() {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public void backToPrevious()
-      {
+      public void backToPrevious() {
         throw new UnsupportedOperationException();
 
       }
     });
 
     when(jsonObjectCreator.newJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE);
-    when(jsonObjectCreator.newJsonObjectConvertible(anyString())).thenAnswer(
-        ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
+    when(jsonObjectCreator.newJsonObjectConvertible(anyString())).thenAnswer(ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_STRING);
     when(jsonObjectCreator.newJsonObjectConvertible(any(JsonScanner.class))).thenAnswer(
         ANSWER_FOR_NEW_JSON_OBJECT_CONVERTIBLE_WITH_JSON_SCANNER);
     when(jsonObjectCreator.nullJsonObjectConvertible()).thenAnswer(ANSWER_FOR_NULL_JSON_OBJECT_CONVERTIBLE);
 
     when(jsonArrayCreator.newJsonArrayConvertible()).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE);
-    when(jsonArrayCreator.newJsonArrayConvertible(anyString())).thenAnswer(
-        ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
-    when(jsonArrayCreator.newJsonArrayConvertible(any(JsonScanner.class))).thenAnswer(
-        ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_SCANNER);
+    when(jsonArrayCreator.newJsonArrayConvertible(anyString())).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_STRING);
+    when(jsonArrayCreator.newJsonArrayConvertible(any(JsonScanner.class))).thenAnswer(ANSWER_FOR_JSON_ARRAY_CONVERTIBLE_WITH_JSON_SCANNER);
 
-    final ReflectionJavaToJsonConverter javaToJsonConverter =
-      new ReflectionJavaToJsonConverter(jsonObjectCreator, jsonArrayCreator,
-          new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(),
-          new OneProcessorForKnownTypeDecider());
+    final ReflectionJavaToJsonConverter javaToJsonConverter = new ReflectionJavaToJsonConverter(jsonObjectCreator, jsonArrayCreator,
+        new KnownDataStructureTypeProcessorDecider(), new KnownObjectReferenceTypeProcessorDecider(), new OneProcessorForKnownTypeDecider());
 
     jsonScannerCreator = new OrderedJsonScannerCreator();
 
-    final ReflectionJsonToJavaConverter jsonToJavaConverter =
-      new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(jsonScannerCreator, jsonObjectCreator,
-          jsonArrayCreator)
-          .build());
+    final ReflectionJsonToJavaConverter jsonToJavaConverter = new ReflectionJsonToJavaConverter(DefaultJsonToJavaConfig.builder(
+        jsonScannerCreator, jsonObjectCreator, jsonArrayCreator)
+        .build());
 
     jsonStatham = new JsonStathamInAction(javaToJsonConverter, jsonToJavaConverter);
     address = new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0));
 
     addressList = new ArrayList<Address>();
-    for (int i = 0, size = streetList.size(); i < size; i++)
-    {
-      addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i),
-          postcodeList.get(i)));
+    for (int i = 0, size = streetList.size(); i < size; i++) {
+      addressList.add(new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
     }
 
     addressMap = new LinkedHashMap<String, Address>();
-    for (int i = 0, size = streetList.size(); i < size; i++)
-    {
-      addressMap.put("address" + i, new Address(streetList.get(i), suburbList.get(i), cityList.get(i),
-          stateList.get(i), postcodeList.get(i)));
+    for (int i = 0, size = streetList.size(); i < size; i++) {
+      addressMap.put("address" + i,
+          new Address(streetList.get(i), suburbList.get(i), cityList.get(i), stateList.get(i), postcodeList.get(i)));
     }
   }
 
@@ -452,22 +404,18 @@ public class JsonStathamInActionTest
    * @throws java.lang.Exception
    */
   @After
-  public void tearDown() throws Exception
-  {
+  public void tearDown() throws Exception {
   }
 
   @Test(expected = JsonStathamException.class)
-  public void testUnknownType()
-  {
-    class UnknownType
-    {
+  public void testUnknownType() {
+    class UnknownType {
     }
     jsonStatham.convertIntoJson(new UnknownType());
   }
 
   @Test
-  public void testNull()
-  {
+  public void testNull() {
     System.out.println("\nReflectionJsonStathamTest.testNull()");
     final String expected = "null";
     System.out.println("expected:\n" + expected);
@@ -480,13 +428,11 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonHavingNullValue()
-  {
+  public void testJsonHavingNullValue() {
     System.out.println("\nJsonStathamInActionTest.testJsonHavingNullValue()");
     @SuppressWarnings("hiding")
     @Json
-    class TestPojo
-    {
+    class TestPojo {
       @JsonField
       private Object object = null;
     }
@@ -495,15 +441,13 @@ public class JsonStathamInActionTest
     System.out.println("actual: ");
     final String result2 = jsonStatham.convertIntoJson(new TestPojo());
     System.out.println(result2);
-    assertEquals(expected2.toString(), result2);
+    assertThat(result2).isEqualTo(expected2);
 
   }
 
-  private String getAddressArrayString()
-  {
+  private String getAddressArrayString() {
     final StringBuilder stringBuilder = new StringBuilder("[");
-    for (final Address address : addressList)
-    {
+    for (final Address address : addressList) {
       stringBuilder.append("{\"street\":\"")
           .append(address.getStreet())
           .append("\",\"suburb\":\"")
@@ -516,8 +460,7 @@ public class JsonStathamInActionTest
           .append(address.getPostcode())
           .append("\"},");
     }
-    if (1 < stringBuilder.length())
-    {
+    if (1 < stringBuilder.length()) {
       stringBuilder.deleteCharAt(stringBuilder.length() - 1);
     }
     stringBuilder.append("]");
@@ -525,8 +468,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testArray()
-  {
+  public void testArray() {
     System.out.println("\nJsonStathamInActionTest.testArray()");
 
     final String expectedIntArray = "[1,2,3,4,5,8,23,56]";
@@ -539,30 +481,27 @@ public class JsonStathamInActionTest
     final String expectedDoubleArray = "[1.2,2.6,3.3,4.8,5.234,8.567,23.48754,56.0547]";
     System.out.println("\nexpected:\n" + expectedDoubleArray);
     System.out.println("actual: ");
-    final String resultDoubleArray =
-      jsonStatham.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 });
+    final String resultDoubleArray = jsonStatham.convertIntoJson(new double[] { 1.2, 2.6, 3.3, 4.8, 5.234, 8.567, 23.48754, 56.0547 });
     System.out.println(resultDoubleArray);
     assertThat(resultDoubleArray).isEqualTo(expectedDoubleArray);
 
     final String expectedBooleanArray = "[true,false,false,true,false,true,false,true,true]";
     System.out.println("\nexpected:\n" + expectedBooleanArray);
     System.out.println("actual: ");
-    final String resultBooleanArray =
-      jsonStatham.convertIntoJson(new boolean[] { true, false, false, true, false, true, false, true, true });
+    final String resultBooleanArray = jsonStatham.convertIntoJson(new boolean[] { true, false, false, true, false, true, false, true, true });
     System.out.println(resultBooleanArray);
     assertThat(resultBooleanArray).isEqualTo(expectedBooleanArray);
   }
 
   @Test
-  public void testArrayHavingPojo()
-  {
+  public void testArrayHavingPojo() {
     System.out.println("\nJsonStathamInActionTest.testArrayHavingPojo()");
     final String expected = getAddressArrayString();
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(addressList.toArray(new Address[addressList.size()]));
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   /**
@@ -570,22 +509,19 @@ public class JsonStathamInActionTest
    * List as the parameter object.
    */
   @Test
-  public void testList()
-  {
+  public void testList() {
     final String expected = getAddressArrayString();
     System.out.println("\nReflectionJsonStathamTest.testList()");
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(addressList);
     System.out.println(result);
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
-  private String getAddressMapString()
-  {
+  private String getAddressMapString() {
     final StringBuilder stringBuilder = new StringBuilder("{");
-    for (final Entry<String, Address> entry : addressMap.entrySet())
-    {
+    for (final Entry<String, Address> entry : addressMap.entrySet()) {
       final Address address = entry.getValue();
       stringBuilder.append("\"" + entry.getKey() + "\":")
           .append("{\"street\":\"")
@@ -600,8 +536,7 @@ public class JsonStathamInActionTest
           .append(address.getPostcode())
           .append("\"},");
     }
-    if (1 < stringBuilder.length())
-    {
+    if (1 < stringBuilder.length()) {
       stringBuilder.deleteCharAt(stringBuilder.length() - 1);
     }
     stringBuilder.append("}");
@@ -612,56 +547,51 @@ public class JsonStathamInActionTest
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
    */
   @Test
-  public void testMap()
-  {
+  public void testMap() {
     final String expected = getAddressMapString();
     System.out.println("\nReflectionJsonStathamTest.testMap()");
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
-    final String result = jsonStatham.convertIntoJson(addressMap);
-    System.out.println(result);
-    assertEquals(expected, result);
+    final String actual = jsonStatham.convertIntoJson(addressMap);
+    System.out.println(actual);
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
-  public void testNestedMap()
-  {
+  public void testNestedMap() {
     final String expected = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedMap()");
     System.out.println("expected: \n" + expected);
-    final Map<String, Object> nestedMap = new HashMap<String, Object>();
+    final Map<String, Object> nestedMap = new LinkedHashMap<String, Object>();
     nestedMap.put("test1", addressMap);
     nestedMap.put("test2", addressMap);
     System.out.println("actual: ");
-    final String result = jsonStatham.convertIntoJson(nestedMap);
-    System.out.println(result);
-    assertEquals(expected, result);
+    final String actual = jsonStatham.convertIntoJson(nestedMap);
+    System.out.println(actual);
+    assertThat(actual).isEqualTo(expected);
   }
 
   /**
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
    */
   @Test
-  public void testAddress()
-  {
+  public void testAddress() {
     System.out.println("\nReflectionJsonStathamTest.testAddress()");
 
-    final String expected =
-      "{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
-          + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
+    final String expected = "{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
+        + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
-    final String result = jsonStatham.convertIntoJson(address);
-    System.out.println(result);
-    assertEquals(expected, result);
+    final String actual = jsonStatham.convertIntoJson(address);
+    System.out.println(actual);
+    assertThat(actual).isEqualTo(expected);
   }
 
   /**
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
    */
   @Test
-  public void testNestedJsonObject()
-  {
+  public void testNestedJsonObject() {
     final long id = 1;
     final String name = "jsonObject";
     final NestedJsonObject jsonObject = new NestedJsonObject();
@@ -671,11 +601,9 @@ public class JsonStathamInActionTest
     jsonObject.setIntNumber(Integer.MAX_VALUE);
     jsonObject.setDoubleNumber(Double.MAX_VALUE);
 
-    final String expected =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0)
-          + "\"},\"intNumber\":2147483647,\"doubleNumber\":1.7976931348623157E308}";
+    final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+        + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
+        + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":2147483647,\"doubleNumber\":1.7976931348623157E308}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
@@ -687,16 +615,14 @@ public class JsonStathamInActionTest
     final String name2 = name + "4Testing";
     jsonObject.setPrimaryKey(id2);
     jsonObject.setName(name2);
-    jsonObject.setAddress(new Address(streetList.get(1), suburbList.get(1), cityList.get(1), stateList.get(1),
-        postcodeList.get(1)));
+    jsonObject.setAddress(new Address(streetList.get(1), suburbList.get(1), cityList.get(1), stateList.get(1), postcodeList.get(1)));
     jsonObject.setIntNumber(Integer.MIN_VALUE);
     jsonObject.setDoubleNumber(Double.MIN_VALUE);
 
-    final String expected2 =
-      "{\"id\":" + id2 + ",\"name\":\"" + name2 + "\",\"address\":{\"street\":\"" + streetList.get(1)
-          + "\",\"suburb\":\"" + suburbList.get(1) + "\",\"city\":\"" + cityList.get(1) + "\",\"state\":\""
-          + stateList.get(1) + "\",\"postcode\":\"" + postcodeList.get(1) + "\"},\"intNumber\":" + Integer.MIN_VALUE
-          + ",\"doubleNumber\":" + Double.MIN_VALUE + "}";
+    final String expected2 = "{\"id\":" + id2 + ",\"name\":\"" + name2 + "\",\"address\":{\"street\":\"" + streetList.get(1)
+        + "\",\"suburb\":\"" + suburbList.get(1) + "\",\"city\":\"" + cityList.get(1) + "\",\"state\":\"" + stateList.get(1)
+        + "\",\"postcode\":\"" + postcodeList.get(1) + "\"},\"intNumber\":" + Integer.MIN_VALUE + ",\"doubleNumber\":" + Double.MIN_VALUE
+        + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("expected:\n" + expected2);
     System.out.println("actual: ");
@@ -708,16 +634,13 @@ public class JsonStathamInActionTest
     final String name3 = name + "4Testing";
     jsonObject.setPrimaryKey(id3);
     jsonObject.setName(name3);
-    jsonObject.setAddress(new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0),
-        postcodeList.get(0)));
+    jsonObject.setAddress(new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0)));
     jsonObject.setIntNumber(Integer.MAX_VALUE >>> 1);
     jsonObject.setDoubleNumber(1234.1000D);
 
-    final String expected3 =
-      "{\"id\":" + id3 + ",\"name\":\"" + name3 + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
-          + (Integer.MAX_VALUE >>> 1) + ",\"doubleNumber\":1234.1}";
+    final String expected3 = "{\"id\":" + id3 + ",\"name\":\"" + name3 + "\",\"address\":{\"street\":\"" + streetList.get(0)
+        + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
+        + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + (Integer.MAX_VALUE >>> 1) + ",\"doubleNumber\":1234.1}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("expected:\n" + expected3);
     System.out.println("actual: ");
@@ -731,11 +654,9 @@ public class JsonStathamInActionTest
     jsonObject.setIntNumber(Integer.MAX_VALUE);
     jsonObject.setDoubleNumber(1234.0D);
 
-    final String expected4 =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0)
-          + "\"},\"intNumber\":2147483647,\"doubleNumber\":1234}";
+    final String expected4 = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+        + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
+        + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":2147483647,\"doubleNumber\":1234}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("expected:\n" + expected4);
     System.out.println("actual: ");
@@ -749,11 +670,10 @@ public class JsonStathamInActionTest
     jsonObject.setIntNumber(Integer.MAX_VALUE);
     jsonObject.setDoubleNumber(123456789.1234D);
 
-    final String expected5 =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE
-          + ",\"doubleNumber\":" + 123456789.1234D + "}";
+    final String expected5 = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
+        + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
+        + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE + ",\"doubleNumber\":" + 123456789.1234D
+        + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("expected:\n" + expected5);
     System.out.println("actual: ");
@@ -763,8 +683,7 @@ public class JsonStathamInActionTest
   }
 
   @Test(expected = JsonStathamException.class)
-  public void testJsonObjectWithDuplicateKeys() throws IOException
-  {
+  public void testJsonObjectWithDuplicateKeys() throws IOException {
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithDuplicateKeys()");
     final JsonObjectWithDuplicateKeys jsonObjectWithDuplicateKeys = new JsonObjectWithDuplicateKeys();
     jsonObjectWithDuplicateKeys.setUsername("kevinlee");
@@ -774,12 +693,10 @@ public class JsonStathamInActionTest
 
     System.out.println("result: ");
     String result = "";
-    try
-    {
+    try {
       result = jsonStatham.convertIntoJson(jsonObjectWithDuplicateKeys);
     }
-    catch (final JsonStathamException e)
-    {
+    catch (final JsonStathamException e) {
       System.out.println(e.getMessage());
       throw e;
     }
@@ -787,8 +704,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithoutFieldName()
-  {
+  public void testJsonObjectWithoutFieldName() {
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithoutFieldName()");
     final int id = 5;
     final String name = "Kevin Lee";
@@ -803,8 +719,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testComplexJsonObjectWithMethodUse()
-  {
+  public void testComplexJsonObjectWithMethodUse() {
     final ComplexJsonObjectWithValueAccessor jsonObject = new ComplexJsonObjectWithValueAccessor();
     jsonObject.setPrimaryKey(Long.valueOf(1));
     jsonObject.setName("Kevin");
@@ -816,14 +731,12 @@ public class JsonStathamInActionTest
     jsonObject.setCalendar(calendar);
     jsonObject.setCalendarWithValueAccessor(calendar);
 
-    final String expected =
-      "{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
-          + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState()
-          + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
-          + "\"dateWithValueAccessor\":\"" + jsonObject.getDateString() + "\",\"calendar\":\""
-          + jsonObject.getCalendar()
-              .getTime()
-              .toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarString() + "\"}";
+    final String expected = "{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
+        + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\""
+        + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\"," + "\"dateWithValueAccessor\":\""
+        + jsonObject.getDateString() + "\",\"calendar\":\"" + jsonObject.getCalendar()
+            .getTime()
+            .toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarString() + "\"}";
     System.out.println("\nReflectionJsonStathamTest.testComplexJsonObjectWithMethodUse()");
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
@@ -833,10 +746,8 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testComplexJsonObjectWithValueAccessorWithoutItsName()
-  {
-    final ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject =
-      new ComplexJsonObjectWithValueAccessorWithoutItsName();
+  public void testComplexJsonObjectWithValueAccessorWithoutItsName() {
+    final ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject = new ComplexJsonObjectWithValueAccessorWithoutItsName();
     jsonObject.setPrimaryKey(Long.valueOf(1));
     jsonObject.setName("Kevin");
     jsonObject.setRegistered(true);
@@ -849,14 +760,12 @@ public class JsonStathamInActionTest
     jsonObject.setCalendar(calendar);
     jsonObject.setCalendarWithValueAccessor(calendar);
 
-    final String expected =
-      "{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\""
-          + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity()
-          + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"},"
-          + "\"date\":\"" + date.toString() + "\"," + "\"dateWithValueAccessor\":\""
-          + jsonObject.getDateWithValueAccessor() + "\",\"calendar\":\"" + jsonObject.getCalendar()
-              .getTime()
-              .toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarWithValueAccessor() + "\"}";
+    final String expected = "{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\""
+        + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\""
+        + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":\"" + date.toString() + "\","
+        + "\"dateWithValueAccessor\":\"" + jsonObject.getDateWithValueAccessor() + "\",\"calendar\":\"" + jsonObject.getCalendar()
+            .getTime()
+            .toString() + "\",\"calendarWithValueAccessor\":\"" + jsonObject.getCalendarWithValueAccessor() + "\"}";
     System.out.println("\nReflectionJsonStathamTest.testComplexJsonObjectWithValueAccessorWithoutItsName()");
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
@@ -865,16 +774,14 @@ public class JsonStathamInActionTest
     assertThat(result).isEqualTo(expected);
   }
 
-  private String getExpectedJsonArray(final String name, final String value, final String setName)
-  {
+  private String getExpectedJsonArray(final String name, final String value, final String setName) {
     final StringBuilder stringBuilder = new StringBuilder("{\"").append(name)
         .append("\":\"")
         .append(value)
         .append("\",\"")
         .append(setName)
         .append("\":[");
-    for (final String element : SOME_STRING_VALUE_ARRAY)
-    {
+    for (final String element : SOME_STRING_VALUE_ARRAY) {
       stringBuilder.append("\"")
           .append(element)
           .append("\"")
@@ -885,25 +792,19 @@ public class JsonStathamInActionTest
         .toString();
   }
 
-  private <V extends Object, T extends Collection<V>> T initialiseCollectionWithStringValues(final T t,
-      final V... values)
-  {
-    for (final V value : values)
-    {
+  private <V extends Object, T extends Collection<V>> T initialiseCollectionWithStringValues(final T t, final V... values) {
+    for (final V value : values) {
       t.add(value);
     }
     return t;
   }
 
   @Test
-  public void testJsonObjectContainingCollection()
-  {
+  public void testJsonObjectContainingCollection() {
     final String nameValue = "testJsonWithCollection";
-    final Collection<String> collection =
-      initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+    final Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
-    final JsonObjectContainingCollection jsonObjectContainingCollection =
-      new JsonObjectContainingCollection(nameValue, collection);
+    final JsonObjectContainingCollection jsonObjectContainingCollection = new JsonObjectContainingCollection(nameValue, collection);
     final String expected = getExpectedJsonArray("name", nameValue, "valueCollection");
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingCollection()");
     System.out.println("expected:\n" + expected);
@@ -914,8 +815,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingList()
-  {
+  public void testJsonObjectContainingList() {
     final String nameValue = "testJsonWithList";
     final List<String> list = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
@@ -930,8 +830,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingSet()
-  {
+  public void testJsonObjectContainingSet() {
     final String nameValue = "testJsonWithSet";
     final Set<String> set = initialiseCollectionWithStringValues(new LinkedHashSet<String>(), SOME_STRING_VALUE_ARRAY);
 
@@ -946,17 +845,13 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingMapEntrySetSet()
-  {
+  public void testJsonObjectContainingMapEntrySetSet() {
     final String nameValue = "testJsonObjectContainingMapEntrySetSet";
 
-    final JsonObjectContainingMapEntrySet jsonObjectContainingSet =
-      new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
+    final JsonObjectContainingMapEntrySet jsonObjectContainingSet = new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
 
-    final StringBuilder stringBuilder =
-      new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
-    for (final Entry<String, Address> entry : addressMap.entrySet())
-    {
+    final StringBuilder stringBuilder = new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
+    for (final Entry<String, Address> entry : addressMap.entrySet()) {
       final Address address = entry.getValue();
       stringBuilder.append("{\"" + entry.getKey() + "\":")
           .append("{\"street\":\"")
@@ -983,14 +878,11 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingIterator()
-  {
+  public void testJsonObjectContainingIterator() {
     final String nameValue = "testJsonObjectContainingIterator";
-    final Collection<String> collection =
-      initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+    final Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
-    final JsonObjectContainingIterator jsonObjectContainingCollection =
-      new JsonObjectContainingIterator(nameValue, collection.iterator());
+    final JsonObjectContainingIterator jsonObjectContainingCollection = new JsonObjectContainingIterator(nameValue, collection.iterator());
     final String expected = getExpectedJsonArray("name", nameValue, "valueIterator");
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingIterator()");
     System.out.println("expected:\n" + expected);
@@ -1001,19 +893,16 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingIterable()
-  {
+  public void testJsonObjectContainingIterable() {
     final String nameValue = "testJsonObjectContainingIterable";
     final Iterable<String> iterable = new Iterable<String>() {
       @Override
-      public Iterator<String> iterator()
-      {
+      public Iterator<String> iterator() {
         return initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY).iterator();
       }
     };
 
-    final JsonObjectContainingIterable jsonObjectContainingCollection =
-      new JsonObjectContainingIterable(nameValue, iterable);
+    final JsonObjectContainingIterable jsonObjectContainingCollection = new JsonObjectContainingIterable(nameValue, iterable);
     final String expected = getExpectedJsonArray("name", nameValue, "valueIterable");
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingIterator()");
     System.out.println("expected:\n" + expected);
@@ -1024,8 +913,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithInterfaceInheritance()
-  {
+  public void testJsonObjectWithInterfaceInheritance() {
     final String name = "Kevin Lee";
     final int number = 99;
     final String email = "kevinlee@test.test";
@@ -1040,8 +928,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithImplementationInheritance()
-  {
+  public void testJsonObjectWithImplementationInheritance() {
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
@@ -1056,8 +943,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass()
-  {
+  public void testJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass() {
     final String name = "Kevin";
     final int number = 11;
     final String email = "kevin@test.blahblah";
@@ -1072,20 +958,16 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()
-  {
+  public void testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass() {
     final String name = "Mr. Lee";
     final int number = 999;
     final String email = "kevin@another.email";
     final String comment = "Blah blah";
-    final SecondSubClassWithOwnFields jsonObject =
-      new SecondSubClassWithOwnFields(name, number, email, address, comment);
+    final SecondSubClassWithOwnFields jsonObject = new SecondSubClassWithOwnFields(name, number, email, address, comment);
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()");
-    final String expected =
-      "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":"
-          + "{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\""
-          + address.getCity() + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode()
-          + "\"},\"comment\":\"" + comment + "\"}";
+    final String expected = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":"
+        + "{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity()
+        + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"},\"comment\":\"" + comment + "\"}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
@@ -1094,8 +976,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()
-  {
+  public void testJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass() {
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
@@ -1110,16 +991,14 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithImplementationInheritanceWithValueAccessor()
-  {
+  public void testJsonObjectWithImplementationInheritanceWithValueAccessor() {
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
     final SubClassWithValueAccessor jsonObject = new SubClassWithValueAccessor(name, number, email);
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessor()");
-    final String expected =
-      "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
-          + "\",\"email\":\"My email address is " + email + "\"}";
+    final String expected = "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+        + "\",\"email\":\"My email address is " + email + "\"}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
@@ -1128,17 +1007,14 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()
-  {
+  public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName() {
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
-    final SubClassWithValueAccessorWithoutItsName jsonObject =
-      new SubClassWithValueAccessorWithoutItsName(name, number, email);
+    final SubClassWithValueAccessorWithoutItsName jsonObject = new SubClassWithValueAccessorWithoutItsName(name, number, email);
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()");
-    final String expected =
-      "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
-          + "\",\"email\":\"My email address is " + email + "\"}";
+    final String expected = "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+        + "\",\"email\":\"My email address is " + email + "\"}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
@@ -1147,17 +1023,14 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()
-  {
+  public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod() {
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
-    final SubClassWithValueAccessorWithAbstractMethod jsonObject =
-      new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
+    final SubClassWithValueAccessorWithAbstractMethod jsonObject = new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()");
-    final String expected =
-      "{\"name\":\"My name is nobody.\",\"number\":\"The number is 100.\",\"email\":\"My email address is " + email
-          + "\"}";
+    final String expected = "{\"name\":\"My name is nobody.\",\"number\":\"The number is 100.\",\"email\":\"My email address is " + email
+        + "\"}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
@@ -1166,17 +1039,14 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()
-  {
+  public void testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod() {
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
-    final SubClassWithValueAccessorWithOverriddenMethod jsonObject =
-      new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
+    final SubClassWithValueAccessorWithOverriddenMethod jsonObject = new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()");
-    final String expected =
-      "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
-          + "\",\"email\":\"My email address is " + email + "\"}";
+    final String expected = "{\"name\":\"My name is " + name + "\",\"number\":\"The number is " + number
+        + "\",\"email\":\"My email address is " + email + "\"}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObject);
@@ -1185,18 +1055,15 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException,
-      InstantiationException, IllegalAccessException, InvocationTargetException
-  {
+  public void testProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException, InstantiationException,
+      IllegalAccessException, InvocationTargetException {
     final long id = 999L;
     final String name = "ProxiedPojo";
-    final JsonObjectPojo jsonObjectPojo =
-      JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null), Long.valueOf(id), name,
-          addressList);
+    final JsonObjectPojo jsonObjectPojo = JsonObjectPojoProxyFactory.newJsonObjectPojo(new JsonObjectPojoImpl(null, null, null),
+        Long.valueOf(id), name, addressList);
 
     System.out.println("\nReflectionJsonStathamTest.testProxiedJsonObjectPojo()");
-    final String expected =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
+    final String expected = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"addresses\":" + getAddressArrayString() + "}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(jsonObjectPojo);
@@ -1205,25 +1072,24 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo() throws IllegalArgumentException,
-      NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
-  {
+  public void testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo() throws IllegalArgumentException, NoSuchMethodException,
+      InstantiationException, IllegalAccessException, InvocationTargetException {
     final long primaryKey = 999L;
     final String name = "ProxiedPojo";
     final long primaryKey2 = 555L;
     final String name2 = "ProxiedParent";
     final long primaryKey3 = 333L;
     final String name3 = "Not proxied";
-    final NestedJsonObjectWithValueAccessor nestedJsonObjectWithValueAccessor =
-      JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(new NestedJsonObjectWithValueAccessor(null, null,
-          null), Long.valueOf(primaryKey), name, JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
-          new NestedJsonObjectWithValueAccessor(null, null, null), Long.valueOf(primaryKey2), name2,
-          new NestedJsonObjectWithValueAccessor(Long.valueOf(primaryKey3), name3, null)));
+    final NestedJsonObjectWithValueAccessor nestedJsonObjectWithValueAccessor = JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(
+        new NestedJsonObjectWithValueAccessor(null, null, null),
+        Long.valueOf(primaryKey),
+        name,
+        JsonObjectPojoProxyFactory.newNestedJsonObjectWithValueAccessor(new NestedJsonObjectWithValueAccessor(null, null, null),
+            Long.valueOf(primaryKey2), name2, new NestedJsonObjectWithValueAccessor(Long.valueOf(primaryKey3), name3, null)));
 
     System.out.println("\nReflectionJsonStathamTest.testProxiedJsonObjectPojoHavingProxiedJsonObjectPojo()");
-    final String expected =
-      "{\"id\":" + primaryKey + ",\"name\":\"" + name + "\",\"parent\":{\"id\":" + primaryKey2 + ",\"name\":\"" + name2
-          + "\",\"parent\":{\"id\":" + primaryKey3 + ",\"name\":\"" + name3 + "\",\"parent\":null}}}";
+    final String expected = "{\"id\":" + primaryKey + ",\"name\":\"" + name + "\",\"parent\":{\"id\":" + primaryKey2 + ",\"name\":\""
+        + name2 + "\",\"parent\":{\"id\":" + primaryKey3 + ",\"name\":\"" + name3 + "\",\"parent\":null}}}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     final String result = jsonStatham.convertIntoJson(nestedJsonObjectWithValueAccessor);
@@ -1232,62 +1098,51 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingEnums()
-  {
+  public void testJsonObjectContainingEnums() {
     System.out.println("\nReflectionJsonStathamTest.testJsonObjectContainingEnums()");
-    String expected =
-      "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN"
-          + "\",\"access\":[]}";
+    String expected = "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN"
+        + "\",\"access\":[]}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
     String result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
     System.out.println(result);
     assertThat(result).isEqualTo(expected);
 
-    expected =
-      "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
-          + "\",\"access\":[\"BLOG\",\"EMAIL\"]}";
+    expected = "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
+        + "\",\"access\":[\"BLOG\",\"EMAIL\"]}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
-    result =
-      jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
-          Access.EMAIL));
+    result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.EMAIL));
     System.out.println(result);
     assertThat(result).isEqualTo(expected);
 
-    expected =
-      "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
-          + "\",\"access\":[\"BLOG\",\"WIKI\",\"EMAIL\",\"TWITTER\"]}";
+    expected = "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
+        + "\",\"access\":[\"BLOG\",\"WIKI\",\"EMAIL\",\"TWITTER\"]}";
     System.out.println("expected:\n" + expected);
     System.out.println("actual: ");
-    result =
-      jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG,
-          Access.WIKI, Access.EMAIL, Access.TWITTER));
+    result = jsonStatham.convertIntoJson(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.WIKI,
+        Access.EMAIL, Access.TWITTER));
     System.out.println(result);
     assertThat(result).isEqualTo(expected);
   }
 
   // JSON2Java
   @Test(expected = JsonStathamException.class)
-  public final void testConvertFromJsonWithIllegalJson()
-  {
+  public final void testConvertFromJsonWithIllegalJson() {
     System.out.println("\nJsonStathamInActionTest.testConvertFromJsonWithIllegalJson()");
     jsonStatham.convertFromJson(Object.class, "{\"some\",\"value\",\"This is not JSON\"}");
   }
 
   @Test(expected = JsonStathamException.class)
-  public void testJson2JavaUnknownType()
-  {
+  public void testJson2JavaUnknownType() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaUnknownType()");
-    class UnknownType
-    {
+    class UnknownType {
     }
     jsonStatham.convertFromJson(UnknownType.class, "{}");
   }
 
   @Test
-  public void testJson2JavaNull()
-  {
+  public void testJson2JavaNull() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaNull()");
     final String json = "null";
     System.out.println("json:\n" + json);
@@ -1299,31 +1154,25 @@ public class JsonStathamInActionTest
   }
 
   @Test(expected = JsonStathamException.class)
-  public void testLocalJsonClass() throws Exception
-  {
+  public void testLocalJsonClass() throws Exception {
     System.out.println("\nJsonStathamInActionTest.testLocalJsonClass().TestPojo.testLocalJsonClass()");
     @SuppressWarnings("hiding")
     @Json
-    class TestPojo
-    {
+    class TestPojo {
       @JsonField
       private Object object = null;
 
       @Override
-      public int hashCode()
-      {
+      public int hashCode() {
         return hash(object);
       }
 
       @Override
-      public boolean equals(final Object testPojo)
-      {
-        if (this == testPojo)
-        {
+      public boolean equals(final Object testPojo) {
+        if (this == testPojo) {
           return true;
         }
-        if (!(testPojo instanceof TestPojo))
-        {
+        if (!(testPojo instanceof TestPojo)) {
           return false;
         }
         final TestPojo that = (TestPojo) testPojo;
@@ -1333,38 +1182,31 @@ public class JsonStathamInActionTest
     final String json = "{\"object\":null}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    try
-    {
+    try {
       jsonStatham.convertFromJson(TestPojo.class, json);
     }
-    catch (final Exception e)
-    {
+    catch (final Exception e) {
       System.out.println("exceptionMessage: " + e.getMessage());
       throw e;
     }
   }
 
   @Json
-  private static class TestPojo
-  {
+  private static class TestPojo {
     @JsonField
     private Object object = null;
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
       return hash(object);
     }
 
     @Override
-    public boolean equals(final Object testPojo)
-    {
-      if (this == testPojo)
-      {
+    public boolean equals(final Object testPojo) {
+      if (this == testPojo) {
         return true;
       }
-      if (!(testPojo instanceof TestPojo))
-      {
+      if (!(testPojo instanceof TestPojo)) {
         return false;
       }
       final TestPojo that = (TestPojo) testPojo;
@@ -1372,16 +1214,14 @@ public class JsonStathamInActionTest
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
       return toStringBuilder(this).add("object", object)
           .toString();
     }
   }
 
   @Test
-  public void testJson2JavaJsonHavingNullValue()
-  {
+  public void testJson2JavaJsonHavingNullValue() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonHavingNullValue()");
     final String json = "{\"object\":null}";
     System.out.println("json:\n" + json);
@@ -1389,25 +1229,21 @@ public class JsonStathamInActionTest
     final TestPojo result = jsonStatham.convertFromJson(TestPojo.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(new TestPojo());
-    assertTrue(new TestPojo().equals(result));
-    assertEquals(new TestPojo().hashCode(), result.hashCode());
+    assertThat(result).isEqualTo(new TestPojo());
+    assertThat(result.hashCode()).isEqualTo(new TestPojo().hashCode());
 
   }
 
-  private String toString(final Object object)
-  {
+  private String toString(final Object object) {
     if (object.getClass()
-        .isArray())
-    {
+        .isArray()) {
       final int length = Array.getLength(object);
       final StringBuilder stringBuilder = new StringBuilder("[");
-      for (int i = 0; i < length; i++)
-      {
+      for (int i = 0; i < length; i++) {
         stringBuilder.append(Array.get(object, i))
             .append(",");
       }
-      if (0 < length)
-      {
+      if (0 < length) {
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
       }
       return stringBuilder.append("]")
@@ -1417,8 +1253,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaArray()
-  {
+  public void testJson2JavaArray() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaArray()");
 
     final String intArrayJson = "[1,2,3,4,5,8,23,56]";
@@ -1447,8 +1282,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaArrayHavingPojo()
-  {
+  public void testJson2JavaArrayHavingPojo() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaArrayHavingPojo()");
     final String json = getAddressArrayString();
     System.out.println("json:\n" + json);
@@ -1459,34 +1293,33 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaList()
-  {
+  public void testJson2JavaList() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaList()");
     final String json = getAddressArrayString();
     System.out.println("json:\n" + json);
     System.out.println("java: ");
 
-    final List<Address> result = jsonStatham.convertFromJson(new TypeHolder<List<Address>>() {}, json);
+    final List<Address> result = jsonStatham.convertFromJson(new TypeHolder<List<Address>>() {
+    }, json);
     System.out.println(result);
     assertThat(result).isEqualTo(addressList);
   }
 
   @Test
-  public void testJson2JavaMap()
-  {
+  public void testJson2JavaMap() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaMap()");
     final String json = getAddressMapString();
     System.out.println("json:\n" + json);
     System.out.println("java: ");
 
-    final Map<String, Address> result = jsonStatham.convertFromJson(new TypeHolder<Map<String, Address>>() {}, json);
+    final Map<String, Address> result = jsonStatham.convertFromJson(new TypeHolder<Map<String, Address>>() {
+    }, json);
     System.out.println(result);
     assertThat(result).isEqualTo(addressMap);
   }
 
   @Test
-  public void testJson2JavaNestedMap()
-  {
+  public void testJson2JavaNestedMap() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaNestedMap()");
     final String json = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
     System.out.println("json: \n" + json);
@@ -1495,20 +1328,18 @@ public class JsonStathamInActionTest
     nestedMap.put("test2", addressMap);
     System.out.println("java: ");
 
-    final Map<String, Map<String, Address>> result =
-      jsonStatham.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>() {}, json);
+    final Map<String, Map<String, Address>> result = jsonStatham.convertFromJson(new TypeHolder<Map<String, Map<String, Address>>>() {
+    }, json);
     System.out.println(result);
     assertThat(result).isEqualTo(nestedMap);
   }
 
   @Test
-  public void testJson2JavaAddress()
-  {
+  public void testJson2JavaAddress() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaAddress()");
 
-    final String json =
-      "{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\""
-          + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
+    final String json = "{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0)
+        + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
     final Address result = jsonStatham.convertFromJson(Address.class, json);
@@ -1517,8 +1348,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaNestedJsonObject()
-  {
+  public void testJson2JavaNestedJsonObject() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaNestedJsonObject()");
     final long id = 1;
     final String name = "jsonObject";
@@ -1529,11 +1359,9 @@ public class JsonStathamInActionTest
     jsonObject.setIntNumber(Integer.MAX_VALUE);
     jsonObject.setDoubleNumber(Double.MAX_VALUE);
 
-    final String json =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE
-          + ",\"doubleNumber\":" + Double.MAX_VALUE + "}";
+    final String json = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\""
+        + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
+        + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE + ",\"doubleNumber\":" + Double.MAX_VALUE + "}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
     final NestedJsonObject result = jsonStatham.convertFromJson(NestedJsonObject.class, json);
@@ -1544,16 +1372,14 @@ public class JsonStathamInActionTest
     final String name2 = name + "4Testing";
     jsonObject.setPrimaryKey(id2);
     jsonObject.setName(name2);
-    jsonObject.setAddress(new Address(streetList.get(1), suburbList.get(1), cityList.get(1), stateList.get(1),
-        postcodeList.get(1)));
+    jsonObject.setAddress(new Address(streetList.get(1), suburbList.get(1), cityList.get(1), stateList.get(1), postcodeList.get(1)));
     jsonObject.setIntNumber(Integer.MIN_VALUE);
     jsonObject.setDoubleNumber(Double.MIN_VALUE);
 
-    final String json2 =
-      "{\"id\":" + id2 + ",\"name\":\"" + name2 + "\",\"address\":{\"street\":\"" + streetList.get(1)
-          + "\",\"suburb\":\"" + suburbList.get(1) + "\",\"city\":\"" + cityList.get(1) + "\",\"state\":\""
-          + stateList.get(1) + "\",\"postcode\":\"" + postcodeList.get(1) + "\"},\"intNumber\":" + Integer.MIN_VALUE
-          + ",\"doubleNumber\":" + Double.MIN_VALUE + "}";
+    final String json2 = "{\"id\":" + id2 + ",\"name\":\"" + name2 + "\",\"address\":{\"street\":\"" + streetList.get(1)
+        + "\",\"suburb\":\"" + suburbList.get(1) + "\",\"city\":\"" + cityList.get(1) + "\",\"state\":\"" + stateList.get(1)
+        + "\",\"postcode\":\"" + postcodeList.get(1) + "\"},\"intNumber\":" + Integer.MIN_VALUE + ",\"doubleNumber\":" + Double.MIN_VALUE
+        + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("json:\n" + json2);
     System.out.println("java: ");
@@ -1565,16 +1391,13 @@ public class JsonStathamInActionTest
     final String name3 = name + "4Testing";
     jsonObject.setPrimaryKey(id3);
     jsonObject.setName(name3);
-    jsonObject.setAddress(new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0),
-        postcodeList.get(0)));
+    jsonObject.setAddress(new Address(streetList.get(0), suburbList.get(0), cityList.get(0), stateList.get(0), postcodeList.get(0)));
     jsonObject.setIntNumber(Integer.MAX_VALUE >>> 1);
     jsonObject.setDoubleNumber(1234.1000D);
 
-    final String json3 =
-      "{\"id\":" + id3 + ",\"name\":\"" + name3 + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":"
-          + (Integer.MAX_VALUE >>> 1) + ",\"doubleNumber\":1234.1}";
+    final String json3 = "{\"id\":" + id3 + ",\"name\":\"" + name3 + "\",\"address\":{\"street\":\"" + streetList.get(0)
+        + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0)
+        + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + (Integer.MAX_VALUE >>> 1) + ",\"doubleNumber\":1234.1}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("json:\n" + json3);
     System.out.println("java: ");
@@ -1588,11 +1411,9 @@ public class JsonStathamInActionTest
     jsonObject.setIntNumber(Integer.MAX_VALUE);
     jsonObject.setDoubleNumber(1234.0D);
 
-    final String json4 =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE
-          + ",\"doubleNumber\":1234}";
+    final String json4 = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\""
+        + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
+        + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE + ",\"doubleNumber\":1234}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("json:\n" + json4);
     System.out.println("java: ");
@@ -1606,11 +1427,9 @@ public class JsonStathamInActionTest
     jsonObject.setIntNumber(Integer.MAX_VALUE);
     jsonObject.setDoubleNumber(123456789.1234D);
 
-    final String json5 =
-      "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0)
-          + "\",\"suburb\":\"" + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\""
-          + stateList.get(0) + "\",\"postcode\":\"" + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE
-          + ",\"doubleNumber\":" + 123456789.1234D + "}";
+    final String json5 = "{\"id\":" + id + ",\"name\":\"" + name + "\",\"address\":{\"street\":\"" + streetList.get(0) + "\",\"suburb\":\""
+        + suburbList.get(0) + "\",\"city\":\"" + cityList.get(0) + "\",\"state\":\"" + stateList.get(0) + "\",\"postcode\":\""
+        + postcodeList.get(0) + "\"},\"intNumber\":" + Integer.MAX_VALUE + ",\"doubleNumber\":" + 123456789.1234D + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedJsonObject()");
     System.out.println("json:\n" + json5);
     System.out.println("java: ");
@@ -1620,8 +1439,7 @@ public class JsonStathamInActionTest
   }
 
   @Test(expected = JsonStathamException.class)
-  public void testJson2JavaJsonObjectWithDuplicateKeys()
-  {
+  public void testJson2JavaJsonObjectWithDuplicateKeys() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithDuplicateKeys()");
     final JsonObjectWithDuplicateKeys jsonObjectWithDuplicateKeys = new JsonObjectWithDuplicateKeys();
     jsonObjectWithDuplicateKeys.setUsername("kevinlee");
@@ -1631,12 +1449,10 @@ public class JsonStathamInActionTest
 
     System.out.println("result: ");
     JsonObjectWithDuplicateKeys result = null;
-    try
-    {
+    try {
       result = jsonStatham.convertFromJson(JsonObjectWithDuplicateKeys.class, "{}");
     }
-    catch (final JsonStathamException e)
-    {
+    catch (final JsonStathamException e) {
       System.out.println(e.getMessage());
       throw e;
     }
@@ -1644,8 +1460,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithoutFieldName()
-  {
+  public void testJson2JavaJsonObjectWithoutFieldName() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithoutFieldName()");
     final int id = 5;
     final String name = "Kevin Lee";
@@ -1661,17 +1476,15 @@ public class JsonStathamInActionTest
 
   @SuppressWarnings("deprecation")
   @Test
-  public void testJson2JavaComplexJsonObjectWithMethodUse() throws JsonStathamException, IllegalArgumentException,
-      InstantiationException, IllegalAccessException, InvocationTargetException
-  {
+  public void testJson2JavaComplexJsonObjectWithMethodUse() throws JsonStathamException, IllegalArgumentException, InstantiationException,
+      IllegalAccessException, InvocationTargetException {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaComplexJsonObjectWithMethodUse()");
     final ComplexJsonObjectWithValueAccessor jsonObject = new ComplexJsonObjectWithValueAccessor();
     jsonObject.setPrimaryKey(Long.valueOf(1));
     jsonObject.setName("Kevin");
     jsonObject.setAddress(address);
     final Date date = new Date();
-    jsonObject.setDate(new Date(date.getYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes(),
-        date.getSeconds()));
+    jsonObject.setDate(new Date(date.getYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes(), date.getSeconds()));
     final Date date2 = new Date(date.getYear(), date.getMonth(), date.getDay());
     jsonObject.setDateWithValueAccessor(date2);
 
@@ -1684,28 +1497,24 @@ public class JsonStathamInActionTest
     calendar2.getTimeInMillis();
     jsonObject.setCalendarWithValueAccessor(calendar2);
 
-    final String json =
-      "{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
-          + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState()
-          + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":" + jsonObject.getDate()
-              .getTime() + "," + "\"dateWithValueAccessor\":" + jsonObject.getDateWithValueAccessor()
-              .getTime() + ",\"calendar\":" + jsonObject.getCalendar()
-              .getTimeInMillis() + ",\"calendarWithValueAccessor\":" + jsonObject.getCalendarWithValueAccessor()
-              .getTimeInMillis() + "}";
+    final String json = "{\"id\":1,\"name\":\"Kevin\"," + "\"address\":{\"street\":\"" + address.getStreet() + "\",\"suburb\":\""
+        + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\""
+        + address.getPostcode() + "\"}," + "\"date\":" + jsonObject.getDate()
+            .getTime() + "," + "\"dateWithValueAccessor\":" + jsonObject.getDateWithValueAccessor()
+            .getTime() + ",\"calendar\":" + jsonObject.getCalendar()
+            .getTimeInMillis() + ",\"calendarWithValueAccessor\":" + jsonObject.getCalendarWithValueAccessor()
+            .getTimeInMillis() + "}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final ComplexJsonObjectWithValueAccessor result =
-      jsonStatham.convertFromJson(ComplexJsonObjectWithValueAccessor.class, json);
+    final ComplexJsonObjectWithValueAccessor result = jsonStatham.convertFromJson(ComplexJsonObjectWithValueAccessor.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
-  public void testJson2JavaComplexJsonObjectWithValueAccessorWithoutItsName()
-  {
+  public void testJson2JavaComplexJsonObjectWithValueAccessorWithoutItsName() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaComplexJsonObjectWithValueAccessorWithoutItsName()");
-    final ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject =
-      new ComplexJsonObjectWithValueAccessorWithoutItsName();
+    final ComplexJsonObjectWithValueAccessorWithoutItsName jsonObject = new ComplexJsonObjectWithValueAccessorWithoutItsName();
     jsonObject.setPrimaryKey(Long.valueOf(1));
     jsonObject.setName("Kevin");
     jsonObject.setRegistered(true);
@@ -1721,45 +1530,38 @@ public class JsonStathamInActionTest
     jsonObject.setCalendar(calendar);
     jsonObject.setCalendarWithValueAccessor(calendar);
 
-    final String json =
-      "{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\""
-          + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity()
-          + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"},"
-          + "\"date\":" + jsonObject.getDate()
-              .getTime() + "," + "\"dateWithValueAccessor\":" + jsonObject.dateWithValueAccessor()
-              .getTime() + ",\"calendar\":" + jsonObject.getCalendar()
-              .getTimeInMillis() + ",\"calendarWithValueAccessor\":" + jsonObject.calendarWithValueAccessor()
-              .getTimeInMillis() + "}";
+    final String json = "{\"id\":1,\"name\":\"Kevin\",\"registered\":true,\"enabled\":false,\"address\":{\"street\":\""
+        + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity() + "\",\"state\":\""
+        + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"}," + "\"date\":" + jsonObject.getDate()
+            .getTime() + "," + "\"dateWithValueAccessor\":" + jsonObject.dateWithValueAccessor()
+            .getTime() + ",\"calendar\":" + jsonObject.getCalendar()
+            .getTimeInMillis() + ",\"calendarWithValueAccessor\":" + jsonObject.calendarWithValueAccessor()
+            .getTimeInMillis() + "}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final ComplexJsonObjectWithValueAccessorWithoutItsName result =
-      jsonStatham.convertFromJson(ComplexJsonObjectWithValueAccessorWithoutItsName.class, json);
+    final ComplexJsonObjectWithValueAccessorWithoutItsName result = jsonStatham.convertFromJson(
+        ComplexJsonObjectWithValueAccessorWithoutItsName.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingCollection()
-  {
+  public void testJson2JavaJsonObjectContainingCollection() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingCollection()");
     final String nameValue = "testJsonWithCollection";
-    final Collection<String> collection =
-      initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+    final Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
-    final JsonObjectContainingCollection jsonObjectContainingCollection =
-      new JsonObjectContainingCollection(nameValue, collection);
+    final JsonObjectContainingCollection jsonObjectContainingCollection = new JsonObjectContainingCollection(nameValue, collection);
     final String json = getExpectedJsonArray("name", nameValue, "valueCollection");
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final JsonObjectContainingCollection result =
-      jsonStatham.convertFromJson(JsonObjectContainingCollection.class, json);
+    final JsonObjectContainingCollection result = jsonStatham.convertFromJson(JsonObjectContainingCollection.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObjectContainingCollection);
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingList()
-  {
+  public void testJson2JavaJsonObjectContainingList() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingList()");
     final String nameValue = "testJsonWithList";
     final List<String> list = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
@@ -1774,8 +1576,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingSet()
-  {
+  public void testJson2JavaJsonObjectContainingSet() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingSet()");
     final String nameValue = "testJsonWithSet";
     final Set<String> set = initialiseCollectionWithStringValues(new HashSet<String>(), SOME_STRING_VALUE_ARRAY);
@@ -1790,18 +1591,14 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingMapEntrySetSet()
-  {
+  public void testJson2JavaJsonObjectContainingMapEntrySetSet() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingMapEntrySetSet()");
     final String nameValue = "testJsonObjectContainingMapEntrySetSet";
 
-    final JsonObjectContainingMapEntrySet jsonObjectContainingSet =
-      new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
+    final JsonObjectContainingMapEntrySet jsonObjectContainingSet = new JsonObjectContainingMapEntrySet(nameValue, addressMap.entrySet());
 
-    final StringBuilder stringBuilder =
-      new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
-    for (final Entry<String, Address> entry : addressMap.entrySet())
-    {
+    final StringBuilder stringBuilder = new StringBuilder("{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[");
+    for (final Entry<String, Address> entry : addressMap.entrySet()) {
       final Address address = entry.getValue();
       stringBuilder.append("{\"" + entry.getKey() + "\":")
           .append("{\"street\":\"")
@@ -1821,18 +1618,16 @@ public class JsonStathamInActionTest
 
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final JsonObjectContainingMapEntrySet result =
-      jsonStatham.convertFromJson(JsonObjectContainingMapEntrySet.class, json);
+    final JsonObjectContainingMapEntrySet result = jsonStatham.convertFromJson(JsonObjectContainingMapEntrySet.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObjectContainingSet);
 
     final String json2 = "{\"name\":\"testJsonObjectContainingMapEntrySetSet\",\"valueMapEntrySet\":[]}";
-    final JsonObjectContainingMapEntrySet jsonObjectContainingSet2 =
-      new JsonObjectContainingMapEntrySet(nameValue, new HashSet<Entry<String, Address>>());
+    final JsonObjectContainingMapEntrySet jsonObjectContainingSet2 = new JsonObjectContainingMapEntrySet(nameValue,
+        new HashSet<Entry<String, Address>>());
     System.out.println("json:\n" + json2);
     System.out.println("java: ");
-    final JsonObjectContainingMapEntrySet result2 =
-      jsonStatham.convertFromJson(JsonObjectContainingMapEntrySet.class, json2);
+    final JsonObjectContainingMapEntrySet result2 = jsonStatham.convertFromJson(JsonObjectContainingMapEntrySet.class, json2);
     System.out.println(result2);
     assertThat(result2).isEqualTo(jsonObjectContainingSet2);
 
@@ -1840,8 +1635,7 @@ public class JsonStathamInActionTest
 
   @SuppressWarnings("boxing")
   @Test
-  public final void testJson2JavaJsonPojoHavingMap()
-  {
+  public final void testJson2JavaJsonPojoHavingMap() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonPojoHavingMap()");
     final Map<String, Long> map = new HashMap<String, Long>();
     map.put("Kevin", 1L);
@@ -1854,15 +1648,12 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingIterator()
-  {
+  public void testJson2JavaJsonObjectContainingIterator() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingIterator()");
     final String nameValue = "testJsonObjectContainingIterator";
-    final Collection<String> collection =
-      initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
+    final Collection<String> collection = initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY);
 
-    final JsonObjectContainingIterator jsonObjectContainingCollection =
-      new JsonObjectContainingIterator(nameValue, collection.iterator());
+    final JsonObjectContainingIterator jsonObjectContainingCollection = new JsonObjectContainingIterator(nameValue, collection.iterator());
     final String json = getExpectedJsonArray("name", nameValue, "valueIterator");
     System.out.println("json:\n" + json);
     System.out.println("java: ");
@@ -1873,20 +1664,17 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingIterable()
-  {
+  public void testJson2JavaJsonObjectContainingIterable() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingIterable()");
     final String nameValue = "testJsonObjectContainingIterable";
     final Iterable<String> iterable = new Iterable<String>() {
       @Override
-      public Iterator<String> iterator()
-      {
+      public Iterator<String> iterator() {
         return initialiseCollectionWithStringValues(new ArrayList<String>(), SOME_STRING_VALUE_ARRAY).iterator();
       }
     };
 
-    final JsonObjectContainingIterable jsonObjectContainingCollection =
-      new JsonObjectContainingIterable(nameValue, iterable);
+    final JsonObjectContainingIterable jsonObjectContainingCollection = new JsonObjectContainingIterable(nameValue, iterable);
     final String json = getExpectedJsonArray("name", nameValue, "valueIterable");
     System.out.println("json:\n" + json);
     System.out.println("java: ");
@@ -1896,8 +1684,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJsonObjectContainingNestedGenericTypes()
-  {
+  public void testJsonObjectContainingNestedGenericTypes() {
     System.out.println("\nJsonStathamInActionTest.testJsonObjectContainingNestedGenericTypes()");
     final List<Address> listOfAddress = new ArrayList<Address>();
     final List<List<Address>> listOfListOfAddress = new ArrayList<List<Address>>();
@@ -1915,22 +1702,19 @@ public class JsonStathamInActionTest
     listOfAddress3.add(new Address("Some Street", "LLL", "Brisbane", "QL", "4000"));
     listOfListOfAddress3.add(listOfAddress3);
     listOfListOfListOfAddress.add(listOfListOfAddress3);
-    final JsonObjectHavingNestedGenericTypes jsonObjectHavingNestedGenericTypes =
-      new JsonObjectHavingNestedGenericTypes(listOfListOfListOfAddress);
+    final JsonObjectHavingNestedGenericTypes jsonObjectHavingNestedGenericTypes = new JsonObjectHavingNestedGenericTypes(
+        listOfListOfListOfAddress);
     // System.out.println(ReflectionJsonStathams.newReflectionJsonStathamInAction().convertIntoJson(jsonObjectHavingNestedGenericTypes));
-    final String json =
-      "{\"listOfListOfListOfAddress\":[[[{\"street\":\"ABC St\",\"suburb\":\"ZZZ\",\"city\":\"Sydney\",\"state\":\"NSW\",\"postcode\":\"2000\"}]],[[{\"street\":\"123 Street\",\"suburb\":\"AAA\",\"city\":\"Melbourne\",\"state\":\"VIC\",\"postcode\":\"3000\"}]],[[{\"street\":\"Some Street\",\"suburb\":\"LLL\",\"city\":\"Brisbane\",\"state\":\"QL\",\"postcode\":\"4000\"}]]]}";
+    final String json = "{\"listOfListOfListOfAddress\":[[[{\"street\":\"ABC St\",\"suburb\":\"ZZZ\",\"city\":\"Sydney\",\"state\":\"NSW\",\"postcode\":\"2000\"}]],[[{\"street\":\"123 Street\",\"suburb\":\"AAA\",\"city\":\"Melbourne\",\"state\":\"VIC\",\"postcode\":\"3000\"}]],[[{\"street\":\"Some Street\",\"suburb\":\"LLL\",\"city\":\"Brisbane\",\"state\":\"QL\",\"postcode\":\"4000\"}]]]}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final JsonObjectHavingNestedGenericTypes result =
-      jsonStatham.convertFromJson(JsonObjectHavingNestedGenericTypes.class, json);
+    final JsonObjectHavingNestedGenericTypes result = jsonStatham.convertFromJson(JsonObjectHavingNestedGenericTypes.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObjectHavingNestedGenericTypes);
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithInterfaceInheritance()
-  {
+  public void testJson2JavaJsonObjectWithInterfaceInheritance() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithInterfaceInheritance()");
     final String name = "Kevin Lee";
     final int number = 99;
@@ -1945,8 +1729,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithImplementationInheritance()
-  {
+  public void testJson2JavaJsonObjectWithImplementationInheritance() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithImplementationInheritance()");
     final String name = "Kevin";
     final int number = 5;
@@ -1961,8 +1744,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass()
-  {
+  public void testJson2JavaJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithDoubleImplementationInheritanceAndNoOwnFieldsInSecondSubClass()");
     final String name = "Kevin";
     final int number = 11;
@@ -1977,20 +1759,16 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()
-  {
+  public void testJson2JavaJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithDoubleImplementationInheritanceAndOwnFieldsInSecondSubClass()");
     final String name = "Mr. Lee";
     final int number = 999;
     final String email = "kevin@another.email";
     final String comment = "Blah blah";
-    final SecondSubClassWithOwnFields jsonObject =
-      new SecondSubClassWithOwnFields(name, number, email, address, comment);
-    final String json =
-      "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":"
-          + "{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\""
-          + address.getCity() + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode()
-          + "\"},\"comment\":\"" + comment + "\"}";
+    final SecondSubClassWithOwnFields jsonObject = new SecondSubClassWithOwnFields(name, number, email, address, comment);
+    final String json = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"," + "\"address\":"
+        + "{\"street\":\"" + address.getStreet() + "\",\"suburb\":\"" + address.getSuburb() + "\",\"city\":\"" + address.getCity()
+        + "\",\"state\":\"" + address.getState() + "\",\"postcode\":\"" + address.getPostcode() + "\"},\"comment\":\"" + comment + "\"}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
     final SecondSubClassWithOwnFields result = jsonStatham.convertFromJson(SecondSubClassWithOwnFields.class, json);
@@ -1999,23 +1777,20 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()
-  {
+  public void testJson2JavaJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithImplementationInheritanceWithNoJsonObjectSuperClass()");
     final String email = "kevin@test.test";
     final SubClassWithNoJsonObjectSuperClass jsonObject = new SubClassWithNoJsonObjectSuperClass(null, 0, email);
     final String json = "{\"email\":\"" + email + "\"}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final SubClassWithNoJsonObjectSuperClass result =
-      jsonStatham.convertFromJson(SubClassWithNoJsonObjectSuperClass.class, json);
+    final SubClassWithNoJsonObjectSuperClass result = jsonStatham.convertFromJson(SubClassWithNoJsonObjectSuperClass.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessor()
-  {
+  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessor() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessor()");
     final String name = "Kevin";
     final int number = 5;
@@ -2030,110 +1805,94 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()
-  {
+  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithoutItsName()");
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
-    final SubClassWithValueAccessorWithoutItsName jsonObject =
-      new SubClassWithValueAccessorWithoutItsName(name, number, email);
+    final SubClassWithValueAccessorWithoutItsName jsonObject = new SubClassWithValueAccessorWithoutItsName(name, number, email);
     final String json = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final SubClassWithValueAccessorWithoutItsName result =
-      jsonStatham.convertFromJson(SubClassWithValueAccessorWithoutItsName.class, json);
+    final SubClassWithValueAccessorWithoutItsName result = jsonStatham.convertFromJson(SubClassWithValueAccessorWithoutItsName.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()
-  {
+  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithAbstractMethod()");
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
-    final SubClassWithValueAccessorWithAbstractMethod jsonObject =
-      new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
+    final SubClassWithValueAccessorWithAbstractMethod jsonObject = new SubClassWithValueAccessorWithAbstractMethod(name, number, email);
     @SuppressWarnings("boxing")
     final String json = format("{\"name\":\"%s\",\"number\":%s,\"email\":\"%s\"}", name, number, email);
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final SubClassWithValueAccessorWithAbstractMethod result =
-      jsonStatham.convertFromJson(SubClassWithValueAccessorWithAbstractMethod.class, json);
+    final SubClassWithValueAccessorWithAbstractMethod result = jsonStatham.convertFromJson(
+        SubClassWithValueAccessorWithAbstractMethod.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
-  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()
-  {
+  public void testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectWithImplementationInheritanceWithValueAccessorWithOverriddenMethod()");
     final String name = "Kevin";
     final int number = 5;
     final String email = "kevin@test.test";
-    final SubClassWithValueAccessorWithOverriddenMethod jsonObject =
-      new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
+    final SubClassWithValueAccessorWithOverriddenMethod jsonObject = new SubClassWithValueAccessorWithOverriddenMethod(name, number, email);
     final String json = "{\"name\":\"" + name + "\",\"number\":" + number + ",\"email\":\"" + email + "\"}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
-    final SubClassWithValueAccessorWithOverriddenMethod result =
-      jsonStatham.convertFromJson(SubClassWithValueAccessorWithOverriddenMethod.class, json);
+    final SubClassWithValueAccessorWithOverriddenMethod result = jsonStatham.convertFromJson(
+        SubClassWithValueAccessorWithOverriddenMethod.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(jsonObject);
   }
 
   @Test
-  public void testJson2JavaJsonObjectContainingEnums()
-  {
+  public void testJson2JavaJsonObjectContainingEnums() {
     System.out.println("\nJsonStathamInActionTest.testJson2JavaJsonObjectContainingEnums()");
 
-    String json =
-      "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN"
-          + "\",\"access\":[]}";
+    String json = "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "SYSTEM_ADMIN"
+        + "\",\"access\":[]}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
     JsonObjectContainingEnums result = jsonStatham.convertFromJson(JsonObjectContainingEnums.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.SYSTEM_ADMIN));
 
-    json =
-      "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
-          + "\",\"access\":[\"BLOG\",\"EMAIL\"]}";
+    json = "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
+        + "\",\"access\":[\"BLOG\",\"EMAIL\"]}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
     result = jsonStatham.convertFromJson(JsonObjectContainingEnums.class, json);
     System.out.println(result);
-    assertThat(result).isEqualTo(
-        new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.EMAIL));
+    assertThat(result).isEqualTo(new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.EMAIL));
 
-    json =
-      "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
-          + "\",\"access\":[\"BLOG\",\"WIKI\",\"EMAIL\",\"TWITTER\"]}";
+    json = "{\"name\":\"" + "Kevin" + "\",\"number\":" + 1 + ",\"passed\":" + true + ",\"role\":\"" + "MEMBER"
+        + "\",\"access\":[\"BLOG\",\"WIKI\",\"EMAIL\",\"TWITTER\"]}";
     System.out.println("json:\n" + json);
     System.out.println("java: ");
     result = jsonStatham.convertFromJson(JsonObjectContainingEnums.class, json);
     System.out.println(result);
     assertThat(result).isEqualTo(
-        new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.WIKI, Access.EMAIL,
-            Access.TWITTER));
+        new JsonObjectContainingEnums("Kevin", 1, true, Role.MEMBER, Access.BLOG, Access.WIKI, Access.EMAIL, Access.TWITTER));
   }
 
   @Test
-  public void testWithMultipleSelectionItemIntoJson()
-  {
+  public void testWithMultipleSelectionItemIntoJson() {
     System.out.println("JsonStathamInActionTest.testWithMultipleSelectionItem()");
     /* given */
-    final String expected =
-      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+    final String expected = "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
     System.out.println("expected:\n" + expected);
-    final ItemDefinition itemDefinition =
-      new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(new Option("A",
-          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
-          "will not have any impact on our lives in the next 10 years."), new Option("D",
-          "is really a problem for the next generation."), new Option("E",
-          "will not have any effect for at least 100 years.")));
+    final ItemDefinition itemDefinition = new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(
+        new Option("A", "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+            "will not have any impact on our lives in the next 10 years."),
+        new Option("D", "is really a problem for the next generation."),
+        new Option("E", "will not have any effect for at least 100 years.")));
 
     /* when */
     System.out.println("actual: ");
@@ -2158,21 +1917,18 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testWithMultipleSelectionItemFromJson()
-  {
+  public void testWithMultipleSelectionItemFromJson() {
     System.out.println("JsonStathamInActionTest.testWithMultipleSelectionItemFromJson()");
 
     /* given */
-    final ItemDefinition expected =
-      new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(new Option("A",
-          "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
-          "will not have any impact on our lives in the next 10 years."), new Option("D",
-          "is really a problem for the next generation."), new Option("E",
-          "will not have any effect for at least 100 years.")));
+    final ItemDefinition expected = new MultipleSelectionItem("Global Warming", "In your opinion, global warming...", Arrays.asList(
+        new Option("A", "is just a fad."), new Option("B", "already started to affect our lives."), new Option("C",
+            "will not have any impact on our lives in the next 10 years."),
+        new Option("D", "is really a problem for the next generation."),
+        new Option("E", "will not have any effect for at least 100 years.")));
     System.out.println("expected:\n" + expected);
 
-    final String itemDefinition =
-      "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
+    final String itemDefinition = "{\"name\":\"Global Warming\",\"instructions\":\"In your opinion, global warming...\",\"options\":[{\"code\":\"A\",\"text\":\"is just a fad.\"},{\"code\":\"B\",\"text\":\"already started to affect our lives.\"},{\"code\":\"C\",\"text\":\"will not have any impact on our lives in the next 10 years.\"},{\"code\":\"D\",\"text\":\"is really a problem for the next generation.\"},{\"code\":\"E\",\"text\":\"will not have any effect for at least 100 years.\"}]}";
 
     /* when */
     System.out.println("actual: ");
@@ -2198,14 +1954,12 @@ public class JsonStathamInActionTest
 
   @Test
   public void testItemConfig() throws ArrayIndexOutOfBoundsException, IllegalArgumentException, InstantiationException,
-      IllegalAccessException, InvocationTargetException
-  {
+      IllegalAccessException, InvocationTargetException {
     /* given */
     final ItemConfig expected = ItemConfig.NULL_ITEM_CONFIG;
     System.out.println("expected:\n" + expected);
 
-    final String itemConfig =
-      "{\"idAutomated\":null,\"optionsRandomised\":null,\"optionCodesShown\":null,\"correctAnswers\":[],\"optional\":false}";
+    final String itemConfig = "{\"idAutomated\":null,\"optionsRandomised\":null,\"optionCodesShown\":null,\"correctAnswers\":[],\"optional\":false}";
 
     /* when */
     System.out.println("actual: ");
@@ -2217,28 +1971,22 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testConvertIntoJsonConvertible()
-  {
+  public void testConvertIntoJsonConvertible() {
     System.out.println("\nJsonStathamInActionTest.testConvertIntoJsonConvertible() {");
     /* given */
-    final String jsonObjectString =
-      "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
-    final String jsonArrayString =
-      "["
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
-          + "]";
-    final String json =
-      "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+    final String jsonObjectString = "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+    final String jsonArrayString = "["
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}" + "]";
+    final String json = "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
     System.out.println("json:\n" + json);
 
     final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
     final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
 
     final JsonObject expected = OrderedJsonObject.newJsonObject(json);
-    final ObjectHavingJsonObjectAndJsonArray target =
-      new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
+    final ObjectHavingJsonObjectAndJsonArray target = new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
     System.out.println("expected:\n" + expected);
 
     /* when */
@@ -2252,11 +2000,9 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testConvertIntoJsonConvertibleObject()
-  {
+  public void testConvertIntoJsonConvertibleObject() {
     /* given */
-    final String jsonObjectString =
-      "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+    final String jsonObjectString = "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
     System.out.println("json:\n" + jsonObjectString);
 
     final JsonObject expected = OrderedJsonObject.newJsonObject(jsonObjectString);
@@ -2264,9 +2010,8 @@ public class JsonStathamInActionTest
 
     /* when */
     System.out.println("actual:");
-    final JsonObject actual =
-      jsonStatham.convertIntoJsonConvertible(new ParamObject(new StringAndObjectPair("abc", "1234"),
-          new StringAndObjectPair("z", "yx"), new StringAndObjectPair("a", "aaa")));
+    final JsonObject actual = jsonStatham.convertIntoJsonConvertible(new ParamObject(new StringAndObjectPair("abc", "1234"),
+        new StringAndObjectPair("z", "yx"), new StringAndObjectPair("a", "aaa")));
     System.out.println(actual);
 
     /* then */
@@ -2274,38 +2019,34 @@ public class JsonStathamInActionTest
   }
 
   @Json
-  private static class TestJsonObject
-  {
+  private static class TestJsonObject {
     @JsonField
     String name;
 
     @JsonField
     ParamObject params;
 
-    public TestJsonObject(final String name, final ParamObject params)
-    {
+    public TestJsonObject(final String name, final ParamObject params) {
       this.name = name;
       this.params = params;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
       return hash(name, params);
     }
 
     @Override
-    public boolean equals(final Object testJsonObject)
-    {
-      if (this == testJsonObject)
+    public boolean equals(final Object testJsonObject) {
+      if (this == testJsonObject) {
         return true;
+      }
       final TestJsonObject that = castIfInstanceOf(TestJsonObject.class, testJsonObject);
       return null != testJsonObject && (equal(this.name, that.name) && equal(this.params, that.params));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
       /* @formatter:off */
 			return toStringBuilder(this)
 					.add("name", name)
@@ -2316,8 +2057,7 @@ public class JsonStathamInActionTest
   }
 
   @Json
-  private static class ParamObject
-  {
+  private static class ParamObject {
     @JsonField
     JsonNameValuePair<String, Object> first;
     @JsonField
@@ -2326,32 +2066,28 @@ public class JsonStathamInActionTest
     JsonNameValuePair<String, Object> third;
 
     public ParamObject(final JsonNameValuePair<String, Object> first, final JsonNameValuePair<String, Object> second,
-        final JsonNameValuePair<String, Object> third)
-    {
+        final JsonNameValuePair<String, Object> third) {
       this.first = first;
       this.second = second;
       this.third = third;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
       return hash(first, second, third);
     }
 
     @Override
-    public boolean equals(final Object paramObject)
-    {
-      if (this == paramObject)
+    public boolean equals(final Object paramObject) {
+      if (this == paramObject) {
         return true;
+      }
       final ParamObject that = castIfInstanceOf(ParamObject.class, paramObject);
-      return null != that
-          && (equal(this.first, that.first) && equal(this.second, that.second) && equal(this.third, that.third));
+      return null != that && (equal(this.first, that.first) && equal(this.second, that.second) && equal(this.third, that.third));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
       /* @formatter:off */
 			return toStringBuilder(this)
 					.add("first", first)
@@ -2362,17 +2098,14 @@ public class JsonStathamInActionTest
     }
   }
 
-  private static class StringAndObjectPair extends ImmutableJsonNameValuePair<Object>
-  {
-    public StringAndObjectPair(final String first, final Object second)
-    {
+  private static class StringAndObjectPair extends ImmutableJsonNameValuePair<Object> {
+    public StringAndObjectPair(final String first, final Object second) {
       super(first, second);
     }
   }
 
   @Test
-  public void testConvertIntoJsonConvertibleArray()
-  {
+  public void testConvertIntoJsonConvertibleArray() {
     /* given */
     final String[] names = { "test1", "test2", "test3" };
     final String[] params1_1 = { "number1", "number2", "number3" };
@@ -2382,14 +2115,12 @@ public class JsonStathamInActionTest
     final Object[] params2_2 = { "yxA", "yxB", "yxC" };
     final String[] params3_1 = { "test1", "test2", "test3" };
     final Object[] params3_2 = { "aaa", "bbb", "ccc" };
-    final String jsonArrayString =
-      "[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
-          + "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\""
-          + params3_2[0] + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":"
-          + params1_2[1] + "},\"second\":{\"" + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\""
-          + params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\"" + names[2]
-          + "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2]
-          + "\":\"" + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
+    final String jsonArrayString = "[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
+        + "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\"" + params3_2[0]
+        + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":" + params1_2[1] + "},\"second\":{\""
+        + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\"" + params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\""
+        + names[2] + "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2] + "\":\""
+        + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
     System.out.println("json:\n" + jsonArrayString);
 
     final JsonArray expected = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
@@ -2427,34 +2158,28 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testConvertFromJsonConvertible()
-  {
+  public void testConvertFromJsonConvertible() {
     /* given */
-    final String jsonObjectString =
-      "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
-    final String jsonArrayString =
-      "["
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
-          + "]";
-    final String json =
-      "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+    final String jsonObjectString = "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+    final String jsonArrayString = "["
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}" + "]";
+    final String json = "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
     System.out.println("json:\n" + json);
 
     final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
     final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
 
-    final ObjectHavingJsonObjectAndJsonArray expected =
-      new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
+    final ObjectHavingJsonObjectAndJsonArray expected = new ObjectHavingJsonObjectAndJsonArray("test", jsonObject, jsonArray);
 
     final JsonObject target = OrderedJsonObject.newJsonObject(json);
     System.out.println("expected:\n" + expected);
 
     /* when */
     System.out.println("actual:");
-    final ObjectHavingJsonObjectAndJsonArray actual =
-      jsonStatham.convertFromJsonConvertible(ObjectHavingJsonObjectAndJsonArray.class, target);
+    final ObjectHavingJsonObjectAndJsonArray actual = jsonStatham.convertFromJsonConvertible(ObjectHavingJsonObjectAndJsonArray.class,
+        target);
     System.out.println(actual);
 
     /* then */
@@ -2462,8 +2187,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testConvertFromJsonConvertibleWithJsonArray()
-  {
+  public void testConvertFromJsonConvertibleWithJsonArray() {
     /* given */
     final String[] names = { "test1", "test2", "test3" };
     final String[] params1_1 = { "number1", "number2", "number3" };
@@ -2473,14 +2197,12 @@ public class JsonStathamInActionTest
     final Object[] params2_2 = { "yxA", "yxB", "yxC" };
     final String[] params3_1 = { "test1", "test2", "test3" };
     final Object[] params3_2 = { "aaa", "bbb", "ccc" };
-    final String jsonArrayString =
-      "[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
-          + "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\""
-          + params3_2[0] + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":"
-          + params1_2[1] + "},\"second\":{\"" + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\""
-          + params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\"" + names[2]
-          + "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2]
-          + "\":\"" + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
+    final String jsonArrayString = "[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
+        + "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\"" + params3_2[0]
+        + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":" + params1_2[1] + "},\"second\":{\""
+        + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\"" + params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\""
+        + names[2] + "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2] + "\":\""
+        + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
     System.out.println("json:\n" + jsonArrayString);
 
     final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
@@ -2518,8 +2240,7 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public void testConvertFromJsonConvertibleWithTypeHolder()
-  {
+  public void testConvertFromJsonConvertibleWithTypeHolder() {
     /* given */
     final String[] names = { "test1", "test2", "test3" };
     final String[] params1_1 = { "number1", "number2", "number3" };
@@ -2529,14 +2250,12 @@ public class JsonStathamInActionTest
     final Object[] params2_2 = { "yxA", "yxB", "yxC" };
     final String[] params3_1 = { "test1", "test2", "test3" };
     final Object[] params3_2 = { "aaa", "bbb", "ccc" };
-    final String jsonArrayString =
-      "[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
-          + "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\""
-          + params3_2[0] + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":"
-          + params1_2[1] + "},\"second\":{\"" + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\""
-          + params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\"" + names[2]
-          + "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2]
-          + "\":\"" + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
+    final String jsonArrayString = "[" + "{\"name\":\"" + names[0] + "\",\"params\":{\"first\":{\"" + params1_1[0] + "\":" + params1_2[0]
+        + "},\"second\":{\"" + params2_1[0] + "\":\"" + params2_2[0] + "\"},\"third\":{\"" + params3_1[0] + "\":\"" + params3_2[0]
+        + "\"}}}," + "{\"name\":\"" + names[1] + "\",\"params\":{\"first\":{\"" + params1_1[1] + "\":" + params1_2[1] + "},\"second\":{\""
+        + params2_1[1] + "\":\"" + params2_2[1] + "\"},\"third\":{\"" + params3_1[1] + "\":\"" + params3_2[1] + "\"}}}," + "{\"name\":\""
+        + names[2] + "\",\"params\":{\"first\":{\"" + params1_1[2] + "\":" + params1_2[2] + "},\"second\":{\"" + params2_1[2] + "\":\""
+        + params2_2[2] + "\"},\"third\":{\"" + params3_1[2] + "\":\"" + params3_2[2] + "\"}}}" + "]";
     System.out.println("json:\n" + jsonArrayString);
 
     final JsonArray jsonArray = JsonArrayWithOrderedJsonObject.newJsonArray(jsonArrayString);
@@ -2567,8 +2286,8 @@ public class JsonStathamInActionTest
 
     /* when */
     System.out.println("actual:");
-    final List<TestJsonObject> actual =
-      jsonStatham.convertFromJsonConvertible(new TypeHolder<List<TestJsonObject>>() {}, jsonArray);
+    final List<TestJsonObject> actual = jsonStatham.convertFromJsonConvertible(new TypeHolder<List<TestJsonObject>>() {
+    }, jsonArray);
     System.out.println(toStringOf(actual));
 
     /* then */
@@ -2576,19 +2295,14 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public final void testConvertJsonStringIntoJsonConvertible()
-  {
+  public final void testConvertJsonStringIntoJsonConvertible() {
     /* given */
-    final String jsonObjectString =
-      "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
-    final String jsonArrayString =
-      "["
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
-          + "]";
-    final String json =
-      "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
+    final String jsonObjectString = "{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}";
+    final String jsonArrayString = "["
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}" + "]";
+    final String json = "{\"name\":\"test\",\"jsonObject\":" + jsonObjectString + ",\"jsonArray\":" + jsonArrayString + "}";
     System.out.println("json:\n" + json);
 
     final JsonObject jsonObject = OrderedJsonObject.newJsonObject(jsonObjectString);
@@ -2613,15 +2327,12 @@ public class JsonStathamInActionTest
   }
 
   @Test
-  public final void testConvertJsonStringIntoJsonConvertibleWithJsonArray()
-  {
+  public final void testConvertJsonStringIntoJsonConvertibleWithJsonArray() {
     /* given */
-    final String json =
-      "["
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
-          + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}"
-          + "]";
+    final String json = "["
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}},"
+        + "{\"name\":\"test\",\"params\":{\"first\":{\"abc\":\"1234\"},\"second\":{\"z\":\"yx\"},\"third\":{\"a\":\"aaa\"}}}" + "]";
     System.out.println("json:\n" + json);
 
     final JsonArray expected = JsonArrayWithOrderedJsonObject.newJsonArray(json);

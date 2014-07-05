@@ -108,7 +108,7 @@ import org.junit.Test;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
@@ -356,7 +356,7 @@ public class ReflectionJsonStathamInActionFromReflectionJsonStathamsTest
     final String expected = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedMap()");
     System.out.println("expected: \n" + expected);
-    final Map<String, Object> nestedMap = new HashMap<String, Object>();
+    final Map<String, Object> nestedMap = new LinkedHashMap<String, Object>();
     nestedMap.put("test1", addressMap);
     nestedMap.put("test2", addressMap);
     System.out.println("actual: ");

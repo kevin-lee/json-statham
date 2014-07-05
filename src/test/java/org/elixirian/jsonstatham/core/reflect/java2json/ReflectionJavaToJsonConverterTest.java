@@ -41,7 +41,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -111,7 +110,7 @@ import org.mockito.stubbing.Answer;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
@@ -481,7 +480,7 @@ public class ReflectionJavaToJsonConverterTest
   /**
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)} with
    * List as the parameter object.
-   * 
+   *
    * @throws IllegalAccessException
    * @throws JsonStathamException
    * @throws IllegalArgumentException
@@ -527,7 +526,7 @@ public class ReflectionJavaToJsonConverterTest
 
   /**
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
-   * 
+   *
    * @throws IllegalAccessException
    * @throws JsonStathamException
    * @throws IllegalArgumentException
@@ -577,7 +576,7 @@ public class ReflectionJavaToJsonConverterTest
     final String expected = "{\"test1\":" + getAddressMapString() + ",\"test2\":" + getAddressMapString() + "}";
     System.out.println("\nReflectionJsonStathamTest.testNestedMap()");
     System.out.println("expected: \n" + expected);
-    final Map<String, Map<String, Address>> nestedMap = new HashMap<String, Map<String, Address>>();
+    final Map<String, Map<String, Address>> nestedMap = new LinkedHashMap<String, Map<String, Address>>();
     nestedMap.put("test1", addressMap);
     nestedMap.put("test2", addressMap);
     System.out.println("actual: ");
@@ -615,7 +614,7 @@ public class ReflectionJavaToJsonConverterTest
 
   /**
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
-   * 
+   *
    * @throws IllegalAccessException
    * @throws JsonStathamException
    * @throws IllegalArgumentException
@@ -637,7 +636,7 @@ public class ReflectionJavaToJsonConverterTest
 
   /**
    * Test method for {@link org.elixirian.jsonstatham.core.JsonStathamInAction#convertIntoJson(java.lang.Object)}.
-   * 
+   *
    * @throws IllegalAccessException
    * @throws JsonStathamException
    * @throws IllegalArgumentException
