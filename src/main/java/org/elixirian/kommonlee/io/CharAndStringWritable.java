@@ -31,7 +31,6 @@
  */
 package org.elixirian.kommonlee.io;
 
-import org.elixirian.kommonlee.io.exception.RuntimeIoException;
 
 /**
  * <pre>
@@ -41,15 +40,10 @@ import org.elixirian.kommonlee.io.exception.RuntimeIoException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2014-03-23)
  */
 public interface CharAndStringWritable extends CharWritable, StringWritable
 {
-  @Override
-  CharAndStringWritable write(final int c) throws RuntimeIoException;
-
-  @Override
-  CharAndStringWritable write(final String value) throws RuntimeIoException;
 }

@@ -60,7 +60,7 @@ import org.elixirian.kommonlee.util.NeoArrays;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2010-12-25)
  */
@@ -212,10 +212,14 @@ public final class JsonUtil
       /* remove 0s from the end. */
       int theEnd = numberString.length() - 1;
       while ('0' == numberString.charAt(theEnd))
+      {
         numberString = numberString.substring(0, theEnd--);
+      }
 
       if ('.' == numberString.charAt(theEnd))
+      {
         numberString = numberString.substring(0, theEnd);
+      }
     }
     return numberString;
   }
@@ -356,7 +360,9 @@ public final class JsonUtil
       charAndStringWritable.write(value.toString());
     }
     else if (value instanceof Number)
+    {
       charAndStringWritable.write(toStringValue((Number) value));
+    }
     else if (value instanceof Map)
     {
       @SuppressWarnings("unchecked")
@@ -402,7 +408,7 @@ public final class JsonUtil
    * {@link Integer} and {@link Long} objects, it ignores the exception, and still returns the given stringValue.</li>
    * <li>None of the cases above is matching, it just returns the given stringValue.</li>
    * </ul>
-   * 
+   *
    * @param stringValue
    *          the given stringValue
    * @return an Object created based on the given stringValue.
@@ -553,7 +559,7 @@ public final class JsonUtil
     return convert(value, getJsonObjectAndArrayCreator(jsonArray));
   }
 
-  public static <N, V> ImmutableJsonNameValuePair<V> newJsonNameValuePair(final String name, final V value)
+  public static <V> ImmutableJsonNameValuePair<V> newJsonNameValuePair(final String name, final V value)
   {
     return new ImmutableJsonNameValuePair<V>(name, value);
   }

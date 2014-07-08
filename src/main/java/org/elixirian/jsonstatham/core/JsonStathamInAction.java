@@ -62,7 +62,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.0.2 (2009-12-07) It is refactored.
@@ -115,8 +115,7 @@ public class JsonStathamInAction implements JsonStatham
   private final JavaToJsonConverter javaToJsonConverter;
   private final JsonToJavaConverter jsonToJavaConverter;
 
-  public JsonStathamInAction(final JavaToJsonConverter javaToJsonConverter,
-      final JsonToJavaConverter jsonToJavaConverter)
+  public JsonStathamInAction(final JavaToJsonConverter javaToJsonConverter, final JsonToJavaConverter jsonToJavaConverter)
   {
     this.javaToJsonConverter = javaToJsonConverter;
     this.jsonToJavaConverter = jsonToJavaConverter;
@@ -181,12 +180,13 @@ public class JsonStathamInAction implements JsonStatham
   }
 
   @Override
-  public void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable)
+  public CharAndStringWritable convertIntoJsonWriteAndGetWriter(final Object source, final CharAndStringWritable charAndStringWritable)
       throws JsonStathamException
   {
     try
     {
       javaToJsonConverter.convertIntoJsonAndWrite(source, charAndStringWritable);
+      return charAndStringWritable;
     }
     catch (final IllegalArgumentException e)
     {
@@ -202,6 +202,36 @@ public class JsonStathamInAction implements JsonStatham
     catch (final JsonStathamException e)
     {
       throw e;
+    }
+  }
+
+  @Override
+  public CharAndStringWritable convertIntoJsonWriteAndGetWriter(final Object source, final Writer writer) throws JsonStathamException
+  {
+    return convertIntoJsonWriteAndGetWriter(source, new CharAndStringWritableToWriter(writer));
+  }
+
+  @Override
+  public CharAndStringWritable convertIntoJsonWriteAndGetWriter(final Object source, final OutputStream outputStream)
+      throws JsonStathamException
+  {
+    return convertIntoJsonWriteAndGetWriter(source, new CharAndStringWritableToOutputStream(outputStream));
+  }
+
+  @Override
+  public void convertIntoJsonAndWrite(final Object source, final CharAndStringWritable charAndStringWritable) throws JsonStathamException
+  {
+    try
+    {
+      convertIntoJsonWriteAndGetWriter(source, charAndStringWritable)
+      .flush();
+    }
+    catch (final IllegalArgumentException e)
+    {
+      // throw new JsonStathamException(format(
+      // "Wrong object [object: %s] is passed or it has illegal fields with the @JsonField annotation",
+      // source), e);
+      throw new JsonStathamException(e);
     }
     finally
     {
@@ -286,8 +316,7 @@ public class JsonStathamInAction implements JsonStatham
   }
 
   @Override
-  public <T> T convertFromJsonConvertible(final Class<T> type, final JsonConvertible jsonConvertible)
-      throws JsonStathamException
+  public <T> T convertFromJsonConvertible(final Class<T> type, final JsonConvertible jsonConvertible) throws JsonStathamException
   {
     try
     {

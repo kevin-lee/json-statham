@@ -45,7 +45,7 @@ import org.elixirian.kommonlee.io.exception.RuntimeIoException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2014-03-23)
  */
@@ -89,6 +89,19 @@ public abstract class AbstractCharAndStringWritable implements CharAndStringWrit
       throw new RuntimeIoException(e);
     }
     return this;
+  }
+
+  @Override
+  public void flush() throws RuntimeIoException
+  {
+    try
+    {
+      writer.flush();
+    }
+    catch (final IOException e)
+    {
+      throw new RuntimeIoException(e);
+    }
   }
 
   @Override

@@ -47,7 +47,8 @@ import org.elixirian.kommonlee.io.exception.RuntimeIoException;
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2014-03-23)
  */
-public interface StringWritable extends Closeable
-{
-  StringWritable write(final String value) throws RuntimeIoException;
+public interface StringWritable extends Closeable {
+  StringWritable write(String value) throws RuntimeIoException;
+
+  void flush() throws RuntimeIoException;
 }

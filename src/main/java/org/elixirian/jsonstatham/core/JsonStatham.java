@@ -53,7 +53,7 @@ import org.elixirian.kommonlee.reflect.TypeHolder;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.1.0 (2010-09-08) {@link #convertFromJson(Class, String)} is added.
@@ -65,7 +65,7 @@ public interface JsonStatham
    * Returns String value containing JSON text. It turns the given target object which must be annotated with
    * {@link Json} into JSON text. If the target object is not annotated with {@link Json}, it throws
    * {@link IllegalStateException}.
-   * 
+   *
    * @param target
    *          the target object.
    * @return String value which contains JSON text created based on the given target object.
@@ -77,7 +77,7 @@ public interface JsonStatham
   /**
    * Return a {@link JsonConvertible} object converted from the given JSON object which is annotated with {@link Json}
    * or any object that can be converted into {@link JsonConvertible}.
-   * 
+   *
    * @param target
    *          the given JSON object which is annotated with {@link Json} or any object that can be converted into
    *          {@link JsonConvertible}.
@@ -86,10 +86,69 @@ public interface JsonStatham
    */
   <T extends JsonConvertible> T convertIntoJsonConvertible(Object source) throws JsonStathamException;
 
+  /**
+   * Converts the given object into JSON then writer it using the given {@link CharAndStringWritable}. It returns the
+   * {@link CharAndStringWritable} without flushing and closing it. So it should be flushed and closed by the caller.
+   *
+   * @param source
+   * @param charAndStringWritable
+   * @return
+   * @throws JsonStathamException
+   */
+  CharAndStringWritable convertIntoJsonWriteAndGetWriter(Object source, CharAndStringWritable charAndStringWritable)
+      throws JsonStathamException;
+
+  /**
+   * Converts the given object into JSON then writer it using the given {@link Writer}. It returns a
+   * {@link CharAndStringWritable} object containing the {@link Writer} without flushing and closing it. So it should be
+   * flushed and closed by the caller.
+   *
+   * @param source
+   * @param writer
+   * @return
+   * @throws JsonStathamException
+   */
+  CharAndStringWritable convertIntoJsonWriteAndGetWriter(Object source, Writer writer) throws JsonStathamException;
+
+  /**
+   * Converts the given object into JSON then writer it using the given {@link OutputStream}. It returns a
+   * {@link CharAndStringWritable} object containing the {@link OutputStream} without flushing and closing it. So it
+   * should be flushed and closed by the caller.
+   *
+   * @param source
+   * @param outputStream
+   * @return
+   * @throws JsonStathamException
+   */
+  CharAndStringWritable convertIntoJsonWriteAndGetWriter(Object source, OutputStream outputStream) throws JsonStathamException;
+
+  /**
+   * Converts the given object into JSON then writer it using the given {@link CharAndStringWritable}. It flushes and
+   * closes the {@link CharAndStringWritable} after writing the JSON.
+   *
+   * @param source
+   * @param charAndStringWritable
+   * @throws JsonStathamException
+   */
   void convertIntoJsonAndWrite(Object source, CharAndStringWritable charAndStringWritable) throws JsonStathamException;
 
+  /**
+   * Converts the given object into JSON then writer it using the given {@link Writer}. It flushes and closes the
+   * {@link Writer} after writing the JSON.
+   *
+   * @param source
+   * @param writer
+   * @throws JsonStathamException
+   */
   void convertIntoJsonAndWrite(Object source, Writer writer) throws JsonStathamException;
 
+  /**
+   * Converts the given object into JSON then writer it using the given {@link OutputStream}. It flushes and closes the
+   * {@link OutputStream} after writing the JSON.
+   *
+   * @param source
+   * @param outputStream
+   */
   void convertIntoJsonAndWrite(Object source, OutputStream outputStream);
 
   JsonConvertible convertJsonStringIntoJsonConvertible(String json) throws JsonStathamException;
@@ -97,7 +156,7 @@ public interface JsonStatham
   /**
    * Returns an object of the given type. It extracts all the data from the given JSON String then creates the given
    * type object based on the data.
-   * 
+   *
    * @param <T>
    *          the type of the object to be created.
    * @param type
@@ -114,7 +173,7 @@ public interface JsonStatham
    * Returns an object of the type which the given {@link TypeHolder} contains. It extracts all the data from the given
    * JSON String then creates the given type object based on the data. This method is useful to create array,
    * {@link Collection} and {@link Map} objects directly from JSON.
-   * 
+   *
    * @param <T>
    *          the type of the object to be created.
    * @param typeHolder
@@ -128,12 +187,11 @@ public interface JsonStatham
 
   <T> T convertFromJsonConvertible(Class<T> type, JsonConvertible jsonConvertible) throws JsonStathamException;
 
-  <T> T convertFromJsonConvertible(TypeHolder<T> typeHolder, JsonConvertible jsonConvertible)
-      throws JsonStathamException;
+  <T> T convertFromJsonConvertible(TypeHolder<T> typeHolder, JsonConvertible jsonConvertible) throws JsonStathamException;
 
   <T> T convertFromJson(Class<T> type, CharReadable charReadable);
 
   <T> T convertFromJson(Class<T> type, Reader reader);
-  
+
   <T> T convertFromJson(Class<T> type, InputStream inputStream);
 }

@@ -33,6 +33,8 @@ package org.elixirian.kommonlee.io;
 
 import java.io.IOException;
 
+import org.elixirian.kommonlee.io.exception.RuntimeIoException;
+
 /**
  * <pre>
  *     ___  _____                                _____
@@ -41,7 +43,7 @@ import java.io.IOException;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2014-03-23)
  */
@@ -68,6 +70,17 @@ public class CharAndStringWritableToStringBuilder implements CharAndStringWritab
     return this;
   }
 
+  /**
+   * It does nothing.
+   */
+  @Override
+  public void flush() throws RuntimeIoException
+  {
+  }
+
+  /**
+   * It does nothing.
+   */
   @Override
   public void close() throws IOException
   {
