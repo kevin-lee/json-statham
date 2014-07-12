@@ -36,7 +36,6 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -93,7 +92,7 @@ import org.mockito.stubbing.Answer;
  *  /        \ /  _____/\    //   //   __   / /    /___/  _____/  _____/
  * /____/\____\\_____/   \__//___//___/ /__/ /________/\_____/ \_____/
  * </pre>
- * 
+ *
  * @author Lee, SeongHyun (Kevin)
  * @version 0.0.1 (2009-11-21)
  * @version 0.0.2 (2010-03-06) more test cases including the one testing proxy object created by javassist are added.
@@ -357,7 +356,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithOutputStream() throws FileNotFoundException
+  public void testWithOutputStream() throws IOException
   {
     /* given */
     final PersonJson expected =
@@ -379,7 +378,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithOutputStream2() throws FileNotFoundException
+  public void testWithOutputStream2() throws IOException
   {
     /* given */
     /* @formatter:off */
@@ -436,7 +435,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithOutputStream3() throws FileNotFoundException
+  public void testWithOutputStream3() throws IOException
   {
     /* given */
     final PersonJson expected =
@@ -463,7 +462,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithOutputStream4() throws FileNotFoundException
+  public void testWithOutputStream4() throws IOException
   {
     /* given */
     /* @formatter:off */
@@ -681,7 +680,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithCharAndStringWritable() throws FileNotFoundException
+  public void testWithCharAndStringWritable() throws IOException
   {
     /* given */
     final PersonJson expected =
@@ -707,7 +706,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithCharAndStringWritable2() throws FileNotFoundException
+  public void testWithCharAndStringWritable2() throws IOException
   {
     /* given */
     /* @formatter:off */
@@ -764,7 +763,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithCharAndStringWritable3() throws FileNotFoundException
+  public void testWithCharAndStringWritable3() throws IOException
   {
     /* given */
     final PersonJson expected =
@@ -791,7 +790,7 @@ public class JsonStathamInActionWithCharAndStringWritableTest
   }
 
   @Test
-  public void testWithCharAndStringWritable4() throws FileNotFoundException
+  public void testWithCharAndStringWritable4() throws IOException
   {
     /* given */
     /* @formatter:off */
