@@ -331,7 +331,7 @@ System.out.println(nameToListOfListOfNumber);
 {Lee=[[100, 200, 300, 400, 500, 600, 700, 800, 900, 1000], [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 11000]], Kevin=[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]]}
 ```
 
-[Getting started with JSON Statham](/Kevin-Lee/json-statham/wiki/Getting-Started) is a good place to start.
+[Getting started with JSON Statham](https://github.com/Kevin-Lee/json-statham/wiki/Getting-Started) is a good place to start.
 
 Enjoy!
 [Kevin](http://lckymn.com)
