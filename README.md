@@ -1,13 +1,9 @@
-json-statham
-============
+JSON Statham - Java JSON Mapper
+===============================
 
 [![Build Status](https://travis-ci.org/Kevin-Lee/json-statham.svg)](https://travis-ci.org/Kevin-Lee/json-statham)
 
-Json Statham - Java JSON Mapper
-
-[Project Homepage](http://projects.elixirian.org/json-statham)
-
-# JSON Statham
+~~[Project Homepage](http://projects.elixirian.org/json-statham)~~
 
 JSON Statham (pronounced [**dƷéisn steɪθəm**] the same as the name of the actor, Jason Statham. If you are still not sure, watch [Jason Statham Crank Interview](http://www.youtube.com/watch?v=TDh0PZCO2CU)) is an **"open source"** **Java JSON Mapping** library.  It is completely **free** and will continute to be a free open source library ([Read more about JSON Statham](#StartingPoints)). JSON Statham provides an easy way of converting Java object into JSON and JSON into Java object.
 The only requirement to use JSON Stathem is using a few annotations in the JSON Statham library on the target Java objects.
@@ -334,6 +330,7 @@ System.out.println(nameToListOfListOfNumber);
 [Getting started with JSON Statham](https://github.com/Kevin-Lee/json-statham/wiki/Getting-Started) is a good place to start.
 
 Enjoy!
+
 [Kevin](http://lckymn.com)
 
 ##Starting Points
@@ -342,6 +339,6 @@ Enjoy!
  * [[wiki:GettingStarted|Getting started with JSON Statham]]
  * [[wiki:UserManual|User Manual]]
  * [[wiki:FAQ|FAQ]]
- * [wiki:GettingStarted#MavenUsers Get JSON Statham using Maven] (recommended)
+ * [Get JSON Statham using Maven](https://github.com/Kevin-Lee/json-statham/wiki/Getting-Started#maven-users) (recommended)
  * Download -- Coming soon ...
 
