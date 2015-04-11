@@ -336,9 +336,6 @@ Enjoy!
 ##Starting Points
 
  * [[wiki:ReleaseNotes|What's New]]
- * [[wiki:GettingStarted|Getting started with JSON Statham]]
- * [[wiki:UserManual|User Manual]]
- * [[wiki:FAQ|FAQ]]
+ * [Getting started with JSON Statham](https://github.com/Kevin-Lee/json-statham/wiki/Getting-Started)
+ * [User Manual](https://github.com/Kevin-Lee/json-statham/wiki)
  * [Get JSON Statham using Maven](https://github.com/Kevin-Lee/json-statham/wiki/Getting-Started#maven-users) (recommended)
- * Download -- Coming soon ...
-
