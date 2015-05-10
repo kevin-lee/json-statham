@@ -3,6 +3,9 @@ JSON Statham - Java JSON Mapper
 
 [![Build Status](https://travis-ci.org/Kevin-Lee/json-statham.svg)](https://travis-ci.org/Kevin-Lee/json-statham)
 
+[![views](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/json-statham/.counters/views.svg)](https://sourcegraph.com/github.com/Kevin-Lee/json-statham)
+[![views 24h](https://sourcegraph.com/api/repos/github.com/Kevin-Lee/json-statham/.counters/views-24h.svg)](https://sourcegraph.com/github.com/Kevin-Lee/json-statham)
+
 ~~[Project Homepage](http://projects.elixirian.org/json-statham)~~
 
 JSON Statham (pronounced [**dƷéisn steɪθəm**] the same as the name of the actor, Jason Statham. If you are still not sure, watch [Jason Statham Crank Interview](http://www.youtube.com/watch?v=TDh0PZCO2CU)) is an **"open source"** **Java JSON Mapping** library.  It is completely **free** and will continute to be a free open source library ([Read more about JSON Statham](#StartingPoints)). JSON Statham provides an easy way of converting Java object into JSON and JSON into Java object.
